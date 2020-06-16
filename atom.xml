@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>Gridea</title>
-    <updated>2020-06-16T11:55:27.330Z</updated>
+    <updated>2020-06-16T12:03:33.510Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -10,6 +10,33 @@
     <logo>https://xzzz2020.github.io/images/avatar.png</logo>
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[RocketMQ监控平台（附网盘链接）]]></title>
+        <id>https://xzzz2020.github.io/post/rocketmq-jian-kong-ping-tai-fu-wang-pan-lian-jie/</id>
+        <link href="https://xzzz2020.github.io/post/rocketmq-jian-kong-ping-tai-fu-wang-pan-lian-jie/">
+        </link>
+        <updated>2020-06-16T12:01:12.000Z</updated>
+        <content type="html"><![CDATA[<p><code>RocketMQ</code>有一个对其扩展的开源项目<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>，这个项目中有一个子模块叫<code>rocketmq-console</code>，这个便是管理控制台项目了，先将<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>拉到本地，因为我们需要自己对<code>rocketmq-console</code>进行编译打包运行。</p>
+<p>在linux环境下，使用<code>nohub java -jar xxxx &amp;</code>  启动，为了防止端口冲突，已经修改其端口为<strong>9999</strong></p>
+<blockquote>
+<p>链接：<a href="https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA">https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA</a><br>
+提取码：jpg0</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/2020053110115547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy">### 3.5.2 下载并编译打包</p>
+<pre><code class="language-sh">git clone https://github.com/apache/rocketmq-externals
+cd rocketmq-console
+mvn clean package -Dmaven.test.skip=true
+</code></pre>
+<p>注意：打包前在<code>rocketmq-console</code>中配置<code>namesrv</code>集群地址：</p>
+<pre><code class="language-sh">rocketmq.config.namesrvAddr=192.168.25.135:9876;192.168.25.138:9876
+</code></pre>
+<p>启动rocketmq-console：</p>
+<pre><code class="language-sh">java -jar rocketmq-console-ng-1.0.0.jar
+</code></pre>
+<p>启动成功后，我们就可以通过浏览器访问<code>http://localhost:8080</code>进入控制台界面了，如下图：<br>
+<img src="https://img-blog.csdnimg.cn/20200531101225351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
         <id>https://xzzz2020.github.io/post/hello-gridea/</id>
