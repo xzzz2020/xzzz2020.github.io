@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>Gridea</title>
-    <updated>2020-06-16T12:03:33.510Z</updated>
+    <updated>2020-06-16T13:29:49.662Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -22,7 +22,8 @@
 <p>链接：<a href="https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA">https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA</a><br>
 提取码：jpg0</p>
 </blockquote>
-<p><img src="https://img-blog.csdnimg.cn/2020053110115547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy">### 3.5.2 下载并编译打包</p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/2020053110115547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></figure>
+<h3 id="352-下载并编译打包">3.5.2 下载并编译打包</h3>
 <pre><code class="language-sh">git clone https://github.com/apache/rocketmq-externals
 cd rocketmq-console
 mvn clean package -Dmaven.test.skip=true
