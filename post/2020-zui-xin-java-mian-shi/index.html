@@ -17,7 +17,7 @@
 <div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
 <div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
 <div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
-<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1592483792863" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1592704157485" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
 </div></div>
 <script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
 
@@ -42,7 +42,7 @@
 <br>
 <h1 id="一-数据库">一. 数据库</h1>
 <h2 id="11-关系型数据库">1.1 关系型数据库</h2>
-<h4 id="mysql已更新">MySQL(已更新)</h4>
+<h3 id="mysql已更新">MySQL(已更新)</h3>
 <p>推荐书目：《MySQL必知必会》、《MySQL技术内幕》、《高性能MySQL》<br>
 <code>对于MySQL语法优先学习SQL的语句增删改查等，然后在LeetCode练习一下数据库的题目，可能会手写SQL语句</code></p>
 <table>
@@ -123,7 +123,7 @@
 </tbody>
 </table>
 <h2 id="12-非关系型数据库">1.2 非关系型数据库</h2>
-<h4 id="redis">Redis</h4>
+<h3 id="redis">Redis</h3>
 <h1 id="二-java基础">二、Java基础</h1>
 <h2 id="21-java虚拟机已更新">2.1 Java虚拟机（已更新）</h2>
 <p>虛拟机推荐 <strong>《深入理解Java虚拟机》</strong> 这本书，重点学习一下<code>内存</code>、<code>垃圾回收</code>、<code>类加载机制</code>这几部分内容。</p>
@@ -161,7 +161,7 @@
 <blockquote>
 <p>Java并发主要看了汪文君的并发三个阶段，内容比较丰富，看了很久</p>
 </blockquote>
-<h4 id="java并发基础">Java并发基础</h4>
+<h3 id="java并发基础">Java并发基础</h3>
 <blockquote>
 <p>学习Java并发，需要先掌握线程的一些基础知识<br>
 这些基础知识的组合构成了后面的设计模式</p>
@@ -218,7 +218,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="多线程的设计模式">多线程的设计模式</h4>
+<h3 id="多线程的设计模式">多线程的设计模式</h3>
 <blockquote>
 <p>Java在并发的场景中，设计模式就像个套路，开发者可以自由的组合<font color = "red">以满足应用需求</font><br>
 <strong>下面有十四个多线程的设计模式，帮助理解后面的JUC包。</strong></p>
@@ -345,7 +345,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="java高并发与jvm的关系">Java高并发与JVM的关系</h4>
+<h3 id="java高并发与jvm的关系">Java高并发与JVM的关系</h3>
 <blockquote>
 <p>主要是学习<code>wait set</code>、<code>JMM模型</code></p>
 </blockquote>
@@ -357,7 +357,7 @@
 <li><strong>指令重排序</strong></li>
 </ul>
 <p>Java多线程之内存模型三大特性：<a href="https://blog.csdn.net/qq_43040688/article/details/105823532">https://blog.csdn.net/qq_43040688/article/details/105823532</a></p>
-<h4 id="原子包">原子包</h4>
+<h3 id="原子包">原子包</h3>
 <p><strong>CAS</strong>  ：</p>
 <ul>
 <li>乐观锁，CompareAndSwap。</li>
@@ -415,7 +415,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="juc工具包">JUC工具包</h4>
+<h3 id="juc工具包">JUC工具包</h3>
 <p><strong>CountDownLatch</strong></p>
 <ul>
 <li>通过一个计数器实现，计数器初始值就是线程的数量</li>
@@ -553,7 +553,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="exectors框架">Exectors框架</h4>
+<h3 id="exectors框架">Exectors框架</h3>
 <blockquote>
 <p>首先需要学习线程池的构造方法中参数的意义，如果可以尽量不要使用工厂方法创建线程池。</p>
 </blockquote>
@@ -625,14 +625,12 @@
 <div class="toc-container"><ul class="markdownIt-TOC">
 <li><a href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E5%BA%93">一. 数据库</a>
 <ul>
-<li><a href="#11-%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93">1.1 关系型数据库</a><br>
-*
+<li><a href="#11-%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93">1.1 关系型数据库</a>
 <ul>
 <li><a href="#mysql%E5%B7%B2%E6%9B%B4%E6%96%B0">MySQL(已更新)</a></li>
 </ul>
 </li>
-<li><a href="#12-%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93">1.2 非关系型数据库</a><br>
-*
+<li><a href="#12-%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93">1.2 非关系型数据库</a>
 <ul>
 <li><a href="#redis">Redis</a></li>
 </ul>
@@ -642,8 +640,7 @@
 <li><a href="#%E4%BA%8C-java%E5%9F%BA%E7%A1%80">二、Java基础</a>
 <ul>
 <li><a href="#21-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%B7%B2%E6%9B%B4%E6%96%B0">2.1 Java虚拟机（已更新）</a></li>
-<li><a href="#22-java%E5%B9%B6%E5%8F%91%E5%B7%B2%E6%9B%B4%E6%96%B0">2.2 Java并发（已更新）</a><br>
-*
+<li><a href="#22-java%E5%B9%B6%E5%8F%91%E5%B7%B2%E6%9B%B4%E6%96%B0">2.2 Java并发（已更新）</a>
 <ul>
 <li><a href="#java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80">Java并发基础</a></li>
 <li><a href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">多线程的设计模式</a></li>
