@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>关于 | xzzz2020</title>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>第一章操作系统引论 | xzzz2020</title>
 <link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 <script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
 
-<link rel="canonical" href="https://xzzz2020.github.io/post/about/" />
+<link rel="canonical" href="https://xzzz2020.github.io/post/ZBrN48x_g/" />
 </head>
 <body>
 <div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
@@ -23,36 +23,124 @@
 
 <div class="main"><div class="main-inner"><div class="content">
 <article class="post">
-<h2 class="post_title sm_margin"><a>关于</a></h2>
+<h2 class="post_title sm_margin"><a>第一章操作系统引论</a></h2>
 <script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
-<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-18</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px"></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">161字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">1 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-21</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/lUVqfrXxs/" class="tag">操作系统</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">496字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">2 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
 </section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1588614478415-f25a77edc40f.webp" referrerpolicy="no-referrer">
 
 <div style="display:flex">
 <div class="md_block" id="md_block">
 <div class="round-shape-one"></div>
+<h2 id="操作系统发展">操作系统发展</h2>
+<ul>
+<li><strong>无操作系统</strong></li>
+<li><strong>单道批处理系统</strong></li>
+<li><strong>多道批处理系统</strong></li>
+<li><strong>分时系统</strong>：使用户以交互的方式共享计算机，用户感觉到自己在享用到计算机资源，本质还是利用了<code>时分复用技术</code></li>
+<li><strong>现代操作系统</strong>：在规定的时间开始事件的处理或者在规定时间内完成对事件的处理，对<code>时间要求苛刻</code></li>
+</ul>
+<h2 id="操作系统的功能">操作系统的功能</h2>
+<h3 id="处理机管理">处理机管理</h3>
+<ol>
+<li>进程控制</li>
+<li>进程调度</li>
+<li>进程同步</li>
+<li>进程通信</li>
+<li>死锁</li>
+</ol>
+<h3 id="存储器管理内存">存储器管理（内存）</h3>
+<ol>
+<li>内存分配</li>
+<li>内存共享</li>
+<li>内存扩充</li>
+<li>内存保护</li>
+</ol>
+<h3 id="设备管理高效使用io设备">设备管理（高效使用IO设备）</h3>
+<ol>
+<li>设备处理</li>
+<li>缓冲管理</li>
+<li>设备分配</li>
+<li>设备的独立性</li>
+<li>设备的虚拟性</li>
+</ol>
+<h3 id="文件管理">文件管理</h3>
+<ol>
+<li>文件读/写</li>
+<li>目录管理</li>
+<li>存储空间管理</li>
+<li>文件共享、存储性能优化、存储可靠性和数据一致性</li>
+</ol>
+<h3 id="操作系统接口">操作系统接口</h3>
+<ol>
+<li>
+<p>图形接口</p>
+</li>
+<li>
+<p>系统调用</p>
+</li>
+<li>
+<p>命令调用</p>
+<p>​	<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202748865.png" alt="image-20200621202748865" style="zoom: 50%;" /></p>
+</li>
+</ol>
+<h2 id="操作系统的基本特征">操作系统的基本特征</h2>
+<ul>
+<li><strong>并发性</strong>：多个程序在同一时间间隔执行</li>
+<li><strong>共享性</strong>：多个并发的程序共同使用计算机资源，提高计算机资源的利用率</li>
+<li><strong>虚拟性</strong>：有时分复用和空分复用两种技术</li>
+<li><strong>异步性</strong>：表现为多任务执行的无序性，主要应对阻塞</li>
+</ul>
+<h2 id="操作系统的作用">操作系统的作用</h2>
+<p>操作系统(Operating System, OS)是<strong>一组控制和管理计算机硬件和软件资源，合理地对各类作业进行调度，以及方便用户使用的程序集合。</strong></p>
+<ul>
+<li><strong>是用户和计算机系统之间的接口</strong></li>
+<li><strong>是系统资源的管理者</strong></li>
+<li><strong>扩充计算机的功能，实现对计算机的抽象</strong></li>
+</ul>
+<h2 id="设计目标">设计目标</h2>
+<ul>
+<li><strong>方便性</strong></li>
+<li><strong>有效性</strong></li>
+<li><strong>扩充性</strong></li>
+<li><strong>开放性</strong></li>
+</ul>
+<h2 id="操作系统结构">操作系统结构</h2>
+<ol>
+<li>无操作系统结构</li>
+<li>模块化结构</li>
+<li>层次结构</li>
+<li>微内核结构</li>
+</ol>
+<h2 id="练习题目">练习题目</h2>
 <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
+<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201525920.png" alt="image-20200621201525920" loading="lazy"></figure>
 </blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<p>这是博主自己搭建的个人博客，用于总结并分享技术经验😁</p>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<p>主要学习的Java后端的技术。<br>
-博主目前是郑州航院计科大三的一名学生，目前正在找工作。。。😖</p>
-<h2 id="️个人网站">🏳️‍🌈个人网站</h2>
-<p>除了该个人博客外，博主还有一些其他的个人网站🚀：</p>
-<ul>
-<li><strong>个人网站：</strong><a href="www.xzzz2020.cn">www.xzzz2020.cn</a></li>
-<li><strong>CSDN博客：</strong><a href="https://blog.csdn.net/qq_43040688">https://blog.csdn.net/qq_43040688</a></li>
-<li><strong>GitHub：</strong><a href="https://www.github.com/xzzz2020">https://www.github.com/xzzz2020</a></li>
-<li><strong>个人项目：</strong><a href="https://gitee.com/xzzz2020/Seckill">https://gitee.com/xzzz2020/Seckill</a></li>
-</ul>
-<h2 id="联系我呀">📬 联系我呀</h2>
-<p>可以通过以下方式联系博主：</p>
-<ul>
-<li><strong>邮件</strong>：xzh_frank@163.com</li>
-<li><strong>QQ</strong>：970002790</li>
-</ul>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201751451.png" alt="image-20200621201751451" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201850031.png" alt="image-20200621201850031" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202025346.png" alt="image-20200621202025346" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202047000.png" alt="image-20200621202047000" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202056968.png" alt="image-20200621202056968" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="7"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621203755881.png" alt="image-20200621203755881" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="8"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621203910781.png" alt="image-20200621203910781" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="9"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621204526744.png" alt="image-20200621204526744" loading="lazy"></figure>
+</blockquote>
 
 <span id="footnote"></span>
 <div id = "warn"></div>
@@ -60,10 +148,21 @@
 <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E5%85%B3%E4%BA%8E%E6%9C%AC%E7%AB%99">🏠 关于本站</a></li>
-<li><a href="#%E5%8D%9A%E4%B8%BB%E6%98%AF%E8%B0%81">👨‍💻 博主是谁</a></li>
-<li><a href="#%EF%B8%8F%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99">🏳️‍🌈个人网站</a></li>
-<li><a href="#%E8%81%94%E7%B3%BB%E6%88%91%E5%91%80">📬 联系我呀</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95">操作系统发展</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8A%9F%E8%83%BD">操作系统的功能</a>
+<ul>
+<li><a href="#%E5%A4%84%E7%90%86%E6%9C%BA%E7%AE%A1%E7%90%86">处理机管理</a></li>
+<li><a href="#%E5%AD%98%E5%82%A8%E5%99%A8%E7%AE%A1%E7%90%86%E5%86%85%E5%AD%98">存储器管理（内存）</a></li>
+<li><a href="#%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86%E9%AB%98%E6%95%88%E4%BD%BF%E7%94%A8io%E8%AE%BE%E5%A4%87">设备管理（高效使用IO设备）</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86">文件管理</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3">操作系统接口</a></li>
+</ul>
+</li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81">操作系统的基本特征</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BD%9C%E7%94%A8">操作系统的作用</a></li>
+<li><a href="#%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87">设计目标</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84">操作系统结构</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE">练习题目</a></li>
 </ul>
 </li>
 </ul>
@@ -105,7 +204,7 @@ if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop)
 var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
 var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
 var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
-content="本文最后更新于2020-06-18，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-18 10:17:03";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+content="本文最后更新于2020-06-21，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-21 20:49:01";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
 </script>
 <style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
 <a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Powered by <a href="http://www.xzzz2020.cn/" target="_blank">xzzz2020</a>Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>

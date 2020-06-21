@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-06-21T03:55:31.537Z</updated>
+    <updated>2020-06-21T13:03:17.090Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -10,6 +10,122 @@
     <logo>https://xzzz2020.github.io/images/avatar.png</logo>
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
+    <entry>
+        <title type="html"><![CDATA[第一章操作系统引论]]></title>
+        <id>https://xzzz2020.github.io/post/ZBrN48x_g/</id>
+        <link href="https://xzzz2020.github.io/post/ZBrN48x_g/">
+        </link>
+        <updated>2020-06-21T12:49:01.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="操作系统发展">操作系统发展</h2>
+<ul>
+<li><strong>无操作系统</strong></li>
+<li><strong>单道批处理系统</strong></li>
+<li><strong>多道批处理系统</strong></li>
+<li><strong>分时系统</strong>：使用户以交互的方式共享计算机，用户感觉到自己在享用到计算机资源，本质还是利用了<code>时分复用技术</code></li>
+<li><strong>现代操作系统</strong>：在规定的时间开始事件的处理或者在规定时间内完成对事件的处理，对<code>时间要求苛刻</code></li>
+</ul>
+<h2 id="操作系统的功能">操作系统的功能</h2>
+<h3 id="处理机管理">处理机管理</h3>
+<ol>
+<li>进程控制</li>
+<li>进程调度</li>
+<li>进程同步</li>
+<li>进程通信</li>
+<li>死锁</li>
+</ol>
+<h3 id="存储器管理内存">存储器管理（内存）</h3>
+<ol>
+<li>内存分配</li>
+<li>内存共享</li>
+<li>内存扩充</li>
+<li>内存保护</li>
+</ol>
+<h3 id="设备管理高效使用io设备">设备管理（高效使用IO设备）</h3>
+<ol>
+<li>设备处理</li>
+<li>缓冲管理</li>
+<li>设备分配</li>
+<li>设备的独立性</li>
+<li>设备的虚拟性</li>
+</ol>
+<h3 id="文件管理">文件管理</h3>
+<ol>
+<li>文件读/写</li>
+<li>目录管理</li>
+<li>存储空间管理</li>
+<li>文件共享、存储性能优化、存储可靠性和数据一致性</li>
+</ol>
+<h3 id="操作系统接口">操作系统接口</h3>
+<ol>
+<li>
+<p>图形接口</p>
+</li>
+<li>
+<p>系统调用</p>
+</li>
+<li>
+<p>命令调用</p>
+<p>​	<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202748865.png" alt="image-20200621202748865" style="zoom: 50%;" /></p>
+</li>
+</ol>
+<h2 id="操作系统的基本特征">操作系统的基本特征</h2>
+<ul>
+<li><strong>并发性</strong>：多个程序在同一时间间隔执行</li>
+<li><strong>共享性</strong>：多个并发的程序共同使用计算机资源，提高计算机资源的利用率</li>
+<li><strong>虚拟性</strong>：有时分复用和空分复用两种技术</li>
+<li><strong>异步性</strong>：表现为多任务执行的无序性，主要应对阻塞</li>
+</ul>
+<h2 id="操作系统的作用">操作系统的作用</h2>
+<p>操作系统(Operating System, OS)是<strong>一组控制和管理计算机硬件和软件资源，合理地对各类作业进行调度，以及方便用户使用的程序集合。</strong></p>
+<ul>
+<li><strong>是用户和计算机系统之间的接口</strong></li>
+<li><strong>是系统资源的管理者</strong></li>
+<li><strong>扩充计算机的功能，实现对计算机的抽象</strong></li>
+</ul>
+<h2 id="设计目标">设计目标</h2>
+<ul>
+<li><strong>方便性</strong></li>
+<li><strong>有效性</strong></li>
+<li><strong>扩充性</strong></li>
+<li><strong>开放性</strong></li>
+</ul>
+<h2 id="操作系统结构">操作系统结构</h2>
+<ol>
+<li>无操作系统结构</li>
+<li>模块化结构</li>
+<li>层次结构</li>
+<li>微内核结构</li>
+</ol>
+<h2 id="练习题目">练习题目</h2>
+<blockquote>
+<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201525920.png" alt="image-20200621201525920" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201751451.png" alt="image-20200621201751451" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201850031.png" alt="image-20200621201850031" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202025346.png" alt="image-20200621202025346" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202047000.png" alt="image-20200621202047000" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202056968.png" alt="image-20200621202056968" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="7"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621203755881.png" alt="image-20200621203755881" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="8"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621203910781.png" alt="image-20200621203910781" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="9"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621204526744.png" alt="image-20200621204526744" loading="lazy"></figure>
+</blockquote>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[2020最新-Java面试]]></title>
         <id>https://xzzz2020.github.io/post/2020-zui-xin-java-mian-shi/</id>
