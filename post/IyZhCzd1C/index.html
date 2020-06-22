@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>第二章处理机管理 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/IyZhCzd1C/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1592808338334" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>第二章处理机管理</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-22</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/lUVqfrXxs/" class="tag">操作系统</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1889字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">7 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/thumb-1.jpg" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<h2 id="程序的执行方式">程序的执行方式</h2>
+<h3 id="顺序方式">顺序方式（*）</h3>
+<p>内存中只能驻留一个程序，前一个程序结束，后一个程序才能进来，并且有着<strong>严格的先后次序</strong></p>
+<p><strong>顺序执行的特点</strong>：</p>
+<ul>
+<li><strong>顺序性</strong>：程序执行有着明确的先后顺序</li>
+<li><strong>封闭性</strong>：程序运行时独占所有资源</li>
+<li><strong>可再现性</strong>：初始条件相同，若程序执行顺序不变，则每次得到的结果一定相同</li>
+</ul>
+<p><strong>问题</strong>：</p>
+<ul>
+<li>无法满足高性能</li>
+</ul>
+<h3 id="并发执行">并发执行（***）</h3>
+<p>并发指一段时间内执行多个程序。多个程序同时进入内存，轮流<strong>交替执行</strong>。</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622092827851.png" alt="image-20200622092827851" style="zoom:67%;" />
+<p><strong>并发执行的特点</strong>：</p>
+<ul>
+<li>
+<p><strong>间断性</strong>：交替执行就是走走停停</p>
+</li>
+<li>
+<p><strong>失去了封闭性</strong>：程序不再独占系统资源</p>
+</li>
+<li>
+<p><strong>不可再现性</strong>：程序执行有多种结果。</p>
+</li>
+</ul>
+<h3 id="并行执行">并行执行</h3>
+<p>同一时刻有多个程序执行，只能在多处理机上实现</p>
+<h2 id="进程">进程</h2>
+<p>进程是研究并发方式下，程序的执行。</p>
+<p><strong>进程的概念</strong>：进程是进程实体的运行过程，是系统进行资源分配和调度的一一个独立单位。</p>
+<blockquote>
+<p><strong>进程实体</strong>：由程序段、相关数据段和PCB组成</p>
+</blockquote>
+<h3 id="进程的状态">进程的状态</h3>
+<p><strong>有三个状态</strong>：</p>
+<ul>
+<li><strong>就绪状态</strong>：指程序已经处于准备好运行的状态。</li>
+<li><strong>执行状态</strong>：指程序已经获得CPU，正在执行。</li>
+<li><strong>阻塞状态</strong>：指程序的执行因为某些原因无法继续执行。</li>
+</ul>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622093952609.png" alt="image-20200622093952609" style="zoom:50%;" />
+<h3 id="进程控制块pcb">进程控制块（PCB）</h3>
+<ul>
+<li>用来描述进程的基本情况和活动过程，进而控制和管理进程。（<strong>类似于学籍、户口等</strong>）</li>
+<li>进程创建时会建立一个PCB，结束时会收回PCB</li>
+</ul>
+<p><strong>进程控制块中的信息</strong>：</p>
+<ul>
+<li><strong>进程标识符</strong>：包括内部标识符和外部标识符。</li>
+<li><strong>处理机状态</strong>：处理机状态包括通用寄存器、程序计数寄存器、程序状态寄存器、栈寄存器信息。</li>
+<li><strong>进程控制信息</strong>：程序栈和数据地址，同步和通信机制，资源清单,链接指针。</li>
+<li><strong>进程调度信息</strong></li>
+</ul>
+<p><strong>进程控制块中的组织方式</strong></p>
+<ol>
+<li>
+<p><strong>线性方式</strong></p>
+</li>
+<li>
+<p><strong>链接方式</strong></p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622095654092.png" alt="image-20200622095654092" style="zoom:50%;" />
+</li>
+<li>
+<p><strong>索引方式</strong></p>
+</li>
+</ol>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622095909769.png" alt="image-20200622095909769" style="zoom:50%;" />
+<h2 id="进程控制">进程控制</h2>
+<ul>
+<li>
+<p>进程控制用于创建、终止、阻塞和唤醒进程。</p>
+</li>
+<li>
+<p>进程控制由操作系统内核原语来实现。</p>
+<blockquote>
+<p>原语是由若干条指令组成，用于完成一定功能的一个<strong>过程</strong>，所有的指令<strong>要么全做，要么全不做</strong>。（<strong>一个函数</strong>）</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>用户态</strong>：具有较低特权的执行状态，进行执行规定的指令，访问特定的寄存器和存储区。</p>
+<p><strong>系统态（内核态）</strong>：具有较高特权，能执行全部的指令，访问所有的寄存器和存储区。</p>
+<h3 id="进程的四个操作">进程的四个操作</h3>
+<h4 id="进程的创建">进程的创建</h4>
+<p><strong>引起进程创建的事件</strong>：</p>
+<ul>
+<li>用户执行应用程序。</li>
+<li>用户登录。</li>
+<li>启动服务。</li>
+<li>程序创建进程。</li>
+</ul>
+<p><strong>进程创建的过程</strong>（必须要求是原语）：</p>
+<ol>
+<li>申请空白PCB</li>
+<li>为新进程分配资源，如内存空间等</li>
+<li>初始化PCB</li>
+<li>将进程插入就绪队列</li>
+</ol>
+<h4 id="进程的终止">进程的终止</h4>
+<p><strong>引起进程终止的事件</strong>：</p>
+<ul>
+<li>正常结束。</li>
+<li>异常结束。</li>
+<li>外界干预。</li>
+</ul>
+<p><strong>进程的终止过程</strong>：</p>
+<ul>
+<li>
+<p>检查进程状态。</p>
+</li>
+<li>
+<p>有无子孙需要终止。</p>
+</li>
+<li>
+<p>归还进程全部资源。</p>
+</li>
+<li>
+<p>将PCB从进程中移除。</p>
+</li>
+</ul>
+<h4 id="进程的阻塞和进程的唤醒">进程的阻塞和进程的唤醒</h4>
+<h2 id="进程调度概念">进程调度概念</h2>
+<p><strong>处理机调度的层次</strong>：</p>
+<ul>
+<li>高级调度</li>
+<li>低级调度</li>
+<li>中级调度</li>
+</ul>
+<p><strong>引起进程调度的事件</strong>：</p>
+<ul>
+<li>进程终止。</li>
+<li>进程创建。</li>
+<li>进程阻塞。</li>
+<li>进程唤醒。</li>
+<li>外部设备中断。</li>
+</ul>
+<p>进程切换时需要保存和恢复现场。</p>
+<h3 id="进程调度的方式">进程调度的方式</h3>
+<ul>
+<li>
+<p><strong>抢占式调度</strong>：允许调度程序根据某种原则，暂停某个占用处理机的进程，抢占已经分配出去的处理机。抢占的原则有优先权原则、短作业优先原则和时间片原则。</p>
+</li>
+<li>
+<p><strong>非抢占式调度</strong>：进程一旦获得处理机，只有在该进程任务完成或因某事件而阻塞时，才让出处理机，决不允许某进程抢占已经分配出去的处理机。（<strong>只有时间片用完才能调度</strong>）</p>
+</li>
+</ul>
+<h3 id="衡量调度算法指标">衡量调度算法指标</h3>
+<p><strong>面向用户（***）</strong>：</p>
+<ul>
+<li><strong>平均周转时间</strong>：所有周转时间求平均。</li>
+<li><strong>带权周转时间</strong>：一个程序的周转时间除以服务的时间。（&gt;=1）</li>
+<li><strong>平均带权周转时间</strong>：对带权周转时间求平均。</li>
+</ul>
+<blockquote>
+<p><strong>周转时间</strong>：从作业被提交给系统开始，到作业完成为止的这段时间间隔。</p>
+</blockquote>
+<p><strong>面向系统</strong>：</p>
+<ul>
+<li><strong>吞吐量</strong>：在单位时间内系统所完成的作业数。</li>
+<li><strong>处理机利用率</strong>：在过去一 段时间内CPU被占用的时间总和。</li>
+<li><strong>各类资源的平衡利用率</strong>：保证系统所有的资源被合理利用。</li>
+</ul>
+<h2 id="进程调度算法计算">进程调度算法（计算）</h2>
+<h3 id="先来先服务调度算法fcfs">先来先服务调度算法（FCFS）</h3>
+<blockquote>
+<p><strong>先来的进程先抢到CPU，有利于长作业，不利于短作业</strong></p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622111911566.png" alt="image-20200622111911566" style="zoom:67%;" />
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622112903214.png" alt="image-20200622112903214" style="zoom:67%;" />
+<h3 id="短作业优先调度算法">短作业优先调度算法</h3>
+<blockquote>
+<p><strong>在分配时，优先分配给服务时间最短的，降低了系统的平均周转时间，对长作业不利。</strong></p>
+<p><strong>只有在抢占的时候，进程的创建才会导致需要重新分配CPU，非抢占式在进程终止的时候分配。</strong></p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622113117858.png" alt="image-20200622113117858" style="zoom:67%;" />
+<p><strong>非抢占方式：</strong></p>
+<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622114213680.png" alt="image-20200622114213680" loading="lazy"></figure>
+<p><strong>抢占式：</strong></p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622114634375.png" alt="image-20200622114634375" style="zoom:67%;" />
+<h3 id="高优先权调度算法">高优先权调度算法</h3>
+<blockquote>
+<p>按照优先权重分配CPU，优先数越小，优先权越大</p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622115711510.png" alt="image-20200622115711510" style="zoom:67%;" />
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622120734094.png" alt="image-20200622120734094" style="zoom:50%;" />
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622120720361.png" alt="image-20200622120720361" style="zoom:50%;" />
+<h3 id="高响应比优先调度算法">高响应比优先调度算法</h3>
+<blockquote>
+<p>按照响应比去分配CPU资源，既考虑的作业的先后顺序，又优先照顾短作业，同时不会使长作业等太久</p>
+<p>响应比 = 等待时间/服务时间</p>
+</blockquote>
+<h3 id="时间片轮转调度算法">时间片轮转调度算法</h3>
+<blockquote>
+<p>按照先来先服务的将作业放入一个调度队列中，每隔一定的时间片，发生一次调度，一般为10ms到100ms。</p>
+<p>假设时间片为2。</p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622122330474.png" alt="image-20200622122330474" style="zoom:67%;" />
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622122733994.png" alt="image-20200622122733994" style="zoom:50%;" />
+<h3 id="多级队列调度算法">多级队列调度算法</h3>
+<blockquote>
+<p>优先调度优先级高的</p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622122939586.png" alt="image-20200622122939586" style="zoom:50%;" />
+<h3 id="多级反馈队列调度算法">多级反馈队列调度算法</h3>
+<blockquote>
+<p>解决了低优先级队列长时间无法调度的问题</p>
+</blockquote>
+<h2 id="线程">线程</h2>
+<p><strong>为什么提出线程？</strong></p>
+<ul>
+<li>进程是资源的拥有者，在并发时，对进程的切换需要有较大时空的开销。</li>
+<li>一个进程内全部线程都是在同一个地址空间进行，在并发时可以减少系统的开销。</li>
+</ul>
+<p><strong>线程概念</strong>：线程是进程的一个实体，是被系统独立调度的基本单位，只拥有少量的资源(如CPU寄存器资源)。</p>
+<p>如下图所示，每个线程都会有个栈，一共有三个线程：</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622142107384.png" alt="image-20200622142107384" style="zoom: 80%;" />
+<p><strong>线程的特点</strong>：</p>
+<ul>
+<li>一个线程<strong>拥有少量的资源</strong>，记录在<strong>线程控制块中</strong>。轻型实体，线程基本上不拥有资源，或者是有较少的资源;</li>
+<li>一个进程的所有线程共享进程所拥有的全部资源。</li>
+<li>线程是处理机调度的基本单位，多个线程可以并发执行。</li>
+</ul>
+<p><strong>线程与进程的比较</strong>：</p>
+<figure data-type="image" tabindex="2"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622142510460.png" alt="image-20200622142510460" loading="lazy"></figure>
+<p><strong>线程的实现方式</strong>：</p>
+<ul>
+<li><strong>内核级线程</strong>：所有创建、切换等都需要内核的支持，开销较大（<strong>适合多处理器系统</strong>）</li>
+<li><strong>用户级线程</strong>：可以不需要进入内核态创建，但是切换进程需要进入内核（<strong>开销小</strong>）</li>
+<li><strong>组合方式</strong>：建立内核级线程与用户级线程的关系。</li>
+</ul>
+<h2 id="题目练习">题目练习</h2>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622093526050.png" alt="image-20200622093526050" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622100444854.png" alt="image-20200622100444854" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622100540099.png" alt="image-20200622100540099" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622103623435.png" alt="image-20200622103623435" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="7"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622103657071.png" alt="image-20200622103657071" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="8"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622143148015.png" alt="image-20200622143148015" loading="lazy"></figure>
+</blockquote>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F">程序的执行方式</a>
+<ul>
+<li><a href="#%E9%A1%BA%E5%BA%8F%E6%96%B9%E5%BC%8F">顺序方式（*）</a></li>
+<li><a href="#%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C">并发执行（***）</a></li>
+<li><a href="#%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B">进程</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81">进程的状态</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97pcb">进程控制块（PCB）</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6">进程控制</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%9B%9B%E4%B8%AA%E6%93%8D%E4%BD%9C">进程的四个操作</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA">进程的创建</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%88%E6%AD%A2">进程的终止</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%98%BB%E5%A1%9E%E5%92%8C%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%94%A4%E9%86%92">进程的阻塞和进程的唤醒</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E6%A6%82%E5%BF%B5">进程调度概念</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%9A%84%E6%96%B9%E5%BC%8F">进程调度的方式</a></li>
+<li><a href="#%E8%A1%A1%E9%87%8F%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E6%8C%87%E6%A0%87">衡量调度算法指标</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E8%AE%A1%E7%AE%97">进程调度算法（计算）</a>
+<ul>
+<li><a href="#%E5%85%88%E6%9D%A5%E5%85%88%E6%9C%8D%E5%8A%A1%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95fcfs">先来先服务调度算法（FCFS）</a></li>
+<li><a href="#%E7%9F%AD%E4%BD%9C%E4%B8%9A%E4%BC%98%E5%85%88%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">短作业优先调度算法</a></li>
+<li><a href="#%E9%AB%98%E4%BC%98%E5%85%88%E6%9D%83%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">高优先权调度算法</a></li>
+<li><a href="#%E9%AB%98%E5%93%8D%E5%BA%94%E6%AF%94%E4%BC%98%E5%85%88%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">高响应比优先调度算法</a></li>
+<li><a href="#%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">时间片轮转调度算法</a></li>
+<li><a href="#%E5%A4%9A%E7%BA%A7%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">多级队列调度算法</a></li>
+<li><a href="#%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">多级反馈队列调度算法</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BA%BF%E7%A8%8B">线程</a></li>
+<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%83%E4%B9%A0">题目练习</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div><script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-06-22，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-22 14:30:37";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Powered by <a href="http://www.xzzz2020.cn/" target="_blank">xzzz2020</a>Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_uv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>5</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>
