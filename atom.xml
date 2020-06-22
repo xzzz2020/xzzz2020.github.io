@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-06-22T06:53:18.240Z</updated>
+    <updated>2020-06-22T09:34:08.553Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -10,6 +10,134 @@
     <logo>https://xzzz2020.github.io/images/avatar.png</logo>
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
+    <entry>
+        <title type="html"><![CDATA[第三章进程同步与死锁]]></title>
+        <id>https://xzzz2020.github.io/post/vUwZiOAP9/</id>
+        <link href="https://xzzz2020.github.io/post/vUwZiOAP9/">
+        </link>
+        <updated>2020-06-22T09:25:58.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="进程同步">进程同步</h2>
+<p><strong>临界资源</strong>：对一些硬件而言，打印机就是一个临界资源，即多个程序共同需要抢占的资源</p>
+<p><strong>临界区</strong>：每个进程中访问临界资源的代码</p>
+<p><strong>实现互斥的结构</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622150153590.png" alt="image-20200622150153590" style="zoom: 67%;" />
+<p><strong>硬件实现</strong>：</p>
+<ul>
+<li><strong>关中断</strong>：让处理机始终执行一个程序，不进行程序的切换</li>
+<li><strong>指令</strong></li>
+</ul>
+<p><strong>同步应该遵循的规则</strong>：</p>
+<ul>
+<li><strong>空闲让进</strong>：当无进程处于临界区时，表明临界资源处于空闲状态，应允许一个请求进入临界区的进程立即进入自己的临界区，以有效地利用临界资源。</li>
+<li><strong>忙则等待</strong>：当有进程进入临界区时，表明临界资源正在被访问，因而其他试图进入临界区的进程必须等待，以保证对临界资源的互斥访问。</li>
+<li><strong>有限等待</strong>：对要求访问临界资源的进程，应保证在有限时间内能进入自己的临界区，以免陷入“死等”状态。</li>
+<li><strong>让权等待</strong>：当进程不能进入自己的临界区时，应立即释放处理机，以免进程陷入“忙等&quot;</li>
+</ul>
+<p><strong>前驱图：</strong></p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622150703762.png" alt="image-20200622150703762" style="zoom:67%;" />
+<blockquote>
+<p><strong>若想执行S2，则需要先执行S1。</strong></p>
+</blockquote>
+<h2 id="信号量">信号量</h2>
+<h3 id="整型信号量">整型信号量</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622151744719.png" alt="image-20200622151744719" style="zoom:67%;" />
+<h3 id="记录性信号量">记录性信号量（***）</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622151852525.png" alt="image-20200622151852525" style="zoom:67%;" />
+<h3 id="and型信号量">AND型信号量</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622154354678.png" alt="image-20200622154354678" style="zoom:80%;" />
+<h3 id="信号量的应用">信号量的应用（***）</h3>
+<h4 id="利用信号量实现互斥">利用信号量实现互斥</h4>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622153000297.png" alt="image-20200622153000297" style="zoom:50%;" />
+<p><strong>实现算法</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622153444468.png" alt="image-20200622153444468" style="zoom:50%;" />
+<p><strong>符合</strong>：空闲让进，忙则等待和有限等待</p>
+<h4 id="利用信号量实现前驱关系">利用信号量实现前驱关系</h4>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622153525416.png" alt="image-20200622153525416" style="zoom: 67%;" />
+<h4 id="资源的分配">资源的分配</h4>
+<p>申请资源时需要执行P操作，释放资源时执行V操作</p>
+<h2 id="同步的问题">同步的问题</h2>
+<ul>
+<li>生产者-消费者问题</li>
+<li>哲学家进餐问题</li>
+<li>读者-写者问题</li>
+</ul>
+<h2 id="进程间通信">进程间通信</h2>
+<p><strong>低级通信</strong>：信号量机制</p>
+<p><strong>高级通讯</strong>：共享存储器系统、消息传递系统、管道通信。</p>
+<h2 id="死锁的相关概念">死锁的相关概念</h2>
+<p><strong>可抢占资源</strong>：某进程在获得该资源后，该资源可以再被其他进程或系统抢占。</p>
+<p><strong>不可抢占的资源</strong>：一旦系统将某资源分配给该进程后，就不能将它强行收回，只能在进程用完后自行释放。</p>
+<p><strong>死锁的定义</strong>：如果一组进程中的每个进程都在等待仅由该组进程中的其他进程才能引发的事件，那么该组进程就是死锁。</p>
+<p><strong>产生死锁的原因</strong>：</p>
+<ul>
+<li>竞争不可抢占资源引发死锁。</li>
+<li>竞争可消耗资源引发死锁。</li>
+<li>进程推进顺序不当引发死锁。</li>
+</ul>
+<h2 id="处理死锁的基本方法">处理死锁的基本方法</h2>
+<h3 id="预防死锁">预防死锁</h3>
+<ul>
+<li>破坏“请求和保持条件”</li>
+<li>破坏“不可抢占条件”</li>
+<li><strong>破坏“循环等待条件”</strong>：进程统一按照某种线性规则申请资源。例如,输入机资源序号为1,打印机序号为2，磁带机资源序号为3,磁盘资源序号为4，进程在申请资源时，<mark><strong>必须按照从1到4或者从4到1的顺序申请</strong></mark>。</li>
+</ul>
+<h3 id="避免死锁">避免死锁（***）</h3>
+<p><strong>安全状态</strong>：安全状态，是指系统能按某种顺序(P1, P2,Pn)(称此序列为安全序列)，来为每个进程Pi分配其所需的资源,<mark><strong>直到满足每个进程对资源的最大需求</strong></mark>，使每个进程都可以顺利地完成。</p>
+<p><strong>不安全状态</strong>：如果系统无法找到这样一个安全序列， 称系统处于不安全状态。</p>
+<blockquote>
+<p>要避免死锁，需要使系统处于安全状态；系统处于不安全状态，并不一定处于死锁状态</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622165340017.png" alt="image-20200622165340017" style="zoom:67%;" />
+<ul>
+<li>根据上述定义，当给P1分配2个资源时，则此时P1、P2和P3都无法满足最大需求，处于不安全状态</li>
+</ul>
+<h4 id="银行家算法">银行家算法（***）</h4>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170224200.png" alt="image-20200622170224200" style="zoom:80%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170321644.png" alt="image-20200622170321644" style="zoom:80%;" />
+<ul>
+<li>先假设分配可以满足，做一次安全检测，如果仍能处于安全状态，则允许分配。</li>
+<li>寻找安全序列的方式只有两种：<strong>每次都从最上面开始</strong>；<strong>按照从上到下顺序循环</strong></li>
+</ul>
+<p><strong>应用</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170415300.png" alt="image-20200622170415300" style="zoom:67%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170922576.png" alt="image-20200622170922576" style="zoom:67%;" />
+<p><strong>如果单向顺序，查找安全序列的流程为</strong>：</p>
+<ol>
+<li>判断P0，返现剩余资源不能满足。<strong>判断P1，发现满足，则释放P1分配的资源，此时资源是：5，3，2。</strong></li>
+<li>继续判断P0，返现剩余资源不能满足。P1结束，则直接跳过。判断P2，返现剩余资源不能满足。<strong>判断P3，发现满足，则释放P3分配的资源，此时资源是：7，4，3。</strong></li>
+<li><strong>继续判断P0，发现满足，则释放P0分配的资源，此时资源是：7，5，3。</strong></li>
+<li>P0、 P1结束，直接跳过。<strong>判断P2，发现满足，则释放P2分配的资源，此时资源是：10，5，5.。</strong></li>
+<li>P0、 P1、P2、P3结束，直接跳过。<strong>判断P4，发现满足，则释放P4分配的资源。</strong></li>
+<li><strong>最终的安全序列为：P1、P3、P0、P2、P4。</strong></li>
+<li><strong>确认分配</strong>。</li>
+</ol>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622172205550.png" alt="image-20200622172205550" style="zoom:67%;" />
+<ul>
+<li><strong>此时找不到安全序列，拒绝分配。</strong></li>
+</ul>
+<h3 id="检测死锁">检测死锁</h3>
+<h3 id="解除死锁">解除死锁</h3>
+<h2 id="练习题目">练习题目</h2>
+<blockquote>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622172918571.png" alt="image-20200622172918571" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622172948218.png" alt="image-20200622172948218" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173016842.png" alt="image-20200622173016842" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173053665.png" alt="image-20200622173053665" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173114342.png" alt="image-20200622173114342" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173233127.png" alt="image-20200622173233127" loading="lazy"></figure>
+</blockquote>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[第二章处理机管理]]></title>
         <id>https://xzzz2020.github.io/post/IyZhCzd1C/</id>
