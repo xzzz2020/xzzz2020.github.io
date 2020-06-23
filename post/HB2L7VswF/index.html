@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>第四章存储器管理 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/HB2L7VswF/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1592879034576" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>第四章存储器管理</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-23</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/lUVqfrXxs/" class="tag">操作系统</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1864字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">7 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/thumb-1.jpg" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<h2 id="程序的链接与装入">程序的链接与装入</h2>
+<h3 id="程序的装入">程序的装入</h3>
+<p><strong>目的</strong>：是将代码装入内存准备执行</p>
+<ol>
+<li><strong>绝对装入方式</strong></li>
+<li><strong>可重定位装入方式</strong>：</li>
+<li><strong>动态运行时的装入方式</strong>：增加一个重定位寄存器，通过硬件完成地址的修正。真实地址等于<strong>逻辑地址+重定位寄存器上的地址</strong><br>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622175520753.png" alt="image-20200622175520753" style="zoom:67%;" /></li>
+</ol>
+<h3 id="程序的链接">程序的链接</h3>
+<p><strong>目的</strong>：将目标模块相对独立的地址空间合并成一个地址空间。</p>
+<p>​</p>
+<ol>
+<li><strong>静态链接方式</strong>
+<ul>
+<li>对相对地址进行修改</li>
+<li>变换外部调用符号</li>
+</ul>
+</li>
+<li><strong>装入时动态链接</strong></li>
+<li><strong>运行时动态链接</strong></li>
+</ol>
+<h2 id="连续存储分配方式">连续存储分配方式</h2>
+<p><strong>目的</strong>：给每一个程序分配一片连续的存储空间，容量为程序运行时所需的最大空间。</p>
+<p><strong>指标</strong>：碎片率，越小越好。</p>
+<h3 id="单一连续分配">单一连续分配</h3>
+<p><strong>内存分为系统区和用户区</strong></p>
+<ul>
+<li>用户区一次只能装入一个程序运行</li>
+<li>系统区装入操作系统</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622181950847.png" alt="image-20200622181950847" style="zoom:50%;" />
+<h3 id="固定分区分配方式">固定分区分配方式</h3>
+<p><strong>将内存划分成固定数目的区域，如图所示</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182210610.png" alt="image-20200622182210610" style="zoom: 67%;" />
+<p>为了实现内存的管理，<strong>需要建立固定分区表（数组实现）</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182308481.png" alt="image-20200622182308481" style="zoom:67%;" />
+<p><strong>程序的大小和分区大小不能完全匹配</strong>，所以需要分配大于等于程序大小的内存，分区中浪费的空间称为<strong>内碎片</strong></p>
+<h3 id="动态分区分配">动态分区分配（***）</h3>
+<p><strong>操作系统不预设固定数目分区，按照程序内存需求为其划分，内存中分区数目动态变化。</strong></p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182722198.png" alt="image-20200622182722198" style="zoom:50%;" />
+<p><strong>数据结构</strong>：</p>
+<ul>
+<li>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182822266.png" alt="image-20200622182822266" style="zoom:50%;" />
+</li>
+<li>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182958683.png" alt="image-20200622182958683" style="zoom: 67%;" />
+</li>
+</ul>
+<p><strong>分配算法：</strong></p>
+<ul>
+<li><strong>首次适应算法</strong>：空闲分区以地址递增的顺序排列，<code>每次从链首开始顺序查找</code>，直到找到一个大小能满足要求的空闲分区为止。然后再按照程序的要求大小，从该空闲分区中划分出一块内存空间给请求者，余下的空闲部分仍留在空闲链表中。<code>特点是低端或高端地址空间被频繁使用。</code></li>
+<li><strong>循环首次适应算法</strong>：在首次适应算法的基础上，<code>每次查找时从上次找到空闲分区的下一个空闲分区开始查找。特点是空闲分区使用均匀，但是会缺乏大的空闲分区。</code></li>
+<li><strong>最佳适应算法</strong>：能满足要求、又是最小的空闲分区分配给作业，避免&quot;大材小用”。特点:分区按照大小顺序排列。</li>
+<li><strong>最差适应算法</strong>：每次从空闲分区中选择最大的空闲分区分配给程序，以便切割剩余的空闲分区空间更大。</li>
+</ul>
+<p>切割操作会产生一些空间过小，总是不会分配给程序，这些空间被称作<strong>外碎片</strong>。</p>
+<pre><code>### 可重定位分区分配
+</code></pre>
+<p><strong>紧凑</strong>：通过移动程序，将外碎片合并一个大的空闲分区</p>
+<h2 id="基本分页存储管理方式">基本分页存储管理方式</h2>
+<p><strong>离散分配的基本单位是页</strong></p>
+<h3 id="页表">页表</h3>
+<p><strong>解决了逻辑地址到物理地址的转换的问题：</strong></p>
+<ul>
+<li>将程序逻辑地址空间划分成固定大小的页面;</li>
+<li>内存划分成等大小的页框;</li>
+<li><code>页表实现页面到页框的索引;</code></li>
+<li>页表项个数由程序的逻辑地址空间决定，页表项位数由页框起始物理地址位数决定。</li>
+</ul>
+<p><strong>记录了页面和页框号（每个页框的起始地址）的对应关系，如下图所示</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622191317403.png" alt="image-20200622191317403" style="zoom:67%;" />
+<p>页表<strong>存储了页框的起始物理地址</strong>，需要一个连续的存储空间实现随机访问，对于<strong>逻辑地址相当于页号+页内偏移</strong>。</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622200719784.png" alt="image-20200622200719784" style="zoom:80%;" />
+<h3 id="地址变换机构">地址变换机构（***）</h3>
+<ul>
+<li>先让页号与页表基址相加得到<strong>页框号</strong></li>
+<li>再让页框号与页内偏移相加得到<strong>物理地址</strong></li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622200925736.png" alt="image-20200622200925736" style="zoom:80%;" />
+<h2 id="基本分段存储管理方式">基本分段存储管理方式</h2>
+<ul>
+<li><strong>离散分配的基本单位是端</strong></li>
+<li><strong>采用二维逻辑地址结构，由段号加段内偏移构成</strong></li>
+</ul>
+<h3 id="段表">段表</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622201627033.png" alt="image-20200622201627033" style="zoom: 67%;" />
+<h3 id="地址变换机构-2">地址变换机构（***）</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622201656943.png" alt="image-20200622201656943" style="zoom:80%;" />
+<h3 id="分页和分段的主要区别">分页和分段的主要区别</h3>
+<ul>
+<li>页是信息的物理单位；段是信息的逻辑单位。</li>
+<li>页大小固定；段大小不固定。</li>
+<li>分页采用一维线性逻辑地址，分段采用二维逻辑地址。</li>
+</ul>
+<h2 id="虚拟存储器">虚拟存储器（***）</h2>
+<p><strong>概念</strong>：虚拟存储器是指具有请求调入功能和置换功能，能从逻辑上对内存容量加以扩充的一种存储器，其逻辑容量由内存容量和外存容量之和决定，运行速度接近于内存速度,每位成本接近外存。</p>
+<h3 id="虚拟存储器实现方法的硬件支持">虚拟存储器实现方法的硬件支持</h3>
+<h4 id="分页请求系统">分页请求系统</h4>
+<ol>
+<li>请求分页的页表机制</li>
+<li>缺页中断机构</li>
+<li>地址变换机构</li>
+</ol>
+<h4 id="分段请求系统">分段请求系统</h4>
+<ol>
+<li>请求分段的端表机制</li>
+<li>缺段中断机构</li>
+<li>地址变换机构</li>
+</ol>
+<h3 id="页面置换算法">页面置换算法（***）</h3>
+<p><strong>页面中断</strong>：发生页面的置换</p>
+<h4 id="最佳置换算法理想化">最佳置换算法（理想化）</h4>
+<blockquote>
+<p>置换以后永不使用或者最长时间不使用的页面</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622203218539.png" alt="image-20200622203218539" style="zoom: 80%;" />
+<ul>
+<li>发生3次缺页中断和页面中断</li>
+</ul>
+<h4 id="先进先出页面置换算法">先进先出页面置换算法</h4>
+<blockquote>
+<p>淘汰最先进入的页面，即选择在内存中驻留时间最久的页面予以淘汰。</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622203901808.png" alt="image-20200622203901808" style="zoom:80%;" />
+<h4 id="最近最久未使用置换算法lru">最近最久未使用置换算法（LRU）</h4>
+<blockquote>
+<p>选择最近最久未使用的页面予以淘汰，即当前使用次数最少的页面。</p>
+</blockquote>
+<p><strong>实现方式</strong>：</p>
+<ul>
+<li>利用栈保存当前使用的各个页面的页面号,每当进程访问某页面时，便将该页面的页面号从栈中弹出，并将它压入栈顶。<code>因此，栈底是最近最久未使用的页面。</code></li>
+<li>使用寄存器，每一次访问都会在寄存器加一，每次置换选择寄存器中次数最少的页面</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622204543566.png" alt="image-20200622204543566" style="zoom:80%;" />
+<h4 id="clock置换算法">clock置换算法</h4>
+<h5 id="简单clock置换算法最近未访问页面置换算法">简单clock置换算法（最近未访问页面置换算法）</h5>
+<ul>
+<li>将所有的页面组成一个循环链表,并为每个页面添加一个访问位A。</li>
+<li>当一个页面被访问时，将其A位设置为1。</li>
+<li>置换过程是从pointer开始，<strong>若该页面的A位为1,将其设置为0,并使pointer指向下一个页面</strong>，直到找到A位为0的页面;<strong>若该页面的A位为0，则将其置换出内存</strong>，并用换入的页面占用换出页面的页框，使pointer指向下一个页面。</li>
+<li>如果第一轮没有找到，则执行第二轮，由于第一轮将所有页面的A都设置为0，则一定能在第二轮找到</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623101130548.png" alt="image-20200623101130548" style="zoom: 67%;" />
+<h5 id="改进型clock置换算法">改进型clock置换算法</h5>
+<p><strong>增加一个修改为M，页面状态可以分为四类</strong>：</p>
+<ul>
+<li>1类(A=0，M=0) ，未访问未修改;</li>
+<li>2类(A=0，M= 1)，未访问.已修改;</li>
+<li>3类(A=1，M=0)，已访问未修改;</li>
+<li>4类(A=1, M= 1) ，已访问已修改;</li>
+</ul>
+<p><strong>置换过程</strong>：</p>
+<ol>
+<li>从pointer开始寻找<strong>1类</strong>页面，直到找到1类页面结束，或者扫描完一遍进入第II步。</li>
+<li>从pointer开始寻找<strong>2类</strong>页面， 直到找到2类页面结束，或者扫描完一遍进入第I步。在本步每扫描完一个页面，<strong>须将页面的访问位修改为0</strong>。</li>
+<li>重复l和II。(一 定可以找到置换的页。)</li>
+</ol>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623101334666.png" alt="image-20200623101334666" style="zoom:80%;" />
+<h4 id="最近最少未使用lfu">最近最少未使用（LFU）</h4>
+<blockquote>
+<p>在最近时期内选择使用次数最少的页面作为淘汰页</p>
+</blockquote>
+<h2 id="练习题目">练习题目</h2>
+<blockquote>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622181520299.png" alt="image-20200622181520299" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622190511957.png" alt="image-20200622190511957" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622190706448.png" alt="image-20200622190706448" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622190752961.png" alt="image-20200622190752961" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622202031148.png" alt="image-20200622202031148" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623101755205.png" alt="image-20200623101755205" loading="lazy"></figure>
+</blockquote>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%93%BE%E6%8E%A5%E4%B8%8E%E8%A3%85%E5%85%A5">程序的链接与装入</a>
+<ul>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E8%A3%85%E5%85%A5">程序的装入</a></li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%93%BE%E6%8E%A5">程序的链接</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9E%E7%BB%AD%E5%AD%98%E5%82%A8%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F">连续存储分配方式</a>
+<ul>
+<li><a href="#%E5%8D%95%E4%B8%80%E8%BF%9E%E7%BB%AD%E5%88%86%E9%85%8D">单一连续分配</a></li>
+<li><a href="#%E5%9B%BA%E5%AE%9A%E5%88%86%E5%8C%BA%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F">固定分区分配方式</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E5%88%86%E5%8C%BA%E5%88%86%E9%85%8D">动态分区分配（***）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E9%A1%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F">基本分页存储管理方式</a>
+<ul>
+<li><a href="#%E9%A1%B5%E8%A1%A8">页表</a></li>
+<li><a href="#%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E6%9C%BA%E6%9E%84">地址变换机构（***）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%AE%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F">基本分段存储管理方式</a>
+<ul>
+<li><a href="#%E6%AE%B5%E8%A1%A8">段表</a></li>
+<li><a href="#%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E6%9C%BA%E6%9E%84-2">地址变换机构（***）</a></li>
+<li><a href="#%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB">分页和分段的主要区别</a></li>
+</ul>
+</li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8">虚拟存储器（***）</a>
+<ul>
+<li><a href="#%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E7%9A%84%E7%A1%AC%E4%BB%B6%E6%94%AF%E6%8C%81">虚拟存储器实现方法的硬件支持</a>
+<ul>
+<li><a href="#%E5%88%86%E9%A1%B5%E8%AF%B7%E6%B1%82%E7%B3%BB%E7%BB%9F">分页请求系统</a></li>
+<li><a href="#%E5%88%86%E6%AE%B5%E8%AF%B7%E6%B1%82%E7%B3%BB%E7%BB%9F">分段请求系统</a></li>
+</ul>
+</li>
+<li><a href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">页面置换算法（***）</a>
+<ul>
+<li><a href="#%E6%9C%80%E4%BD%B3%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E7%90%86%E6%83%B3%E5%8C%96">最佳置换算法（理想化）</a></li>
+<li><a href="#%E5%85%88%E8%BF%9B%E5%85%88%E5%87%BA%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">先进先出页面置换算法</a></li>
+<li><a href="#%E6%9C%80%E8%BF%91%E6%9C%80%E4%B9%85%E6%9C%AA%E4%BD%BF%E7%94%A8%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95lru">最近最久未使用置换算法（LRU）</a></li>
+<li><a href="#clock%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">clock置换算法</a>
+<ul>
+<li><a href="#%E7%AE%80%E5%8D%95clock%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E6%9C%80%E8%BF%91%E6%9C%AA%E8%AE%BF%E9%97%AE%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">简单clock置换算法（最近未访问页面置换算法）</a></li>
+<li><a href="#%E6%94%B9%E8%BF%9B%E5%9E%8Bclock%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">改进型clock置换算法</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%80%E8%BF%91%E6%9C%80%E5%B0%91%E6%9C%AA%E4%BD%BF%E7%94%A8lfu">最近最少未使用（LFU）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE">练习题目</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div><script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-06-23，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-23 10:20:42";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Powered by <a href="http://www.xzzz2020.cn/" target="_blank">xzzz2020</a>Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_uv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>7</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

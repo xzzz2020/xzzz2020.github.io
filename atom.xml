@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-06-22T09:34:08.553Z</updated>
+    <updated>2020-06-23T02:24:09.069Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -10,6 +10,197 @@
     <logo>https://xzzz2020.github.io/images/avatar.png</logo>
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
+    <entry>
+        <title type="html"><![CDATA[第四章存储器管理]]></title>
+        <id>https://xzzz2020.github.io/post/HB2L7VswF/</id>
+        <link href="https://xzzz2020.github.io/post/HB2L7VswF/">
+        </link>
+        <updated>2020-06-23T02:20:42.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="程序的链接与装入">程序的链接与装入</h2>
+<h3 id="程序的装入">程序的装入</h3>
+<p><strong>目的</strong>：是将代码装入内存准备执行</p>
+<ol>
+<li><strong>绝对装入方式</strong></li>
+<li><strong>可重定位装入方式</strong>：</li>
+<li><strong>动态运行时的装入方式</strong>：增加一个重定位寄存器，通过硬件完成地址的修正。真实地址等于<strong>逻辑地址+重定位寄存器上的地址</strong><br>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622175520753.png" alt="image-20200622175520753" style="zoom:67%;" /></li>
+</ol>
+<h3 id="程序的链接">程序的链接</h3>
+<p><strong>目的</strong>：将目标模块相对独立的地址空间合并成一个地址空间。</p>
+<p>​</p>
+<ol>
+<li><strong>静态链接方式</strong>
+<ul>
+<li>对相对地址进行修改</li>
+<li>变换外部调用符号</li>
+</ul>
+</li>
+<li><strong>装入时动态链接</strong></li>
+<li><strong>运行时动态链接</strong></li>
+</ol>
+<h2 id="连续存储分配方式">连续存储分配方式</h2>
+<p><strong>目的</strong>：给每一个程序分配一片连续的存储空间，容量为程序运行时所需的最大空间。</p>
+<p><strong>指标</strong>：碎片率，越小越好。</p>
+<h3 id="单一连续分配">单一连续分配</h3>
+<p><strong>内存分为系统区和用户区</strong></p>
+<ul>
+<li>用户区一次只能装入一个程序运行</li>
+<li>系统区装入操作系统</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622181950847.png" alt="image-20200622181950847" style="zoom:50%;" />
+<h3 id="固定分区分配方式">固定分区分配方式</h3>
+<p><strong>将内存划分成固定数目的区域，如图所示</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182210610.png" alt="image-20200622182210610" style="zoom: 67%;" />
+<p>为了实现内存的管理，<strong>需要建立固定分区表（数组实现）</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182308481.png" alt="image-20200622182308481" style="zoom:67%;" />
+<p><strong>程序的大小和分区大小不能完全匹配</strong>，所以需要分配大于等于程序大小的内存，分区中浪费的空间称为<strong>内碎片</strong></p>
+<h3 id="动态分区分配">动态分区分配（***）</h3>
+<p><strong>操作系统不预设固定数目分区，按照程序内存需求为其划分，内存中分区数目动态变化。</strong></p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182722198.png" alt="image-20200622182722198" style="zoom:50%;" />
+<p><strong>数据结构</strong>：</p>
+<ul>
+<li>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182822266.png" alt="image-20200622182822266" style="zoom:50%;" />
+</li>
+<li>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622182958683.png" alt="image-20200622182958683" style="zoom: 67%;" />
+</li>
+</ul>
+<p><strong>分配算法：</strong></p>
+<ul>
+<li><strong>首次适应算法</strong>：空闲分区以地址递增的顺序排列，<code>每次从链首开始顺序查找</code>，直到找到一个大小能满足要求的空闲分区为止。然后再按照程序的要求大小，从该空闲分区中划分出一块内存空间给请求者，余下的空闲部分仍留在空闲链表中。<code>特点是低端或高端地址空间被频繁使用。</code></li>
+<li><strong>循环首次适应算法</strong>：在首次适应算法的基础上，<code>每次查找时从上次找到空闲分区的下一个空闲分区开始查找。特点是空闲分区使用均匀，但是会缺乏大的空闲分区。</code></li>
+<li><strong>最佳适应算法</strong>：能满足要求、又是最小的空闲分区分配给作业，避免&quot;大材小用”。特点:分区按照大小顺序排列。</li>
+<li><strong>最差适应算法</strong>：每次从空闲分区中选择最大的空闲分区分配给程序，以便切割剩余的空闲分区空间更大。</li>
+</ul>
+<p>切割操作会产生一些空间过小，总是不会分配给程序，这些空间被称作<strong>外碎片</strong>。</p>
+<pre><code>### 可重定位分区分配
+</code></pre>
+<p><strong>紧凑</strong>：通过移动程序，将外碎片合并一个大的空闲分区</p>
+<h2 id="基本分页存储管理方式">基本分页存储管理方式</h2>
+<p><strong>离散分配的基本单位是页</strong></p>
+<h3 id="页表">页表</h3>
+<p><strong>解决了逻辑地址到物理地址的转换的问题：</strong></p>
+<ul>
+<li>将程序逻辑地址空间划分成固定大小的页面;</li>
+<li>内存划分成等大小的页框;</li>
+<li><code>页表实现页面到页框的索引;</code></li>
+<li>页表项个数由程序的逻辑地址空间决定，页表项位数由页框起始物理地址位数决定。</li>
+</ul>
+<p><strong>记录了页面和页框号（每个页框的起始地址）的对应关系，如下图所示</strong>：</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622191317403.png" alt="image-20200622191317403" style="zoom:67%;" />
+<p>页表<strong>存储了页框的起始物理地址</strong>，需要一个连续的存储空间实现随机访问，对于<strong>逻辑地址相当于页号+页内偏移</strong>。</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622200719784.png" alt="image-20200622200719784" style="zoom:80%;" />
+<h3 id="地址变换机构">地址变换机构（***）</h3>
+<ul>
+<li>先让页号与页表基址相加得到<strong>页框号</strong></li>
+<li>再让页框号与页内偏移相加得到<strong>物理地址</strong></li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622200925736.png" alt="image-20200622200925736" style="zoom:80%;" />
+<h2 id="基本分段存储管理方式">基本分段存储管理方式</h2>
+<ul>
+<li><strong>离散分配的基本单位是端</strong></li>
+<li><strong>采用二维逻辑地址结构，由段号加段内偏移构成</strong></li>
+</ul>
+<h3 id="段表">段表</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622201627033.png" alt="image-20200622201627033" style="zoom: 67%;" />
+<h3 id="地址变换机构-2">地址变换机构（***）</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622201656943.png" alt="image-20200622201656943" style="zoom:80%;" />
+<h3 id="分页和分段的主要区别">分页和分段的主要区别</h3>
+<ul>
+<li>页是信息的物理单位；段是信息的逻辑单位。</li>
+<li>页大小固定；段大小不固定。</li>
+<li>分页采用一维线性逻辑地址，分段采用二维逻辑地址。</li>
+</ul>
+<h2 id="虚拟存储器">虚拟存储器（***）</h2>
+<p><strong>概念</strong>：虚拟存储器是指具有请求调入功能和置换功能，能从逻辑上对内存容量加以扩充的一种存储器，其逻辑容量由内存容量和外存容量之和决定，运行速度接近于内存速度,每位成本接近外存。</p>
+<h3 id="虚拟存储器实现方法的硬件支持">虚拟存储器实现方法的硬件支持</h3>
+<h4 id="分页请求系统">分页请求系统</h4>
+<ol>
+<li>请求分页的页表机制</li>
+<li>缺页中断机构</li>
+<li>地址变换机构</li>
+</ol>
+<h4 id="分段请求系统">分段请求系统</h4>
+<ol>
+<li>请求分段的端表机制</li>
+<li>缺段中断机构</li>
+<li>地址变换机构</li>
+</ol>
+<h3 id="页面置换算法">页面置换算法（***）</h3>
+<p><strong>页面中断</strong>：发生页面的置换</p>
+<h4 id="最佳置换算法理想化">最佳置换算法（理想化）</h4>
+<blockquote>
+<p>置换以后永不使用或者最长时间不使用的页面</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622203218539.png" alt="image-20200622203218539" style="zoom: 80%;" />
+<ul>
+<li>发生3次缺页中断和页面中断</li>
+</ul>
+<h4 id="先进先出页面置换算法">先进先出页面置换算法</h4>
+<blockquote>
+<p>淘汰最先进入的页面，即选择在内存中驻留时间最久的页面予以淘汰。</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622203901808.png" alt="image-20200622203901808" style="zoom:80%;" />
+<h4 id="最近最久未使用置换算法lru">最近最久未使用置换算法（LRU）</h4>
+<blockquote>
+<p>选择最近最久未使用的页面予以淘汰，即当前使用次数最少的页面。</p>
+</blockquote>
+<p><strong>实现方式</strong>：</p>
+<ul>
+<li>利用栈保存当前使用的各个页面的页面号,每当进程访问某页面时，便将该页面的页面号从栈中弹出，并将它压入栈顶。<code>因此，栈底是最近最久未使用的页面。</code></li>
+<li>使用寄存器，每一次访问都会在寄存器加一，每次置换选择寄存器中次数最少的页面</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622204543566.png" alt="image-20200622204543566" style="zoom:80%;" />
+<h4 id="clock置换算法">clock置换算法</h4>
+<h5 id="简单clock置换算法最近未访问页面置换算法">简单clock置换算法（最近未访问页面置换算法）</h5>
+<ul>
+<li>将所有的页面组成一个循环链表,并为每个页面添加一个访问位A。</li>
+<li>当一个页面被访问时，将其A位设置为1。</li>
+<li>置换过程是从pointer开始，<strong>若该页面的A位为1,将其设置为0,并使pointer指向下一个页面</strong>，直到找到A位为0的页面;<strong>若该页面的A位为0，则将其置换出内存</strong>，并用换入的页面占用换出页面的页框，使pointer指向下一个页面。</li>
+<li>如果第一轮没有找到，则执行第二轮，由于第一轮将所有页面的A都设置为0，则一定能在第二轮找到</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623101130548.png" alt="image-20200623101130548" style="zoom: 67%;" />
+<h5 id="改进型clock置换算法">改进型clock置换算法</h5>
+<p><strong>增加一个修改为M，页面状态可以分为四类</strong>：</p>
+<ul>
+<li>1类(A=0，M=0) ，未访问未修改;</li>
+<li>2类(A=0，M= 1)，未访问.已修改;</li>
+<li>3类(A=1，M=0)，已访问未修改;</li>
+<li>4类(A=1, M= 1) ，已访问已修改;</li>
+</ul>
+<p><strong>置换过程</strong>：</p>
+<ol>
+<li>从pointer开始寻找<strong>1类</strong>页面，直到找到1类页面结束，或者扫描完一遍进入第II步。</li>
+<li>从pointer开始寻找<strong>2类</strong>页面， 直到找到2类页面结束，或者扫描完一遍进入第I步。在本步每扫描完一个页面，<strong>须将页面的访问位修改为0</strong>。</li>
+<li>重复l和II。(一 定可以找到置换的页。)</li>
+</ol>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623101334666.png" alt="image-20200623101334666" style="zoom:80%;" />
+<h4 id="最近最少未使用lfu">最近最少未使用（LFU）</h4>
+<blockquote>
+<p>在最近时期内选择使用次数最少的页面作为淘汰页</p>
+</blockquote>
+<h2 id="练习题目">练习题目</h2>
+<blockquote>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622181520299.png" alt="image-20200622181520299" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622190511957.png" alt="image-20200622190511957" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622190706448.png" alt="image-20200622190706448" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622190752961.png" alt="image-20200622190752961" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622202031148.png" alt="image-20200622202031148" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623101755205.png" alt="image-20200623101755205" loading="lazy"></figure>
+</blockquote>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[第三章进程同步与死锁]]></title>
         <id>https://xzzz2020.github.io/post/vUwZiOAP9/</id>
@@ -159,7 +350,7 @@
 </ul>
 <h3 id="并发执行">并发执行（***）</h3>
 <p>并发指一段时间内执行多个程序。多个程序同时进入内存，轮流<strong>交替执行</strong>。</p>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622092827851.png" alt="image-20200622092827851" style="zoom:67%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622092827851.png" alt="image-20200622092827851" style="zoom:67%;" />
 <p><strong>并发执行的特点</strong>：</p>
 <ul>
 <li>
@@ -180,6 +371,14 @@
 <blockquote>
 <p><strong>进程实体</strong>：由程序段、相关数据段和PCB组成</p>
 </blockquote>
+<h3 id="进程的特征">进程的特征</h3>
+<ul>
+<li><mark><strong>并发性</strong></mark>， 多个进程在一段时 间内同存于内存中同时运行</li>
+<li><mark><strong>动态性</strong></mark>，进程由创建而产生，由调度而执行，由撤消而消亡。</li>
+<li><strong>独立性</strong>，进程是能独立运行、资源分配、调度的基本单位。</li>
+<li><strong>结构性</strong>，进程映像由程序、数据、栈和进程控制块( PCB )构成。</li>
+<li><strong>异步性</strong>，进程按各自独立、不可预知的速度向前推进。</li>
+</ul>
 <h3 id="进程的状态">进程的状态</h3>
 <p><strong>有三个状态</strong>：</p>
 <ul>
@@ -187,7 +386,7 @@
 <li><strong>执行状态</strong>：指程序已经获得CPU，正在执行。</li>
 <li><strong>阻塞状态</strong>：指程序的执行因为某些原因无法继续执行。</li>
 </ul>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622093952609.png" alt="image-20200622093952609" style="zoom:50%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622093952609.png" alt="image-20200622093952609" style="zoom:50%;" />
 <h3 id="进程控制块pcb">进程控制块（PCB）</h3>
 <ul>
 <li>用来描述进程的基本情况和活动过程，进而控制和管理进程。（<strong>类似于学籍、户口等</strong>）</li>
@@ -207,13 +406,13 @@
 </li>
 <li>
 <p><strong>链接方式</strong></p>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622095654092.png" alt="image-20200622095654092" style="zoom:50%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622095654092.png" alt="image-20200622095654092" style="zoom:50%;" />
 </li>
 <li>
 <p><strong>索引方式</strong></p>
 </li>
 </ol>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622095909769.png" alt="image-20200622095909769" style="zoom:50%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622095909769.png" alt="image-20200622095909769" style="zoom:50%;" />
 <h2 id="进程控制">进程控制</h2>
 <ul>
 <li>
@@ -308,47 +507,47 @@
 <li><strong>处理机利用率</strong>：在过去一 段时间内CPU被占用的时间总和。</li>
 <li><strong>各类资源的平衡利用率</strong>：保证系统所有的资源被合理利用。</li>
 </ul>
-<h2 id="进程调度算法计算">进程调度算法（计算）</h2>
-<h3 id="先来先服务调度算法fcfs">先来先服务调度算法（FCFS）</h3>
+<h2 id="进程调度算法计算">进程调度算法（计算***）</h2>
+<h3 id="先来先服务调度算法">先来先服务调度算法（***）</h3>
 <blockquote>
 <p><strong>先来的进程先抢到CPU，有利于长作业，不利于短作业</strong></p>
 </blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622111911566.png" alt="image-20200622111911566" style="zoom:67%;" />
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622112903214.png" alt="image-20200622112903214" style="zoom:67%;" />
-<h3 id="短作业优先调度算法">短作业优先调度算法</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622112903214.png" alt="image-20200622111911566" style="zoom:67%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622112903214.png" alt="image-20200622112903214" style="zoom:67%;" />
+<h3 id="短作业优先调度算法">短作业优先调度算法（***）</h3>
 <blockquote>
 <p><strong>在分配时，优先分配给服务时间最短的，降低了系统的平均周转时间，对长作业不利。</strong></p>
 <p><strong>只有在抢占的时候，进程的创建才会导致需要重新分配CPU，非抢占式在进程终止的时候分配。</strong></p>
 </blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622113117858.png" alt="image-20200622113117858" style="zoom:67%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622113117858.png" alt="image-20200622113117858" style="zoom:67%;" />
 <p><strong>非抢占方式：</strong></p>
-<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622114213680.png" alt="image-20200622114213680" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622114213680.png" alt="image-20200622114213680" loading="lazy"></figure>
 <p><strong>抢占式：</strong></p>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622114634375.png" alt="image-20200622114634375" style="zoom:67%;" />
-<h3 id="高优先权调度算法">高优先权调度算法</h3>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622114634375.png" alt="image-20200622114634375" style="zoom:67%;" />
+<h3 id="高优先权调度算法">高优先权调度算法（***）</h3>
 <blockquote>
 <p>按照优先权重分配CPU，优先数越小，优先权越大</p>
 </blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622115711510.png" alt="image-20200622115711510" style="zoom:67%;" />
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622120734094.png" alt="image-20200622120734094" style="zoom:50%;" />
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622120720361.png" alt="image-20200622120720361" style="zoom:50%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622115711510.png" alt="image-20200622115711510" style="zoom:67%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622120734094.png" alt="image-20200622120734094" style="zoom:50%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622120734094.png" alt="image-20200622120720361" style="zoom:50%;" />
 <h3 id="高响应比优先调度算法">高响应比优先调度算法</h3>
 <blockquote>
 <p>按照响应比去分配CPU资源，既考虑的作业的先后顺序，又优先照顾短作业，同时不会使长作业等太久</p>
 <p>响应比 = 等待时间/服务时间</p>
 </blockquote>
-<h3 id="时间片轮转调度算法">时间片轮转调度算法</h3>
+<h3 id="时间片轮转调度算法">时间片轮转调度算法（***）</h3>
 <blockquote>
 <p>按照先来先服务的将作业放入一个调度队列中，每隔一定的时间片，发生一次调度，一般为10ms到100ms。</p>
 <p>假设时间片为2。</p>
 </blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622122330474.png" alt="image-20200622122330474" style="zoom:67%;" />
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622122733994.png" alt="image-20200622122733994" style="zoom:50%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122733994.png" alt="image-20200622122330474" style="zoom:67%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122733994.png" alt="image-20200622122733994" style="zoom:50%;" />
 <h3 id="多级队列调度算法">多级队列调度算法</h3>
 <blockquote>
 <p>优先调度优先级高的</p>
 </blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622122939586.png" alt="image-20200622122939586" style="zoom:50%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122939586.png" alt="image-20200622122939586" style="zoom:50%;" />
 <h3 id="多级反馈队列调度算法">多级反馈队列调度算法</h3>
 <blockquote>
 <p>解决了低优先级队列长时间无法调度的问题</p>
@@ -361,7 +560,7 @@
 </ul>
 <p><strong>线程概念</strong>：线程是进程的一个实体，是被系统独立调度的基本单位，只拥有少量的资源(如CPU寄存器资源)。</p>
 <p>如下图所示，每个线程都会有个栈，一共有三个线程：</p>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622142107384.png" alt="image-20200622142107384" style="zoom: 80%;" />
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622142107384.png" alt="image-20200622142107384" style="zoom: 80%;" />
 <p><strong>线程的特点</strong>：</p>
 <ul>
 <li>一个线程<strong>拥有少量的资源</strong>，记录在<strong>线程控制块中</strong>。轻型实体，线程基本上不拥有资源，或者是有较少的资源;</li>
@@ -369,7 +568,7 @@
 <li>线程是处理机调度的基本单位，多个线程可以并发执行。</li>
 </ul>
 <p><strong>线程与进程的比较</strong>：</p>
-<figure data-type="image" tabindex="2"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622142510460.png" alt="image-20200622142510460" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623095239272.png" alt="image-20200623095239272" loading="lazy"></figure>
 <p><strong>线程的实现方式</strong>：</p>
 <ul>
 <li><strong>内核级线程</strong>：所有创建、切换等都需要内核的支持，开销较大（<strong>适合多处理器系统</strong>）</li>
@@ -378,22 +577,22 @@
 </ul>
 <h2 id="题目练习">题目练习</h2>
 <blockquote>
-<figure data-type="image" tabindex="3"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622093526050.png" alt="image-20200622093526050" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622093526050.png" alt="image-20200622093526050" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="4"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622100444854.png" alt="image-20200622100444854" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622100444854.png" alt="image-20200622100444854" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622100540099.png" alt="image-20200622100540099" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622100540099.png" alt="image-20200622100540099" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622103623435.png" alt="image-20200622103623435" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622103623435.png" alt="image-20200622103623435" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="7"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622103657071.png" alt="image-20200622103657071" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622103657071.png" alt="image-20200622103657071" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="8"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200622143148015.png" alt="image-20200622143148015" loading="lazy"></figure>
+<figure data-type="image" tabindex="8"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622143148015.png" alt="image-20200622143148015" loading="lazy"></figure>
 </blockquote>
 ]]></content>
     </entry>
@@ -407,9 +606,9 @@
 <ul>
 <li><strong>无操作系统</strong></li>
 <li><strong>单道批处理系统</strong></li>
-<li><strong>多道批处理系统</strong></li>
-<li><strong>分时系统</strong>：使用户以交互的方式共享计算机，用户感觉到自己在享用到计算机资源，本质还是利用了<code>时分复用技术</code></li>
-<li><strong>现代操作系统</strong>：在规定的时间开始事件的处理或者在规定时间内完成对事件的处理，对<code>时间要求苛刻</code></li>
+<li><strong>多道批处理系统</strong>：多个程序交替使用CPU，目的是提高CPU的利用率</li>
+<li>**分时系统：**使用户以交互的方式共享计算机，用户感觉到自己在享用到计算机资源，本质还是利用了<code>时分复用技术</code></li>
+<li><strong>实时系统</strong>：在规定的时间开始事件的处理或者在规定时间内完成对事件的处理，对<code>时间要求苛刻</code></li>
 </ul>
 <h2 id="操作系统的功能">操作系统的功能</h2>
 <h3 id="处理机管理">处理机管理</h3>
@@ -452,15 +651,15 @@
 </li>
 <li>
 <p>命令调用</p>
-<p>​	<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202748865.png" alt="image-20200621202748865" style="zoom: 50%;" /></p>
+<p>​	<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202748865.png" alt="image-20200621202748865" style="zoom: 50%;" /></p>
 </li>
 </ol>
 <h2 id="操作系统的基本特征">操作系统的基本特征</h2>
 <ul>
-<li><strong>并发性</strong>：多个程序在同一时间间隔执行</li>
-<li><strong>共享性</strong>：多个并发的程序共同使用计算机资源，提高计算机资源的利用率</li>
-<li><strong>虚拟性</strong>：有时分复用和空分复用两种技术</li>
-<li><strong>异步性</strong>：表现为多任务执行的无序性，主要应对阻塞</li>
+<li>**并发性：**多个程序在同一时间间隔执行</li>
+<li>**共享性：**多个并发的程序共同使用计算机资源，提高计算机资源的利用率</li>
+<li>**虚拟性：**有时分复用和空分复用两种技术</li>
+<li>**异步性：**表现为多任务执行的无序性，主要应对阻塞</li>
 </ul>
 <h2 id="操作系统的作用">操作系统的作用</h2>
 <p>操作系统(Operating System, OS)是<strong>一组控制和管理计算机硬件和软件资源，合理地对各类作业进行调度，以及方便用户使用的程序集合。</strong></p>
@@ -485,31 +684,25 @@
 </ol>
 <h2 id="练习题目">练习题目</h2>
 <blockquote>
-<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201525920.png" alt="image-20200621201525920" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621201525920.png" alt="image-20200621201525920" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="2"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201751451.png" alt="image-20200621201751451" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202025346.png" alt="image-20200621201751451" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="3"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621201850031.png" alt="image-20200621201850031" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621201850031.png" alt="image-20200621201850031" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="4"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202025346.png" alt="image-20200621202025346" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202047000.png" alt="image-20200621202047000" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202047000.png" alt="image-20200621202047000" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202056968.png" alt="image-20200621202056968" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621202056968.png" alt="image-20200621202056968" loading="lazy"></figure>
+<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621203755881.png" alt="image-20200621203755881" loading="lazy"></figure>
 </blockquote>
 <blockquote>
-<figure data-type="image" tabindex="7"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621203755881.png" alt="image-20200621203755881" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="8"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621203910781.png" alt="image-20200621203910781" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="9"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200621204526744.png" alt="image-20200621204526744" loading="lazy"></figure>
+<figure data-type="image" tabindex="7"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621203910781.png" alt="image-20200621203910781" loading="lazy"></figure>
 </blockquote>
 ]]></content>
     </entry>
