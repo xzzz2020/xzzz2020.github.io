@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-06-23T02:24:09.069Z</updated>
+    <updated>2020-06-23T13:07:56.969Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -11,12 +11,602 @@
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
     <entry>
+        <title type="html"><![CDATA[第七章操作系统接口]]></title>
+        <id>https://xzzz2020.github.io/post/KpZgrFFRY/</id>
+        <link href="https://xzzz2020.github.io/post/KpZgrFFRY/">
+        </link>
+        <updated>2020-06-23T13:03:56.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%91%BD%E4%BB%A4%E6%8E%A5%E5%8F%A3%E5%AE%9E%E7%8E%B0">命令接口实现</a></li>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8">系统调用</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="命令接口实现">命令接口实现</h2>
+<p><strong>分为下图所示的两个模块实现</strong>：</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623205644062.png" alt="image-20200623205644062" style="zoom: 50%;" />
+<p><strong>终端处理程序，接收键盘的输入，并将命令执行的结果回显在显示器上，功能包括</strong>：</p>
+<ul>
+<li>字符接收</li>
+<li>字符缓冲</li>
+<li>回送显示</li>
+<li>屏幕编辑</li>
+<li>特殊字符的处理</li>
+</ul>
+<p><strong>命令解释程序，从.输入缓冲区中取出数据，然后识别命令、执行命令,最后把结果放到输出缓冲区中。</strong></p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623205922735.png" alt="image-20200623205922735" style="zoom: 80%;" />
+<h2 id="系统调用">系统调用</h2>
+<p><strong>什么是系统调用？</strong></p>
+<ul>
+<li>系统调用是操作系统提供给应用程序的一-种过程调用，保护操作系统程序不被用户，<br>
+程序破坏。</li>
+<li>系统调用是操作系统的程序接口。</li>
+</ul>
+<p><strong>系统调用与一般的过程调用不同</strong>：</p>
+<ul>
+<li>系统调用处理程序运行在内核态，而一般的过程调用运行在用户态;</li>
+<li>系统调用需要借助软中断实现，而- -般过程调用不需要;</li>
+<li>系统调用从内核返回时，要进行决策是否运行调度算法，而一般过程调用不需要;</li>
+<li>系统调用可以嵌套调用，但调用深度有一定的限制，而一般过程调用没有深度限制;</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[第六章文件管理]]></title>
+        <id>https://xzzz2020.github.io/post/7ZUXXwU1m/</id>
+        <link href="https://xzzz2020.github.io/post/7ZUXXwU1m/">
+        </link>
+        <updated>2020-06-23T12:52:11.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%96%87%E4%BB%B6%E5%8F%8A%E5%85%B6%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84">文件及其逻辑结构</a>
+<ul>
+<li><a href="#%E9%A1%BA%E5%BA%8F%E6%96%87%E4%BB%B6">顺序文件</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E6%96%87%E4%BB%B6">索引文件</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E9%A1%BA%E5%BA%8F%E6%96%87%E4%BB%B6">索引顺序文件</a></li>
+<li><a href="#%E7%9B%B4%E6%8E%A5%E6%96%87%E4%BB%B6%E5%92%8C%E5%93%88%E5%B8%8C%E6%96%87%E4%BB%B6">直接文件和哈希文件</a></li>
+</ul>
+</li>
+<li><a href="#%E7%9B%AE%E5%BD%95%E7%9A%84%E8%A6%81%E6%B1%82">目录的要求</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%9A%84%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84">文件的物理结构（***）</a>
+<ul>
+<li><a href="#%E8%BF%9E%E7%BB%AD%E5%88%86%E9%85%8D">连续分配</a></li>
+<li><a href="#%E9%93%BE%E6%8E%A5%E5%88%86%E9%85%8D">链接分配</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E5%88%86%E9%85%8D">索引分配</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E7%AE%A1%E7%90%86">空闲空间管理</a>
+<ul>
+<li><a href="#%E7%A9%BA%E9%97%B2%E8%A1%A8%E6%B3%95">空闲表法</a></li>
+<li><a href="#%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8%E6%B3%95">空闲链表法</a></li>
+<li><a href="#%E4%BD%8D%E8%A7%86%E5%9B%BE%E6%B3%95">位视图法（***）</a></li>
+<li><a href="#%E6%88%90%E7%BB%84%E9%93%BE%E8%A1%A8%E6%B3%95">成组链表法</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E8%BD%AF%E4%BB%B6%E6%A8%A1%E5%9E%8B">文件系统软件模型</a>
+<ul>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%B1%9E%E6%80%A7">对象及其属性</a></li>
+<li><a href="#%E5%AF%B9%E5%AF%B9%E8%B1%A1%E6%93%8D%E7%BA%B5%E5%92%8C%E7%AE%A1%E7%90%86%E7%9A%84%E8%BD%AF%E4%BB%B6%E9%9B%86%E5%90%88">对对象操纵和管理的软件集合</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3">文件系统接口</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB">文件共享</a></li>
+<li><a href="#%E8%AF%BE%E6%9C%AC%E4%B9%A0%E9%A2%98">课本习题</a></li>
+<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%83%E4%B9%A0">题目练习</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="文件及其逻辑结构">文件及其逻辑结构</h2>
+<p><strong>文件概念</strong>：由创建者所定义、具有文件名的一组相关元素的集合，可分为结构文件和无结构文件两种。</p>
+<p><strong>文件逻辑结构概念</strong>：文件的逻辑结构是从用户观点出发所观察到的文件组织形式，是用户可以直接处理的数据及其结构，它独立于文件的物理特性，又称为文件组织。</p>
+<h3 id="顺序文件">顺序文件</h3>
+<ul>
+<li>顺序文件由数据依次排列组成。</li>
+<li>顺序文件可分为串结构文件和有序结构文件。、
+<ul>
+<li>串结构文件按记录存入文件的时间先后排列。</li>
+<li>有序结构按关键字值大小排列。</li>
+</ul>
+</li>
+<li>顺序文件又分为定长记录文件和变长记录文件。</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623182042483.png" alt="image-20200623182042483" style="zoom:80%;" />
+<h3 id="索引文件">索引文件</h3>
+<p>若顺序文件是<strong>变长记录文件</strong>，可按记录号或关键字为每条记录建立一个索引文件，存储记录在顺序文件中的位置信息。</p>
+<p>索引文件是定长的文件。</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623182705177.png" alt="image-20200623182705177" style="zoom: 80%;" />
+<h3 id="索引顺序文件">索引顺序文件</h3>
+<ul>
+<li><strong>索引文件太长会要求更多的I/O次数，直接影响了文件的读/写效率。</strong></li>
+<li>索引顺序文件先<strong>对顺序文件按记录号或关键字排序分组</strong>，然后对组的第一个记录索引。</li>
+</ul>
+<h3 id="直接文件和哈希文件">直接文件和哈希文件</h3>
+<ul>
+<li>
+<p><strong>直接文件</strong>是一种特殊的哈希文件,记录关键字值决定了记录在顺序文件中的位置。</p>
+</li>
+<li>
+<p><strong>哈希文件</strong>则由关键字值通过哈希函数计算获得记录在顺序文件中的位置。</p>
+</li>
+</ul>
+<h2 id="目录的要求">目录的要求</h2>
+<ol>
+<li>实现“按名存取”。</li>
+<li>提高对目录的检索速度。</li>
+<li>文件共享。</li>
+<li>允许文件重名。</li>
+</ol>
+<h2 id="文件的物理结构">文件的物理结构（***）</h2>
+<p><strong>概念</strong>：文件的物理结构指文件的外存分配组织管理方式</p>
+<blockquote>
+<p>文件占用的外存空间以块或簇等逻辑单位计量</p>
+</blockquote>
+<h3 id="连续分配">连续分配</h3>
+<blockquote>
+<p>文件数据连续存储可以提高存取速度，但限制了文件动态增长。</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623195227779.png" alt="image-20200623195227779" style="zoom: 80%;" />
+<h3 id="链接分配">链接分配</h3>
+<blockquote>
+<p>隐式链接，链接指针包含在给文件分配的块中，目录中仅包含文件的起始块和结束块(或长度)。</p>
+<ul>
+<li>链接指针分散在多个块中，不利于安全措施的实现</li>
+</ul>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623200229916.png" alt="image-20200623200229916" style="zoom:67%;" />
+<blockquote>
+<p>显示链接：将所有的链接信息提取放到文件分配表中</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623200341171.png" alt="image-20200623200341171" style="zoom: 67%;" />
+<h3 id="索引分配">索引分配</h3>
+<ul>
+<li>
+<p>在链接分配中，文件块链接指针离散存储,造成文件占用块号解析效率不高。</p>
+</li>
+<li>
+<p>索引分配方式就是将块号集中存放。</p>
+</li>
+</ul>
+<p><strong>单级索引（一级索引）</strong></p>
+<p>用一个块来记录文件占用的所有块号,我们称之为索引块</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201033041.png" alt="image-20200623201033041" style="zoom:67%;" />
+<p><strong>二级索引</strong></p>
+<blockquote>
+<p>因为一个索引块的大小有限，但是多级索引需要检索多次，会影响性能</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201015773.png" alt="image-20200623201015773" style="zoom:67%;" />
+<p><strong>混合索引(直接地址、-级索引、两级索引、三级索引方式)</strong></p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201148989.png" alt="image-20200623201148989" style="zoom:80%;" />
+<h2 id="空闲空间管理">空闲空间管理</h2>
+<h3 id="空闲表法">空闲表法</h3>
+<ul>
+<li>若干连续的空闲块组合成一个空闲区。</li>
+<li>空闲表法将所有的空闲区记录在一张表里， 包括项号、起始空闲块号、空闲块数等。</li>
+</ul>
+<h3 id="空闲链表法">空闲链表法</h3>
+<p>空闲链表法是以空闲块或空闲区为结点构成一个链表结构。</p>
+<h3 id="位视图法">位视图法（***）</h3>
+<blockquote>
+<p>用一位二进制表示，1代表已分配，0代表空闲。</p>
+</blockquote>
+<ul>
+<li>块号从0开始，BitsOfLine 是一行有多少位，如char类型为8位</li>
+<li>block = line X BitsOfLine + column</li>
+<li>line = block/BitsOfLine</li>
+<li>column = block%BitsOfLine</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201428546.png" alt="image-20200623201428546" style="zoom: 80%;" />
+<h3 id="成组链表法">成组链表法</h3>
+<blockquote>
+<p>用树的结构表示</p>
+</blockquote>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201544463.png" alt="image-20200623201544463" loading="lazy"></figure>
+<h2 id="文件系统软件模型">文件系统软件模型</h2>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623202429515.png" alt="image-20200623202429515" style="zoom:67%;" />
+<h3 id="对象及其属性">对象及其属性</h3>
+<ul>
+<li>文件系统对象</li>
+<li>超级块对象</li>
+<li>文件</li>
+<li>目录</li>
+<li>索引结点</li>
+<li>数据块</li>
+</ul>
+<h3 id="对对象操纵和管理的软件集合">对对象操纵和管理的软件集合</h3>
+<ul>
+<li>对文件的读/写</li>
+<li>对目录文件的读/写</li>
+<li>对磁盘空闲空间的管理</li>
+<li>将文件的逻辑地址转换为物理地址</li>
+<li>对文件的保护与共享;</li>
+</ul>
+<h3 id="文件系统接口">文件系统接口</h3>
+<ul>
+<li>基于文件名(路径)、文件逻辑地址(相对于文件起始地址的偏移)给用户提供各种操作。</li>
+<li>常用的文件操作有，创建文件、删除文件、读文件、写文件、设置文件读1写位置、打开文件、关闭文件等。</li>
+</ul>
+<h2 id="文件共享">文件共享</h2>
+<ul>
+<li>基于索引结点的共享方式</li>
+<li>基于符号链的共享方式</li>
+</ul>
+<h2 id="课本习题">课本习题</h2>
+<ol>
+<li>
+<p><strong>11 在 UNIX 中，如果一个盘块的大小为   1KB ，每个盘块号占                4 个字节，即每块可放                256个地址。请转换下列文件的字节偏移量为物理地址。</strong></p>
+<p><strong>⑴ 9999 ； ⑵ 18000 ；⑶ 420000</strong></p>
+<p>答：首先将逻辑文件的字节偏移量转换为逻辑块号和块内偏移量   ,就是将 [字节偏移量 ]/[ 盘块大小 ]，商为逻辑块号，<code>余数是块内偏移量</code>。在  FCB 中，第 0-9 个地址为直接地址，第  10 个为一次间接地址，第 11 个地址为二次间接地址，第 12 个地址为三次间接地址。</p>
+<p>再将文件的逻辑块号转换为物理块号。使用多重索引结构，在索引节点中根据逻辑块号通过直接索引或间接索引找到对应的物理块号。</p>
+<ul>
+<li>
+<p>9999/1024=9余 783 ，则逻辑块号为9 ，直接索引第9个地址得到物理块号，块内偏移地址为 783 。</p>
+</li>
+<li>
+<p>18000/1024=17  余 592 ，则逻辑块号为10&lt;17&lt;10+256，通过一次间接索引在第10个地址可得到物理块号，块内偏移地址为592 。</p>
+</li>
+<li>
+<p>420000/1024=410 余160 ，则逻辑块号为 10+256&lt;410 ，通过二次间接索引在第 11 个地址可得到一次间址，再由此得到二次间址，再找到物理块号，其块内偏移地址160 。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>某操作系统磁盘文件空间共   500 块，若用字长为 32 位的位示图管理磁盘空间，试问：</strong></p>
+<p><strong>（1）位示图需要多少字？</strong></p>
+<p><strong>（2）第 i 字第 j 位对应的块号是多少？</strong></p>
+<p><strong>（3）给出申请 /归还一块的工作流程。</strong></p>
+<p>答：</p>
+<p>（1）位示图需要的字数计算：  INT （ 500/32 ） =16个字。</p>
+<p>（2）块号 b=(i-1)*32+j</p>
+<p>（3 ）申请的过程：顺序扫描位示图、找到空闲块并分配、修改位示图map[i,j]=1 。归还的过程：找到回收盘块在位示图中的行和列，修改位示图map[i,j]=0 。</p>
+</li>
+</ol>
+<h2 id="题目练习">题目练习</h2>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623194032746.png" alt="image-20200623194032746" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623194102600.png" alt="image-20200623194102600" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623194242927.png" alt="image-20200623194242927" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623205009523.png" alt="image-20200623205009523" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623205103341.png" alt="image-20200623205103341" loading="lazy"></figure>
+</blockquote>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[第五章设备管理]]></title>
+        <id>https://xzzz2020.github.io/post/mxhiqNcFj/</id>
+        <link href="https://xzzz2020.github.io/post/mxhiqNcFj/">
+        </link>
+        <updated>2020-06-23T09:01:58.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%AE%BE%E5%A4%87%E5%88%86%E7%B1%BB">设备分类</a></li>
+<li><a href="#io%E8%AE%BE%E5%A4%87%E6%8E%A7%E5%88%B6%E6%96%B9%E5%BC%8F">I/O设备控制方式</a>
+<ul>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E6%9F%A5%E8%AF%A2%E6%96%B9%E5%BC%8F">程序查询方式</a></li>
+<li><a href="#%E9%80%9A%E9%81%93%E6%8E%A7%E5%88%B6%E6%96%B9%E5%BC%8F">通道控制方式</a></li>
+<li><a href="#dma%E6%96%B9%E5%BC%8F%E7%9B%B4%E6%8E%A5%E5%AD%98%E5%82%A8%E5%99%A8%E8%AE%BF%E9%97%AE%E6%96%B9%E5%BC%8F">DMA方式（直接存储器访问方式）</a></li>
+<li><a href="#%E4%B8%AD%E6%96%AD%E6%96%B9%E5%BC%8F">中断方式</a></li>
+</ul>
+</li>
+<li><a href="#io%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%BD%AF%E4%BB%B6%E6%A8%A1%E5%9E%8B%E5%8F%8A%E5%8A%9F%E8%83%BD">I/O系统的软件模型及功能</a></li>
+<li><a href="#%E8%AE%BE%E5%A4%87%E7%8B%AC%E7%AB%8B%E6%80%A7%E8%BD%AF%E4%BB%B6">设备独立性软件</a></li>
+<li><a href="#spooling">Spooling</a></li>
+<li><a href="#%E7%BC%93%E5%86%B2%E7%AE%A1%E7%90%86">缓冲管理</a>
+<ul>
+<li><a href="#%E5%9B%9B%E7%A7%8D%E7%BC%93%E5%86%B2%E7%AD%96%E7%95%A5">四种缓冲策略</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AE%BE%E5%A4%87%E5%88%86%E9%85%8D">设备分配</a></li>
+<li><a href="#%E7%A3%81%E7%9B%98%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E4%BC%9A%E8%AE%A1%E7%AE%97">磁盘调度算法（会计算***）</a>
+<ul>
+<li><a href="#%E5%85%88%E6%9D%A5%E5%85%88%E6%9C%8D%E5%8A%A1">先来先服务</a></li>
+<li><a href="#%E6%9C%80%E7%9F%AD%E5%AF%BB%E9%81%93%E6%97%B6%E9%97%B4">最短寻道时间</a></li>
+<li><a href="#%E6%89%AB%E6%8F%8F%E7%AE%97%E6%B3%95%E7%94%B5%E6%A2%AF%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">扫描算法（电梯调度算法）</a></li>
+<li><a href="#%E5%BE%AA%E7%8E%AF%E6%89%AB%E6%8F%8F%E7%AE%97%E6%B3%95">循环扫描算法</a></li>
+</ul>
+</li>
+<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%83%E4%B9%A0">题目练习</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="设备分类">设备分类</h2>
+<p><strong>按信息交换单位分类</strong>：</p>
+<ul>
+<li><strong>块设备</strong>：数据传送以块为单位，传输速率较高，可寻址; I/O访问常采用DMA方式。</li>
+<li><strong>字符设备</strong>：数据传送以字符为单位，传输速率较低，不可寻址; I/0访问常采用中断方式。</li>
+</ul>
+<p><strong>按设备的的共享属性分类</strong>：</p>
+<ul>
+<li><strong>独占设备</strong>：一段时间内只允许一个进程使用，属于临界资源。</li>
+<li><strong>共享设备</strong>：在一-段时间，允许多个进程同时访问，共享设备必须是<code>可寻址</code>和<code>可随机访问</code>的设备。</li>
+<li><strong>虚拟设备</strong>：将一台独占设备变换为若干个逻辑设备,如虚拟存储器、虚拟终端。</li>
+</ul>
+<h2 id="io设备控制方式">I/O设备控制方式</h2>
+<h3 id="程序查询方式">程序查询方式</h3>
+<blockquote>
+<p>不停的检查设备的状态，造成CPU资源的浪费，优点是比较简单</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623154822643.png" alt="image-20200623154822643" style="zoom: 80%;" />
+<h3 id="通道控制方式">通道控制方式</h3>
+<p><strong>通道程序由一系列通道指令构成，包含以下信息</strong>：</p>
+<ul>
+<li><strong>操作码</strong>：读、写、控制等;</li>
+<li><strong>内存地址</strong>：读写内存的始址;</li>
+<li><strong>计数</strong>：指令的读写字节数;</li>
+</ul>
+<p><strong>通道程序示例</strong>：</p>
+<ul>
+<li>
+<p>通道程序结束位P，1表示通道指令是通道程序的最后一条指令。</p>
+</li>
+<li>
+<p>记录结束位Record, 0表示通道指令与下一条通道指令所处理的数据块属于同- -个记录，1表示通道指令所处理的数据块是记录的最后一块数据。</p>
+</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623160021122.png" alt="image-20200623160021122" style="zoom:80%;" />
+<h3 id="dma方式直接存储器访问方式">DMA方式（直接存储器访问方式）</h3>
+<blockquote>
+<p>DMA方式以<strong>块</strong>为单位传送数据，仅在数据块传送前和传送结束时,才需要处理机干预。</p>
+</blockquote>
+<p><strong>包含四类寄存器</strong>：</p>
+<ul>
+<li><strong>数据寄存器</strong>：缓存从设备到内存，或从内存到设备的数据;</li>
+<li><strong>数据计数寄存器</strong>：存储要读/写的字节数;</li>
+<li><strong>内存地址寄存器</strong>：存放内存起始地址; .</li>
+<li><strong>控制/状态寄存器</strong>：接收处理机发来的1/O命令或有关控制信息，以及设备发送的状态信息;</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623155319789.png" alt="image-20200623155319789" style="zoom:80%;" />
+<h3 id="中断方式">中断方式</h3>
+<blockquote>
+<p>驱动程序向处理机发出启动I/O设备指令后阻塞，处理机转向处理其它工作。</p>
+<p>设备完成数据传送后，I/O控制器向处理机发送中断请求。处理机收到中断请求信号转向中断处理程序，中断处理程序将数据寄存器中的数据送到指定内存单元，并唤醒阻塞进程。</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623155132894.png" alt="image-20200623155132894" style="zoom:80%;" />
+<h2 id="io系统的软件模型及功能">I/O系统的软件模型及功能</h2>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623160245567.png" alt="image-20200623160245567" style="zoom:67%;" />
+<h2 id="设备独立性软件">设备独立性软件</h2>
+<ul>
+<li>
+<p>设备独立性指应用程序独立于具体使用的物理设备。</p>
+</li>
+<li>
+<p>为了实现设备独立性而引入了<strong>逻辑设备</strong>和<strong>物理设备</strong>概念，在应用程序中，使用逻辑设备名来请求使用某类设备，而系统在实际执行时，还必须使用物理设备名称。</p>
+</li>
+</ul>
+<p><strong>设备独立性软件的功能</strong>：</p>
+<ol>
+<li>
+<p>向用户层(或文件层)软件提供统一接口。</p>
+</li>
+<li>
+<p>执行设备的公有操作，如<code>逻辑设备名映射为物理设备名</code>、独立设备的分配与回收、对设备进行保护、缓冲管理、差错控制、提供独立于物理设备的逻辑块。</p>
+</li>
+</ol>
+<p><strong>设备独立性实现</strong>：构建一个逻辑设备表，实现逻辑设备名到物理设备名的映射</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623161100037.png" alt="image-20200623161100037" style="zoom:67%;" />
+<h2 id="spooling">Spooling</h2>
+<blockquote>
+<p>在联机情况下<strong>实现的同时输入/输出操作</strong>称为Spooling，或称为假脱机操作,即数据的输入、输出不再由外围控制机管理,而<strong>改为进程执行</strong>。</p>
+</blockquote>
+<p><strong>Spooling系统的组成</strong>：</p>
+<ul>
+<li>输入进程SPi和输出进程SPo</li>
+<li>输入和输出缓冲区</li>
+<li>输入和输出井</li>
+</ul>
+<p><strong>Spooling系统应用--共享打印机</strong>：</p>
+<ul>
+<li>将所有打印请求挂在打印机请求队列上。</li>
+<li>把打印数据放入到输出井上。</li>
+<li>打印机驱动进程依次完成打印机请求队列上的任务。</li>
+</ul>
+<p><strong>Spooling系统的特点</strong>：</p>
+<ul>
+<li>
+<p>提高了I/O速度。</p>
+</li>
+<li>
+<p>将独占设备改造成共享设备。</p>
+</li>
+<li>
+<p>实现了设备的虚拟化。</p>
+</li>
+</ul>
+<h2 id="缓冲管理">缓冲管理</h2>
+<p><strong>目的</strong>：减少低速设备对高速的干扰。</p>
+<h3 id="四种缓冲策略">四种缓冲策略</h3>
+<p><strong>1. 单缓冲</strong></p>
+<ul>
+<li>
+<p>由于处理机与I/O设备的并行性，用户进程对一块缓冲区数据的<strong>处理时间等价于Max(C，T)+M</strong>。</p>
+</li>
+<li>
+<p>需要注意的是<strong>传送和计算或输入无法同时计算</strong></p>
+</li>
+<li>
+<p>此时<strong>生产者是设备</strong>，<strong>消费者是用户进程</strong>，生产者和消费者都只有一个，不存在互斥</p>
+</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623162724656.png" alt="image-20200623162724656" style="zoom:67%;" />
+<p><strong>2. 双缓冲</strong></p>
+<ul>
+<li>数据被采集到缓冲区和数据从缓冲区传送到用户进程空间再被计算可以并行执行;</li>
+<li>用户进程对一块缓冲区数据的处理时间等价于Max (C、T) ;如果C&gt;T,则CPU可以连续地工作;如果C&lt;T,则I/0设备可以连续地工作;</li>
+<li>双缓冲适用于<strong>I/O设备与用户进程速度基本匹配的场合</strong>;</li>
+<li>此时<strong>设备输入数据和用户进程取数据可以同时进行</strong></li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623163234512.png" alt="image-20200623163234512" loading="lazy"></figure>
+<p><strong>3. 循环缓冲</strong></p>
+<ul>
+<li>适用于<strong>I/O设备与用户进程速度差异较大的场合</strong></li>
+<li>循环缓冲的使用：
+<ul>
+<li>GetBuf过程，从循环缓冲中获取一个满缓冲区或一个空缓冲区;</li>
+<li>ReleaseBuf过程，向循环缓冲中释放一个空缓冲区或一个满缓冲区;</li>
+</ul>
+</li>
+</ul>
+<p><strong>4. 缓冲池（***）</strong></p>
+<p><strong>三种缓冲队列</strong></p>
+<ul>
+<li>
+<p>空缓冲队列emq</p>
+</li>
+<li>
+<p>输入缓冲队列inq,装满输入数据</p>
+</li>
+<li>
+<p>输出缓冲队列outq,装满输出数据</p>
+</li>
+</ul>
+<p><strong>四种缓冲区</strong></p>
+<ul>
+<li>
+<p>收容输入数据缓冲区hin</p>
+</li>
+<li>
+<p>提取输入数据缓冲区sin</p>
+</li>
+<li>
+<p>收容输出数据缓冲区hout</p>
+</li>
+<li>
+<p>提取输出数据缓冲区sout</p>
+</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623163922409.png" alt="image-20200623163922409" style="zoom:67%;" />
+<h2 id="设备分配">设备分配</h2>
+<ul>
+<li><strong>安全分配</strong>：进程发出I/0请求后，便进入阻塞状态,直到I/O操作完成时才被唤醒。摒弃&quot;请求和保持”死锁必要条件之一， 缺点是进程进展缓慢。</li>
+<li><strong>不安全分配</strong>：进程发出I/O请求后仍继续运行，需要时又发出第二C 个、第三个I/O请求等，效率高，缺点是可能造成死锁。</li>
+</ul>
+<h2 id="磁盘调度算法会计算">磁盘调度算法（会计算***）</h2>
+<p><strong>注意</strong>：每次寻道都会改变当前所在磁道</p>
+<h3 id="先来先服务">先来先服务</h3>
+<blockquote>
+<p>按照请求顺序进行寻道</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623164405289.png" alt="image-20200623164405289" style="zoom:67%;" />
+<h3 id="最短寻道时间">最短寻道时间</h3>
+<blockquote>
+<p>每次寻找离当前磁道最近的请求，会导致饥饿现象，默写请求可能很久都难以调度</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623164703834.png" alt="image-20200623164703834" style="zoom:67%;" />
+<h3 id="扫描算法电梯调度算法">扫描算法（电梯调度算法）</h3>
+<blockquote>
+<p>磁头可以朝着增加的方向移动也会朝着减少的方向移动，可以避免饥饿现象的发生</p>
+</blockquote>
+<ul>
+<li>先寻找离当前磁头最近的磁道且需要比当前磁道大</li>
+<li>当不存在比当前磁道更大的时候，磁头需要调转方向，朝着减少的方向移动.</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623165335882.png" alt="image-20200623165335882" style="zoom:67%;" />
+<h3 id="循环扫描算法">循环扫描算法</h3>
+<p><strong>改进</strong>：当移动到不存在比当前磁道更大的时候，不再调转方向，从0开始继续寻找</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623165646915.png" alt="image-20200623165646915" style="zoom:67%;" />
+<h2 id="题目练习">题目练习</h2>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623160324835.png" alt="image-20200623160324835" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623160342737.png" alt="image-20200623160342737" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623161956615.png" alt="image-20200623161956615" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623162055577.png" alt="image-20200623162055577" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623165845231.png" alt="image-20200623165845231" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="7"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623165920362.png" alt="image-20200623165920362" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="8"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623165946217.png" alt="image-20200623165946217" loading="lazy"></figure>
+</blockquote>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[第四章存储器管理]]></title>
         <id>https://xzzz2020.github.io/post/HB2L7VswF/</id>
         <link href="https://xzzz2020.github.io/post/HB2L7VswF/">
         </link>
         <updated>2020-06-23T02:20:42.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="程序的链接与装入">程序的链接与装入</h2>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%93%BE%E6%8E%A5%E4%B8%8E%E8%A3%85%E5%85%A5">程序的链接与装入</a>
+<ul>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E8%A3%85%E5%85%A5">程序的装入</a></li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%93%BE%E6%8E%A5">程序的链接</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9E%E7%BB%AD%E5%AD%98%E5%82%A8%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F">连续存储分配方式</a>
+<ul>
+<li><a href="#%E5%8D%95%E4%B8%80%E8%BF%9E%E7%BB%AD%E5%88%86%E9%85%8D">单一连续分配</a></li>
+<li><a href="#%E5%9B%BA%E5%AE%9A%E5%88%86%E5%8C%BA%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F">固定分区分配方式</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E5%88%86%E5%8C%BA%E5%88%86%E9%85%8D">动态分区分配（***）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E9%A1%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F">基本分页存储管理方式</a>
+<ul>
+<li><a href="#%E9%A1%B5%E8%A1%A8">页表</a></li>
+<li><a href="#%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E6%9C%BA%E6%9E%84">地址变换机构（***）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%AE%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F">基本分段存储管理方式</a>
+<ul>
+<li><a href="#%E6%AE%B5%E8%A1%A8">段表</a></li>
+<li><a href="#%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2%E6%9C%BA%E6%9E%84-2">地址变换机构（***）</a></li>
+<li><a href="#%E5%88%86%E9%A1%B5%E5%92%8C%E5%88%86%E6%AE%B5%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB">分页和分段的主要区别</a></li>
+</ul>
+</li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8">虚拟存储器（***）</a>
+<ul>
+<li><a href="#%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E7%9A%84%E7%A1%AC%E4%BB%B6%E6%94%AF%E6%8C%81">虚拟存储器实现方法的硬件支持</a>
+<ul>
+<li><a href="#%E5%88%86%E9%A1%B5%E8%AF%B7%E6%B1%82%E7%B3%BB%E7%BB%9F">分页请求系统</a></li>
+<li><a href="#%E5%88%86%E6%AE%B5%E8%AF%B7%E6%B1%82%E7%B3%BB%E7%BB%9F">分段请求系统</a></li>
+</ul>
+</li>
+<li><a href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">页面置换算法（***）</a>
+<ul>
+<li><a href="#%E6%9C%80%E4%BD%B3%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E7%90%86%E6%83%B3%E5%8C%96">最佳置换算法（理想化）</a></li>
+<li><a href="#%E5%85%88%E8%BF%9B%E5%85%88%E5%87%BA%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">先进先出页面置换算法</a></li>
+<li><a href="#%E6%9C%80%E8%BF%91%E6%9C%80%E4%B9%85%E6%9C%AA%E4%BD%BF%E7%94%A8%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95lru">最近最久未使用置换算法（LRU）</a></li>
+<li><a href="#clock%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">clock置换算法</a>
+<ul>
+<li><a href="#%E7%AE%80%E5%8D%95clock%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E6%9C%80%E8%BF%91%E6%9C%AA%E8%AE%BF%E9%97%AE%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">简单clock置换算法（最近未访问页面置换算法）</a></li>
+<li><a href="#%E6%94%B9%E8%BF%9B%E5%9E%8Bclock%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95">改进型clock置换算法</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%80%E8%BF%91%E6%9C%80%E5%B0%91%E6%9C%AA%E4%BD%BF%E7%94%A8lfu">最近最少未使用（LFU）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE">练习题目</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="程序的链接与装入">程序的链接与装入</h2>
 <h3 id="程序的装入">程序的装入</h3>
 <p><strong>目的</strong>：是将代码装入内存准备执行</p>
 <ol>
@@ -207,7 +797,45 @@
         <link href="https://xzzz2020.github.io/post/vUwZiOAP9/">
         </link>
         <updated>2020-06-22T09:25:58.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="进程同步">进程同步</h2>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5">进程同步</a></li>
+<li><a href="#%E4%BF%A1%E5%8F%B7%E9%87%8F">信号量</a>
+<ul>
+<li><a href="#%E6%95%B4%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F">整型信号量</a></li>
+<li><a href="#%E8%AE%B0%E5%BD%95%E6%80%A7%E4%BF%A1%E5%8F%B7%E9%87%8F">记录性信号量（***）</a></li>
+<li><a href="#and%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F">AND型信号量</a></li>
+<li><a href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E5%BA%94%E7%94%A8">信号量的应用（***）</a>
+<ul>
+<li><a href="#%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E4%BA%92%E6%96%A5">利用信号量实现互斥</a></li>
+<li><a href="#%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E5%89%8D%E9%A9%B1%E5%85%B3%E7%B3%BB">利用信号量实现前驱关系</a></li>
+<li><a href="#%E8%B5%84%E6%BA%90%E7%9A%84%E5%88%86%E9%85%8D">资源的分配</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%90%8C%E6%AD%A5%E7%9A%84%E9%97%AE%E9%A2%98">同步的问题</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1">进程间通信</a></li>
+<li><a href="#%E6%AD%BB%E9%94%81%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5">死锁的相关概念</a></li>
+<li><a href="#%E5%A4%84%E7%90%86%E6%AD%BB%E9%94%81%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95">处理死锁的基本方法</a>
+<ul>
+<li><a href="#%E9%A2%84%E9%98%B2%E6%AD%BB%E9%94%81">预防死锁</a></li>
+<li><a href="#%E9%81%BF%E5%85%8D%E6%AD%BB%E9%94%81">避免死锁（***）</a>
+<ul>
+<li><a href="#%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95">银行家算法（***）</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A3%80%E6%B5%8B%E6%AD%BB%E9%94%81">检测死锁</a></li>
+<li><a href="#%E8%A7%A3%E9%99%A4%E6%AD%BB%E9%94%81">解除死锁</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE">练习题目</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="进程同步">进程同步</h2>
 <p><strong>临界资源</strong>：对一些硬件而言，打印机就是一个临界资源，即多个程序共同需要抢占的资源</p>
 <p><strong>临界区</strong>：每个进程中访问临界资源的代码</p>
 <p><strong>实现互斥的结构</strong>：</p>
@@ -335,7 +963,58 @@
         <link href="https://xzzz2020.github.io/post/IyZhCzd1C/">
         </link>
         <updated>2020-06-22T06:30:37.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="程序的执行方式">程序的执行方式</h2>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F">程序的执行方式</a>
+<ul>
+<li><a href="#%E9%A1%BA%E5%BA%8F%E6%96%B9%E5%BC%8F">顺序方式（*）</a></li>
+<li><a href="#%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C">并发执行（***）</a></li>
+<li><a href="#%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B">进程</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%89%B9%E5%BE%81">进程的特征</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81">进程的状态</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97pcb">进程控制块（PCB）</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6">进程控制</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%9B%9B%E4%B8%AA%E6%93%8D%E4%BD%9C">进程的四个操作</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA">进程的创建</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%88%E6%AD%A2">进程的终止</a></li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%98%BB%E5%A1%9E%E5%92%8C%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%94%A4%E9%86%92">进程的阻塞和进程的唤醒</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E6%A6%82%E5%BF%B5">进程调度概念</a>
+<ul>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%9A%84%E6%96%B9%E5%BC%8F">进程调度的方式</a></li>
+<li><a href="#%E8%A1%A1%E9%87%8F%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E6%8C%87%E6%A0%87">衡量调度算法指标</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E8%AE%A1%E7%AE%97">进程调度算法（计算***）</a>
+<ul>
+<li><a href="#%E5%85%88%E6%9D%A5%E5%85%88%E6%9C%8D%E5%8A%A1%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">先来先服务调度算法（***）</a></li>
+<li><a href="#%E7%9F%AD%E4%BD%9C%E4%B8%9A%E4%BC%98%E5%85%88%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">短作业优先调度算法（***）</a></li>
+<li><a href="#%E9%AB%98%E4%BC%98%E5%85%88%E6%9D%83%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">高优先权调度算法（***）</a></li>
+<li><a href="#%E9%AB%98%E5%93%8D%E5%BA%94%E6%AF%94%E4%BC%98%E5%85%88%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">高响应比优先调度算法</a></li>
+<li><a href="#%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">时间片轮转调度算法（***）</a></li>
+<li><a href="#%E5%A4%9A%E7%BA%A7%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">多级队列调度算法</a></li>
+<li><a href="#%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">多级反馈队列调度算法</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BA%BF%E7%A8%8B">线程</a></li>
+<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%83%E4%B9%A0">题目练习</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="程序的执行方式">程序的执行方式</h2>
 <h3 id="顺序方式">顺序方式（*）</h3>
 <p>内存中只能驻留一个程序，前一个程序结束，后一个程序才能进来，并且有着<strong>严格的先后次序</strong></p>
 <p><strong>顺序执行的特点</strong>：</p>
@@ -602,7 +1281,29 @@
         <link href="https://xzzz2020.github.io/post/ZBrN48x_g/">
         </link>
         <updated>2020-06-21T12:49:01.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="操作系统发展">操作系统发展</h2>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95">操作系统发展</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8A%9F%E8%83%BD">操作系统的功能</a>
+<ul>
+<li><a href="#%E5%A4%84%E7%90%86%E6%9C%BA%E7%AE%A1%E7%90%86">处理机管理</a></li>
+<li><a href="#%E5%AD%98%E5%82%A8%E5%99%A8%E7%AE%A1%E7%90%86%E5%86%85%E5%AD%98">存储器管理（内存）</a></li>
+<li><a href="#%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86%E9%AB%98%E6%95%88%E4%BD%BF%E7%94%A8io%E8%AE%BE%E5%A4%87">设备管理（高效使用IO设备）</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86">文件管理</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3">操作系统接口</a></li>
+</ul>
+</li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81">操作系统的基本特征</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BD%9C%E7%94%A8">操作系统的作用</a></li>
+<li><a href="#%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87">设计目标</a></li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84">操作系统结构</a></li>
+<li><a href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE">练习题目</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="操作系统发展">操作系统发展</h2>
 <ul>
 <li><strong>无操作系统</strong></li>
 <li><strong>单道批处理系统</strong></li>
@@ -656,10 +1357,10 @@
 </ol>
 <h2 id="操作系统的基本特征">操作系统的基本特征</h2>
 <ul>
-<li>**并发性：**多个程序在同一时间间隔执行</li>
-<li>**共享性：**多个并发的程序共同使用计算机资源，提高计算机资源的利用率</li>
-<li>**虚拟性：**有时分复用和空分复用两种技术</li>
-<li>**异步性：**表现为多任务执行的无序性，主要应对阻塞</li>
+<li><strong>并发性</strong>：多个程序在同一时间间隔执行</li>
+<li><strong>共享性</strong>：多个并发的程序共同使用计算机资源，提高计算机资源的利用率</li>
+<li><strong>虚拟性</strong>：有时分复用和空分复用两种技术</li>
+<li><strong>异步性</strong>：表现为多任务执行的无序性，主要应对阻塞</li>
 </ul>
 <h2 id="操作系统的作用">操作系统的作用</h2>
 <p>操作系统(Operating System, OS)是<strong>一组控制和管理计算机硬件和软件资源，合理地对各类作业进行调度，以及方便用户使用的程序集合。</strong></p>

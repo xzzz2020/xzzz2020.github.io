@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>第六章文件管理 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/7ZUXXwU1m/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1592917591285" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>第六章文件管理</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-23</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/lUVqfrXxs/" class="tag">操作系统</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1742字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">7 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/68b1a371-c4f7-42e7-a011-10575d0afb48.jpg" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%96%87%E4%BB%B6%E5%8F%8A%E5%85%B6%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84">文件及其逻辑结构</a>
+<ul>
+<li><a href="#%E9%A1%BA%E5%BA%8F%E6%96%87%E4%BB%B6">顺序文件</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E6%96%87%E4%BB%B6">索引文件</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E9%A1%BA%E5%BA%8F%E6%96%87%E4%BB%B6">索引顺序文件</a></li>
+<li><a href="#%E7%9B%B4%E6%8E%A5%E6%96%87%E4%BB%B6%E5%92%8C%E5%93%88%E5%B8%8C%E6%96%87%E4%BB%B6">直接文件和哈希文件</a></li>
+</ul>
+</li>
+<li><a href="#%E7%9B%AE%E5%BD%95%E7%9A%84%E8%A6%81%E6%B1%82">目录的要求</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%9A%84%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84">文件的物理结构（***）</a>
+<ul>
+<li><a href="#%E8%BF%9E%E7%BB%AD%E5%88%86%E9%85%8D">连续分配</a></li>
+<li><a href="#%E9%93%BE%E6%8E%A5%E5%88%86%E9%85%8D">链接分配</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E5%88%86%E9%85%8D">索引分配</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E7%AE%A1%E7%90%86">空闲空间管理</a>
+<ul>
+<li><a href="#%E7%A9%BA%E9%97%B2%E8%A1%A8%E6%B3%95">空闲表法</a></li>
+<li><a href="#%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8%E6%B3%95">空闲链表法</a></li>
+<li><a href="#%E4%BD%8D%E8%A7%86%E5%9B%BE%E6%B3%95">位视图法（***）</a></li>
+<li><a href="#%E6%88%90%E7%BB%84%E9%93%BE%E8%A1%A8%E6%B3%95">成组链表法</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E8%BD%AF%E4%BB%B6%E6%A8%A1%E5%9E%8B">文件系统软件模型</a>
+<ul>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%B1%9E%E6%80%A7">对象及其属性</a></li>
+<li><a href="#%E5%AF%B9%E5%AF%B9%E8%B1%A1%E6%93%8D%E7%BA%B5%E5%92%8C%E7%AE%A1%E7%90%86%E7%9A%84%E8%BD%AF%E4%BB%B6%E9%9B%86%E5%90%88">对对象操纵和管理的软件集合</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3">文件系统接口</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB">文件共享</a></li>
+<li><a href="#%E8%AF%BE%E6%9C%AC%E4%B9%A0%E9%A2%98">课本习题</a></li>
+<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%83%E4%B9%A0">题目练习</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="文件及其逻辑结构">文件及其逻辑结构</h2>
+<p><strong>文件概念</strong>：由创建者所定义、具有文件名的一组相关元素的集合，可分为结构文件和无结构文件两种。</p>
+<p><strong>文件逻辑结构概念</strong>：文件的逻辑结构是从用户观点出发所观察到的文件组织形式，是用户可以直接处理的数据及其结构，它独立于文件的物理特性，又称为文件组织。</p>
+<h3 id="顺序文件">顺序文件</h3>
+<ul>
+<li>顺序文件由数据依次排列组成。</li>
+<li>顺序文件可分为串结构文件和有序结构文件。、
+<ul>
+<li>串结构文件按记录存入文件的时间先后排列。</li>
+<li>有序结构按关键字值大小排列。</li>
+</ul>
+</li>
+<li>顺序文件又分为定长记录文件和变长记录文件。</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623182042483.png" alt="image-20200623182042483" style="zoom:80%;" />
+<h3 id="索引文件">索引文件</h3>
+<p>若顺序文件是<strong>变长记录文件</strong>，可按记录号或关键字为每条记录建立一个索引文件，存储记录在顺序文件中的位置信息。</p>
+<p>索引文件是定长的文件。</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623182705177.png" alt="image-20200623182705177" style="zoom: 80%;" />
+<h3 id="索引顺序文件">索引顺序文件</h3>
+<ul>
+<li><strong>索引文件太长会要求更多的I/O次数，直接影响了文件的读/写效率。</strong></li>
+<li>索引顺序文件先<strong>对顺序文件按记录号或关键字排序分组</strong>，然后对组的第一个记录索引。</li>
+</ul>
+<h3 id="直接文件和哈希文件">直接文件和哈希文件</h3>
+<ul>
+<li>
+<p><strong>直接文件</strong>是一种特殊的哈希文件,记录关键字值决定了记录在顺序文件中的位置。</p>
+</li>
+<li>
+<p><strong>哈希文件</strong>则由关键字值通过哈希函数计算获得记录在顺序文件中的位置。</p>
+</li>
+</ul>
+<h2 id="目录的要求">目录的要求</h2>
+<ol>
+<li>实现“按名存取”。</li>
+<li>提高对目录的检索速度。</li>
+<li>文件共享。</li>
+<li>允许文件重名。</li>
+</ol>
+<h2 id="文件的物理结构">文件的物理结构（***）</h2>
+<p><strong>概念</strong>：文件的物理结构指文件的外存分配组织管理方式</p>
+<blockquote>
+<p>文件占用的外存空间以块或簇等逻辑单位计量</p>
+</blockquote>
+<h3 id="连续分配">连续分配</h3>
+<blockquote>
+<p>文件数据连续存储可以提高存取速度，但限制了文件动态增长。</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623195227779.png" alt="image-20200623195227779" style="zoom: 80%;" />
+<h3 id="链接分配">链接分配</h3>
+<blockquote>
+<p>隐式链接，链接指针包含在给文件分配的块中，目录中仅包含文件的起始块和结束块(或长度)。</p>
+<ul>
+<li>链接指针分散在多个块中，不利于安全措施的实现</li>
+</ul>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623200229916.png" alt="image-20200623200229916" style="zoom:67%;" />
+<blockquote>
+<p>显示链接：将所有的链接信息提取放到文件分配表中</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623200341171.png" alt="image-20200623200341171" style="zoom: 67%;" />
+<h3 id="索引分配">索引分配</h3>
+<ul>
+<li>
+<p>在链接分配中，文件块链接指针离散存储,造成文件占用块号解析效率不高。</p>
+</li>
+<li>
+<p>索引分配方式就是将块号集中存放。</p>
+</li>
+</ul>
+<p><strong>单级索引（一级索引）</strong></p>
+<p>用一个块来记录文件占用的所有块号,我们称之为索引块</p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201033041.png" alt="image-20200623201033041" style="zoom:67%;" />
+<p><strong>二级索引</strong></p>
+<blockquote>
+<p>因为一个索引块的大小有限，但是多级索引需要检索多次，会影响性能</p>
+</blockquote>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201015773.png" alt="image-20200623201015773" style="zoom:67%;" />
+<p><strong>混合索引(直接地址、-级索引、两级索引、三级索引方式)</strong></p>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201148989.png" alt="image-20200623201148989" style="zoom:80%;" />
+<h2 id="空闲空间管理">空闲空间管理</h2>
+<h3 id="空闲表法">空闲表法</h3>
+<ul>
+<li>若干连续的空闲块组合成一个空闲区。</li>
+<li>空闲表法将所有的空闲区记录在一张表里， 包括项号、起始空闲块号、空闲块数等。</li>
+</ul>
+<h3 id="空闲链表法">空闲链表法</h3>
+<p>空闲链表法是以空闲块或空闲区为结点构成一个链表结构。</p>
+<h3 id="位视图法">位视图法（***）</h3>
+<blockquote>
+<p>用一位二进制表示，1代表已分配，0代表空闲。</p>
+</blockquote>
+<ul>
+<li>块号从0开始，BitsOfLine 是一行有多少位，如char类型为8位</li>
+<li>block = line X BitsOfLine + column</li>
+<li>line = block/BitsOfLine</li>
+<li>column = block%BitsOfLine</li>
+</ul>
+<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201428546.png" alt="image-20200623201428546" style="zoom: 80%;" />
+<h3 id="成组链表法">成组链表法</h3>
+<blockquote>
+<p>用树的结构表示</p>
+</blockquote>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623201544463.png" alt="image-20200623201544463" loading="lazy"></figure>
+<h2 id="文件系统软件模型">文件系统软件模型</h2>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623202429515.png" alt="image-20200623202429515" style="zoom:67%;" />
+<h3 id="对象及其属性">对象及其属性</h3>
+<ul>
+<li>文件系统对象</li>
+<li>超级块对象</li>
+<li>文件</li>
+<li>目录</li>
+<li>索引结点</li>
+<li>数据块</li>
+</ul>
+<h3 id="对对象操纵和管理的软件集合">对对象操纵和管理的软件集合</h3>
+<ul>
+<li>对文件的读/写</li>
+<li>对目录文件的读/写</li>
+<li>对磁盘空闲空间的管理</li>
+<li>将文件的逻辑地址转换为物理地址</li>
+<li>对文件的保护与共享;</li>
+</ul>
+<h3 id="文件系统接口">文件系统接口</h3>
+<ul>
+<li>基于文件名(路径)、文件逻辑地址(相对于文件起始地址的偏移)给用户提供各种操作。</li>
+<li>常用的文件操作有，创建文件、删除文件、读文件、写文件、设置文件读1写位置、打开文件、关闭文件等。</li>
+</ul>
+<h2 id="文件共享">文件共享</h2>
+<ul>
+<li>基于索引结点的共享方式</li>
+<li>基于符号链的共享方式</li>
+</ul>
+<h2 id="课本习题">课本习题</h2>
+<ol>
+<li>
+<p><strong>11 在 UNIX 中，如果一个盘块的大小为   1KB ，每个盘块号占                4 个字节，即每块可放                256个地址。请转换下列文件的字节偏移量为物理地址。</strong></p>
+<p><strong>⑴ 9999 ； ⑵ 18000 ；⑶ 420000</strong></p>
+<p>答：首先将逻辑文件的字节偏移量转换为逻辑块号和块内偏移量   ,就是将 [字节偏移量 ]/[ 盘块大小 ]，商为逻辑块号，<code>余数是块内偏移量</code>。在  FCB 中，第 0-9 个地址为直接地址，第  10 个为一次间接地址，第 11 个地址为二次间接地址，第 12 个地址为三次间接地址。</p>
+<p>再将文件的逻辑块号转换为物理块号。使用多重索引结构，在索引节点中根据逻辑块号通过直接索引或间接索引找到对应的物理块号。</p>
+<ul>
+<li>
+<p>9999/1024=9余 783 ，则逻辑块号为9 ，直接索引第9个地址得到物理块号，块内偏移地址为 783 。</p>
+</li>
+<li>
+<p>18000/1024=17  余 592 ，则逻辑块号为10&lt;17&lt;10+256，通过一次间接索引在第10个地址可得到物理块号，块内偏移地址为592 。</p>
+</li>
+<li>
+<p>420000/1024=410 余160 ，则逻辑块号为 10+256&lt;410 ，通过二次间接索引在第 11 个地址可得到一次间址，再由此得到二次间址，再找到物理块号，其块内偏移地址160 。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>某操作系统磁盘文件空间共   500 块，若用字长为 32 位的位示图管理磁盘空间，试问：</strong></p>
+<p><strong>（1）位示图需要多少字？</strong></p>
+<p><strong>（2）第 i 字第 j 位对应的块号是多少？</strong></p>
+<p><strong>（3）给出申请 /归还一块的工作流程。</strong></p>
+<p>答：</p>
+<p>（1）位示图需要的字数计算：  INT （ 500/32 ） =16个字。</p>
+<p>（2）块号 b=(i-1)*32+j</p>
+<p>（3 ）申请的过程：顺序扫描位示图、找到空闲块并分配、修改位示图map[i,j]=1 。归还的过程：找到回收盘块在位示图中的行和列，修改位示图map[i,j]=0 。</p>
+</li>
+</ol>
+<h2 id="题目练习">题目练习</h2>
+<blockquote>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623194032746.png" alt="image-20200623194032746" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623194102600.png" alt="image-20200623194102600" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623194242927.png" alt="image-20200623194242927" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623205009523.png" alt="image-20200623205009523" loading="lazy"></figure>
+</blockquote>
+<blockquote>
+<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200623205103341.png" alt="image-20200623205103341" loading="lazy"></figure>
+</blockquote>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%96%87%E4%BB%B6%E5%8F%8A%E5%85%B6%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84">文件及其逻辑结构</a>
+<ul>
+<li><a href="#%E9%A1%BA%E5%BA%8F%E6%96%87%E4%BB%B6">顺序文件</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E6%96%87%E4%BB%B6">索引文件</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E9%A1%BA%E5%BA%8F%E6%96%87%E4%BB%B6">索引顺序文件</a></li>
+<li><a href="#%E7%9B%B4%E6%8E%A5%E6%96%87%E4%BB%B6%E5%92%8C%E5%93%88%E5%B8%8C%E6%96%87%E4%BB%B6">直接文件和哈希文件</a></li>
+</ul>
+</li>
+<li><a href="#%E7%9B%AE%E5%BD%95%E7%9A%84%E8%A6%81%E6%B1%82">目录的要求</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%9A%84%E7%89%A9%E7%90%86%E7%BB%93%E6%9E%84">文件的物理结构（***）</a>
+<ul>
+<li><a href="#%E8%BF%9E%E7%BB%AD%E5%88%86%E9%85%8D">连续分配</a></li>
+<li><a href="#%E9%93%BE%E6%8E%A5%E5%88%86%E9%85%8D">链接分配</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E5%88%86%E9%85%8D">索引分配</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A9%BA%E9%97%B2%E7%A9%BA%E9%97%B4%E7%AE%A1%E7%90%86">空闲空间管理</a>
+<ul>
+<li><a href="#%E7%A9%BA%E9%97%B2%E8%A1%A8%E6%B3%95">空闲表法</a></li>
+<li><a href="#%E7%A9%BA%E9%97%B2%E9%93%BE%E8%A1%A8%E6%B3%95">空闲链表法</a></li>
+<li><a href="#%E4%BD%8D%E8%A7%86%E5%9B%BE%E6%B3%95">位视图法（***）</a></li>
+<li><a href="#%E6%88%90%E7%BB%84%E9%93%BE%E8%A1%A8%E6%B3%95">成组链表法</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E8%BD%AF%E4%BB%B6%E6%A8%A1%E5%9E%8B">文件系统软件模型</a>
+<ul>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%B1%9E%E6%80%A7">对象及其属性</a></li>
+<li><a href="#%E5%AF%B9%E5%AF%B9%E8%B1%A1%E6%93%8D%E7%BA%B5%E5%92%8C%E7%AE%A1%E7%90%86%E7%9A%84%E8%BD%AF%E4%BB%B6%E9%9B%86%E5%90%88">对对象操纵和管理的软件集合</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3">文件系统接口</a></li>
+</ul>
+</li>
+<li><a href="#%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB">文件共享</a></li>
+<li><a href="#%E8%AF%BE%E6%9C%AC%E4%B9%A0%E9%A2%98">课本习题</a></li>
+<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%83%E4%B9%A0">题目练习</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div><script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-06-23，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-23 20:52:11";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Powered by <a href="http://www.xzzz2020.cn/" target="_blank">xzzz2020</a>Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_uv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>10</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>
