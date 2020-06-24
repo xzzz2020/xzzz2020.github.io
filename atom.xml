@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-06-23T13:07:56.969Z</updated>
+    <updated>2020-06-24T09:32:06.481Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -1220,6 +1220,7 @@
 <p>按照先来先服务的将作业放入一个调度队列中，每隔一定的时间片，发生一次调度，一般为10ms到100ms。</p>
 <p>假设时间片为2。</p>
 </blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624101953231.png" alt="image-20200624101953231" style="zoom:80%;" />
 <img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122733994.png" alt="image-20200622122330474" style="zoom:67%;" />
 <img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122733994.png" alt="image-20200622122733994" style="zoom:50%;" />
 <h3 id="多级队列调度算法">多级队列调度算法</h3>
@@ -1308,7 +1309,7 @@
 <li><strong>无操作系统</strong></li>
 <li><strong>单道批处理系统</strong></li>
 <li><strong>多道批处理系统</strong>：多个程序交替使用CPU，目的是提高CPU的利用率</li>
-<li>**分时系统：**使用户以交互的方式共享计算机，用户感觉到自己在享用到计算机资源，本质还是利用了<code>时分复用技术</code></li>
+<li><strong>分时系统</strong>：使用户以交互的方式共享计算机，用户感觉到自己在享用到计算机资源，本质还是利用了<code>时分复用技术</code></li>
 <li><strong>实时系统</strong>：在规定的时间开始事件的处理或者在规定时间内完成对事件的处理，对<code>时间要求苛刻</code></li>
 </ul>
 <h2 id="操作系统的功能">操作系统的功能</h2>
@@ -2028,6 +2029,146 @@ mvn clean package -Dmaven.test.skip=true
 </code></pre>
 <p>启动成功后，我们就可以通过浏览器访问<code>http://localhost:8080</code>进入控制台界面了，如下图：<br>
 <img src="https://img-blog.csdnimg.cn/20200531101225351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[⚡️Build a blog platform]]></title>
+        <id>https://xzzz2020.github.io/post/Build_blog/</id>
+        <link href="https://xzzz2020.github.io/post/Build_blog/">
+        </link>
+        <updated>2020-01-01T01:21:11.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>在学习技术的过程中，博客是一个总结的过程，十分重要。</p>
+<p>该文章主要介绍如何搭建一个属于自己的个人博客，<a href="https://xzzz2020.gitee.io/">点击查看博主博客</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%85%B3%E4%BA%8E%E6%9C%AC%E5%8D%9A%E5%AE%A2"><strong>关于本博客</strong></a></li>
+<li><a href="#gridea"><strong>Gridea</strong></a></li>
+<li><a href="#%E4%B8%BB%E9%A2%98">主题</a></li>
+<li><a href="#%E8%AF%84%E8%AE%BA">评论</a></li>
+<li><a href="#%E8%AF%84%E8%AE%BA%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F">评论管理系统</a></li>
+<li><a href="#%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99">博客撰写</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="关于本博客"><strong>关于本博客</strong></h2>
+<blockquote>
+<p>本博客基于github和gitee的静态页，国内用户推荐使用gitee，访问速度更快。</p>
+<p>如果在学习过程中，出现了什么问题，<strong>可以在下方评论</strong>，博主会收到的。</p>
+</blockquote>
+<p><strong>技术概要如下</strong>：</p>
+<ul>
+<li>
+<p>博客框架采用的是<code>Gridea</code></p>
+</li>
+<li>
+<p>主题基于<code>bitcron-pro</code></p>
+</li>
+<li>
+<p>评论系统使用的<code>Valine</code></p>
+</li>
+<li>
+<p>评论管理系统使用的<code>Valine-Admin</code></p>
+</li>
+<li>
+<p>博客使用<code>Typora</code>编写</p>
+</li>
+<li>
+<p>图片上传采用的是<code>PicGO+腾讯COS</code></p>
+</li>
+</ul>
+<h2 id="gridea"><strong>Gridea</strong></h2>
+<p>Gridea是一个博客管理软件，支持Windos和Mac，十分好用，页面也比较好看，但是目前不支持gitee，所以需要写一段代码自己提交。</p>
+<p><strong>页面如下</strong>：</p>
+<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624114917236.png" alt="image-20200624114917236" loading="lazy"></figure>
+<p><strong>下载地址</strong>：<a href="https://gridea.dev/">https://gridea.dev/</a></p>
+<p><strong>由于下载速度的原因，提供百度网盘下载0.9.2版本</strong>：</p>
+<ul>
+<li>链接：https://pan.baidu.com/s/1lgQGgiCrVRpvdeeCkaHqSg</li>
+<li>提取码：73ne</li>
+</ul>
+<p>下载完成后，先使用github搭建，如果同步成功即可完成。</p>
+<p><strong>学习文档</strong>：<a href="https://www.jianshu.com/p/6ddc767b1569">https://www.jianshu.com/p/6ddc767b1569</a></p>
+<p>想要在gitee快速搭建，首先需要在gitee搭建一个仓库，<strong>参考</strong>：<a href="https://blog.csdn.net/qq_36667170/article/details/79318578">https://blog.csdn.net/qq_36667170/article/details/79318578</a></p>
+<blockquote>
+<p>下面步骤需要会Git！！！！</p>
+</blockquote>
+<p>每次推送到github的博客都是在这个目录下<code>C:\Users\正好\Documents\Gridea\output</code>，只需要将这个目下的文件，除了 <code>.git</code>文件下外所用的文件覆盖到你本地gitee的仓库。</p>
+<p>然后需要对这些文件递归调用<strong>将其中github的地址替换成gitee</strong>，博主使用Java写了一个工具，需要将里面的目录地址修改即可，<strong>百度网盘下载地址</strong>：</p>
+<ul>
+<li>链接：https://pan.baidu.com/s/1lg770AMzhgSG_U4SQ5kWRA</li>
+<li>提取码：n2n7</li>
+</ul>
+<p>将下图的代码变成你gitee的文件夹即可，逻辑就是遍历文件夹，读取每个文件替换语句。但是我把图片、CSS、JS的文件夹屏蔽了，防止造成影响。</p>
+<figure data-type="image" tabindex="2"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624164904996.png" alt="image-20200624164904996" loading="lazy"></figure>
+<p>接着就是Git提交到gitee仓库，然后重新部署gitee的pages的服务。</p>
+<figure data-type="image" tabindex="3"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624122533287.png" alt="image-20200624122533287" loading="lazy"></figure>
+<p>进入提示的网站地址，刷新一下浏览器就出来了。</p>
+<h2 id="主题">主题</h2>
+<p>目前使用的主题基于<strong>这个项目</strong>：<a href="https://github.com/qyxtim/bitcron-pro">https://github.com/qyxtim/bitcron-pro</a></p>
+<p>git下来后，将<code>bitcron-pro</code>文件夹，放到Gridea的主题目录，如<code>C:\Users\正好\Documents\Gridea\themes</code></p>
+<p>但是该主题不支持Valine评论，所以对其需要进行一些修改，在下面会有介绍。</p>
+<h2 id="评论">评论</h2>
+<p>评论是基于Valine的，这有一篇博客<strong>可以学习</strong>：<a href="https://ioliu.cn/2017/add-valine-comments-to-your-blog/">https://ioliu.cn/2017/add-valine-comments-to-your-blog/</a></p>
+<p>由于bitcron-pro不支持该评论Valine但是支持Gitalk，可以通过<strong>修改代码</strong>实现。</p>
+<p>需要修改的文件目录，博主本机上是：<code>C:\Users\正好\Documents\Gridea\themes\bitcron-pro\templates\_blocks</code>下面的<code>gitalk.ejs</code></p>
+<p>将里面所有内容删除，添加下面一段：</p>
+<pre><code class="language-js">&lt;!--评论显示区，请插入合适的位置--&gt;
+&lt;div id=&quot;comment&quot;&gt;&lt;/div&gt;
+&lt;!--Leancloud 操作库:--&gt;
+&lt;script src=&quot;//cdn1.lncld.net/static/js/3.6.1/av-min.js&quot;&gt;&lt;/script&gt;
+&lt;!--Valine 的核心代码库--&gt;
+&lt;script src=&quot;//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+    new Valine({
+        el:'#comment',
+        appId: '??????????',
+        appKey: '?????????',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+&lt;/script&gt;
+</code></pre>
+<p>appId和appKey需要在LeanCloud管理页面查看：</p>
+<figure data-type="image" tabindex="4"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624120729898.png" alt="image-20200624120729898" loading="lazy"></figure>
+<p>配置完成记得在Gridea的Gitalk页面单击一下保存，就会应用到博客上。</p>
+<figure data-type="image" tabindex="5"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624120858173.png" alt="image-20200624120858173" loading="lazy"></figure>
+<h2 id="评论管理系统">评论管理系统</h2>
+<p>Valine自带一个Valine-Admain的开源项目，会在评论时，给博主予以提醒，需要基于LeanCloud实现。</p>
+<blockquote>
+<p>目前LeanCloud不再提供免费的二级域名，所以最好在阿里云或者腾讯云买一个，在各个地方都用的到</p>
+</blockquote>
+<p><strong>需要参考的文章</strong>：<a href="https://blog.csdn.net/u012208219/article/details/106883083">https://blog.csdn.net/u012208219/article/details/106883083</a></p>
+<p><strong>后台页面如下所示</strong>：</p>
+<figure data-type="image" tabindex="6"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624122850746.png" alt="image-20200624122850746" loading="lazy"></figure>
+<p><strong>邮件提醒页面</strong>：</p>
+<figure data-type="image" tabindex="7"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624122935722.png" alt="image-20200624122935722" loading="lazy"></figure>
+<p>当前LeanCloud定时唤醒任务执行时会提示：<strong>因流控原因，通过定时任务唤醒体验版实例失败，建议升级至标准版云引擎实例避免休眠</strong></p>
+<p><strong>参考这篇文章建立监控</strong>：<a href="https://blog.csdn.net/Lott0419/article/details/106819895">https://blog.csdn.net/Lott0419/article/details/106819895</a></p>
+<h2 id="博客撰写">博客撰写</h2>
+<blockquote>
+<p>博主使用的Typora，但是使用这个写博客图片是保存到本地的，所以就需要利用PicGo+图床上传到网络中</p>
+</blockquote>
+<p><strong>Typora0.9.86百度网盘下载</strong>：</p>
+<ul>
+<li>链接：https://pan.baidu.com/s/1aO3jyACQYvBubAjq2QhpGg</li>
+<li>提取码：920i</li>
+</ul>
+<p><strong>PicGo2.3.0百度网盘下载</strong>：</p>
+<ul>
+<li>链接：https://pan.baidu.com/s/1wqfzmSt-s9yoa4jstOYnUw</li>
+<li>提取码：rnu8</li>
+</ul>
+<p>然后就是需要配置PicGo，如果想要使用腾讯COS当图床，<strong>参考这篇文章</strong>：<a href="https://zhuanlan.zhihu.com/p/119250383">https://zhuanlan.zhihu.com/p/119250383</a>，当然还可以使用gitee仓库，不过对象存储真心不贵。</p>
+<p>Gridea可以提供背景图库，我这边有几个网站推荐，<strong>都是免费的图片下载网站</strong>：</p>
+<ul>
+<li>http://www.polayoutu.com/collections</li>
+<li>https://www.hippopx.com/zh</li>
+<li>https://unsplash.com/</li>
+</ul>
 ]]></content>
     </entry>
 </feed>
