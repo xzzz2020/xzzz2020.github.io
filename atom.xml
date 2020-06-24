@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-06-24T09:32:06.481Z</updated>
+    <updated>2020-06-24T09:35:03.634Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -2045,7 +2045,7 @@ mvn clean package -Dmaven.test.skip=true
 <li>
 <ul>
 <li><a href="#%E5%85%B3%E4%BA%8E%E6%9C%AC%E5%8D%9A%E5%AE%A2"><strong>关于本博客</strong></a></li>
-<li><a href="#gridea"><strong>Gridea</strong></a></li>
+<li><a href="#gridea">Gridea</a></li>
 <li><a href="#%E4%B8%BB%E9%A2%98">主题</a></li>
 <li><a href="#%E8%AF%84%E8%AE%BA">评论</a></li>
 <li><a href="#%E8%AF%84%E8%AE%BA%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F">评论管理系统</a></li>
@@ -2080,7 +2080,7 @@ mvn clean package -Dmaven.test.skip=true
 <p>图片上传采用的是<code>PicGO+腾讯COS</code></p>
 </li>
 </ul>
-<h2 id="gridea"><strong>Gridea</strong></h2>
+<h2 id="gridea">Gridea</h2>
 <p>Gridea是一个博客管理软件，支持Windos和Mac，十分好用，页面也比较好看，但是目前不支持gitee，所以需要写一段代码自己提交。</p>
 <p><strong>页面如下</strong>：</p>
 <figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624114917236.png" alt="image-20200624114917236" loading="lazy"></figure>
