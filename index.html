@@ -17,7 +17,7 @@
 <div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
 <div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
 <div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
-<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1593134505148" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1593135029870" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
 </div></div>
 <script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
 
@@ -50,50 +50,7 @@
 <h2><a href="https://xzzz2020.github.io/post/-Soxdr6Ou/" >贪心策略</a>
 </h2>
 </div>
-<div class="post_content markdown"><div class="p_part"><p><p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E7%AE%80%E4%BB%8B">简介</a></li>
-<li><a href="#%E8%B4%AA%E5%BF%83%E7%9A%84%E7%89%B9%E7%82%B9">贪心的特点</a></li>
-<li><a href="#%E5%AE%9E%E9%99%85%E4%BE%8B%E5%AD%90">实际例子</a>
-<ul>
-<li><a href="#%E7%A1%AC%E5%B8%81%E6%94%AF%E4%BB%98%E9%97%AE%E9%A2%98">硬币支付问题</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="简介">简介</h2>
-<ul>
-<li>无论是DFS还是BFS都是遍历解空间</li>
-<li>动态规划和贪心算法都是一种递推算法，运用<strong>局部最优解</strong>来推到全局最优解</li>
-<li>是对<strong>遍历解空间</strong>的一种优化</li>
-<li>当问题具有<strong>最优子结构</strong>的时候，可以用动归，而贪心是动归的特例。</li>
-</ul>
-<h2 id="贪心的特点">贪心的特点</h2>
-<ul>
-<li><strong>只看眼前</strong>。根据某种规则，不断的选取当前策略，最终找到最优解</li>
-<li><strong>主要需要不断的举例，去猜测出一个贪心策略。</strong></li>
-</ul>
-<p><strong>注意</strong>：当前最优的未必是整体最优</p>
-<h2 id="实际例子">实际例子</h2>
-<h3 id="硬币支付问题">硬币支付问题</h3>
-<blockquote>
-<p>硬币问题<br>
-有1元,5元,10元,50元,100元,500元的硬币各c1,c5,c10,c50,c100,c500枚.<br>
-现在要用这些硬币来支付A元,最少需要多少枚硬币?<br>
-假定本题至少存在一种支付方案.<br>
-0≤ci≤10^9<br>
-0≤A≤10^9<br>
-输入:<br>
-第一行有六个数字,分别代表从小到大6种面值的硬币的个数<br>
-第二行为A,代表需支付的A元<br>
-样例:<br>
-输入<br>
-3 2 1 3 0 2</p>
-</blockquote>
-</p></div></div>
+<div class="post_content markdown"><div class="p_part"><p></p></div></div>
 <div class="post_footer">
 <section class="info weaklink"><i class="iconfont icon-calendar"></i><span style="margin-right:15px">2020-06-25</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:13px"><a href="https://xzzz2020.github.io/tag/Rba_mjhMZ/"class="tag">算法之美</a></span><i class="iconfont icon-caret-down"></i><span class="weaklink"style="margin-right:20px;">2572字</span><i class="iconfont icon-naozhong"></i><span class="weaklink"style="margin-right:15px;">12 min read</span></section></div></div>
 <div class="post">
