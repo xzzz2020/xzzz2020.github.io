@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>贪心策略 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/-Soxdr6Ou/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1593134505148" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>贪心策略</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-25</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Rba_mjhMZ/" class="tag">算法之美</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2572字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">12 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/67664728-aaa1-406c-90ac-58d6c6b5731e.jpg" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%AE%80%E4%BB%8B">简介</a></li>
+<li><a href="#%E8%B4%AA%E5%BF%83%E7%9A%84%E7%89%B9%E7%82%B9">贪心的特点</a></li>
+<li><a href="#%E5%AE%9E%E9%99%85%E4%BE%8B%E5%AD%90">实际例子</a>
+<ul>
+<li><a href="#%E7%A1%AC%E5%B8%81%E6%94%AF%E4%BB%98%E9%97%AE%E9%A2%98">硬币支付问题</a></li>
+<li><a href="#poj_1700">POJ_1700</a></li>
+<li><a href="#%E5%8C%BA%E9%97%B4%E8%B0%83%E5%BA%A6%E9%97%AE%E9%A2%98%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E6%8E%92%E5%BA%8F">区间调度问题（二维数组排序）</a></li>
+<li><a href="#%E5%8C%BA%E9%97%B4%E9%80%89%E7%82%B9">区间选点</a></li>
+<li><a href="#%E5%8C%BA%E9%97%B4%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98">区间覆盖问题</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="简介">简介</h2>
+<ul>
+<li>无论是DFS还是BFS都是遍历解空间</li>
+<li>动态规划和贪心算法都是一种递推算法，运用<strong>局部最优解</strong>来推到全局最优解</li>
+<li>是对<strong>遍历解空间</strong>的一种优化</li>
+<li>当问题具有<strong>最优子结构</strong>的时候，可以用动归，而贪心是动归的特例。</li>
+</ul>
+<h2 id="贪心的特点">贪心的特点</h2>
+<ul>
+<li><strong>只看眼前</strong>。根据某种规则，不断的选取当前策略，最终找到最优解</li>
+<li><strong>主要需要不断的举例，去猜测出一个贪心策略。</strong></li>
+</ul>
+<p><strong>注意</strong>：当前最优的未必是整体最优</p>
+<h2 id="实际例子">实际例子</h2>
+<h3 id="硬币支付问题">硬币支付问题</h3>
+<blockquote>
+<p>硬币问题<br>
+有1元,5元,10元,50元,100元,500元的硬币各c1,c5,c10,c50,c100,c500枚.<br>
+现在要用这些硬币来支付A元,最少需要多少枚硬币?<br>
+假定本题至少存在一种支付方案.<br>
+0≤ci≤10^9<br>
+0≤A≤10^9<br>
+输入:<br>
+第一行有六个数字,分别代表从小到大6种面值的硬币的个数<br>
+第二行为A,代表需支付的A元<br>
+样例:<br>
+输入<br>
+3 2 1 3 0 2</p>
+</blockquote>
+<!-- more -->
+<blockquote>
+<p>620<br>
+输出<br>
+6</p>
+</blockquote>
+<pre><code class="language-java"> /**
+  * 尽量先用大面值,因为不用大面值,将使用更多的小面值硬币,一定得不到最优解
+  */
+public class Main {
+    static int [] cin = new int[6];
+
+    public static void main(String[] args) throws InterruptedException {
+        Scanner scanner = new Scanner(System.in);
+
+        int money ;
+        int ans = 0;
+        for (int i = 0; i &lt; 6; i++) {
+            cin[i] = scanner.nextInt();
+        }
+        int [] coins = new int[]{1,5,10,50,100,500};
+        money = scanner.nextInt();
+        for (int i = 5; i &gt;=0; i--) {
+            int x = money/coins[i];//金额有多少个coins[i]
+            int t = Math.min(cin[i],x);//当前面值的硬币有cin[i]个
+            ans += t;
+            money -= t*coins[i];
+        }
+        System.out.println(ans);
+    }
+
+}
+</code></pre>
+<h3 id="poj_1700">POJ_1700</h3>
+<blockquote>
+<p>N个人过河，船每次最多只能坐两个人，船载每个人过河的所需时间不同，问最快的过河时间。</p>
+<p>有N个人要渡河，但是只有一艘船，船上每次最多只能载两个人，渡河的速度由两个人中较慢的那个决定，小船来回载人直到所有人都渡河，求最短的渡河时间。</p>
+<p>输入的每种情况的第一行包含N，第二行包含N个整数，表示每个人过河的时间。每个案例前面都有一个空行。不会有超过1000人，没有人会花超过100秒的时间穿越。</p>
+<p>对于每个测试用例，打印一行，其中包含所有N个人过河所需的总秒数。</p>
+<p>Sample Input<br>
+1<br>
+4<br>
+1 2 5 10<br>
+Sample Output<br>
+17</p>
+</blockquote>
+<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/20200201205225396.png" alt="在这里插入图片描述" loading="lazy"></figure>
+<p><strong>可以发现，4个人以上时，前四轮都是将最慢的两个渡过河。</strong></p>
+<pre><code class="language-java">public class Case02_POJ_1700 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+        for (int i = 0; i &lt; T; i++) {
+            int n = sc.nextInt();
+            int[] speed = new int[n];
+            for (int j = 0; j &lt; n; j++) {
+                speed[j] = sc.nextInt();
+            }
+            //排序
+            Arrays.sort(speed);
+            f(n, speed);
+        }
+    }
+
+    /**
+     * speed已经排序
+     *
+     * @param n
+     * @param speed
+     */
+    private static void f(int n, int[] speed) {
+        int left = n;
+        int ans = 0;
+        while (left &gt; 0) {
+            if (left == 1) {//只有1人
+                ans += speed[0];
+                break;
+            } else if (left == 2) {//只有两人
+                ans += speed[1];
+                break;
+            } else if (left == 3) {//有三人
+                ans += speed[2] + speed[0] + speed[1];
+                break;
+            } else {//通过两种策略来回两趟，渡过最慢的两个人
+                //1，2出发，1返回，最后两名出发，2返回
+                int s1 = speed[1] + speed[0] + speed[left - 1] + speed[1];
+                //1，3出发，1返回，1，4出发，1返回，1，2过河
+                int s2 = speed[left - 1] + speed[left - 2] + 2 * speed[0];
+                ans += Math.min(s1, s2);
+                left -= 2;//左侧是渡河的起点，left代表左侧的剩余人数
+            }
+        }
+        System.out.println(ans);
+    }
+</code></pre>
+<h3 id="区间调度问题二维数组排序">区间调度问题（二维数组排序）</h3>
+<blockquote>
+<p>有n项工作,每项工作分别在si时间开始,在ti时间结束.<br>
+对于每项工作,你都可以选择参与与否.如果选择了参与,那么自始至终都必须全程参与.<br>
+此外,参与工作的时间段不能重复(即使是开始的瞬间和结束的瞬间的重叠也是不允许的).<br>
+你的目标是参与尽可能多的工作,那么最多能参与多少项工作呢?<br>
+1≤n≤100000<br>
+1≤si≤ti≤10^9<br>
+输入:<br>
+第一行:n<br>
+第二行:n个整数空格隔开,代表n个工作的开始时间<br>
+第三行:n个整数空格隔开,代表n个工作的结束时间<br>
+样例输入:<br>
+5<br>
+1 3 1 6 8<br>
+3 5 2 9 10<br>
+样例输出:<br>
+3<br>
+说明:选取工作1,3,5</p>
+</blockquote>
+<p><strong>面向对象的排序思想</strong>：</p>
+<ul>
+<li>将不同的维度，比如说身高、体重、年龄，进行打包。</li>
+<li>将对象的一些操作打包到一起，操作可以直接影响数据。</li>
+</ul>
+<pre><code class="language-java">//贪心策略：选择结束时间最早的
+public class Case03_区间调度问题 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] s = new int[n];
+        int[] t = new int[n];
+        //建立开始时间和终止时间的打包对象
+        Job[] jobs = new Job[n];
+        for (int i = 0; i &lt; n; i++) {
+            s[i] = sc.nextInt();
+        }
+        for (int i = 0; i &lt; n; i++) {
+            t[i] = sc.nextInt();
+        }
+        for (int i = 0; i &lt; n; i++) {
+            jobs[i] = new Job(s[i], t[i]);
+        }
+
+        Arrays.sort(jobs);
+        //此时数据按照终止时间和开始时间由小到大排序
+        int res = f(n, jobs);
+        System.out.println(res);
+    }
+
+    private static int f(int n, Job[] jobs) {
+        int cnt = 1;
+        int y = jobs[0].t;//先选择最小的终止时间
+        for (int i = 0; i &lt; n; i++) {//选择下一个终止时间最早的
+            if (jobs[i].s &gt; y) {
+                cnt++;
+                y = jobs[i].t;
+            }
+        }
+        return cnt;
+    }
+
+    /**
+     * 必须实现排序规则
+     */
+    private static class Job implements Comparable&lt;Job&gt; {
+        int s;
+        int t;
+
+        public Job(int s, int t) {
+            this.s = s;
+            this.t = t;
+        }
+		
+        //排序规则
+        @Override
+        public int compareTo(Job other) {
+            int x = this.t - other.t;
+            if (x == 0)//如果终止的时间相同，则比较开始时间
+                return this.s - other.s;
+            else
+                return x;
+        }
+    }
+}
+</code></pre>
+<h3 id="区间选点">区间选点</h3>
+<blockquote>
+<p>题意:有n个如下形式的条件:<br>
+ai bi ci,表示在区间[ai, bi]内至少要选择ci个整数点.（不同区间内含的点可以是同一个）<br>
+问你满足n个条件的情况下,最少需要选多少个点?<br>
+Sample Input<br>
+5<br>
+3 7 3<br>
+8 10 3<br>
+6 8 1<br>
+1 3 1<br>
+10 11 1<br>
+Sample Output<br>
+6</p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200625174049315.png" alt="image-20200625174049315" style="zoom: 80%;" />
+<pre><code class="language-java">public class Case04_区间选点问题 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        Interval[] intervals = new Interval[n];
+        for (int i = 0; i &lt; n; i++) {
+            intervals[i] = new Interval(sc.nextInt(), sc.nextInt(), sc.nextInt());
+        }
+        Arrays.sort(intervals);//按区间右端点排序
+
+        int max = intervals[n - 1].t;//右端最大值
+        int[] axis = new int[max + 1];//标记数轴上的点是否已经被选中
+        for (int i = 0; i &lt; n; i++) {
+            //1.查阅区间中有多少个点
+            int s = intervals[i].s;//起点
+            int t = intervals[i].t;//终点
+            int cnt = sum(axis, s, t);//找到这个区间已经选点的数量，sums[t] - sums[s - 1];//效率低
+            //  2.如果不够，从区间右端开始标记，遇标记过的就跳过
+            intervals[i].c -= cnt;//需要新增的点的数量
+            while (intervals[i].c &gt; 0) {
+                if (axis[t] == 0) {//从区间终点开始选点
+                    axis[t] = 1;
+                    // updateSums(t,sums);//更新前缀和
+                    intervals[i].c--;//进一步减少需要新增的点的数量
+                    t--;
+                } else {//这个点已经被选过了，不选择重复的点
+                    t--;
+                }
+            }
+        }
+        System.out.println(sum(axis, 0, max));
+    }
+
+    /**
+     * 统计数轴axis上s-t区间已经有多少个点被选中
+     * @param axis
+     * @param s
+     * @param t
+     * @return
+     */
+    private static int sum(int[] axis, int s, int t) {
+        int sum = 0;
+        for (int i = s; i &lt;= t; i++) {
+            sum += axis[i];
+        }
+        return sum;
+    }
+    
+    private static class Interval implements Comparable&lt;Interval&gt; {
+        int s;//起点
+        int t;//终点
+        int c;//区间需求
+
+        public Interval(int s, int t, int c) {
+            this.s = s;
+            this.t = t;
+            this.c = c;
+        }
+		
+        //按照终点由小到大排序
+        @Override
+        public int compareTo(Interval other) {
+            int x = this.t - other.t;
+            if (x == 0)
+                return this.s - other.s;
+            else
+                return x;
+        }
+    }
+
+}
+</code></pre>
+<h3 id="区间覆盖问题">区间覆盖问题</h3>
+<p><code>如果给定一堆线段，给定一个区间，看最少需要几个线段才能完全覆盖这个区间。</code></p>
+<p><strong>解决思路</strong>：</p>
+<ul>
+<li>
+<p>设区间起点为start，终点为end，所需线段数目为ans</p>
+</li>
+<li>
+<p>首先线段中的终点，小于区间的起点，则该线段肯定无法覆盖</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200625213133071.png" alt="image-20200625213133071" style="zoom:67%;" />
+</li>
+<li>
+<p>同理如果区间的终点，大于线段的起点，则也一定无法覆盖</p>
+</li>
+<li>
+<p>接着就需要<strong>保存线段终点大于等于区间起点且线段起点小于等于区间终点的线段</strong></p>
+</li>
+<li>
+<p>对上面的线段<strong>根据起点的大小排序</strong></p>
+</li>
+<li>
+<p>接着此时的寻找线段起点小于start同时终点最远的线段，并该终点设置为新的start，将ans+1<br>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200625213909588.png" alt="image-20200625213909588" style="zoom: 67%;" /></p>
+</li>
+<li>
+<p>重复上述步骤直到找到终点大于end的</p>
+</li>
+</ul>
+<blockquote>
+<p>题目：给出n条线段，以及最大长度m，问最少需要多少条才能覆盖1-m这个区间，当无法全部覆盖的时候输出-1</p>
+<p>Sample Input<br>
+3 10<br>
+1 7<br>
+3 6<br>
+6 10<br>
+Sample Output<br>
+2</p>
+</blockquote>
+<pre><code class="language-java">public class Case05_区间覆盖问题 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int T = sc.nextInt();
+        Job[] jobs = new Job[N];
+        for (int i = 0; i &lt; N; i++) {
+            jobs[i] = new Job(sc.nextInt(), sc.nextInt());
+        }
+        Arrays.sort(jobs);
+        int start = 1;//要覆盖的目标点，end覆盖该点的所有区间中右端点最右
+        int end = 1;
+        int ans = 1;
+        for (int i = 0; i &lt; N; i++) {
+            int s = jobs[i].s;
+            int t = jobs[i].t;
+            if (i == 0 &amp;&amp; s &gt; 1) break;//第一个起点比区间起点小，则一定无法覆盖
+
+            if (s &lt;= start) {//当前区间有可能覆盖start
+                end = Math.max(t, end);//寻找起点小于start同时终点最远的线段
+            } else {//说明已经没有线段再比start小，开始下一个区间
+                ans++;//上一个目标覆盖已经达成，计数加1
+                start = end + 1;//更新起点，设置一个新的覆盖目标
+                if (s &lt;= start) {
+                    end = Math.max(t, end);
+                } else {//当前的起点如果比end大，则后面的都一定大，无法继续覆盖
+                    break;
+                }
+            }
+            if (end &gt;= T) {//当前的end超越了线段的右侧，则不需要继续判断了
+                break;
+            }
+        }
+        if (end &lt; T)//如果没有覆盖
+            System.out.println(-1);
+        else
+            System.out.println(ans);
+    }
+
+    private static class Job implements Comparable&lt;Job&gt; {
+        int s;
+        int t;
+
+        public Job(int s, int t) {
+            this.s = s;
+            this.t = t;
+        }
+
+        /**按照区间起点排序*/
+        @Override
+        public int compareTo(Job other) {
+            int x = this.s - other.s;
+            if (x == 0)
+                return this.t - other.t;
+            else
+                return x;
+        }
+    }
+}
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%AE%80%E4%BB%8B">简介</a></li>
+<li><a href="#%E8%B4%AA%E5%BF%83%E7%9A%84%E7%89%B9%E7%82%B9">贪心的特点</a></li>
+<li><a href="#%E5%AE%9E%E9%99%85%E4%BE%8B%E5%AD%90">实际例子</a>
+<ul>
+<li><a href="#%E7%A1%AC%E5%B8%81%E6%94%AF%E4%BB%98%E9%97%AE%E9%A2%98">硬币支付问题</a></li>
+<li><a href="#poj_1700">POJ_1700</a></li>
+<li><a href="#%E5%8C%BA%E9%97%B4%E8%B0%83%E5%BA%A6%E9%97%AE%E9%A2%98%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84%E6%8E%92%E5%BA%8F">区间调度问题（二维数组排序）</a></li>
+<li><a href="#%E5%8C%BA%E9%97%B4%E9%80%89%E7%82%B9">区间选点</a></li>
+<li><a href="#%E5%8C%BA%E9%97%B4%E8%A6%86%E7%9B%96%E9%97%AE%E9%A2%98">区间覆盖问题</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div><script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-06-25，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-25 21:55:56";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>13</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>
