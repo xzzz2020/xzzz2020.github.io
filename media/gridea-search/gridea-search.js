@@ -213,8 +213,8 @@ function grideaSearch() {
     //搜索结果回调
     var resultHandler = function (searchedContents) {
         getInfos(function (infos) {
-            //console.log(infos);
-            //console.log(searchedContents);
+            console.log(infos);
+            console.log(searchedContents);
             var searchedInfos = getResult(infos, searchedContents);
             renderResult(searchedInfos);
         });
