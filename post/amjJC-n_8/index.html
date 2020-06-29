@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>JavaSE基础知识面试考点总结 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/amjJC-n_8/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1593396038030" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>JavaSE基础知识面试考点总结</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-28</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/HvUhQjE_Y/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">8555字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">33 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%A6%82%E8%BF%B0">一、 概述</a>
+<ul>
+<li><a href="#1-jdk%E7%89%88%E6%9C%AC">1. JDK版本</a></li>
+<li><a href="#2-java%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7">2. Java语言特性</a></li>
+<li><a href="#3-java%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%B8%8E%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B">3. Java的加载与执行过程</a></li>
+<li><a href="#4-jvm-jdk%E5%92%8Cjre%E7%9A%84%E5%8C%BA%E5%88%AB">4. JVM、JDK和JRE的区别</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-java%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80">二、Java语言基础</a>
+<ul>
+<li><a href="#1-%E5%85%AB%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B">1. 八种基本类型</a></li>
+<li><a href="#2-%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81">2. 字符编码</a></li>
+<li><a href="#3-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">3. 类型转换</a></li>
+<li><a href="#4-%E8%BF%90%E7%AE%97%E7%AC%A6">4. 运算符</a></li>
+<li><a href="#5-%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5">5. 控制语句</a></li>
+<li><a href="#6-%E6%96%B9%E6%B3%95">6. 方法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">三、 面向对象</a>
+<ul>
+<li><a href="#1-%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8C%BA%E5%88%AB">1. 面向过程与面向对象的区别</a></li>
+<li><a href="#2-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%89%B9%E5%BE%81">2. 面向对象特征</a>
+<ul>
+<li><a href="#%E5%B0%81%E8%A3%85">封装</a></li>
+<li><a href="#%E7%BB%A7%E6%89%BF">继承</a></li>
+<li><a href="#%E5%A4%9A%E6%80%81">多态</a></li>
+<li><a href="#%E6%8A%BD%E8%B1%A1">抽象</a></li>
+</ul>
+</li>
+<li><a href="#3-%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92">3. 参数传递</a></li>
+<li><a href="#4-%E5%85%B3%E9%94%AE%E5%AD%97">4. 关键字</a>
+<ul>
+<li><a href="#this-%E5%85%B3%E9%94%AE%E5%AD%97">this 关键字：</a></li>
+<li><a href="#super-%E5%85%B3%E9%94%AE%E5%AD%97">super 关键字</a></li>
+<li><a href="#static-%E5%85%B3%E9%94%AE%E5%AD%97">static 关键字</a></li>
+<li><a href="#final%E5%85%B3%E9%94%AE%E5%AD%97">final关键字</a></li>
+</ul>
+</li>
+<li><a href="#5-%E4%BB%A3%E7%A0%81%E5%9D%97">5. 代码块</a>
+<ul>
+<li><a href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%A0%81%E5%9D%97">静态代码块</a></li>
+<li><a href="#%E5%AE%9E%E4%BE%8B%E8%AF%AD%E5%8F%A5%E5%9D%97">实例语句块</a></li>
+</ul>
+</li>
+<li><a href="#6-%E7%B1%BB%E7%9A%84%E7%BB%A7%E6%89%BF">6. 类的继承</a></li>
+<li><a href="#7-static-%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E5%92%8C%E7%88%B6%E5%AD%90%E7%B1%BB%E7%9A%84%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F">7. static、构造方法和父子类的调用顺序</a></li>
+<li><a href="#8-%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3">8. 抽象类和接口（***）</a>
+<ul>
+<li><a href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB">抽象类</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3">接口</a></li>
+</ul>
+</li>
+<li><a href="#9-%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB">9. 类之间的关系</a></li>
+<li><a href="#10-object%E7%B1%BB">10. Object类</a>
+<ul>
+<li><a href="#equals">equals</a></li>
+<li><a href="#finalize">finalize</a></li>
+</ul>
+</li>
+<li><a href="#11-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%9D%83%E9%99%90">11. 访问控制权限</a></li>
+<li><a href="#12-%E5%86%85%E9%83%A8%E7%B1%BB">12 内部类</a>
+<ul>
+<li><a href="#%E5%AE%9E%E4%BE%8B%E5%86%85%E9%83%A8%E7%B1%BB">实例内部类</a></li>
+<li><a href="#%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB"><strong>静态内部类</strong></a></li>
+<li><a href="#%E5%B1%80%E9%83%A8%E5%86%85%E9%83%A8%E7%B1%BB">局部内部类</a></li>
+<li><a href="#%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB">匿名内部类</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%BC%82%E5%B8%B8">四、异常</a>
+<ul>
+<li><a href="#1-%E5%BC%82%E5%B8%B8%E7%9A%84%E4%BD%93%E7%B3%BB">1. 异常的体系</a></li>
+<li><a href="#2-%E8%AF%B4%E5%87%BA%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%BC%82%E5%B8%B8">2. 说出几个常见的异常</a></li>
+<li><a href="#3-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86">3. 异常处理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<blockquote>
+<p>该文章是博主采集于各大博文，用于复习和总结相关知识点，将会持续的收集和更新。</p>
+</blockquote>
+<h2 id="一-概述">一、 概述</h2>
+<h3 id="1-jdk版本">1. JDK版本</h3>
+<blockquote>
+<p>目前只维护两个JDK版本，一个是8，一个是11（2018年）</p>
+</blockquote>
+<h3 id="2-java语言特性">2. Java语言特性</h3>
+<ul>
+<li><strong>可移植性，跨平台</strong>，因为Java有一个JVM虚拟机，虚拟机负责执行字节码文件</li>
+<li><strong>健壮性</strong>，具有GC，有自动垃圾回收机制</li>
+</ul>
+<h3 id="3-java的加载与执行过程">3. Java的加载与执行过程</h3>
+<ul>
+<li>T.java（源文件）通过javac命令变成字节码文件</li>
+<li>字节码文件通过类加载器加载到JVM中</li>
+<li>JVM屏蔽了和操作系统打交道的操作</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL0phdmElMjAlRTclQTglOEIlRTUlQkElOEYlRTglQkYlOTAlRTglQTElOEMlRTglQkYlODclRTclQTglOEItMS5wbmc?x-oss-process=image/format,png" alt="Java程序运行过程" loading="lazy"></figure>
+<h3 id="4-jvm-jdk和jre的区别">4. JVM、JDK和JRE的区别</h3>
+<p><strong>Java虚拟机（JVM）</strong></p>
+<ul>
+<li>是运行 Java  字节码的虚拟机。JVM有针对不同系统的特定实现（Windows，Linux，macOS），目的是使用相同的字节码，它们都会给出相同的结果。字节码和不同系统的 JVM  实现是 Java 语言“一次编译，随处可以运行”的关键所在。</li>
+</ul>
+<p><strong>JDK</strong></p>
+<ul>
+<li>是Java Development Kit，它是功能齐全的Java SDK。<code>它拥有JRE所拥有的一切，还有编译器（javac）和工具（如javadoc和jdb）。它能够创建和编译程序。</code></li>
+</ul>
+<p><strong>JRE</strong></p>
+<ul>
+<li><code>是 Java运行时环境。 它是运行已编译 Java 程序所需的所有内容的集合，包括 Java虚拟机（JVM），Java类库，java命令和其他的一些基础构件。</code></li>
+<li>但是，它不能用于创建新程序。</li>
+</ul>
+<h2 id="二-java语言基础">二、Java语言基础</h2>
+<h3 id="1-八种基本类型">1. 八种基本类型</h3>
+<blockquote>
+<p>八种基本数据类型：byte、short、int、long、float、double、boolean、char。</p>
+</blockquote>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNjI4MTEzMzQ4NTE1LnBuZw?x-oss-process=image/format,png" alt="image-20200628113348515" loading="lazy"></figure>
+<p><strong>一个字节等于8位</strong></p>
+<p><strong>IEE754标准（32位）</strong>：1位是符号位，8位是阶码用移码表示，23位尾数</p>
+<h3 id="2-字符编码">2. 字符编码</h3>
+<blockquote>
+<p>类型可以存放一个汉字， java 中的 char 使用 utf-16 编码</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">编码名称</th>
+<th style="text-align:center">解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ASCII 字符编码</td>
+<td style="text-align:center">只支持英文字母、标点符号、数字字符等， ASCII 码占用 1 个字节，所以 ASCII 码最多可以表示 256 个字符. 小 a 97 大 A 65,’0’是 48</td>
+</tr>
+<tr>
+<td style="text-align:center">ISO-8859-1</td>
+<td style="text-align:center">有称 latin-1,是国际化标准或组织 ISO 制定的，主要为了西欧语言中的字符 编码，和 ASCII 兼容，仍不支持中文</td>
+</tr>
+<tr>
+<td style="text-align:center">GB2312/GBK/GB18030</td>
+<td style="text-align:center">主要是汉字编码，三种编码从容量上看是包含关系 简体中文： GBK &lt; GB2312 &lt; GB18030 繁体中文： Big5【大五码】</td>
+</tr>
+<tr>
+<td style="text-align:center">unicode</td>
+<td style="text-align:center">Unicode 统 一 了 全 世 界 上 的 所 有 文 字 编 码 ， unicode 有 几 种 实 现 ： UTF-8,UTF-16,UTF-32 java 语言采用的是 Unicode 编码，所以在 java 中标识符也可以使用中文</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-类型转换">3. 类型转换</h3>
+<ul>
+<li>
+<p>在 java 中基本类型可以相互转换， boolean 类型比较特殊不可以转换成其他类型</p>
+</li>
+<li>
+<p>转换分为默认转换和强制转换:</p>
+<ul>
+<li>
+<p>默认转换：容量小的类型会默认转换为容量大的类型</p>
+<ul>
+<li>
+<p>byte--&gt;short--&gt; int--&gt;long--&gt;float--&gt;double</p>
+</li>
+<li>
+<p><strong>byte、 short、 char 之间计算不会互相转换，首先先转换成 int</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>强制转换：</p>
+<ul>
+<li><strong>将容量大的类型转换成容量小的类型，需要进行强制转换</strong></li>
+<li>注意：只要不超出范围可以将整型值直接赋值给 byte， short， char</li>
+<li>在多种类型混合运算过程中，首先先将所有数据转换成容量最大的那种，再运算</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-java">public class DataTypeTest08
+{
+    public static void main(String[] args){
+        long x = 100L;
+        int y = x;//编译不通过
+        
+        long a = 2147483648L;
+        int b = (int)a;
+        System.out.println(b);//出现精度丢失问题，大类型--&gt;&gt;小类型会出现问题，输出-2147483648
+        
+        byte a = 1000;//出现错误， 1000 超出了 byte 的范围
+        
+        long g = 10;
+        int h = g/3;//出现错误，多个数值在运算过程中，会转换成容量最大的类型
+
+        byte h3 = (byte)(int)g/3;//考察优先级，将g先转换成int，再强转成byte，再除以3得到int，赋值错误
+        byte h4 = (byte)(int)(g/3);//正确的
+        byte h5 = (byte)g/3;//考察优先级，先转换成byte，再运算
+        byte h6 = (byte)(g/3);//正确
+        short h7 = (short)(g/3);//正确
+        
+        short i = 10;
+        byte j = 5;
+        short k = i + j;//错误的，short和byte运算，首先会转换成int再运算
+    }
+}
+</code></pre>
+<h3 id="4-运算符">4. 运算符</h3>
+<p><strong>短路与和逻辑与的区别？</strong></p>
+<p>短路与比逻辑与智能，短路与效率高。</p>
+<p><strong>短路或和逻辑或的区别？</strong></p>
+<p>短路或：左边的算子结果是 true，右边的表达式不执行，发生短路</p>
+<p><strong>a += 3和 a = a + 3; 是一样的吗？</strong></p>
+<ul>
+<li><strong>结论(重点)</strong>：<code>扩展赋值运算符不改变运算结果的类型。初始类型和最终运算结果类型完全相同。</code></li>
+</ul>
+<pre><code class="language-java">public class OperatorTest09
+{
+    public static void main(String[] args){
+        byte b = 10;
+        //编译错误
+        //b = b + 3;
+        //修改
+        b = (byte)(b + 3);
+        System.out.println(b); //13
+        b += 3;
+        System.out.println(b); //16
+        b += 10000; //等同于 b = (byte)(b + 10000);
+        System.out.println(b); //32
+    }
+}
+</code></pre>
+<h3 id="5-控制语句">5. 控制语句</h3>
+<p><strong>switch 语句</strong></p>
+<ul>
+<li>
+<p>switch 也称为多重分支，具体格式如下<br>
+switch (表达式) {<br>
+case 值 1：<br>
+语句<br>
+break;<br>
+case 值 2：<br>
+语句<br>
+break;<br>
+default：<br>
+语句<br>
+Break;<br>
+}</p>
+</li>
+<li>
+<p>说明：</p>
+<ul>
+<li>表达式的值只能为： char、 byte、 short、 int 类型（<strong>JDK7 以后支持 String</strong>）， boolean、 long、 float、</li>
+<li><strong>double 都是非法的</strong></li>
+<li><strong>break 语句可以省略,但会出现 switch 穿透</strong></li>
+<li>default 语句也可以省略，一般不建议省略，并且放置在最后</li>
+</ul>
+<blockquote>
+<p><strong>需求：</strong></p>
+<p>假定系统给定学生的考试成绩，考试成绩可以带有小数。<br>
+假定成绩是合法的[0-100]，请根据学生考试成绩判断该<br>
+学生成绩等级：<br>
+[90-100] A<br>
+[80-90) B<br>
+[70-80) C<br>
+[60-70) D<br>
+[0-60) E</p>
+</blockquote>
+<p><mark>以上业务只能使用 switch 语句完成，不允许使用 if 语句。</mark></p>
+<pre><code class="language-java">public class SwitchTest04 {
+    public static void main(String[] args) {
+        //考试成绩合法
+        double score = 100;
+        //开始判断
+        int grade = (int) (score / 10);//case条件不能为浮点数
+
+        switch (grade) {
+            case 10:
+                System.out.println(&quot;A&quot;);
+                break;
+            case 9:
+                System.out.println(&quot;A&quot;);
+                break;
+            case 8:
+                System.out.println(&quot;B&quot;);
+                break;
+            case 7:
+                System.out.println(&quot;C&quot;);
+                break;
+            case 6:
+                System.out.println(&quot;D&quot;);
+                break;
+            default:
+                System.out.println(&quot;E&quot;);
+        }
+
+        //重点： case 是可以合并的
+        switch (grade) {
+            case 10:
+            case 9:
+                System.out.println(&quot;A&quot;);
+                break;
+            case 8:
+                System.out.println(&quot;B&quot;);
+                break;
+            case 7:
+                System.out.println(&quot;C&quot;);
+                break;
+            case 6:
+                System.out.println(&quot;D&quot;);
+                break;
+            default:
+                System.out.println(&quot;E&quot;);
+        }
+    }
+}
+</code></pre>
+</li>
+</ul>
+<p><strong>for语句</strong></p>
+<pre><code class="language-java">for(;false;){//会出现编译错误，因为无法访问
+    System.out.println(&quot;呵呵&quot;);
+}
+for(;true;){//死循环
+	System.out.println(&quot;哈哈&quot;);
+}
+</code></pre>
+<h3 id="6-方法">6. 方法</h3>
+<p><strong>方法的返回值问题</strong>：</p>
+<pre><code class="language-java">public class MethodTest07
+{
+    //缺少返回语句，程序编译时无法判断是否能走到else，无法编译通过
+    public static int m1(){
+        boolean flag = true;
+        if(flag){
+            return 1;
+        }
+    }
+
+    //正确
+    public static int m2(){
+        boolean flag = true;
+        if(flag){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    //编译错误
+    public static int m3(){
+        boolean flag = false;
+        if(flag){//
+            return 1;//return后不能接任何语句
+            System.out.println(&quot;??????????&quot;);
+        }
+        System.out.println(&quot;??????????&quot;);
+        return 0;
+        System.out.println(&quot;??????????&quot;);
+    }
+}
+</code></pre>
+<h2 id="三-面向对象">三、 面向对象</h2>
+<h3 id="1-面向过程与面向对象的区别">1. 面向过程与面向对象的区别</h3>
+<ul>
+<li>
+<p><strong>面向过程</strong> ：<strong>面向过程性能比面向对象高。</strong> 因为类调用时需要实例化，开销比较大，比较消耗资源，所以当性能是最重要的考量因素的时候，比如单片机、嵌入式开发、Linux/Unix等一般采用面向过程开发。但是，<strong>面向过程没有面向对象易维护、易复用、易扩展。</strong></p>
+</li>
+<li>
+<p><strong>面向对象</strong> ：<strong>面向对象易维护、易复用、易扩展。</strong> 因为面向对象有封装、继承、多态性的特性，所以可以设计出低耦合的系统，使系统更加灵活、更加易于维护。但是，<strong>面向对象性能比面向过程低</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>这个并不是根本原因，面向过程也需要分配内存，计算内存偏移量，Java性能差的主要原因并不是因为它是面向对象语言，而是Java是半编译语言，最终的执行代码并不是可以直接被CPU执行的二进制机械码。</p>
+<p>而面向过程语言大多都是直接编译成机械码在电脑上执行，并且其它一些面向过程的脚本语言性能也并不一定比Java好。</p>
+</blockquote>
+<h3 id="2-面向对象特征">2. 面向对象特征</h3>
+<h4 id="封装">封装</h4>
+<p>封装把一个对象的属性私有化，同时提供一些可以被外界访问的属性的方法，如果属性不想被外界访问，我们大可不必提供方法给外界访问。但是如果一个类没有提供给外界访问的方法，那么这个类也没有什么意义了。</p>
+<h4 id="继承">继承</h4>
+<p>继承是使用已存在的类的定义作为基础建立新类的技术，新类的定义可以增加新的数据或新的功能，也可以用父类的功能，但不能选择性地继承父类。通过使用继承我们能够非常方便地复用以前的代码。</p>
+<p><strong>关于继承如下 3 点请记住：</strong></p>
+<ol>
+<li>子类拥有父类对象所有的属性和方法（包括私有属性和私有方法），但是父类中的私有属性和方法子类是无法访问，<strong>只是拥有</strong>。</li>
+<li>子类可以拥有自己属性和方法，即子类可以对父类进行扩展。</li>
+<li>子类可以用自己的方式实现父类的方法。（以后介绍）。</li>
+</ol>
+<h4 id="多态">多态</h4>
+<p>所谓多态就是指程序中定义的引用变量所指向的具体类型和通过该引用变量发出的方法调用在编程时并不确定，而是在程序运行期间才确定，即一个引用变量到底会指向哪个类的实例对象，该引用变量发出的方法调用到底是哪个类中实现的方法，必须在由程序运行期间才能决定。</p>
+<p>在Java中有两种形式可以实现多态：继承（多个子类对同一方法的重写）和接口（实现接口并覆盖接口中同一方法）。</p>
+<h4 id="抽象">抽象</h4>
+<ul>
+<li>
+<p>抽象就是忽略一个主题中与当前目标无关的那些方面，以便更充分地注意与当前目标有关的方面。</p>
+</li>
+<li>
+<p>抽象并不打算了解全部问题，而只是选择其中的一部分，暂时不用部分细节。比如，我们要设计一个学生成绩管理系统，考察学生这个对象时，我们只关心他的班级、学号、成绩等，而不用去关心他的身高、体重这些信息。</p>
+</li>
+</ul>
+<h3 id="3-参数传递">3. 参数传递</h3>
+<blockquote>
+<p><mark>所有基本数据类型的都是值传递，其他类型的为址传递</mark></p>
+</blockquote>
+<h3 id="4-关键字">4. 关键字</h3>
+<h4 id="this-关键字">this 关键字：</h4>
+<ul>
+<li>
+<p>this 关键字指的是当前调用的对象， 只能用在构造函数和实例方法内部，还可以应用在成员变量的声明上， static 标识的方法里是不能使用 this 的。</p>
+</li>
+<li>
+<p><strong>作用：代码复用。</strong></p>
+</li>
+</ul>
+<h4 id="super-关键字">super 关键字</h4>
+<ul>
+<li>
+<p><strong>调用父类的构造方法</strong></p>
+<ul>
+<li>
+<p>没有显示地调用 super(); 父类的无参构造方法也执行</p>
+</li>
+<li>
+<p>必须将 super 放到子类的构造函数的第一语句来调用父类的构造方法</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>调用父类的成员方法</strong></p>
+<ul>
+<li>需要注意： super 只能应用在成员方法和构造方法中，<strong>不能应用在静态方法中</strong>（和 this 是一样的），如果<strong>在构造方法中使用必须放在第一行</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>为什么会有 super 关键字？</strong></p>
+<ul>
+<li><code>因为子类必须要调用父类的构造方法，先把父类构造完成，因为子类依赖于父类，没有父，也就 没有子</code></li>
+<li><code>有时需要在子类中显示的调用父类的成员方法</code></li>
+</ul>
+<p><strong>那么我们以前为什么没有看到 super，而且我们也有继承，如： Student 继承了 Person？</strong></p>
+<ul>
+<li>因为子类中我们没有显示的调用父类构造方法，那么他会默认调用父类的无参构造方法，此种情况下<br>
+如果父类中没有无参构造方法，那么编译时将会失败</li>
+</ul>
+<blockquote>
+<p><code>注意构造方法不存在覆盖的概念，构造方法可以重载</code></p>
+</blockquote>
+<h4 id="static-关键字">static 关键字</h4>
+<p>可以用来修饰它可以用来修饰的<strong>成员变量</strong>和<strong>成员方法</strong>，<code>被修饰的成员是属于类的，而不是单单是属于某个对象的。也就是说，既然属于类，就可以不靠创建对象来调用了。</code></p>
+<h4 id="final关键字">final关键字</h4>
+<p><strong>final 表示不可改变的含义</strong></p>
+<ul>
+<li>采用 final 修饰的类不能被继承</li>
+<li>采用 final 修饰的方法不能被覆盖</li>
+<li>采用 final 修饰的变量不能被修改</li>
+<li>final 修饰的变量必须显示初始化<br>
+局部变量： 一旦赋值不能重新赋值<br>
+成员变量： 不能采用系统默认值，必须手动赋值<br>
+如果修饰的引用，那么这个引用只能指向一个对象，也就是说这个引用不能再次赋值，但被指向的对象是可以修改的</li>
+<li>构造方法不能被 final 修饰 会影响 JAVA 类的初始化:</li>
+<li>final 定义的静态常量调用时不会执行 static 代码块等相关语句，这是由 java 虚拟机规定的。我们不<br>
+需要了解的很深，有个概念就可以了</li>
+</ul>
+<p><strong>修饰引用变量：</strong></p>
+<ul>
+<li>final 修饰引用变量，<code>主要修饰的是变量的地址</code>，那么这个引用只能指向一个对象，也就是说这个引用不能再次赋值，但被指向的对象是可以修改的</li>
+</ul>
+<pre><code class="language-java">public class FinalTest05 {
+    public static void main(String[] args) {
+        Person p1 = new Person();
+        //可以赋值
+        p1.name = &quot;张三&quot;;
+        System.out.println(p1.name);
+        final Person p2 = new Person();
+        p2.name = &quot;李四&quot;;
+        System.out.println(p2.name);
+        //不能编译通过
+        //p2 采用 final 修饰，主要限制了 p2 指向堆区中的地址不能修改(也就是 p2 只能指向一个对象)
+        //p2 指向的对象的属性是可以修改的
+        p2 = new Person();
+    }
+}
+class Person {
+    String name;
+}
+</code></pre>
+<p><strong>final 和 static 联合修饰实例变量==常量</strong> （尽量使用一个静态工具类抽取出常量）</p>
+<ul>
+<li>常量名要求全部大写[规范]</li>
+<li>常量都是 public static final 的</li>
+<li>常量在类加载的时候完成初始化，存储在 JVM 的方法区中</li>
+<li>常量是值不可改变的变量</li>
+</ul>
+<h3 id="5-代码块">5. 代码块</h3>
+<blockquote>
+<p>静态属性和静态代码块按照代码顺序执行，实例代码块和成员属性同理</p>
+</blockquote>
+<h4 id="静态代码块">静态代码块</h4>
+<p><strong>使用 static 关键字可以定义静态语句块，静态语句块具有以下特点</strong>：</p>
+<ul>
+<li>静态语句块在类加载时执行，在 main 方法执行之前就已经执行了。</li>
+<li>类只加载一次，所以静态语句块也是只执行一次</li>
+<li>一个类中可以编写多个静态语句块，执行顺序是： 自上而下依次执行。</li>
+<li>静态语句块的使用时机：当程序需要<code>在类加载的时候就做一些事情，可以在静态语句块中来实现</code></li>
+</ul>
+<h4 id="实例语句块">实例语句块</h4>
+<p><strong>实例语句块和静态代码块没有关系，实例语句块有以下特点</strong>：</p>
+<ul>
+<li>实例语句块在构造方法执行之前执行，构造函数执行一次，实例语句块对应执行一次。</li>
+<li>每调用一次构造函数之前就会执行一次实例语句块</li>
+<li>实例语句块可以编写多个，也是按照自上而下的顺序依次执行。</li>
+<li>实例语句块使用时机： 当程序需要<code>在对象初始化时刻就做一些事情，可以在实例语句块中实现</code></li>
+</ul>
+<pre><code class="language-java">//静态语句块
+static{
+	System.out.println(1);
+}
+
+//实例语句块
+{
+	System.out.println(1);
+}
+</code></pre>
+<h3 id="6-类的继承">6. 类的继承</h3>
+<p><strong>如何实现Java多继承？</strong></p>
+<p><strong>继承特征</strong>：</p>
+<ul>
+<li>
+<p>继承是面向对象的重要概念，软件中的继承和现实中的继承概念是一样的</p>
+</li>
+<li>
+<p>继承是<strong>实现软件可重用性的重要手段</strong>，如： A 继承 B， A 就拥有了 B 的所有特性，如现实世界中的儿子继承父亲的财产，儿子不用努力就有了财产，这就是重用性</p>
+</li>
+<li>
+<p>Java 中<strong>只支持类的单继承</strong>，也就是说 A 只能继承 B， A 不能同时继承 C</p>
+</li>
+<li>
+<p>Java 中的继承使用 extends 关键字，语法格式：</p>
+<pre><code class="language-java">[修饰符] class 子类 extends 父类 {
+    
+}  
+</code></pre>
+</li>
+</ul>
+<p><strong>方法的重载的条件</strong></p>
+<ul>
+<li>方法名相同</li>
+<li><strong>方法的参数类型，个数，顺序至少有一个不同</strong></li>
+<li>方法的返回类型可以不同（不依靠返回类型来区分重载）</li>
+<li>方法的修饰符可以不同，因为方法重载和修饰符没有任何关系</li>
+<li><strong>方法重载只出现在同一个类中</strong></li>
+</ul>
+<p><strong>方法的覆盖(Override)的条件：</strong></p>
+<ul>
+<li><code>必须要有继承关系</code></li>
+<li>覆盖只能出现在子类中，如果没有继承关系，不存在覆盖，只存在重载</li>
+<li>在子类中被覆盖的方法，必须和父类中的方法完全一样，也就是方法名， 返回类型、参数列表，<br>
+完全一样</li>
+<li><strong>子类方法的访问权限不能小于父类方法的访问权限</strong></li>
+<li><strong>子类方法不能抛出比父类方法更多的异常，但可以抛出父类方法异常的子异常</strong></li>
+<li><strong>父类的静态方法不能被子类覆盖</strong></li>
+<li><strong>父类的私有方法不能覆盖</strong></li>
+<li><strong>覆盖是针对成员方法，而非属性</strong></li>
+</ul>
+<p><strong>为什么需要覆盖？</strong></p>
+<ul>
+<li>就是要改变父类的行为。</li>
+<li>方法重写之后，“子类对象”执行的一定是重写之后的方法，也体现了就近原则</li>
+</ul>
+<h3 id="7-static-构造方法和父子类的调用顺序">7. static、构造方法和父子类的调用顺序</h3>
+<p><strong>要点</strong>：</p>
+<ul>
+<li>静态的代码块一定比构造方法先执行</li>
+<li>如果都是静态代码，一个类里面，按照先后顺序执行，<strong>父子之间，父类静态代码块先执行</strong></li>
+<li><strong>静态代码只会执行一次</strong>，多次 new 新的对象，构造方法，非静态代码块会多次执行</li>
+</ul>
+<pre><code class="language-java">class Parent {
+    static {
+        System.out.println(&quot;父类的静态块&quot;);
+    }
+    private static String staticStr = getStaticStr();
+    private String str = getStr();
+    {
+        System.out.println(&quot;父类的实例块&quot;);
+    }
+    public Parent() {
+        System.out.println(&quot;父类的构造方法&quot;);
+    }
+    private static String getStaticStr() {
+        System.out.println(&quot;父类的静态属性初始化&quot;);
+        return null;
+    }
+    private String getStr() {
+        System.out.println(&quot;父类的实例属性初始化&quot;);
+        return null;
+    }
+}
+
+class Child extends Parent {
+    private static String staticStr = getStaticStr();
+
+    static {
+        System.out.println(&quot;子类的静态块&quot;);
+    }
+
+    {
+        System.out.println(&quot;子类的实例块&quot;);
+    }
+
+    public Child() {
+        System.out.println(&quot;子类的构造方法&quot;);
+    }
+
+    private String str = getStr();
+
+    private static String getStaticStr() {
+        System.out.println(&quot;子类的静态属性初始化&quot;);
+        return null;
+    }
+
+    private String getStr() {
+        System.out.println(&quot;子类的实例属性初始化&quot;);
+        return null;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        new Child();
+    }
+}
+</code></pre>
+<p><strong>分析</strong>：</p>
+<ul>
+<li>
+<p>首先先加载类到JVM的方法区中，则先加载静态的内容，比如静态代码块和静态属性，并且先加载父类，且按照代码顺序加载</p>
+</li>
+<li>
+<p>接着加载对象到堆内存中，先加载父类的实例语句块和实例属性，按照父类优先，根据代码顺序加载，最后加载构造方法</p>
+</li>
+</ul>
+<p><strong>执行结果</strong>：</p>
+<pre><code class="language-xml">父类的静态块
+父类的静态属性初始化
+子类的静态属性初始化
+子类的静态块
+父类的实例属性初始化
+父类的实例块
+父类的构造方法
+子类的实例块
+子类的实例属性初始化
+子类的构造方法
+</code></pre>
+<h3 id="8-抽象类和接口">8. 抽象类和接口（***）</h3>
+<h4 id="抽象类">抽象类</h4>
+<p>看我们以前示例中的 Person、 Student 和 Employee，从我们使用的角度来看主要对 Student 和 Employee 进行实例化， Person 中主要包含了一些公共的属性和方法，而 Person 我们通常不会实例化，所以我们可以把它<br>
+定义成抽象的：</p>
+<ul>
+<li>
+<p>在 java 中采用 abstract 关键字定义的类就是抽象类，采用 abstract 关键字定义的方法就是抽象方法</p>
+</li>
+<li>
+<p>抽象的方法只需在抽象类中，提供声明，不需要实现</p>
+</li>
+<li>
+<p><strong>如果一个类中含有抽象方法，那么这个类必须定义成抽象类，一个抽象类不一定含有抽象方法</strong></p>
+</li>
+<li>
+<p>如果这个类是抽象的，那么这个类被子类继承，抽象方法必须被重写。如果在子类中不复写该抽象方法，那么必须将此类再次声明为抽象类</p>
+</li>
+<li>
+<p>抽象的类是不能实例化的，就像现实世界中人其实是抽象的，张三、李四才是具体的</p>
+</li>
+<li>
+<p><strong>抽象类不能被 final 修饰</strong></p>
+</li>
+<li>
+<p><strong>抽象方法不能被 final 修饰，因为抽象方法就是被子类实现的</strong></p>
+</li>
+</ul>
+<p>抽象类中可以包含方法实现，可以将一些公共的代码放到抽象类中，另外在抽象类中可以定义一些抽象的方法，这样就会存在一个约束，而子类必须实现我们定义的方法，如： teacher 必须实现 printInfo 方法， Student也必须实现 printInfo 方法，方法名称不能修改，必须为 printInfo，这样就能实现多态的机制，有了多态的机制，我们在运行期就可以动态的调用子类的方法。所以在运行期可以灵活的互换实现。</p>
+<p><strong>抽象类和普通类的区别？</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">抽象类</th>
+<th style="text-align:center">普通类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">不能被实例化，也就是使用new关键字</td>
+<td style="text-align:center">可以被实例化</td>
+</tr>
+<tr>
+<td style="text-align:center">权限限定于Public和Protected，因为需要子类去继承抽象类<br/>JDK 1.8以前，抽象类的方法默认访问权限为protected<br/>JDK 1.8时，抽象类的方法默认访问权限变为default</td>
+<td style="text-align:center">没有权限限制</td>
+</tr>
+<tr>
+<td style="text-align:center">如果一个类继承抽象类，则必须实现抽象类的抽象方法<br/>如果没有实现抽象方法，则该类必须定义成抽象类</td>
+<td style="text-align:center">不强制实现父类的方法</td>
+</tr>
+</tbody>
+</table>
+<h4 id="接口">接口</h4>
+<blockquote>
+<p><strong>注</strong>：JDK 1.8 以后，接口里可以有静态方法和方法体了。</p>
+</blockquote>
+<p>接口我们可以看作是抽象类的一种特殊情况，在接口中<strong>只能定义抽象的方法和常量(完全抽象)</strong></p>
+<ul>
+<li>接口中的方法默认都是 public abstract 的(可以省略写)，不能更改</li>
+<li>接口中的变量默认都是 public static final 的(省略不写)，不能更改，所以必须显示的初始化<br>
+<code>注意：接口里的所有数据都是 public 修饰的！</code></li>
+<li>如果一个非抽象的类实现了接口，那么接口中所有的方法必须实现</li>
+<li>一类可以实现多个接口，接口和接口之间支持也是多继承的 ,但接口之间不能实现</li>
+</ul>
+<p>在 java 中接口其实描述了<strong>类需要做的事情，类要遵循接口的定义来做事</strong>，使用接口到底有什么本质的好<br>
+处？可以归纳为两点：</p>
+<ul>
+<li>采用接口明确的声明了它所能提供的服务</li>
+<li>解决了 Java 单继承的问题</li>
+</ul>
+<p><strong>接口和抽象类的区别？</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">接口</th>
+<th style="text-align:center">抽象类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">不能被实例化</td>
+<td style="text-align:center">不能被实例化</td>
+</tr>
+<tr>
+<td style="text-align:center">需要被子类实现，并实现接口的方法</td>
+<td style="text-align:center">需要被子类继承，并实现抽象方法</td>
+</tr>
+<tr>
+<td style="text-align:center">只能做方法的声明（JDK1.8之后允许方法体）</td>
+<td style="text-align:center">可以做方法的声明，也可以做方法的实现</td>
+</tr>
+<tr>
+<td style="text-align:center">如果子类不能实现接口中的所有方法，则该类只能是抽象类</td>
+<td style="text-align:center">如果子类不能实现抽象类的所有抽象，则该类只能是抽象类</td>
+</tr>
+<tr>
+<td style="text-align:center">属性只能是静态的常量</td>
+<td style="text-align:center">没有限制</td>
+</tr>
+<tr>
+<td style="text-align:center">接口与接口之间可以多继承</td>
+<td style="text-align:center">只能单继承</td>
+</tr>
+</tbody>
+</table>
+<h3 id="9-类之间的关系">9. 类之间的关系</h3>
+<p><strong>泛化关系</strong></p>
+<ul>
+<li>类与类之间的继承以及接口与接口之间的继承</li>
+</ul>
+<p><strong>实现关系</strong></p>
+<ul>
+<li>类对接口的实现</li>
+</ul>
+<p><strong>关联关系</strong></p>
+<ul>
+<li>
+<p>一个类中属性是另个类</p>
+<pre><code class="language-java">public class 学生 {
+    private 班级 班级;
+    // getter/setter
+}
+public class 班级 {
+}
+</code></pre>
+</li>
+</ul>
+<p><strong>聚合关系</strong></p>
+<ul>
+<li>
+<p>是关联关系的一种，有着较强的关联关系</p>
+</li>
+<li>
+<p>在java中一个类是整体，使用对象数组包含另个类；另个类属于某个整体</p>
+<pre><code class="language-java">public class 汽车 {
+    private 轮胎集合 轮胎；
+    //getter/setter
+}
+public class 轮胎 {
+    private 汽车 汽车;
+    //getter/setter
+}
+</code></pre>
+</li>
+</ul>
+<p><strong>依赖关系</strong></p>
+<ul>
+<li>
+<p>依赖关系是比关联关系弱的关系，在 java 语言中体现为<strong>返回值，参数，局部变量和静态方法调用</strong></p>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        Person person = new Person();
+    }
+}
+class Person {
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="10-object类">10. Object类</h3>
+<ul>
+<li>Object 类是所有 Java 类的根基类</li>
+<li>如果在类的声明中未使用 extends 关键字指明其基类，则默认基类为 Object 类</li>
+</ul>
+<h4 id="equals">equals</h4>
+<p><strong>equals的源码是这样写的</strong>：</p>
+<pre><code class="language-java">public boolean equals(Object obj) {
+    //this - s1
+    //obj - s2
+    return (this == obj);
+}
+</code></pre>
+<p>所以，默认情况下比较的是地址值，但是可以让我们覆写该方法，实现对象的比较。</p>
+<p><strong>如何覆写equals方法？</strong></p>
+<ul>
+<li>首先为了提高效率，需要用==判断是否是同一个对象，如果是直接返回true</li>
+<li>接着为了提高健壮性，判断是否对象是否是该类的一个对象，如果是，需要对其向下转型</li>
+<li>最后是比较的逻辑</li>
+</ul>
+<pre><code class="language-java">public class ObjectDemo {
+    public static void main(String args[]){
+        Student student1 = new Student(&quot;生命壹号&quot;,22,&quot;成都&quot;);
+        Student student2 = new Student(&quot;生命壹号&quot;,22,&quot;成都&quot;); 
+        System.out.println(student1==student2);
+        System.out.println(student1.equals(student2));
+    }
+ }
+ class Student {
+     private String name;
+     private int age;
+     private String address;
+     public Student(String name,int age,String address){
+         this.name = name;
+         this.age = age;
+         this.address = address;
+     }
+     //重写Object类中的equals方法（比较两个对象的值是否相等）
+     public boolean equals(Object obj){
+         //为了提高效率：如果两个内存地址相等，那么一定是指向同一个对内存中的对象，就无需比较两个对象的属性值（自己跟自己比，没啥意义嘛）
+         if(this==obj){
+             return true;
+         }
+         
+         //为了提供程序的健壮性
+         //我先判断一下，obj是不是学生的一个对象，如果是，再做向下转型，如果不是，直接返回false。
+         //这个时候，我们要判断的是对象是否是某个类的对象?
+         //记住一个格式：对象名 instanceof 类名。表示：判断该对象是否是该类的一个对象       
+         if(!(obj instanceof Student)){        
+             return false;                
+         }
+         
+         //如果是就继续
+         Student s = (Student)obj;//强制转换，即向下转型（毕竟Object类型没有具体的对象属性）        
+         return this.name.equals(s.name) &amp;&amp; this.age == s.age &amp;&amp; this.address.equals(s.address);//判断两个对象的属性值是否相等
+     }
+ }
+</code></pre>
+<p><strong>==与 equals()区别？</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">==</th>
+<th style="text-align:center">equals()</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">等号比较的是值， 特别是比较引用类型，比较的是引用的内存地址的那个值</td>
+<td style="text-align:center">默认源码使用的是==，但是可以通过覆写该方法，实现对象的比较</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>对于基本数据的包装类型（Byte, Short, Character，Integer， Float, Double， Long, Boolean）除了 Float和 Double 之外，其他的六种都是<strong>实现了常量池的</strong>，因此对于这些数据类型而言，一般我们<strong>也可以直接通过==来判断是否相等</strong></p>
+</blockquote>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args){
+        Integer a = 127;
+        Integer b = 127;
+        System.out.println(a==b);//true
+
+        Integer c = 128;
+        Integer d = 128;
+        System.out.println(c==d);//false
+    }
+}
+</code></pre>
+<blockquote>
+<p>因为 Integer 在常量池中的存储范围为[-128,127]， 127 在这范围内，因此是直接存储于常量池的，而<br>
+128 不在这范围内，所以会在堆内存中创建一个新的对象来保存这个值，所以 m， n 分别指向了两个不同的<br>
+对象地址，故而导致了不相等。</p>
+</blockquote>
+<h4 id="finalize">finalize</h4>
+<p>当垃圾收集器将要收集某个垃圾对象时将会调用 finalize，<strong>建议不要使用此方法，因为此方法的运行时间不确定，如果执行此方法出现错误，程序不会报告，仍然继续运行</strong></p>
+<p>JVM当看到对象类含有finalize函数，会将该对象交给FinalizerThread处理，但是处理的时间不确定。</p>
+<h3 id="11-访问控制权限">11. 访问控制权限</h3>
+<p><strong>范围由大到小的排序</strong>：<code>public &gt; protected &gt; 缺省 &gt; private</code></p>
+<blockquote>
+<p>对类的修饰只有public和缺省，内部类除外</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">修饰符</th>
+<th style="text-align:center">类的内部</th>
+<th style="text-align:center">同一个包中</th>
+<th style="text-align:center">子类</th>
+<th style="text-align:center">任何地方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">public</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center"><code>Y</code></td>
+</tr>
+<tr>
+<td style="text-align:center">protected</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center"><code>Y</code></td>
+<td style="text-align:center">N</td>
+</tr>
+<tr>
+<td style="text-align:center">缺省</td>
+<td style="text-align:center">Y</td>
+<td style="text-align:center"><code>Y</code></td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">N</td>
+</tr>
+<tr>
+<td style="text-align:center">private</td>
+<td style="text-align:center"><code>Y</code></td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">N</td>
+<td style="text-align:center">N</td>
+</tr>
+</tbody>
+</table>
+<p><strong>总结为一句话</strong>：<code>private修饰的只能类的内部调用；缺省的可以在一个包中调用；protected扩展到了子类中，比如继承某个类，则可以使用那个类的属性和方法；public可以在任何地方访问。</code></p>
+<h3 id="12-内部类">12 内部类</h3>
+<p><strong>分为四种内部类</strong>：</p>
+<ul>
+<li><strong>实例内部类</strong>：在类的内部定义的普通类</li>
+<li><strong>静态内部类</strong>：在类的内部定义的静态类</li>
+<li><strong>局部内部类</strong>：在方法中定义的普通类</li>
+<li><strong>匿名内部类</strong>：方法使用中定义的普通类，主要用来实现接口</li>
+</ul>
+<h4 id="实例内部类">实例内部类</h4>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>创建实例内部类，外部类的实例必须已经创建</li>
+<li>实例内部类会持有外部类的引用，可以直接访问外部类的属性</li>
+<li>不允许有静态声明</li>
+</ul>
+<pre><code class="language-java">public class OuterClass
+{
+    //静态变量
+    private static String s1 = &quot;静态变量&quot;;
+    //实例变量
+    private String s2 = &quot;实例变量&quot;;
+    //实例内部类
+    public class InnerClass
+    {
+        //编译错误，实例内部类中不允许有静态的声明
+        public static void m1(){}
+        //实例方法
+        public void m2(){
+            System.out.println(s1);
+            System.out.println(s2);
+        }
+    }
+    //入口
+    public static void main(String[] args){
+        OuterClass oc = new OuterClass();
+        InnerClass innerClass = oc.new InnerClass();//??
+        innerClass.m2();
+    }
+}
+</code></pre>
+<h4 id="静态内部类"><strong>静态内部类</strong></h4>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>静态内部类不会持有外部的类的引用</li>
+<li>创建时可以不用创建外部类，在静态内部类中只能直接访问外部类中所有的静态数据。</li>
+<li>静态内部类等同于静态变量</li>
+</ul>
+<pre><code class="language-java">public class OuterClass
+{
+    //静态变量
+    private static String s1 = &quot;静态变量&quot;;
+    //实例变量
+    private String s2 = &quot;实例变量&quot;;
+    //静态内部类
+    //静态内部类可以使用任何一个访问控制权限修饰符修饰。
+    protected static class InnerClass{
+        //静态方法
+        public static void m1(){
+            System.out.println(s1);
+        //System.out.println(s2);
+        }
+        //实例方法
+        public void m2(){
+            System.out.println(s1);
+        //System.out.println(s2);
+        }
+    } //入口
+    public static void main(String[] args){
+        OuterClass.InnerClass.m1();//外部类.可以省略
+        InnerClass innerClass = new OuterClass.InnerClass();
+        innerClass.m2();
+    }
+}
+</code></pre>
+<h4 id="局部内部类">局部内部类</h4>
+<ul>
+<li>局部内部类等同于局部变量</li>
+<li>局部内部类是在方法体中声明的类，该类只能在方法体中使用</li>
+<li>局部内部类不能使用 public 、 protected 、 private 修饰</li>
+<li><code>局部内部类访问本地变量的时候，方法中的参数需要使用 final 修饰</code></li>
+</ul>
+<pre><code class="language-java">public class OuterClass {
+    private int a = 100;
+    //局部变量在内部类中使用必须采用 final 修饰
+    public void method1(final int temp) {
+        class Inner3 {
+            int i1 = 10;
+            //可以访问外部类的成员变量
+            int i2 = a;
+            int i3 = temp;
+        }
+        //使用内部类
+        Inner3 inner3 = new Inner3();
+        System.out.println(inner3.i1);
+        System.out.println(inner3.i3);
+    }
+    public static void main(String[] args) {
+        OuterClass out = new OuterClass ();
+        out.method1(300);
+    }
+}
+</code></pre>
+<h4 id="匿名内部类">匿名内部类</h4>
+<ul>
+<li>是一种特殊的内部类，该类没有名字</li>
+<li>通过new 关键字创建，并加上方法体</li>
+<li>主要用于实现接口</li>
+</ul>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args){
+        //在方法中实现接口
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                
+            }
+        }).run();
+    }
+}
+</code></pre>
+<h2 id="四-异常">四、异常</h2>
+<blockquote>
+<p>任意的异常都是在运行时发生的！！！</p>
+</blockquote>
+<h3 id="1-异常的体系">1. 异常的体系</h3>
+<p><code>所有的异常都是Throwable的子类</code></p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNjI4MTA1MTE2MjM4LnBuZw?x-oss-process=image/format,png" alt="image-20200628105116238" loading="lazy"></figure>
+<p><strong>Thorwable有两个直接子类Error和Exception</strong></p>
+<p><strong>Error</strong>:</p>
+<ul>
+<li>在 Java 中只要 Error 发生了就一种结果——退出 JVM，例如 StackOverError</li>
+</ul>
+<p><strong>Exception的直接子类</strong>：</p>
+<ul>
+<li>
+<p>Exception 的直接子类叫做<strong>编译时异常、受控异常、检查异常</strong>。它虽然叫做编译时异常，但是它不是发<br>
+生在编译阶段的异常， 之所以叫做编译时异常是因为编译时异常要求必须在程序编译的阶段就手动的处理，如果不处理这些异常的话，程序无法编译通过。</p>
+</li>
+<li>
+<p>对于编译时异常有两种手段处理，<strong>一是 try catch 捕获，一是 throws 抛出</strong></p>
+</li>
+</ul>
+<p><strong>RuntimeException 的直接子类</strong>：</p>
+<ul>
+<li>RuntimeException 的直接子类叫做<strong>运行时异常、非受控异常、非检查异常</strong>。这种异常不要求在程序编译<br>
+阶段处理，编译也可以通过</li>
+<li>比如说除0异常</li>
+</ul>
+<p><strong>自定义异常</strong>：</p>
+<ul>
+<li>JDK 提供的异常不能够满足要求的情况下用户可以自己自定义异常，可以根据实际情况选择继承Exception 或者 RuntimeException 两种形式。</li>
+</ul>
+<h3 id="2-说出几个常见的异常">2. 说出几个常见的异常</h3>
+<p><strong>Error</strong></p>
+<ul>
+<li>StackOverError（堆溢出）</li>
+<li>OutOfMemoryError（内存溢出）</li>
+</ul>
+<p><strong>受控异常</strong></p>
+<ul>
+<li>IOException（IO异常）</li>
+<li>SQLException（SQL异常）</li>
+<li>ClassNotFoundException（找不到指定的类异常）</li>
+</ul>
+<p><strong>不受控异常</strong></p>
+<ul>
+<li>
+<p>NullPointerException（空指针异常）</p>
+</li>
+<li>
+<p>ArithmeticException（算术异常）</p>
+</li>
+<li>
+<p>ArrayIndexOutOfBoundsException（数组下表越界异常）</p>
+</li>
+</ul>
+<h3 id="3-异常处理">3. 异常处理</h3>
+<blockquote>
+<p><code>异常的捕获应该从小到大</code></p>
+</blockquote>
+<p><strong>一般有两种方式</strong></p>
+<ul>
+<li>try...catch...finally....</li>
+<li>thorws抛给调用者</li>
+</ul>
+<p><strong>finally 在任何情况下都会执行，除非JVM挂掉，通常在 finally 里关闭资源</strong></p>
+<pre><code class="language-java">public class ExceptionTest12 {
+    public static void main(String[] args) {
+        int r = method1();
+        //输出为： 100？ 50？
+        System.out.println(r);//输出是50
+    }
+    private static int method1() {
+        int a = 10;
+        try {
+            a = 50;
+            return a;//直接返回值
+        }finally {
+            a = 100;//该语句也会执行，只是a已经返回
+        }
+    }
+}
+</code></pre>
+<p><strong>throws 和 throw 的区别 ？</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">throws</th>
+<th style="text-align:center">throw</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">thorws 是声明异常</td>
+<td style="text-align:center">thorws 是声明异常</td>
+</tr>
+<tr>
+<td style="text-align:center">用在函数上</td>
+<td style="text-align:center">用在函数内部</td>
+</tr>
+</tbody>
+</table>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%A6%82%E8%BF%B0">一、 概述</a>
+<ul>
+<li><a href="#1-jdk%E7%89%88%E6%9C%AC">1. JDK版本</a></li>
+<li><a href="#2-java%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7">2. Java语言特性</a></li>
+<li><a href="#3-java%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%B8%8E%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B">3. Java的加载与执行过程</a></li>
+<li><a href="#4-jvm-jdk%E5%92%8Cjre%E7%9A%84%E5%8C%BA%E5%88%AB">4. JVM、JDK和JRE的区别</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-java%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80">二、Java语言基础</a>
+<ul>
+<li><a href="#1-%E5%85%AB%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B">1. 八种基本类型</a></li>
+<li><a href="#2-%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81">2. 字符编码</a></li>
+<li><a href="#3-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">3. 类型转换</a></li>
+<li><a href="#4-%E8%BF%90%E7%AE%97%E7%AC%A6">4. 运算符</a></li>
+<li><a href="#5-%E6%8E%A7%E5%88%B6%E8%AF%AD%E5%8F%A5">5. 控制语句</a></li>
+<li><a href="#6-%E6%96%B9%E6%B3%95">6. 方法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">三、 面向对象</a>
+<ul>
+<li><a href="#1-%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8C%BA%E5%88%AB">1. 面向过程与面向对象的区别</a></li>
+<li><a href="#2-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%89%B9%E5%BE%81">2. 面向对象特征</a>
+<ul>
+<li><a href="#%E5%B0%81%E8%A3%85">封装</a></li>
+<li><a href="#%E7%BB%A7%E6%89%BF">继承</a></li>
+<li><a href="#%E5%A4%9A%E6%80%81">多态</a></li>
+<li><a href="#%E6%8A%BD%E8%B1%A1">抽象</a></li>
+</ul>
+</li>
+<li><a href="#3-%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92">3. 参数传递</a></li>
+<li><a href="#4-%E5%85%B3%E9%94%AE%E5%AD%97">4. 关键字</a>
+<ul>
+<li><a href="#this-%E5%85%B3%E9%94%AE%E5%AD%97">this 关键字：</a></li>
+<li><a href="#super-%E5%85%B3%E9%94%AE%E5%AD%97">super 关键字</a></li>
+<li><a href="#static-%E5%85%B3%E9%94%AE%E5%AD%97">static 关键字</a></li>
+<li><a href="#final%E5%85%B3%E9%94%AE%E5%AD%97">final关键字</a></li>
+</ul>
+</li>
+<li><a href="#5-%E4%BB%A3%E7%A0%81%E5%9D%97">5. 代码块</a>
+<ul>
+<li><a href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%A0%81%E5%9D%97">静态代码块</a></li>
+<li><a href="#%E5%AE%9E%E4%BE%8B%E8%AF%AD%E5%8F%A5%E5%9D%97">实例语句块</a></li>
+</ul>
+</li>
+<li><a href="#6-%E7%B1%BB%E7%9A%84%E7%BB%A7%E6%89%BF">6. 类的继承</a></li>
+<li><a href="#7-static-%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%E5%92%8C%E7%88%B6%E5%AD%90%E7%B1%BB%E7%9A%84%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F">7. static、构造方法和父子类的调用顺序</a></li>
+<li><a href="#8-%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3">8. 抽象类和接口（***）</a>
+<ul>
+<li><a href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB">抽象类</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3">接口</a></li>
+</ul>
+</li>
+<li><a href="#9-%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB">9. 类之间的关系</a></li>
+<li><a href="#10-object%E7%B1%BB">10. Object类</a>
+<ul>
+<li><a href="#equals">equals</a></li>
+<li><a href="#finalize">finalize</a></li>
+</ul>
+</li>
+<li><a href="#11-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%9D%83%E9%99%90">11. 访问控制权限</a></li>
+<li><a href="#12-%E5%86%85%E9%83%A8%E7%B1%BB">12 内部类</a>
+<ul>
+<li><a href="#%E5%AE%9E%E4%BE%8B%E5%86%85%E9%83%A8%E7%B1%BB">实例内部类</a></li>
+<li><a href="#%E9%9D%99%E6%80%81%E5%86%85%E9%83%A8%E7%B1%BB"><strong>静态内部类</strong></a></li>
+<li><a href="#%E5%B1%80%E9%83%A8%E5%86%85%E9%83%A8%E7%B1%BB">局部内部类</a></li>
+<li><a href="#%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB">匿名内部类</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%BC%82%E5%B8%B8">四、异常</a>
+<ul>
+<li><a href="#1-%E5%BC%82%E5%B8%B8%E7%9A%84%E4%BD%93%E7%B3%BB">1. 异常的体系</a></li>
+<li><a href="#2-%E8%AF%B4%E5%87%BA%E5%87%A0%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E5%BC%82%E5%B8%B8">2. 说出几个常见的异常</a></li>
+<li><a href="#3-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86">3. 异常处理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div><script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-06-28，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-28 12:01:15";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>15</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

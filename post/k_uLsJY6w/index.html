@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>秒杀策略（缓存+消息队列） | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/k_uLsJY6w/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1593396038030" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>秒杀策略（缓存+消息队列）</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-27</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Gqtigt-YP/" class="tag">高并发项目</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">3144字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">13 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/d802a941-e36d-41fd-8d43-ef45c2ef1758.jpg" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该项目为仅供个人学习使用！！！<br>
+个人博客地址：<a href="https://blog.csdn.net/qq_43040688">https://blog.csdn.net/qq_43040688</a><br>
+个人网站地址：<a href="http://www.xzzz2020.cn/">http://www.xzzz2020.cn/</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B">一、项目简介</a></li>
+<li><a href="#%E4%BA%8C-%E6%8A%80%E6%9C%AF%E6%A0%88">二、技术栈</a></li>
+<li><a href="#%E4%B8%89-%E8%AF%A6%E7%BB%86%E5%AE%9E%E7%8E%B0">三、详细实现</a>
+<ul>
+<li><a href="#31-%E5%88%86%E5%B8%83%E5%BC%8Fsession">3.1 分布式Session</a></li>
+<li><a href="#32-%E9%A1%B5%E9%9D%A2%E7%BC%93%E5%AD%98-url%E7%BC%93%E5%AD%98">3.2  页面缓存 + URL缓存</a></li>
+<li><a href="#33-%E5%AF%B9%E8%B1%A1%E7%BA%A7%E7%BC%93%E5%AD%98">3.3 对象级缓存</a></li>
+<li><a href="#34-%E6%A0%B8%E5%BF%83%E6%8E%A5%E5%8F%A3%E4%BC%98%E5%8C%96">3.4 核心接口优化</a></li>
+<li><a href="#35-%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8%E4%BC%98%E5%8C%96">3.5 接口安全优化</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B5%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98">四、 项目实践中遇到的问题</a>
+<ul>
+<li><a href="#41-%E7%A7%92%E6%9D%80%E6%88%90%E5%8A%9F%E5%95%86%E5%93%81%E8%AE%A2%E5%8D%95%E6%95%B0%E8%B6%85%E8%BF%87%E9%A2%84%E8%AE%A2%E6%95%B0%E5%80%BC">4.1  秒杀成功商品订单数超过预订数值</a></li>
+<li><a href="#42-%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7%E7%9A%84%E5%A4%9A%E4%B8%AA%E8%AF%B7%E6%B1%82%E5%AF%BC%E8%87%B4%E7%A7%92%E6%9D%80%E6%88%90%E5%8A%9F%E7%A7%92%E6%9D%80%E5%A4%9A%E6%AC%A1">4.2  一个用户的多个请求导致秒杀成功秒杀多次</a></li>
+<li><a href="#43-%E4%BD%BF%E7%94%A8%E4%BA%86%E7%BC%93%E5%AD%98%E4%BE%9D%E7%84%B6%E4%BC%9A%E5%A4%A7%E9%87%8F%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93">4.3 使用了缓存依然会大量访问数据库</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E6%8E%A5%E4%B8%8B%E6%9D%A5%E7%9A%84%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF">五、 接下来的优化思路</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-项目简介">一、项目简介</h2>
+<p>该项目主要学习常用的高并发优化技术，并发的瓶颈往往在数据库，采用缓存和消息队列对接口进行优化减少对数据优化，掌握面对高并发场景下的设计思路：</p>
+<ul>
+<li>以 <strong>Spring Boot</strong> 为主线的技术栈，使用了 <strong>Mybatis+Druid</strong> ，采用<strong>前后端分离</strong>架构</li>
+<li>整个项目基于商品的 <strong>秒杀接口</strong>，设计登录、商品展示以及订单展示等一系列的功能</li>
+<li>接口高并发的优化主要利用 <strong>Redis实现页面缓存 + URL缓存 + 对象缓存</strong> ，利用 <strong>前后端分离实现页面静态化</strong> 以及整合 <strong>RabbitMQ实现异步下单</strong> 的优化。<code>QPS优化至少两倍</code></li>
+<li>用户登录信息使用 <strong>Cookie+Redis实现分布式Session</strong> ，使用 <strong>拦截器+自定义参数解析器</strong> ，获取用户信息。<code>解决了不同服务器之间出现的缓存不一致或者服务器宕机Session消失的问题</code></li>
+<li>接口安全实现了 <strong>秒杀接口地址隐藏 + 数学公式验证码 + 利用Redis实现接口防刷</strong>。<code>防止机器人对于核心业务的攻击</code></li>
+<li>利用<strong>Jmeter模拟5000个用户，使用1万个线程</strong>，对商品展示接口和秒杀接口进行压测。<code>商品展示接口优化前QPS：584.8，优化后QPS：2085.9；秒杀接口优化前QPS：351.8，优化后QPS：2242.7</code></li>
+</ul>
+<h2 id="二-技术栈">二、技术栈</h2>
+<p><strong>前端</strong></p>
+<ul>
+<li><code>Bootstrap</code></li>
+<li><code>Ajax</code></li>
+<li><code>thymeleaf</code></li>
+</ul>
+<p><strong>后端</strong></p>
+<ul>
+<li><code>SpringBoot</code></li>
+<li><code>Mybatis</code></li>
+<li><code>Druid</code></li>
+<li><code>Jedis</code></li>
+<li><code>fastjson</code></li>
+</ul>
+<p><strong>数据库</strong></p>
+<ul>
+<li><code>MySQL</code></li>
+<li><code>Redis</code></li>
+</ul>
+<p><strong>中间件</strong></p>
+<ul>
+<li><code>RabbitMQ</code></li>
+</ul>
+<p><strong>测试</strong></p>
+<ul>
+<li><code>Jmeter</code></li>
+</ul>
+<h2 id="三-详细实现">三、详细实现</h2>
+<h3 id="31-分布式session">3.1 分布式Session</h3>
+<p>常用的有三种分布式Session解决方案：<code>服务器之间Session共享</code>、<code>Session绑定</code>、<code>Cookie+缓存</code>。<strong>本项目使用的就是Cookie+缓存的方式</strong>。下面将介绍这几种方式：</p>
+<blockquote>
+<p><strong>服务器之间Session共享</strong>：</p>
+<ul>
+<li>使用一台作为用户的登录服务器，当用户登录成功之后，会将session写到当前服务器上，我们通过脚本或者守护进程将session同步到其他服务器上，这时当用户跳转到其他服务器，session一致，也就不用再次登录。</li>
+<li><strong>缺陷</strong>：速度慢，同步session有延迟性，可能导致跳转服务器之后，session未同步。而且单向同步时，登录服务器宕机，整个系统都不能正常运行。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>Session绑定</strong>：</p>
+<ul>
+<li>基于nginx的ip-hash策略，可以对客户端和服务器进行绑定，同一个客户端就只能访问该服务器，无论客户端发送多少次请求都被同一个服务器处理</li>
+<li><strong>缺陷</strong>：容易造成单点故障，如果有一台服务器宕机，那么该台服务器上的session信息将会丢失前端不能有负载均衡，如果有，session绑定将会出问题</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>Cookie+缓存</strong></p>
+<ul>
+<li>将用户信息保存在<code>Redis</code>上，将键值放在<code>Cookie</code>中传递给浏览器，浏览器再下一次的访问中就会携带该Cookie。此时利用<code>拦截器+自定义参数解析器</code> 解析用户的Cookie，从缓存中获取数据传递给方法。</li>
+</ul>
+</blockquote>
+<p><strong>部分代码如下：</strong></p>
+<blockquote>
+<p>利用Cookie + 加缓存保存用户信息</p>
+</blockquote>
+<pre><code class="language-java">/**
+ * 分布式Session的思路是将数据存放在Redis中
+ * 将数据的key放在cookie中发送给用户
+ * 用户会携带cookie访问
+ * 获取期中的token，从redis中获取
+ * 每次访问都会生成一个新的，延长有效期
+ */
+private void addCookie(HttpServletResponse response, String token, MiaoshaUser user) {
+    //生成Cookie
+    //生成一个随机字符串token，去掉&quot;-&quot;
+    //将token + 加上Redis通用缓存Key，保存在redis中
+    redisService.set(MiaoshaUserKey.getByToken(), token, user);
+    //生成Cookie，只将token存放在cookie,防止用户获取其他用户信息
+    Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);
+    //将Cookie的时间和Redis缓存时间一直
+    cookie.setMaxAge(MiaoshaUserKey.getByToken().expireSeconds());
+    //将Cookie存放在根目录
+    cookie.setPath(&quot;/&quot;);
+    ////将Cookie返回给浏览器
+    response.addCookie(cookie);
+}
+</code></pre>
+<h3 id="32-页面缓存-url缓存">3.2  页面缓存 + URL缓存</h3>
+<p>页面缓存和URL缓存主要差异在于URL缓存<strong>会根据URL的变化，数据会有所不同</strong>，如某个商品的详细信息、视频的详细信息等。</p>
+<p>故只介绍商品列表页面缓存技术：</p>
+<blockquote>
+<p><strong>页面缓存</strong></p>
+<ul>
+<li>当客户的请求到达后端时，<code>先去redis中查询缓存，如果缓存中找不到，则进行数据库逻辑操作，然后渲染，存入缓存并返回给前端</code></li>
+<li>如果在缓存中找到了则直接返回给前端。</li>
+<li>存储在Redis缓存中的页面需要设置超时时间，缓存的时间长度根据页面数据变化频繁程度适当调整。目前大多数页面<code>缓存都是在60~120秒</code>，少数几乎不变化的可以调整到5分钟!</li>
+</ul>
+</blockquote>
+<p><strong>部分代码实现</strong>：</p>
+<blockquote>
+<p>商品列表的Controller层</p>
+</blockquote>
+<pre><code class="language-java">    @RequestMapping(value = &quot;/to_list&quot;, produces = &quot;text/html&quot;)
+    @ResponseBody
+    public String toGoods(Model model, MiaoshaUser user,
+                          final HttpServletRequest request,
+                          final HttpServletResponse response) {
+
+        //取缓存
+        String html;
+        html = redisService.get(GoodsKey.getGoodsList(), &quot;&quot;, String.class);
+        if (html != null) {//如果缓存有这个页面
+            return html;
+        } else {//如果没有这个页面
+            //访问数据库获取商品数据
+            List&lt;GoodsVo&gt; goodsList = goodsService.listGoodsVo();
+            if (user != null) {
+                //如果有用户信息，则保存在Model中
+                model.addAttribute(&quot;user&quot;, user);
+            }
+            //将商品数据保存在Model中
+            model.addAttribute(&quot;goodsList&quot;, goodsList);
+
+            //手动渲染
+            SpringWebContext springWebContext = new SpringWebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap(), context);
+            html = viewResolver.getTemplateEngine().process(&quot;goods_list&quot;, springWebContext);
+            if (!StringUtils.isEmpty(html)) {
+                //保存到缓存，缓存时间只有60秒，不宜过长
+                redisService.set(GoodsKey.getGoodsList(), &quot;&quot;, html);
+            }
+            //返回到浏览器
+            return html;
+        }
+
+    }
+</code></pre>
+<p><strong>接下来使用Jmeter启动1万个线程进行压测：</strong></p>
+<blockquote>
+<p>优化前，可以看的<code>吞吐量达到584.8</code><br>
+<img src="en-resource://database/948:1" alt="55bc54085c699c92fc6a66b4986169c9.png" loading="lazy"></p>
+</blockquote>
+<blockquote>
+<p>优化后，可以看的<code>吞吐量达到2085.9</code><br>
+<img src="en-resource://database/946:1" alt="87002fe601459eaaff41c543660a6592.png" loading="lazy"></p>
+</blockquote>
+<h3 id="33-对象级缓存">3.3 对象级缓存</h3>
+<p>相比页面缓存是更细粒度缓存。在实际项目中， 不会大规模使用页面缓存，因为涉及到分页，一般只缓存前面1-2页。对象缓存就是 当用到用户数据的时候，可以从缓存中取出。</p>
+<p><strong>需要注意两个问题</strong>：</p>
+<ul>
+<li>一旦数据发生更改，一定要将缓存失效</li>
+<li>Service之间相互调用，切忌不能直接调用DAO，因为可能中间调用了缓存</li>
+</ul>
+<p><strong>部分代码实现</strong>：</p>
+<blockquote>
+<p>保存用户信息</p>
+</blockquote>
+<pre><code class="language-java">/**
+ * 这个是对象级的缓存
+ * 从缓存中取出用户信息
+ * &lt;p&gt;
+ * 和页面缓存最大的区别是：1.时间是永久的 2.当对象发生更新时，需删除或者更新缓存
+ * &lt;p&gt;
+ * 从这里可以看出，Service之间相互调用，切忌不能直接调用DAO，因为可能中间调用了缓存
+ */
+public MiaoshaUser getById(long id) {
+    //取缓存
+    MiaoshaUser user;
+    user = redisService.get(MiaoshaUserKey.getById(), &quot;:&quot; + id, MiaoshaUser.class);
+    if (user != null) {
+        return user;
+    } else {
+        //取数据库，加入到缓存中
+        user = miaoshaUserDao.getById(id);
+        redisService.set(MiaoshaUserKey.getById(), &quot;:&quot; + id, user);
+        return user;
+    }
+}
+</code></pre>
+<h3 id="34-核心接口优化">3.4 核心接口优化</h3>
+<blockquote>
+<p><strong>核心的业务接口优化主要思路是</strong>：</p>
+<ul>
+<li>使用利用Redis保存<code>商品库存的数量</code>、<code>用户的秒杀成功的订单信息</code>和<code>商品是否秒杀完的标记</code>，这样请求更多的访问缓存，减少对数据库的压力</li>
+<li>若用户秒杀成功，利用<code>RabbitMQ实现异步下单，服务器控制访问数据库的压力，让用户暂时等待</code>，这样可以优化用户的体验，防止出现服务器宕机等问题</li>
+</ul>
+</blockquote>
+<p><strong>部分代码如下所示</strong>：</p>
+<blockquote>
+<p>秒杀接口Controller</p>
+</blockquote>
+<pre><code class="language-java">@RequestMapping(value = &quot;/{path}/do_miaosha&quot;, method = RequestMethod.POST)
+@ResponseBody
+public Result&lt;Integer&gt; do_miaosha(MiaoshaUser user,
+                                  @RequestParam(&quot;goodsId&quot;) long goodsId,
+                                  @PathVariable(&quot;path&quot;) String path) {
+
+    //判断用户是否登录，如果没用登录，则传递提示信息
+    if (user == null) {
+        return Result.error(CodeMsg.SESSION_ERROR);
+    }
+
+    //隐藏了访问接口，需要验证path
+    if (StringUtils.isEmpty(path)) {
+        return Result.error(CodeMsg.REQUEST_ILLEGAL);
+    }
+    boolean check = miaoshaService.checkPath(path, user.getId(), goodsId);
+    if (!check) {
+        return Result.error(CodeMsg.REQUEST_ILLEGAL);
+    }
+    
+    //判断是否秒杀到了
+    MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
+    //如果能够获取订单，说明该用户已经秒杀到商品
+    if (order != null) {
+        return Result.error(CodeMsg.REPEATE_MIAO_SHA);
+    }
+    //判断是否秒杀已经结束
+    Boolean over = localOverMap.get(goodsId);
+    if (over) {
+        return Result.error(CodeMsg.MIAO_SHA_OVER);
+    }
+
+    //预减库存
+    long stock = redisService.decr(GoodsKey.getMiaoGoodsStock(), &quot;:&quot; + goodsId);
+    if (stock &lt; 0) {//如果发现库存不足，则将秒杀结束的标记置成true
+        localOverMap.put(goodsId, true);
+        return Result.error(CodeMsg.MIAO_SHA_OVER);
+    }
+
+    //保存信息
+    MiaoshaMessage miaoshaMessage = new MiaoshaMessage();
+    miaoshaMessage.setGoodsId(goodsId);
+    miaoshaMessage.setUser(user);
+    //入队，实现异步下单
+    mqSender.sendMiaoshaMessage(miaoshaMessage);
+    //返回客户端订单处理中
+    return Result.success(0);//排队中
+}
+</code></pre>
+<blockquote>
+<p>消息的发送者</p>
+</blockquote>
+<pre><code class="language-java">public void sendMiaoshaMessage(MiaoshaMessage miaoshaMessage) {
+    //将数据序列化字符串
+    String str = SerializableUtil.beanToString(miaoshaMessage);
+    //发送消息
+    amqpTemplate.convertAndSend(MQConfig.MIAOSHA_QUEUE,str);
+}
+</code></pre>
+<blockquote>
+<p>消息的接收者</p>
+</blockquote>
+<pre><code class="language-java">@RabbitListener(queues = MQConfig.MIAOSHA_QUEUE)
+public void miaoshaReceive(String message) {
+    //将消息反序列化
+    MiaoshaMessage miaoshaMessage = SerializableUtil.stringToBean(message, MiaoshaMessage.class);
+    //获取用户
+    MiaoshaUser user = miaoshaMessage.getUser();
+    //获取用户id
+    long goodsId = miaoshaMessage.getGoodsId();
+    //再次判断库存是否足够
+    GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
+    Integer stockCount = goods.getStockCount();
+    //如果库存不足，则直接返回
+    if (stockCount &lt;= 0) {
+        return;
+    }
+    //减库存 下订单 写入订单 一个事务中
+    miaoshaService.miaosha(user, goods);
+}
+</code></pre>
+<blockquote>
+<p>订单的处理</p>
+</blockquote>
+<pre><code class="language-java">@Transactional
+public OrderInfo miaosha(MiaoshaUser user, GoodsVo goods) {
+    //减库存
+    boolean success = goodsService.reduceStock(goods);
+    if (success){
+        //下订单
+        return orderService.creatOrder(user,goods);
+    }else {
+        //如果库存不足，设置商品已经卖完
+        setGoodsOver(goods.getId());
+    }
+    return null;
+}
+
+/**
+ * 设置商品已经卖完
+ */
+private void setGoodsOver(Long id) {
+    redisService.set(MiaoshaKey.getMiaoshaOver(),&quot;:&quot;+id,true);
+}
+</code></pre>
+<p><strong>接下来使用Jmeter启动1万个线程，模拟5000个用户进行压测</strong>：</p>
+<blockquote>
+<p>优化前，可以看的<code>吞吐量达到351.8</code><br>
+<img src="en-resource://database/950:1" alt="d1c3599b1b848a55b7270ab5e2491162.png" loading="lazy"></p>
+</blockquote>
+<blockquote>
+<p>优化后，可以看的<code>吞吐量达到2242.7</code><br>
+<img src="en-resource://database/952:1" alt="cfd03964c83a1181d88a19802e1d1f84.png" loading="lazy"></p>
+</blockquote>
+<h3 id="35-接口安全优化">3.5 接口安全优化</h3>
+<p>接口的安全优化主要的防止恶意用户的访问，以及减少瞬时用户的并发量</p>
+<blockquote>
+<p><strong>接口隐藏</strong></p>
+</blockquote>
+<ul>
+<li>由于前端的代码在浏览器，所以可以轻易的获取到核心业务的接口</li>
+<li><strong>解决</strong>：地址是在客户端动态生成的，前端需要先获取地址信息，然后在发送给服务器，服务器会对浏览器的地址进行处理并和真实的地址进行比较</li>
+</ul>
+<blockquote>
+<p><strong>数学问题验证码</strong></p>
+<ul>
+<li>验证码主要防止机器人的大量访问，以及将用户的请求分散开，避免集中的下单<br>
+<strong>解决</strong>：服务器生成验证码，通过前端输入进行验证</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>接口防刷</strong></p>
+<ul>
+<li>恶意用户可能会大量的访问服务器，给服务器造成压力<br>
+<strong>解决</strong>：利用缓存，保存一定时间的访问数，如果超过一定限制，则直接拒绝访问</li>
+</ul>
+</blockquote>
+<h2 id="四-项目实践中遇到的问题">四、 项目实践中遇到的问题</h2>
+<h3 id="41-秒杀成功商品订单数超过预订数值">4.1  秒杀成功商品订单数超过预订数值</h3>
+<p><strong>问题分析</strong>：</p>
+<ul>
+<li>该问题主要因为在高并发下，线程不安全导致的</li>
+<li>在判断是否秒杀成功时，多个用户通过了判断，然后才减少了库存</li>
+</ul>
+<p><strong>问题解决</strong>：</p>
+<ul>
+<li>MySQL数据库在更新数据时，会自动加锁</li>
+<li>在SQL语句中减少库存时，判断库存是否大于0，如果不是则执行失败，订单回滚</li>
+</ul>
+<h3 id="42-一个用户的多个请求导致秒杀成功秒杀多次">4.2  一个用户的多个请求导致秒杀成功秒杀多次</h3>
+<p><strong>问题分析</strong>：</p>
+<ul>
+<li>由于采用的异步下单，在该用户订单没有完成时，则可能会出现一个用户同时下多个订单</li>
+</ul>
+<p><strong>问题解决</strong>：</p>
+<ul>
+<li>设计数据库表时，多设计一个秒杀的订单，和普通的订单分离</li>
+<li>在秒杀订单上，user_id采用唯一索引</li>
+</ul>
+<h3 id="43-使用了缓存依然会大量访问数据库">4.3 使用了缓存依然会大量访问数据库</h3>
+<p><strong>问题分析</strong>：</p>
+<ul>
+<li>由于为了简便，在Service上面统统加了@Transactional注解，会导致所有的方法启用事务</li>
+<li>此时即使使用了缓存，也依然会访问数据库，最终造成数据库压力过大</li>
+</ul>
+<p><strong>问题解决</strong>：</p>
+<ul>
+<li>只在需要事务的方法上使用@Transactiona注解，提高性能</li>
+</ul>
+<h2 id="五-接下来的优化思路">五、 接下来的优化思路</h2>
+<ul>
+<li><code>静态资源优化</code></li>
+<li><code>CDN加速</code></li>
+<li><code>Nginx水平扩展</code></li>
+</ul>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B">一、项目简介</a></li>
+<li><a href="#%E4%BA%8C-%E6%8A%80%E6%9C%AF%E6%A0%88">二、技术栈</a></li>
+<li><a href="#%E4%B8%89-%E8%AF%A6%E7%BB%86%E5%AE%9E%E7%8E%B0">三、详细实现</a>
+<ul>
+<li><a href="#31-%E5%88%86%E5%B8%83%E5%BC%8Fsession">3.1 分布式Session</a></li>
+<li><a href="#32-%E9%A1%B5%E9%9D%A2%E7%BC%93%E5%AD%98-url%E7%BC%93%E5%AD%98">3.2  页面缓存 + URL缓存</a></li>
+<li><a href="#33-%E5%AF%B9%E8%B1%A1%E7%BA%A7%E7%BC%93%E5%AD%98">3.3 对象级缓存</a></li>
+<li><a href="#34-%E6%A0%B8%E5%BF%83%E6%8E%A5%E5%8F%A3%E4%BC%98%E5%8C%96">3.4 核心接口优化</a></li>
+<li><a href="#35-%E6%8E%A5%E5%8F%A3%E5%AE%89%E5%85%A8%E4%BC%98%E5%8C%96">3.5 接口安全优化</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B5%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98">四、 项目实践中遇到的问题</a>
+<ul>
+<li><a href="#41-%E7%A7%92%E6%9D%80%E6%88%90%E5%8A%9F%E5%95%86%E5%93%81%E8%AE%A2%E5%8D%95%E6%95%B0%E8%B6%85%E8%BF%87%E9%A2%84%E8%AE%A2%E6%95%B0%E5%80%BC">4.1  秒杀成功商品订单数超过预订数值</a></li>
+<li><a href="#42-%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7%E7%9A%84%E5%A4%9A%E4%B8%AA%E8%AF%B7%E6%B1%82%E5%AF%BC%E8%87%B4%E7%A7%92%E6%9D%80%E6%88%90%E5%8A%9F%E7%A7%92%E6%9D%80%E5%A4%9A%E6%AC%A1">4.2  一个用户的多个请求导致秒杀成功秒杀多次</a></li>
+<li><a href="#43-%E4%BD%BF%E7%94%A8%E4%BA%86%E7%BC%93%E5%AD%98%E4%BE%9D%E7%84%B6%E4%BC%9A%E5%A4%A7%E9%87%8F%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE%E5%BA%93">4.3 使用了缓存依然会大量访问数据库</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E6%8E%A5%E4%B8%8B%E6%9D%A5%E7%9A%84%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF">五、 接下来的优化思路</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div><script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-06-27，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-27 12:07:10";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>15</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>
