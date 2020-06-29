@@ -47,7 +47,7 @@ function fuzzySearch(data, phrase) {
     var options = {
         shouldSort: true,
         includeMatches: true,
-        threshold: 0.3,// 匹配算法阈值。阈值为0.0需要完全匹配（字母和位置），阈值为1.0将匹配任何内容。
+        threshold: 0.5,// 匹配算法阈值。阈值为0.0需要完全匹配（字母和位置），阈值为1.0将匹配任何内容。
         location: 0,// 确定文本中预期找到的模式的大致位置。
         /**
          * 确定匹配与模糊位置（由位置指定）的距离。一个精确的字母匹配，即距离模糊位置很远的字符将被视为完全不匹配。
@@ -199,7 +199,6 @@ function getResult(infos, searchedContents) {
     for (var i = 0; i < infos.posts.length; i++) {
         for (var j = 0; j < searchedContents.length; j++) {
             if (searchedContents[j].item.link === infos.posts[i].link) {
-                
                 infos.posts[i].searchedPreview = keywordsHighlight(searchedContents[j]);//预览关键字高亮
                 infos.posts[i].content = searchedContents[j].item.content;//content注入
                 searchedInfos.posts.push(infos.posts[i]);//push到所需结果中
