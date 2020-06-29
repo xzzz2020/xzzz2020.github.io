@@ -186,7 +186,13 @@ function keywordsHighlight(searchedContent) {
             preview = beforeKeyword + '<span class="searched-keyword">'
                 + keyword + '</span>' + afterKeyword;
         } else {//没有匹配到文章内容，则是标题
-            preview = searchedPostContent.substring(0, 80);
+            var indices = searchedContent.matches[i].indices[0];
+            var beforeKeyword = searchedPostContent.substring(indices[0] - 10, indices[0]);//关键字前20字
+            var keyword = searchedPostContent.substring(indices[0], indices[1] + 1);//关键字
+            var afterKeyword = searchedPostContent.substring(indices[1] + 1, indices[1] + 70);//关键字后80字
+            preview = beforeKeyword + '<span class="searched-keyword">'
+                + keyword + '</span>' + afterKeyword;
+            //preview = searchedPostContent.substring(0, 80);
         }
     }
     return preview + '...';
