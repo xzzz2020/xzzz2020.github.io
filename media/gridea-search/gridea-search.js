@@ -198,13 +198,12 @@ function getResult(infos, searchedContents) {
     searchedInfos.posts = [];
     for (var i = 0; i < infos.posts.length; i++) {
         for (var j = 0; j < searchedContents.length; j++) {
-            //if (searchedContents[j].item.link === infos.posts[i].link) {
-                if (searchedContents[j].score < 0.2) {
-                    infos.posts[i].searchedPreview = keywordsHighlight(searchedContents[j]);//预览关键字高亮
-                    infos.posts[i].content = searchedContents[j].item.content;//content注入
-                    searchedInfos.posts.push(infos.posts[i]);//push到所需结果中
-                }
-            //}
+            if (searchedContents[j].item.link === infos.posts[i].link) {
+                
+                infos.posts[i].searchedPreview = keywordsHighlight(searchedContents[j]);//预览关键字高亮
+                infos.posts[i].content = searchedContents[j].item.content;//content注入
+                searchedInfos.posts.push(infos.posts[i]);//push到所需结果中
+            }
         }
     }
     return searchedInfos;
