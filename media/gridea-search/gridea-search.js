@@ -33,14 +33,30 @@ function ajax(obj) {
 
 //模糊搜索
 function fuzzySearch(data, phrase) {
+    var phrase_len = phrase.length;
+    var min_len = 4;
+    var max_len = 32;
+    if(phrase_len<4){
+        min_len = phrase_len;
+    }
+    if(phrase_len<=0){
+        min_len = 99999999;
+        max_len = 99999999;
+    }
+
     var options = {
         shouldSort: true,
         includeMatches: true,
-        threshold: 0.5,
-        location: 0,
+        threshold: 0.5,// 匹配算法阈值。阈值为0.0需要完全匹配（字母和位置），阈值为1.0将匹配任何内容。
+        location: 0,// 确定文本中预期找到的模式的大致位置。
+        /**
+         * 确定匹配与模糊位置（由位置指定）的距离。一个精确的字母匹配，即距离模糊位置很远的字符将被视为完全不匹配。
+         *  距离为0要求匹配位于指定的准确位置，距离为1000则要求完全匹配位于使用阈值0.8找到的位置的800个字符以内。
+         */
         distance: 1000,
-        maxPatternLength: 32,
-        minMatchCharLength: 1,
+        maxPatternLength: max_len, // 模式的最大长度
+        minMatchCharLength: min_len, // 模式的最小字符长度
+        // 搜索标题与作者名
         keys: [
             'title',
             'content'
