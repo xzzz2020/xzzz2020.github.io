@@ -47,7 +47,7 @@ function fuzzySearch(data, phrase) {
     var options = {
         shouldSort: true,
         includeMatches: true,
-        threshold: 0.5,// 匹配算法阈值。阈值为0.0需要完全匹配（字母和位置），阈值为1.0将匹配任何内容。
+        threshold: 0.3,// 匹配算法阈值。阈值为0.0需要完全匹配（字母和位置），阈值为1.0将匹配任何内容。
         location: 0,// 确定文本中预期找到的模式的大致位置。
         /**
          * 确定匹配与模糊位置（由位置指定）的距离。一个精确的字母匹配，即距离模糊位置很远的字符将被视为完全不匹配。
@@ -56,10 +56,10 @@ function fuzzySearch(data, phrase) {
         distance: 1000,
         maxPatternLength: max_len, // 模式的最大长度
         minMatchCharLength: min_len, // 模式的最小字符长度
-        // 搜索标题与作者名
+        // 搜索标题与标签名
         keys: [
             'title',
-            'content'
+            'tags.name'
         ]
     };
     var fuse = new Fuse(data, options);
@@ -186,13 +186,7 @@ function keywordsHighlight(searchedContent) {
             preview = beforeKeyword + '<span class="searched-keyword">'
                 + keyword + '</span>' + afterKeyword;
         } else {//没有匹配到文章内容，则是标题
-            var indices = searchedContent.matches[i].indices[0];
-            var beforeKeyword = searchedPostContent.substring(indices[0] - 10, indices[0]);//关键字前20字
-            var keyword = searchedPostContent.substring(indices[0], indices[1] + 1);//关键字
-            var afterKeyword = searchedPostContent.substring(indices[1] + 1, indices[1] + 70);//关键字后80字
-            preview = beforeKeyword + '<span class="searched-keyword">'
-                + keyword + '</span>' + afterKeyword;
-            //preview = searchedPostContent.substring(0, 80);
+            preview = searchedPostContent.substring(0, 80);
         }
     }
     return preview + '...';
@@ -204,11 +198,13 @@ function getResult(infos, searchedContents) {
     searchedInfos.posts = [];
     for (var i = 0; i < infos.posts.length; i++) {
         for (var j = 0; j < searchedContents.length; j++) {
-            if (searchedContents[j].item.link === infos.posts[i].link) {
-                infos.posts[i].searchedPreview = keywordsHighlight(searchedContents[j]);//预览关键字高亮
-                infos.posts[i].content = searchedContents[j].item.content;//content注入
-                searchedInfos.posts.push(infos.posts[i]);//push到所需结果中
-            }
+            //if (searchedContents[j].item.link === infos.posts[i].link) {
+                if (searchedContents[j].score < 0.2) {
+                    infos.posts[i].searchedPreview = keywordsHighlight(searchedContents[j]);//预览关键字高亮
+                    infos.posts[i].content = searchedContents[j].item.content;//content注入
+                    searchedInfos.posts.push(infos.posts[i]);//push到所需结果中
+                }
+            //}
         }
     }
     return searchedInfos;
