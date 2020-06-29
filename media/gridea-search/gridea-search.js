@@ -56,10 +56,10 @@ function fuzzySearch(data, phrase) {
         distance: 1000,
         maxPatternLength: max_len, // 模式的最大长度
         minMatchCharLength: min_len, // 模式的最小字符长度
-        // 搜索标题与标签名
+        // 搜索标题与作者名
         keys: [
             'title',
-            'tags.name'
+            'content'
         ]
     };
     var fuse = new Fuse(data, options);
