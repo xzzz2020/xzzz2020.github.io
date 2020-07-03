@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>HashMap面试题总结 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/hashmap/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1593746898087" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>HashMap面试题总结</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-03</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/HvUhQjE_Y/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">4209字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">17 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/sparkler-holding-hands-firework-preview.jpg" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#hashmap%E7%AE%80%E4%BB%8B">HashMap简介</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E9%9B%86%E5%90%88">问题集合</a>
+<ul>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%80%E4%BD%A0%E4%BA%86%E8%A7%A3hashmap%E7%9A%84%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%90%97">问点一：你了解HashMap的底层数据结构吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%BA%8C%E4%B8%BA%E4%BB%80%E4%B9%88jdk-7%E4%BD%BF%E7%94%A8%E6%95%B0%E7%BB%84%E9%93%BE%E8%A1%A8jdk8%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81%E6%98%AF%E6%80%8E%E4%B9%88%E5%9B%9E%E4%BA%8Bhashmap%E5%8F%88%E6%98%AF%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E7%9A%84">问点二：为什么JDK 7使用数组+链表？JDK8中为什么要使用红黑树？哈希冲突是怎么回事？HashMap又是怎么解决的？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%89hashmap%E7%9A%84%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84jdk7%E4%B8%8Ejdk8%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C%E5%90%97">问点三：HashMap的扩容机制是怎么样的？JDK7与JDK8有什么不同吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%9B%9Bhashmap%E4%B8%AD%E7%9A%84%E9%94%AE%E5%80%BC%E5%8F%AF%E4%BB%A5%E4%B8%BAnull%E5%90%97%E8%83%BD%E7%AE%80%E5%8D%95%E8%AF%B4%E4%B8%80%E4%B8%8B%E5%8E%9F%E7%90%86%E5%90%97">问点四：HashMap中的键值可以为Null吗？能简单说一下原理吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%BA%94hashmap%E4%B8%AD%E8%83%BDput%E4%B8%A4%E4%B8%AA%E7%9B%B8%E5%90%8C%E7%9A%84key%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E6%88%96%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD">问点五：HashMap中能put两个相同的Key吗？为什么能或为什么不能？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%85%AD%E8%81%8A%E4%B8%80%E8%81%8Ajdk-7%E7%9A%84hashmap%E4%B8%AD%E7%9A%84%E6%AD%BB%E9%94%81%E6%98%AF%E6%80%8E%E4%B9%88%E5%9B%9E%E4%BA%8B">问点六：聊一聊JDK 7的HashMap中的“死锁”是怎么回事？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%83hashmap%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AE%89%E5%85%A8%E6%88%96%E8%80%85%E4%B8%8D%E5%AE%89%E5%85%A8">问点七：HashMap是线程安全的吗？为什么安全或者不安全？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%85%AB%E4%BB%80%E4%B9%88-hashmap-%E7%9A%84%E5%8A%A0%E8%BD%BD%E5%9B%A0%E5%AD%90%E6%98%AF075%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E8%B6%85%E8%BF%878%E6%89%8D%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91">问点八：什么 HashMap 的加载因子是0.75？为什么是超过“8”才用红黑树？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B9%9Dhashmap-hashtable-concurrenthashmap%E7%9A%84%E5%8C%BA%E5%88%AB">问点九：HashMap、HashTable、ConcurrentHashMap的区别</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%8D%81%E8%B0%88%E8%B0%88%E4%BD%A0%E7%90%86%E8%A7%A3%E7%9A%84-hashmap%E8%AE%B2%E8%AE%B2%E5%85%B6%E4%B8%AD%E7%9A%84-get%E5%92%8Cput-%E8%BF%87%E7%A8%8B">问点十：谈谈你理解的 HashMap，讲讲其中的 get和put 过程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<blockquote>
+<p>由于HashMap在面试中是一个重点，内容十分多，需要单独写一篇文章总结</p>
+<p>HashMap在Jdk1.7与1.8之中有很大区别！！</p>
+</blockquote>
+<h2 id="hashmap简介">HashMap简介</h2>
+<p><code>HashMap</code> 是用来存储数据的，它底层在<code>JDK 1.7</code>是<strong>数组+链表</strong>实现的，而<code>JDK 1.8</code>是使用<strong>数组+链表+红黑树</strong>实现，通过对 <code>key</code> 进行哈希计算等操作后得到数组下标，把 <code>value</code> 等信息存放在<strong>链表</strong>或<strong>红黑树</strong>存在此位置。</p>
+<p>如果两个不同的 <code>key</code> 运算后获取的数组下标一致，就出现了<strong>哈希冲突</strong>。数组默认长度是<strong>16</strong>，如果实际数组长度超过一定的值，就会进行<strong>扩容</strong>。</p>
+<h2 id="问题集合">问题集合</h2>
+<h3 id="问点一你了解hashmap的底层数据结构吗">问点一：你了解HashMap的底层数据结构吗？</h3>
+<blockquote>
+<p>在JDK1.7使用的是<strong>数组+链表</strong>的实现，在JDK1.8中使用的是<strong>数组+链表+红黑树</strong></p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/640" alt="img" style="zoom: 67%;" />
+<img src="https://mmbiz.qpic.cn/mmbiz_png/IJUXwBNpKlhF6p8tTEWMiaxZ0BKpVc0w0GALrnTniccx148yicUk62MKibzZIj54fDx9F6icXCXHpRQLevrGFTbPQZw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img" style="zoom:67%;" />
+<h3 id="问点二为什么jdk-7使用数组链表jdk8中为什么要使用红黑树哈希冲突是怎么回事hashmap又是怎么解决的">问点二：为什么JDK 7使用数组+链表？JDK8中为什么要使用红黑树？哈希冲突是怎么回事？HashMap又是怎么解决的？</h3>
+<blockquote>
+<ul>
+<li>JDK 7使用数组+链表，是因为HashMap是根据Key计算Hash值，从而得到哈希表的索引下标，而哈希表本质是数组实现。当出现Hash冲突时，则一个桶可能需要存放多个数据。HashMap将会根据equals()方法，判断Hash冲突的Key是否是同一个值，此时如果仍然不相同，就会利用头插法，将出现Hash冲突的Key+Value存放在链表上。</li>
+<li>但是如果一个链表比较长，那么查询的效率将会降低，所以JDK8中又使用了红黑树来解决链表过长导致查询效率变差的问题，会在一个桶上链表长度为8时，进行树化。但是树化的时候，会判断当前的长度是否小于64，如果小于，则不进行树化，而是选择进行一次扩容，因为扩容的时候会使哈希表长度增加，hash值会重新计算，将重新打乱当前的元素排列，分配到新的空间上，这样也避免了链表过长。</li>
+</ul>
+</blockquote>
+<p>对于HashMap中的每个key，根据一个Hash函数，计算出一个Hash值，对应就是桶的编号，桶实际上是用数组实现的。</p>
+<pre><code class="language-java">//key 进行哈希计算
+int hash = hash(key);
+//获取数组下标
+int i = indexFor(hash, table.length);
+</code></pre>
+<p>通过计算后的下标，从而得到数组的对应下标的位置，最后把k，v值存进去，同样的当再次第二次存值的时候，同样把<code>k，v</code>传进来，当k再次进行计算出数组下标<code>index</code>，有可能和第一次计算的<code>index</code>的值相同。</p>
+<p>但是，两次的需要存进去的<code>value</code>值是不同的，这就出现了同一个数组后面有一条链表，会比较链表上的每一个<code>value</code>值与当前的<code>value</code>是否相同，若是不相同，通过<strong>头插法</strong>，将数值插入链表中。如下图所示：</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/640" alt="img" style="zoom: 67%;" />
+<p>接下来通通过源码进行分析，在jdk 7插入的put 方法源码如下：</p>
+<pre><code class="language-java">public V put(K key, V value) {
+　　　　　//数组为空就进行初始化
+        if (table == EMPTY_TABLE) {
+            inflateTable(threshold);
+        }
+        if (key == null)
+            return putForNullKey(value);
+　　　　　//key 进行哈希计算
+        int hash = hash(key);
+　　　　　//获取数组下标
+        int i = indexFor(hash, table.length);
+　　　　　//如果此下标有值，遍历链表上的元素，key 一致的话就替换 value 的值
+        for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) {
+            Object k;
+            if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) {
+                V oldValue = e.value;
+                e.value = value;
+                e.recordAccess(this);
+                return oldValue;
+            }
+        }
+
+        modCount++;
+　　　　　//新增一个key
+        addEntry(hash, key, value, i);
+        return null;
+    }
+</code></pre>
+<p><code>put</code>方法中主要做了以下几件事：</p>
+<ol>
+<li>判断<code>table</code>数组是否为空，若为空进行初始化<code>table</code>数组。</li>
+<li>判断key值是否为<code>null</code>，将null是作为<code>key</code>存进去。</li>
+<li>若<code>key</code>不为空，通过<code>key</code>计算出数组下标，判断<code>table[i]</code>是否为空。</li>
+<li>若是不为空通过链表循环，判断在链表中是否存在与该<code>key</code>相等，若是存在，直接将<code>value</code>替换成新的<code>value</code>。若是<code>table[i]</code>为空或者链表中不存在与之相同的<code>key</code>，就<code>addEntry(hash, key, value, i)</code>新增一个节点。</li>
+</ol>
+<p>接下来看看<code>addEntry(hash, key, value, i)</code>新增节点的源码如下：</p>
+<pre><code class="language-java">void addEntry(int hash, K key, V value, int bucketIndex) {
+//数组长度大于阈值且存在哈希冲突（即当前数组下标有元素），就将数组扩容至2倍
+        if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) {
+            resize(2 * table.length);
+            hash = (null != key) ? hash(key) : 0;
+            bucketIndex = indexFor(hash, table.length);
+        }
+        createEntry(hash, key, value, bucketIndex);
+    }
+</code></pre>
+<p>这个方法很简单，直接就是判断当前数组的大小是否&gt;=<code>threshold</code>并且<code>table[bucketIndex]</code>是否为<code>null</code>。若成立扩容，然后rehash，重新得到新数组的下标值，最后 <code>createEntry(hash, key, value, bucketIndex)</code>创建新节点。</p>
+<p>最后来看一下<code>createEntry(hash, key, value, bucketIndex)</code>创建新节点的源码如下：</p>
+<pre><code class="language-java">void createEntry(int hash, K key, V value, int bucketIndex) {
+　　//此位置有元素，就在链表头部插入新元素（头插法）
+        Entry&lt;K,V&gt; e = table[bucketIndex];
+        table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);
+        size++;
+    }
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzgwYmEzZTNmLTY3ODgtNDA5OC04NTlkLTQ2NThmNDExMTZjYi53ZWJw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<p>在<code>JDK 7</code>中，链表存储有一个缺点，就是当数据很多的时候，链表就会很长，每次查询都会遍历很长的链表。</p>
+<p>因此在<code>JDK 8</code>中为了优化<code>HashMap</code>的查询效率，将内部的结构改为<strong>数组+链表+和红黑树</strong>，当一个哈希桶后面的链表长度<code>&gt;8</code>的时候，就会将链表转化为<strong>红黑树</strong>，红黑树是二分查找，提高了查询的效率。接下来通过<code>JDK 8</code>的<code>put</code>源码分析如下：</p>
+<pre><code class="language-java">public V put(K key, V value) {
+        return putVal(hash(key), key, value, false, true);
+}
+
+
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) {
+        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+　　　　　//数组为空就初始化
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+　　　　　//当前下标为空，就直接插入
+        if ((p = tab[i = (n - 1) &amp; hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node&lt;K,V&gt; e; K k;
+　　　　　　　//key 相同就覆盖原来的值
+            if (p.hash == hash &amp;&amp;((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+                e = p;
+　　　　　　　//树节点插入数据
+            else if (p instanceof TreeNode)
+                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+　　　　　　　　　　　　//链表，尾插法插入数据
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+　　　　　　　　　　　　　　//链表长度超过8，就把链表转为红黑树
+                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+　　　　　　　　　　　　//key相同就覆盖原来的值
+                    if (e.hash == hash &amp;&amp;((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+　　　　　//数组长度大于阈值，就扩容
+        if (++size &gt; threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+    }
+</code></pre>
+<p><strong>通过分析源码，上面的方法主要做了以下几件事</strong>：</p>
+<ol>
+<li>判断当前桶是否为空，空的就需要初始化（<code>resize</code> 中会判断是否进行初始化）。</li>
+<li>根据当前 <code>key</code> 的 <code>hashcode</code> 定位到具体的桶中并判断是否为空，为空表明没有 <code>Hash</code> 冲突就直接在当前位置创建一个新桶即可。</li>
+<li>如果当前桶有值（ <strong>Hash 冲突</strong>），那么就要比较当前桶中的 <code>key</code>、<code>key</code> 的 <code>hashcode</code> 与写入的 <code>key</code>是否相等，相等就赋值给 e。</li>
+<li>如果当前桶为红黑树，那就要按照红黑树的方式写入数据。</li>
+<li>如果是个链表，就需要将当前的 <code>key、value</code> 封装成一个新节点写入到当前桶的后面（形成链表）。</li>
+<li>接着判断当前链表的大小是否大于预设的阈值，大于时就要转换为红黑树。</li>
+<li>如果在遍历过程中找到 <code>key</code> 相同时直接退出遍历。</li>
+<li>如果 <code>e != null</code> 就相当于存在相同的 <code>key</code>,那就需要将值覆盖。</li>
+<li>最后判断是否需要进行扩容。</li>
+</ol>
+<p>继续看下 treeifyBin 的源码：</p>
+<pre><code class="language-java">final void treeifyBin(Node&lt;K,V&gt;[] tab, int hash) {
+        int n, index; Node&lt;K,V&gt; e;
+　　　　　//链表转为红黑树时，若此时数组长度小于64，扩容数组
+        if (tab == null || (n = tab.length) &lt; MIN_TREEIFY_CAPACITY)
+            resize();
+        else if ((e = tab[index = (n - 1) &amp; hash]) != null) {
+            TreeNode&lt;K,V&gt; hd = null, tl = null;
+　　　　　　　//链表转为树结构
+            do {
+                TreeNode&lt;K,V&gt; p = replacementTreeNode(e, null);
+                if (tl == null)
+                    hd = p;
+                else {
+                    p.prev = tl;
+                    tl.next = p;
+                }
+                tl = p;
+            } while ((e = e.next) != null);
+            if ((tab[index] = hd) != null)
+                hd.treeify(tab);
+        }
+    }
+</code></pre>
+<p>由此可以看到1.8中，数组有两种情况会发生扩容：</p>
+<ol>
+<li>一是超过阈值</li>
+<li>二是链表转为红黑树且数组元素小于64时</li>
+</ol>
+<p>由此在<code>jdk1.8</code>中，默认长度为<code>16</code>情况下，要么元素一直放在同一下标，链表转为红黑树且数组元素小于64时就会扩容，要么超过阈值<code>12</code>时才会扩容。</p>
+<p>依据上面的源码分析，在<code>JDK 1.8</code>中<code>put</code>方法的执行的原理图如下</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAyMDk0NDQxNDU4LnBuZw?x-oss-process=image/format,png" alt="image-20200702094441458" loading="lazy"></figure>
+<h3 id="问点三hashmap的扩容机制是怎么样的jdk7与jdk8有什么不同吗">问点三：HashMap的扩容机制是怎么样的？JDK7与JDK8有什么不同吗？</h3>
+<blockquote>
+<p><code>JDK 1.7</code>的扩容条件是<strong>数组长度大于阈值且存在哈希冲突</strong>，而<code>JDK 1.8</code>扩容条件是<strong>数组长度大于阈值</strong>或<strong>链表转为红黑树且数组元素小于64</strong>时，源码中的体现如下所示：</p>
+</blockquote>
+<p><strong>JDK1.7扩容源码</strong>：</p>
+<pre><code class="language-java">void addEntry(int hash, K key, V value, int bucketIndex) {
+　　　　　//数组长度大于阈值且存在哈希冲突（即当前数组下标有元素），就将数组扩容至2倍
+        if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) {
+            resize(2 * table.length);
+            hash = (null != key) ? hash(key) : 0;
+            bucketIndex = indexFor(hash, table.length);
+        }
+        createEntry(hash, key, value, bucketIndex);
+    }
+</code></pre>
+<p><strong>JDK1.8扩容源码</strong>：</p>
+<pre><code class="language-java">//数组长度大于阈值，就扩容
+if (++size &gt; threshold)
+      resize();
+
+//链表转为红黑树时，若此时数组长度小于64，扩容数组
+if (tab == null || (n = tab.length) &lt; MIN_TREEIFY_CAPACITY)
+      resize();
+</code></pre>
+<h3 id="问点四hashmap中的键值可以为null吗能简单说一下原理吗">问点四：HashMap中的键值可以为Null吗？能简单说一下原理吗？</h3>
+<blockquote>
+<p>JDK两个版本都可以。JDK1.7和1.8本质都是去寻找Hash值为0的那个桶，然后如果key为null，则直接替换值</p>
+</blockquote>
+<h3 id="问点五hashmap中能put两个相同的key吗为什么能或为什么不能">问点五：HashMap中能put两个相同的Key吗？为什么能或为什么不能？</h3>
+<blockquote>
+<p>在<code>JDK7</code>和<code>JDK8</code>中的做法是一样的，若是存入的<code>key</code>值一样，就会将原来的key所对应的value值直接替换掉</p>
+</blockquote>
+<h3 id="问点六聊一聊jdk-7的hashmap中的死锁是怎么回事">问点六：聊一聊JDK 7的HashMap中的“死锁”是怎么回事？</h3>
+<blockquote>
+<p>首先JDK7采用的头插法，会有链表成环的问题，JDK采用的尾插法，不会有循环链表的问题。</p>
+<p><code>HashMap</code>是线程不安全的，在<code>HashMap</code>的源码中并未对其操作进行同步执行，所以在并发访问的时候就会出现线程安全的问题。</p>
+<p>JDK 7死锁出现在高并发的时候，此时两个线程都将对数据进行扩容，每次扩容的时候，会让链表翻转。</p>
+</blockquote>
+<p><code>transfer</code>函数源码（<code>transfer</code>函数是resize扩容方法中调用的另一个方法）：</p>
+<pre><code class="language-java">void transfer(Entry[] newTable, boolean rehash) {
+    int newCapacity = newTable.length;
+    for (Entry&lt;K,V&gt; e : table) {
+    while(null != e) {
+        Entry&lt;K,V&gt; next = e.next; ---------------------(1)
+        if (rehash) {
+            e.hash = null == e.key ? 0 : hash(e.key);
+        }
+        int i = indexFor(e.hash, newCapacity);
+        e.next = newTable[i];
+        newTable[i] = e;
+        e = next;
+    } // while
+    }
+}
+</code></pre>
+<p><strong>假设一个链表，A.next = B  , B.next = null</strong>：</p>
+<ul>
+<li>正常情况下，新扩容的数组应该是位null，然后A.next = newTable[i]，则<code>A.next = null</code>，newTable[i] = A ，B.next = newTable[i]，则<code>B.next = A</code>，newTable[i] = B</li>
+<li>如果两个线程同时转换，此时已然会执行 A.next = newTable[i] , 则将<code>A.next = null变成A.next = B</code>，剩下过程一致，<code>出现循环链表</code></li>
+</ul>
+<h3 id="问点七hashmap是线程安全的吗为什么安全或者不安全">问点七：HashMap是线程安全的吗？为什么安全或者不安全？</h3>
+<blockquote>
+<p>不是线程安全的，比如会在扩容的时候产生循环链表；在put的时候会覆盖别的线程的值</p>
+</blockquote>
+<h3 id="问点八什么-hashmap-的加载因子是075为什么是超过8才用红黑树">问点八：什么 HashMap 的加载因子是0.75？为什么是超过“8”才用红黑树？</h3>
+<blockquote>
+<p>因为HashMap底层的数据结构是哈希表，在插入数据的时候会出现hash冲突，而HashMap的解决方式是使用拉链法，即采用额外的空间来解决冲突。</p>
+<p>而选择加载因子是0.75主要跟数学上泊松分布有关系，选择的参数平均为0.5的泊松分布，计算出来当前加载因子是0.75，这更是空间与时间的一种选择折中。</p>
+<p>而超过8才使用红黑树，源于该泊松分布计算出来的，一个节点哈希冲突8次的概率极为的小，几乎为不可能时间，这也是一次空间与时间的折中。</p>
+</blockquote>
+<p>​</p>
+<pre><code class="language-java">//1个节点哈希冲突n次的概率
+0:    0.60653066
+1:    0.30326533
+2:    0.07581633
+3:    0.01263606
+4:    0.00157952
+5:    0.00015795
+6:    0.00001316
+7:    0.00000094
+8:    0.00000006
+</code></pre>
+<h3 id="问点九hashmap-hashtable-concurrenthashmap的区别">问点九：HashMap、HashTable、ConcurrentHashMap的区别</h3>
+<blockquote>
+<p>HashMap是线程不安全的，在jdk1.7高并发的时候，可能会在扩容的时候，产生循环链表，所以在高并发的时候，不去使用。</p>
+<p>HashTable是一个线程安全的，采用的是synchronize的方式，关键字加在方法上，即对当前HashTable对象加锁，会导致所有的数据加上锁。</p>
+<p>ConcurrentHashMap在JDK1.7的时候使用的是Segment分段锁的思想，将数据分成段，每个段都有个可重入锁，则多线程的时候不会影响到其他线程访问其他段的数据。</p>
+<p>ConcurrentHashMap在JDK1.8的时候使用的是CAS+synchronized方式，抛弃了Segment分段锁的思想，CAS是一个乐观锁，则在不加锁情况下实现赋值，在当前节点为空的时候，会采用CAS的方式添加节点；而用synchronized而不用是可重入锁的原因是因为官方对synchronized做了很多优化。</p>
+</blockquote>
+<p><code>HashTable</code>其中使用synchronize来保证线程安全，即当有一个线程拥有锁的时候，其他的线程都会进入阻塞或者轮询状态,这样会使得效率越来越低。</p>
+<p>而<code>ConcurrentHashMapMap</code>的锁分段技术可以有效的提高并发访问率，<code>HashTable</code>访问效率低下的原因，就是因为所有的线程在竞争同一把锁。</p>
+<p>如果容器中有多把锁，不同的锁锁定不同的位置，这样线程间就不会存在锁的竞争，这样就可以有效的提高并发访问效率,这就是<code>ConcurrentHashMap</code>所使用的锁分段技术将数据一段一段的存储，为每一段都配一把锁，当一个线程只是占用其中的一个数据段时,其他段的数据也能被其他线程访问。</p>
+<p>在JDK1.7中currentHashMap采用的是<strong>Segment分段锁的思想</strong>方式实现：</p>
+<ul>
+<li>Segment是将数据分成段，默认是16，每个段都有一把锁，则理论最高支持16个线程并发</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAzMDkzMjI2ODMxLnBuZw?x-oss-process=image/format,png" alt="image-20200703093226831" loading="lazy"></figure>
+<p>JDK1.8的currentHashMap采用的是**数组+链表+红黑树，抛弃了原有的 Segment 分段锁，而采用了 CAS + synchronized **方式实现：</p>
+<ul>
+<li>
+<p>CAS，是一个乐观锁，他主要思想是<strong>比较然后再执行操作</strong>，比较的是内存的值和预期的原值是否一致，如果不一致，则需要自旋获取新值，但是CAS的最大问题就是可能出现ABA的问题。</p>
+</li>
+<li>
+<p>在<code>no lock when adding to empty bin</code> ，也就是桶为空的时候采用CAS方式添加数据，而不为空的时候采用synchronized 的方式</p>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAzMDkzODAzNDMwLnBuZw?x-oss-process=image/format,png" alt="image-20200703093803430" loading="lazy"></figure>
+</li>
+</ul>
+<h3 id="问点十谈谈你理解的-hashmap讲讲其中的-get和put-过程">问点十：谈谈你理解的 HashMap，讲讲其中的 get和put 过程</h3>
+<p><strong>put方法</strong>：</p>
+<ul>
+<li>考虑是否要初始化</li>
+<li>根据key计算哈希值，找到hash表对应的索引</li>
+<li>然后判断是否出现的hash冲突，如果没有则直接插入，查看是否需要扩容</li>
+<li>JDK1.7出现hash冲突直接插入链表中即可</li>
+<li>JDK1.8出现hash冲突，需要先判断当前是红黑树还是链表，对于链表可能会有一个树化的过程</li>
+</ul>
+<p><strong>get方法</strong>：</p>
+<ul>
+<li>思路与上面一致，只是少了一个扩容和树化的过程</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAyMDk0NDQxNDU4LnBuZw?x-oss-process=image/format,png" alt="image-20200702094441458" loading="lazy"></figure>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#hashmap%E7%AE%80%E4%BB%8B">HashMap简介</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E9%9B%86%E5%90%88">问题集合</a>
+<ul>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%80%E4%BD%A0%E4%BA%86%E8%A7%A3hashmap%E7%9A%84%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%90%97">问点一：你了解HashMap的底层数据结构吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%BA%8C%E4%B8%BA%E4%BB%80%E4%B9%88jdk-7%E4%BD%BF%E7%94%A8%E6%95%B0%E7%BB%84%E9%93%BE%E8%A1%A8jdk8%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81%E6%98%AF%E6%80%8E%E4%B9%88%E5%9B%9E%E4%BA%8Bhashmap%E5%8F%88%E6%98%AF%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E7%9A%84">问点二：为什么JDK 7使用数组+链表？JDK8中为什么要使用红黑树？哈希冲突是怎么回事？HashMap又是怎么解决的？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%89hashmap%E7%9A%84%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84jdk7%E4%B8%8Ejdk8%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C%E5%90%97">问点三：HashMap的扩容机制是怎么样的？JDK7与JDK8有什么不同吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%9B%9Bhashmap%E4%B8%AD%E7%9A%84%E9%94%AE%E5%80%BC%E5%8F%AF%E4%BB%A5%E4%B8%BAnull%E5%90%97%E8%83%BD%E7%AE%80%E5%8D%95%E8%AF%B4%E4%B8%80%E4%B8%8B%E5%8E%9F%E7%90%86%E5%90%97">问点四：HashMap中的键值可以为Null吗？能简单说一下原理吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%BA%94hashmap%E4%B8%AD%E8%83%BDput%E4%B8%A4%E4%B8%AA%E7%9B%B8%E5%90%8C%E7%9A%84key%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E6%88%96%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD">问点五：HashMap中能put两个相同的Key吗？为什么能或为什么不能？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%85%AD%E8%81%8A%E4%B8%80%E8%81%8Ajdk-7%E7%9A%84hashmap%E4%B8%AD%E7%9A%84%E6%AD%BB%E9%94%81%E6%98%AF%E6%80%8E%E4%B9%88%E5%9B%9E%E4%BA%8B">问点六：聊一聊JDK 7的HashMap中的“死锁”是怎么回事？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%83hashmap%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AE%89%E5%85%A8%E6%88%96%E8%80%85%E4%B8%8D%E5%AE%89%E5%85%A8">问点七：HashMap是线程安全的吗？为什么安全或者不安全？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%85%AB%E4%BB%80%E4%B9%88-hashmap-%E7%9A%84%E5%8A%A0%E8%BD%BD%E5%9B%A0%E5%AD%90%E6%98%AF075%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E8%B6%85%E8%BF%878%E6%89%8D%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91">问点八：什么 HashMap 的加载因子是0.75？为什么是超过“8”才用红黑树？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B9%9Dhashmap-hashtable-concurrenthashmap%E7%9A%84%E5%8C%BA%E5%88%AB">问点九：HashMap、HashTable、ConcurrentHashMap的区别</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%8D%81%E8%B0%88%E8%B0%88%E4%BD%A0%E7%90%86%E8%A7%A3%E7%9A%84-hashmap%E8%AE%B2%E8%AE%B2%E5%85%B6%E4%B8%AD%E7%9A%84-get%E5%92%8Cput-%E8%BF%87%E7%A8%8B">问点十：谈谈你理解的 HashMap，讲讲其中的 get和put 过程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div><script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-03，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-03 11:17:21";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>18</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

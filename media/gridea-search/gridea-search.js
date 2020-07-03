@@ -36,12 +36,16 @@ function fuzzySearch(data, phrase) {
     var phrase_len = phrase.length;
     var min_len = 4;
     var max_len = 32;
+    //根据搜索的词数决定匹配大小，最小匹配词数不能大于词数，最大匹配词数不能小于词数
     if(phrase_len<4){
         min_len = phrase_len;
     }
     if(phrase_len<=0){
         min_len = 99999999;
         max_len = 99999999;
+    }
+    if(phrase_len>32){
+        max_len = phrase_len;
     }
 
     var options = {
@@ -56,10 +60,11 @@ function fuzzySearch(data, phrase) {
         distance: 1000,
         maxPatternLength: max_len, // 模式的最大长度
         minMatchCharLength: min_len, // 模式的最小字符长度
-        // 搜索标题与作者名
+        // 搜索标题与内容
         keys: [
             'title',
-            'content'
+            'content',
+            'tags.name'
         ]
     };
     var fuse = new Fuse(data, options);
@@ -186,7 +191,9 @@ function keywordsHighlight(searchedContent) {
             preview = beforeKeyword + '<span class="searched-keyword">'
                 + keyword + '</span>' + afterKeyword;
         } else {//没有匹配到文章内容，则是标题
-            preview = searchedPostContent.substring(0, 80);
+                preview = searchedPostContent.substring(0, 80);
+            
+            
         }
     }
     return preview + '...';
@@ -213,8 +220,8 @@ function grideaSearch() {
     //搜索结果回调
     var resultHandler = function (searchedContents) {
         getInfos(function (infos) {
-            console.log(infos);
-            console.log(searchedContents);
+            //console.log(infos);
+            //console.log(searchedContents);
             var searchedInfos = getResult(infos, searchedContents);
             renderResult(searchedInfos);
         });

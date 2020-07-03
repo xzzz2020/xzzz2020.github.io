@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-06-29T02:55:03.846Z</updated>
+    <updated>2020-07-03T03:29:56.686Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -10,6 +10,703 @@
     <logo>https://xzzz2020.github.io/images/avatar.png</logo>
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
+    <entry>
+        <title type="html"><![CDATA[Java集合面试题总结]]></title>
+        <id>https://xzzz2020.github.io/post/D60cWKdQu/</id>
+        <link href="https://xzzz2020.github.io/post/D60cWKdQu/">
+        </link>
+        <updated>2020-07-03T03:27:44.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E4%B8%BB%E8%A6%81%E5%AE%B9%E5%99%A8%E6%A6%82%E8%BF%B0">一、 主要容器概述</a></li>
+<li><a href="#%E4%BA%8C-list">二、 List</a>
+<ul>
+<li><a href="#1-arraylist">1. ArrayList</a></li>
+<li><a href="#2-linkedlist">2. LinkedList</a></li>
+<li><a href="#3-vector">3. Vector</a></li>
+<li><a href="#4-arraylist-%E4%B8%8E-linkedlist-%E5%BC%82%E5%90%8C">4. ArrayList 与 LinkedList 异同</a></li>
+<li><a href="#5-arraylist%E5%92%8Cvector%E7%9A%84%E5%8C%BA%E5%88%AB">5. ArrayList和Vector的区别</a></li>
+<li><a href="#6-systemarraycopy%E5%92%8C-arrayscopyof">6. System.arraycopy()和 Arrays.copyOf()</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-set">三、 Set</a>
+<ul>
+<li><a href="#1-%E5%93%88%E5%B8%8C%E8%A1%A8">1. 哈希表</a></li>
+<li><a href="#2-hashset">2. HashSet</a></li>
+<li><a href="#3-hashcode">3. hashCode()</a></li>
+<li><a href="#4-treeset">4. TreeSet</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-map">四、 Map</a>
+<ul>
+<li><a href="#1-hashmap">1. HashMap</a></li>
+<li><a href="#2-hashtable">2. HashTable</a></li>
+<li><a href="#3-linkedhashmap">3. LinkedHashMap</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-collections%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95">五、 Collections常用方法</a>
+<ul>
+<li><a href="#%E6%8E%92%E5%BA%8F">排序</a></li>
+<li><a href="#%E6%9F%A5%E6%89%BE%E6%9B%BF%E6%8D%A2%E6%93%8D%E4%BD%9C">查找,替换操作</a></li>
+<li><a href="#%E5%90%8C%E6%AD%A5%E6%8E%A7%E5%88%B6">同步控制</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE%E4%B8%8D%E5%8F%AF%E5%8F%98%E9%9B%86%E5%90%88">设置不可变集合</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-主要容器概述">一、 主要容器概述</h2>
+<blockquote>
+<p>注意Collection是一个接口，是List和Set的公共接口，Collections是一个工具类</p>
+</blockquote>
+<p><strong>Java容器主要有三个</strong>：</p>
+<ul>
+<li><strong>List</strong>:是一个有序集合，可以放重复的数据</li>
+<li><strong>Set</strong>:是一个无序集合，不允许放重复的数据</li>
+<li><strong>Map</strong>:是一个无序集合，集合中包含一个键对象，-一个值对象，键对象不允许重复，值对象可以重复(身份证号-姓名)</li>
+</ul>
+<p><strong>size，length，length ()区别？</strong></p>
+<ul>
+<li>size()是集合中使用，统计集合中元素的个数</li>
+<li>length是数组的一个成员属性</li>
+<li>length ()是String的一个方法</li>
+</ul>
+<p><strong>Iterator</strong></p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean hasNext()</td>
+<td>判断集合中是否还有下一个元素</td>
+</tr>
+<tr>
+<td>Object next()</td>
+<td>返回下一个元素</td>
+</tr>
+<tr>
+<td>void remove()</td>
+<td>从集合中删除一个由 next()方法返回的元素</td>
+</tr>
+</tbody>
+</table>
+<h2 id="二-list">二、 List</h2>
+<ul>
+<li><strong>ArrayList</strong>：查询数据比较快，添加和删除数据比较慢(基于可变数组)</li>
+<li><strong>LinkedList</strong>：查询数据比较慢，添加和删除数据比较快（基于链表数据结构）</li>
+</ul>
+<h3 id="1-arraylist">1. ArrayList</h3>
+<blockquote>
+<p>查找比较快，增删比较慢</p>
+</blockquote>
+<ul>
+<li>底层是基于数组。</li>
+<li>默认容量是10</li>
+<li>每次扩容1.5倍</li>
+<li>如果增加 0.5 倍后的新容量超过限制的容量，则用所需的最小容量与限制的容量进行判断，超过则指定为 Integer 的最大值</li>
+<li>通过数组的复制将原数据复制到一个更大(新的容量大小)的数组</li>
+</ul>
+<p><strong>如何保证线程安全？</strong></p>
+<ul>
+<li>继承ArrayList，重写其中的方法</li>
+<li><code>List list = Collections.synchronizedList(new ArrayList());</code></li>
+</ul>
+<h3 id="2-linkedlist">2. LinkedList</h3>
+<blockquote>
+<p>增删比较快，查找比较慢</p>
+</blockquote>
+<ul>
+<li>
+<p>基于链表的，除了存放数据，还需要存放指针，所以<strong>占用的空间会大一些</strong></p>
+</li>
+<li>
+<p>它实现了 Deque 接口，使得 LinkedList 类也具有队列的特性</p>
+</li>
+<li>
+<p>不是线程安全的</p>
+</li>
+</ul>
+<h3 id="3-vector">3. Vector</h3>
+<p>Vector与 ArrayList 一样，也是通过数组实现的，<strong>不同的是它支持线程的同步</strong>，即某一时刻只有一 个线程能够写 Vector，避免多线程同时写而引起的不一致性，但实现同步需要很高的花费，因此，访问它比访问 ArrayList 慢。</p>
+<h3 id="4-arraylist-与-linkedlist-异同">4. ArrayList 与 LinkedList 异同</h3>
+<ul>
+<li>
+<p><strong>是否保证线程安全</strong>： ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全；</p>
+</li>
+<li>
+<p><strong>底层数据结构</strong>： Arraylist 底层使用的是 Object 数组； LinkedList 底层使用的是双向链表数据结构JDK1.6之前为循环链表， JDK1.7 取消了循环。注意双向链表和双向循环链表的区别：）；</p>
+</li>
+<li>
+<p><strong>插入和删除是否受元素位置的影响</strong>：</p>
+<ul>
+<li>ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 比如：执行 add(Ee) 方法的时候， ArrayList 会默认在将指定的元素追加到此列表的末尾，这种情况时间复杂度就是 O(1)。但是如果要在指定位置 i 插入和删除元素的话（ add(int index, E element) ）时间复杂度就为 O(n-i)。因为在进行上述操作的时候集合中第 i 和第 i 个元素之后的(n-i)个元素都要执行向后位/向前移一位的操作。</li>
+<li>LinkedList 采用链表存储，所以插入，删除元素时间复杂度不受元素位置的影响，都是近似 O（1）而数组为近似 O（n）。</li>
+</ul>
+</li>
+<li>
+<p><strong>是否支持快速随机访问</strong>： LinkedList 不支持高效的随机元素访问，而 ArrayList 支持。快速随机访问就</p>
+</li>
+</ul>
+<h3 id="5-arraylist和vector的区别">5. ArrayList和Vector的区别</h3>
+<ul>
+<li><strong>Vector 类的所有方法都是同步的</strong>。可以由两个线程安全地访问一个 Vector 对象、但是一个线程访问 Vector的话代码要在同步操作上耗费大量的时间。</li>
+<li><strong>Arraylist 不是同步的</strong>，所以在不需要保证线程安全时时建议使用 ArrayList。【CopyOnWriteArrayList 是同步的】。</li>
+</ul>
+<h3 id="6-systemarraycopy和-arrayscopyof">6. System.arraycopy()和 Arrays.copyOf()</h3>
+<ol>
+<li>arraycopy()需要目标数组，将原数组拷贝到你自己定义的数组里，而且可以选择拷贝的起点和长度以及放入新数组中的位置</li>
+<li>copyOf()是系统自动在内部新建一个数组，并返回该数组。</li>
+</ol>
+<h2 id="三-set">三、 Set</h2>
+<p><strong>在Set家族中，常用的有三种</strong>：</p>
+<ul>
+<li><strong>HashSet</strong>: 采用 Hashmap 的 key 来储存元素，主要特点是无序的，基本操作都是 O(1) 的时间复杂度，很快。</li>
+<li><strong>LinkedHashSet</strong>: 这个是一个 HashSet + LinkedList 的结构，特点就是既拥有了 O(1) 的时间复杂度，又能够保留插入的顺序。</li>
+<li><strong>TreeSet</strong>: 采用红黑树结构，特点是可以有序，可以用自然排序或者自定义比较器来排序；缺点就是查询速度没有 HashSet 快。</li>
+</ul>
+<h3 id="1-哈希表">1. 哈希表</h3>
+<p>哈希表是一种数据结构，哈希表能够提供快速存取操作。<strong>哈希表是基于数组的，所以也存在缺点，数</strong><br>
+<strong>组一旦创建将不能扩展。</strong></p>
+<p>正常的数组，如果需要查询某个值，需要对数组进行遍历，只是一种线性查找，查找的速度比较慢。<br>
+如果数组中的元素值和下标能够存在明确的对应关系，那么<strong>通过数组元素的值就可以换算出数据元素的下</strong><br>
+**标，通过下标就可以快数定位数组元素，这样的数组就是哈希表。**一张哈希表：</p>
+<table>
+<thead>
+<tr>
+<th>元素值</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
+<th>16</th>
+<th>17</th>
+<th>18</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>元素下标</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>以上我们的示例元素值和下标的关系为</strong>：</p>
+<ul>
+<li>
+<p>元素下标=元素值-10，此时的示例 hashcode 就是和数组下标一致了,取得 hashcode 方法如下：</p>
+<pre><code class="language-java">//取得 hashCode
+pubic int hashCode(int value) {
+	return value – 10;
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="2-hashset">2. HashSet</h3>
+<ul>
+<li>HashSet中的数据是无序的不可重复的。</li>
+<li>采用 Hashmap 的 key 来储存元素</li>
+</ul>
+<h3 id="3-hashcode">3. hashCode()</h3>
+<blockquote>
+<p>覆盖了 equals 和 hashCode，当 hashCode 相同，它会调用 equals 进行比较，如果 equals 比较相等将不加把此元素加入到 Set 中</p>
+<p>但 equals 比较不相等会重新根据 hashCode 换算位置仍然会将该元素加入进去的。</p>
+</blockquote>
+<p><strong>hashCode() 与 equals() 的相关规定</strong>：</p>
+<ul>
+<li>如果两个对象相等，则 hashcode 一定也是相同的</li>
+<li>两个对象相等,对两个对象分别调用 equals 方法都返回 true</li>
+<li>两个对象有相同的 hashcode 值，它们也不一定是相等的</li>
+<li>因此， equals 方法被覆盖过，则 hashCode 方法也必须被覆盖</li>
+<li>hashCode()的默认行为是对堆上的对象产生独特值。如果没有重写 hashCode()，则该 class 的两个对象无论如何都不会相等（即使这两个对象指向相同的数据）</li>
+</ul>
+<p><strong>再次强调：特别是向 HashSet 或 HashMap 中加入数据时必须同时覆盖 equals 和 hashCode 方法，应该</strong><br>
+<strong>养成一种习惯覆盖 equals 的同时最好同时覆盖 hashCode</strong></p>
+<p><strong>Java 要求</strong>：</p>
+<ul>
+<li>两个对象 equals 相等，那么它的 hashcode 相等</li>
+<li>两个对象 equals 不相等，那么它的 hashcode 并不要求它不相等，但一般建议不相等hashcode 相等不代表两个对象相等（采用 equals 比较）</li>
+</ul>
+<p><strong>为什么重写 equals() 就必须要重写 hashCode()？</strong></p>
+<ul>
+<li>当key的hashCode()计算的数值相同时，就会出现hash冲突</li>
+</ul>
+<p><strong>处理 hash 冲突有哪些方法？Java 中用的哪一种？为什么？另一种方法你在工作中用过吗？在什么情况下用得多？</strong></p>
+<p>见：<a href="https://xzzz2020.gitee.io/post/d0otbdSTy">https://xzzz2020.gitee.io/post/d0otbdSTy</a></p>
+<h3 id="4-treeset">4. TreeSet</h3>
+<ul>
+<li>TreeSet 可以对 Set 集合进行排序， <strong>默认自然排序</strong>（即升序）</li>
+<li>引用类型实现排序，需要实现Comparator或者Comparable</li>
+</ul>
+<p><strong>Comparable 和Comparator 的区别？</strong></p>
+<ul>
+<li>Comparable是自然排序，需要实体类实现，需要修改源代码</li>
+<li>Comparator 是定制排序，不需要更改源代码，定义一个比较规则，传递给需要调用的方法中，将<strong>比较策略与数据分离，体现了策略模式</strong></li>
+<li>Comparator 比Comparable 优先级更高</li>
+</ul>
+<h2 id="四-map">四、 Map</h2>
+<blockquote>
+<p>关于HashMap的全部面试题见：<a href="https://xzzz2020.gitee.io/post/hashmap">https://xzzz2020.gitee.io/post/hashmap</a></p>
+</blockquote>
+<p>Map 中可以放置键值对，也就是每一个元素都包含键对象和值对象， Map 实现较常用的为 HashMap，HashMap 对键对象的存取和 HashSet 一样，仍然采用的是哈希算法，所以如果使用自定类作为 Map 的键对象，必须复写 equals 和 hashCode 方法</p>
+<p><strong>Map中常用的三个</strong>：</p>
+<ul>
+<li><strong>HashMap</strong>: 与 HashSet 对应，也是无序的，O(1)。</li>
+<li><strong>LinkedHashMap</strong>: 这是一个「HashMap + 双向链表」的结构，落脚点是 HashMap，所以既拥有 HashMap 的所有特性还能有顺序。</li>
+<li><strong>TreeMap</strong>: 是有序的，本质是用二叉搜索树来实现的。</li>
+</ul>
+<h3 id="1-hashmap">1. HashMap</h3>
+<p><strong>实现原理</strong></p>
+<ul>
+<li>对于HashMap中的每个key，根据一个Hash函数，计算出一个Hash值，对应就是桶的编号，桶实际上是用数组实现的</li>
+<li>Hash函数跟HashMap的容量有关系</li>
+</ul>
+<p><strong>如果不同的元素的key算出了相同的哈希值，那么该怎么存放呢？</strong></p>
+<ul>
+<li>这就是哈希碰撞，即多个 key 对应了同一个桶。</li>
+</ul>
+<p><strong>HashMap 中是如何保证元素的唯一性的呢？即相同的元素会不会算出不同的哈希值呢？</strong></p>
+<ul>
+<li>通过 hashCode() 和 equals() 方法来保证元素的唯一性。</li>
+</ul>
+<h3 id="2-hashtable">2. HashTable</h3>
+<blockquote>
+<p>是一个线程安全的，但是锁住了全部数据效率低下</p>
+</blockquote>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAzMTAxNTU0OTg0LnBuZw?x-oss-process=image/format,png" alt="image-20200703101554984" loading="lazy"></figure>
+<p><strong>HashMap 和 Hashtable 的区别 ?</strong></p>
+<ol>
+<li>
+<p><strong>线程是否安全</strong>： HashMap 是非线程安全的， HashTable 是线程安全的； HashTable 内部的方法基本都经过 synchronized 修饰。（如果你要保证线程安全的话就使用 ConcurrentHashMap 吧！）；</p>
+</li>
+<li>
+<p><strong>效率</strong>：因为线程安全的问题， HashMap 要比 HashTable 效率高一点。另外， HashTable 基本被淘汰，不要在代码中使用它；</p>
+</li>
+<li>
+<p><strong>对 Null key 和 Null value 的支持</strong>： HashMap 中， null 可以作为键，这样的键只有一个，可以有一个或多个键所对应的值为 null。但是在 HashTable 中 put 进的键值只要有一个 null，直接抛出 NullPointerException。</p>
+</li>
+<li>
+<p><strong>初始容量大小和每次扩充容量大小的不同</strong>：<br>
+①创建时如果不指定容量初始值， Hashtable 默认的初始大小为 11，之后每次扩充，容量变为原来的 2n+1。<br>
+HashMap 默认的初始化大小为 16。 之后每次扩充，容量变为原来的 2 倍。<br>
+②创建时如果给定了容量初始值，那么 Hashtable 会直接使用你给定的大小，而 HashMap 会将其扩充为 2的幂次方大小（HashMap 中的 tableSizeFor() 方法保证，下面给出了源代码）。也就是说 HashMap 总是使用 2 的幂作为哈希表的大小,后面会介绍到为什么是 2 的幂次方。</p>
+</li>
+<li>
+<p><strong>底层数据结构</strong>： JDK1.8 以后的 HashMap 在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默<br>
+认为 8）时，将链表转化为红黑树，以减少搜索时间。 Hashtable 没有这样的机制。</p>
+</li>
+</ol>
+<h3 id="3-linkedhashmap">3. LinkedHashMap</h3>
+<p>保存了记录的插入顺序，在用 Iterator 遍历 LinkedHashMap时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序 。</p>
+<h2 id="五-collections常用方法">五、 Collections常用方法</h2>
+<h3 id="排序">排序</h3>
+<pre><code class="language-java">void reverse(List list)//反转
+void shuffle(List list)//随机排序
+void sort(List list)//按自然排序的升序排序
+void sort(List list, Comparator c)//定制排序，由 Comparator 控制排序逻辑
+void swap(List list, int i , int j)//交换两个索引位置的元素
+void rotate(List list, int distance)//旋转。当 distance 为正数时，将 list 后 distance 个元素整体移到前面。当 distance 为负数时，将 list 的前 distance 个元素整体移到后面。  
+</code></pre>
+<h3 id="查找替换操作">查找,替换操作</h3>
+<pre><code class="language-java">int binarySearch(List list, Object key)//对 List 进行二分查找，返回索引，注意 List 必须是有序的
+int max(Collection coll)//根据元素的自然顺序，返回最大的元素。
+int min(Collection coll)
+int max(Collection coll, Comparator c)//根据定制排序，返回最大元素，排序规则由 Comparatator 类控制。
+int min(Collection coll, Comparator c) void fill(List list, Object obj)//用指定的元素代替指定 list 中
+所有元素。 int frequency(Collection c, Object o)//统计元素出现次数
+int indexOfSubList(List list, List target)//统计 target 在 list 中第一次出现的索引，找不到则返回-1，
+int lastIndexOfSubList(List source, list target).
+boolean replaceAll(List list, Object oldVal, Object newVal), 用新元素替换旧元素  
+</code></pre>
+<h3 id="同步控制">同步控制</h3>
+<p>Collections 提供了多个 synchronizedXxx()方法，该方法可以将指定集合包装成线程同步的集合，从而解决多<br>
+线程并发访问集合时的线程安全问题。</p>
+<p>我们知道 HashSet， TreeSet， ArrayList,LinkedList,HashMap,TreeMap 都是线程不安全的。 Collections 提供了多个静态方法可以把他们包装成线程同步的集合</p>
+<pre><code class="language-java">synchronizedCollection(Collection&lt;T&gt; c) //返回指定 collection 支持的同步（线程安全的）collection。
+synchronizedList(List&lt;T&gt; list) //返回指定列表支持的同步（线程安全的） List。
+synchronizedMap(Map&lt;K,V&gt; m) //返回由指定映射支持的同步（线程安全的） Map。
+synchronizedSet(Set&lt;T&gt; s) //返回指定 set 支持的同步（线程安全的） set。
+</code></pre>
+<h3 id="设置不可变集合">设置不可变集合</h3>
+<p><strong>emptyXxx()</strong>： 返回一个空的、不可变的集合对象，此处的集合既可以是 List，也可以是 Set，还可以是 Map。</p>
+<p><strong>singletonXxx()</strong>： 返回一个只包含指定对象（只有一个或一个元素）的不可变的集合对象，此处的集合可以<br>
+是： List， Set， Map。</p>
+<p><strong>unmodifiableXxx()</strong>： 返回指定集合对象的不可变视图，此处的集合可以是： List， Set， Map。 上面三类方法的参数是原有的集合对象，返回值是该集合的”只读“版本</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[解决Hash冲突的方法总结]]></title>
+        <id>https://xzzz2020.github.io/post/d0otbdSTy/</id>
+        <link href="https://xzzz2020.github.io/post/d0otbdSTy/">
+        </link>
+        <updated>2020-07-03T03:23:49.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="1-开放地址法">1. 开放地址法</h2>
+<p>当出现冲突时，di是产生冲突的时候的增量序列，则将冲突的元素进行移动：</p>
+<ul>
+<li>-di值可能为1,2,3,…m-1，称线性探测再散列。如果di取1，则每次冲突之后，向后移动1个位置.</li>
+<li>-di取值可能为1,-1,4,-4,9,-9,16,-16,…k<em>k,-k</em>k(k&lt;=m/2）称二次探测再散列。</li>
+<li>-di取值可能为伪随机数列。称伪随机探测再散列。</li>
+</ul>
+<h2 id="2-多哈希法">2. 多哈希法</h2>
+<p>设计多种哈希函数，可以避免冲突，但是冲突几率还是有的，函数设计的越好或越多都可以将几率降到最低。</p>
+<h2 id="3-拉链法java中采用的">3. 拉链法（Java中采用的）</h2>
+<p>利用一个额外的空间比如链表来保存冲突的元素，此法可以完全避免哈希函数的冲突。</p>
+<h2 id="4-建立一个公共溢出区">4. 建立一个公共溢出区</h2>
+<p>一旦发生冲突，都填入溢出表。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[HashMap面试题总结]]></title>
+        <id>https://xzzz2020.github.io/post/hashmap/</id>
+        <link href="https://xzzz2020.github.io/post/hashmap/">
+        </link>
+        <updated>2020-07-03T03:17:21.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#hashmap%E7%AE%80%E4%BB%8B">HashMap简介</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E9%9B%86%E5%90%88">问题集合</a>
+<ul>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%80%E4%BD%A0%E4%BA%86%E8%A7%A3hashmap%E7%9A%84%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%90%97">问点一：你了解HashMap的底层数据结构吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%BA%8C%E4%B8%BA%E4%BB%80%E4%B9%88jdk-7%E4%BD%BF%E7%94%A8%E6%95%B0%E7%BB%84%E9%93%BE%E8%A1%A8jdk8%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81%E6%98%AF%E6%80%8E%E4%B9%88%E5%9B%9E%E4%BA%8Bhashmap%E5%8F%88%E6%98%AF%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E7%9A%84">问点二：为什么JDK 7使用数组+链表？JDK8中为什么要使用红黑树？哈希冲突是怎么回事？HashMap又是怎么解决的？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%89hashmap%E7%9A%84%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84jdk7%E4%B8%8Ejdk8%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C%E5%90%97">问点三：HashMap的扩容机制是怎么样的？JDK7与JDK8有什么不同吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%9B%9Bhashmap%E4%B8%AD%E7%9A%84%E9%94%AE%E5%80%BC%E5%8F%AF%E4%BB%A5%E4%B8%BAnull%E5%90%97%E8%83%BD%E7%AE%80%E5%8D%95%E8%AF%B4%E4%B8%80%E4%B8%8B%E5%8E%9F%E7%90%86%E5%90%97">问点四：HashMap中的键值可以为Null吗？能简单说一下原理吗？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%BA%94hashmap%E4%B8%AD%E8%83%BDput%E4%B8%A4%E4%B8%AA%E7%9B%B8%E5%90%8C%E7%9A%84key%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E6%88%96%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD">问点五：HashMap中能put两个相同的Key吗？为什么能或为什么不能？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%85%AD%E8%81%8A%E4%B8%80%E8%81%8Ajdk-7%E7%9A%84hashmap%E4%B8%AD%E7%9A%84%E6%AD%BB%E9%94%81%E6%98%AF%E6%80%8E%E4%B9%88%E5%9B%9E%E4%BA%8B">问点六：聊一聊JDK 7的HashMap中的“死锁”是怎么回事？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B8%83hashmap%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AE%89%E5%85%A8%E6%88%96%E8%80%85%E4%B8%8D%E5%AE%89%E5%85%A8">问点七：HashMap是线程安全的吗？为什么安全或者不安全？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%85%AB%E4%BB%80%E4%B9%88-hashmap-%E7%9A%84%E5%8A%A0%E8%BD%BD%E5%9B%A0%E5%AD%90%E6%98%AF075%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E8%B6%85%E8%BF%878%E6%89%8D%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91">问点八：什么 HashMap 的加载因子是0.75？为什么是超过“8”才用红黑树？</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E4%B9%9Dhashmap-hashtable-concurrenthashmap%E7%9A%84%E5%8C%BA%E5%88%AB">问点九：HashMap、HashTable、ConcurrentHashMap的区别</a></li>
+<li><a href="#%E9%97%AE%E7%82%B9%E5%8D%81%E8%B0%88%E8%B0%88%E4%BD%A0%E7%90%86%E8%A7%A3%E7%9A%84-hashmap%E8%AE%B2%E8%AE%B2%E5%85%B6%E4%B8%AD%E7%9A%84-get%E5%92%8Cput-%E8%BF%87%E7%A8%8B">问点十：谈谈你理解的 HashMap，讲讲其中的 get和put 过程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<blockquote>
+<p>由于HashMap在面试中是一个重点，内容十分多，需要单独写一篇文章总结</p>
+<p>HashMap在Jdk1.7与1.8之中有很大区别！！</p>
+</blockquote>
+<h2 id="hashmap简介">HashMap简介</h2>
+<p><code>HashMap</code> 是用来存储数据的，它底层在<code>JDK 1.7</code>是<strong>数组+链表</strong>实现的，而<code>JDK 1.8</code>是使用<strong>数组+链表+红黑树</strong>实现，通过对 <code>key</code> 进行哈希计算等操作后得到数组下标，把 <code>value</code> 等信息存放在<strong>链表</strong>或<strong>红黑树</strong>存在此位置。</p>
+<p>如果两个不同的 <code>key</code> 运算后获取的数组下标一致，就出现了<strong>哈希冲突</strong>。数组默认长度是<strong>16</strong>，如果实际数组长度超过一定的值，就会进行<strong>扩容</strong>。</p>
+<h2 id="问题集合">问题集合</h2>
+<h3 id="问点一你了解hashmap的底层数据结构吗">问点一：你了解HashMap的底层数据结构吗？</h3>
+<blockquote>
+<p>在JDK1.7使用的是<strong>数组+链表</strong>的实现，在JDK1.8中使用的是<strong>数组+链表+红黑树</strong></p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/640" alt="img" style="zoom: 67%;" />
+<img src="https://mmbiz.qpic.cn/mmbiz_png/IJUXwBNpKlhF6p8tTEWMiaxZ0BKpVc0w0GALrnTniccx148yicUk62MKibzZIj54fDx9F6icXCXHpRQLevrGFTbPQZw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img" style="zoom:67%;" />
+<h3 id="问点二为什么jdk-7使用数组链表jdk8中为什么要使用红黑树哈希冲突是怎么回事hashmap又是怎么解决的">问点二：为什么JDK 7使用数组+链表？JDK8中为什么要使用红黑树？哈希冲突是怎么回事？HashMap又是怎么解决的？</h3>
+<blockquote>
+<ul>
+<li>JDK 7使用数组+链表，是因为HashMap是根据Key计算Hash值，从而得到哈希表的索引下标，而哈希表本质是数组实现。当出现Hash冲突时，则一个桶可能需要存放多个数据。HashMap将会根据equals()方法，判断Hash冲突的Key是否是同一个值，此时如果仍然不相同，就会利用头插法，将出现Hash冲突的Key+Value存放在链表上。</li>
+<li>但是如果一个链表比较长，那么查询的效率将会降低，所以JDK8中又使用了红黑树来解决链表过长导致查询效率变差的问题，会在一个桶上链表长度为8时，进行树化。但是树化的时候，会判断当前的长度是否小于64，如果小于，则不进行树化，而是选择进行一次扩容，因为扩容的时候会使哈希表长度增加，hash值会重新计算，将重新打乱当前的元素排列，分配到新的空间上，这样也避免了链表过长。</li>
+</ul>
+</blockquote>
+<p>对于HashMap中的每个key，根据一个Hash函数，计算出一个Hash值，对应就是桶的编号，桶实际上是用数组实现的。</p>
+<pre><code class="language-java">//key 进行哈希计算
+int hash = hash(key);
+//获取数组下标
+int i = indexFor(hash, table.length);
+</code></pre>
+<p>通过计算后的下标，从而得到数组的对应下标的位置，最后把k，v值存进去，同样的当再次第二次存值的时候，同样把<code>k，v</code>传进来，当k再次进行计算出数组下标<code>index</code>，有可能和第一次计算的<code>index</code>的值相同。</p>
+<p>但是，两次的需要存进去的<code>value</code>值是不同的，这就出现了同一个数组后面有一条链表，会比较链表上的每一个<code>value</code>值与当前的<code>value</code>是否相同，若是不相同，通过<strong>头插法</strong>，将数值插入链表中。如下图所示：</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/640" alt="img" style="zoom: 67%;" />
+<p>接下来通通过源码进行分析，在jdk 7插入的put 方法源码如下：</p>
+<pre><code class="language-java">public V put(K key, V value) {
+　　　　　//数组为空就进行初始化
+        if (table == EMPTY_TABLE) {
+            inflateTable(threshold);
+        }
+        if (key == null)
+            return putForNullKey(value);
+　　　　　//key 进行哈希计算
+        int hash = hash(key);
+　　　　　//获取数组下标
+        int i = indexFor(hash, table.length);
+　　　　　//如果此下标有值，遍历链表上的元素，key 一致的话就替换 value 的值
+        for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) {
+            Object k;
+            if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) {
+                V oldValue = e.value;
+                e.value = value;
+                e.recordAccess(this);
+                return oldValue;
+            }
+        }
+
+        modCount++;
+　　　　　//新增一个key
+        addEntry(hash, key, value, i);
+        return null;
+    }
+</code></pre>
+<p><code>put</code>方法中主要做了以下几件事：</p>
+<ol>
+<li>判断<code>table</code>数组是否为空，若为空进行初始化<code>table</code>数组。</li>
+<li>判断key值是否为<code>null</code>，将null是作为<code>key</code>存进去。</li>
+<li>若<code>key</code>不为空，通过<code>key</code>计算出数组下标，判断<code>table[i]</code>是否为空。</li>
+<li>若是不为空通过链表循环，判断在链表中是否存在与该<code>key</code>相等，若是存在，直接将<code>value</code>替换成新的<code>value</code>。若是<code>table[i]</code>为空或者链表中不存在与之相同的<code>key</code>，就<code>addEntry(hash, key, value, i)</code>新增一个节点。</li>
+</ol>
+<p>接下来看看<code>addEntry(hash, key, value, i)</code>新增节点的源码如下：</p>
+<pre><code class="language-java">void addEntry(int hash, K key, V value, int bucketIndex) {
+//数组长度大于阈值且存在哈希冲突（即当前数组下标有元素），就将数组扩容至2倍
+        if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) {
+            resize(2 * table.length);
+            hash = (null != key) ? hash(key) : 0;
+            bucketIndex = indexFor(hash, table.length);
+        }
+        createEntry(hash, key, value, bucketIndex);
+    }
+</code></pre>
+<p>这个方法很简单，直接就是判断当前数组的大小是否&gt;=<code>threshold</code>并且<code>table[bucketIndex]</code>是否为<code>null</code>。若成立扩容，然后rehash，重新得到新数组的下标值，最后 <code>createEntry(hash, key, value, bucketIndex)</code>创建新节点。</p>
+<p>最后来看一下<code>createEntry(hash, key, value, bucketIndex)</code>创建新节点的源码如下：</p>
+<pre><code class="language-java">void createEntry(int hash, K key, V value, int bucketIndex) {
+　　//此位置有元素，就在链表头部插入新元素（头插法）
+        Entry&lt;K,V&gt; e = table[bucketIndex];
+        table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);
+        size++;
+    }
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzgwYmEzZTNmLTY3ODgtNDA5OC04NTlkLTQ2NThmNDExMTZjYi53ZWJw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<p>在<code>JDK 7</code>中，链表存储有一个缺点，就是当数据很多的时候，链表就会很长，每次查询都会遍历很长的链表。</p>
+<p>因此在<code>JDK 8</code>中为了优化<code>HashMap</code>的查询效率，将内部的结构改为<strong>数组+链表+和红黑树</strong>，当一个哈希桶后面的链表长度<code>&gt;8</code>的时候，就会将链表转化为<strong>红黑树</strong>，红黑树是二分查找，提高了查询的效率。接下来通过<code>JDK 8</code>的<code>put</code>源码分析如下：</p>
+<pre><code class="language-java">public V put(K key, V value) {
+        return putVal(hash(key), key, value, false, true);
+}
+
+
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) {
+        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+　　　　　//数组为空就初始化
+        if ((tab = table) == null || (n = tab.length) == 0)
+            n = (tab = resize()).length;
+　　　　　//当前下标为空，就直接插入
+        if ((p = tab[i = (n - 1) &amp; hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+        else {
+            Node&lt;K,V&gt; e; K k;
+　　　　　　　//key 相同就覆盖原来的值
+            if (p.hash == hash &amp;&amp;((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+                e = p;
+　　　　　　　//树节点插入数据
+            else if (p instanceof TreeNode)
+                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+            else {
+                for (int binCount = 0; ; ++binCount) {
+　　　　　　　　　　　　//链表，尾插法插入数据
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+　　　　　　　　　　　　　　//链表长度超过8，就把链表转为红黑树
+                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+　　　　　　　　　　　　//key相同就覆盖原来的值
+                    if (e.hash == hash &amp;&amp;((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                        break;
+                    p = e;
+                }
+            }
+            if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+        }
+        ++modCount;
+　　　　　//数组长度大于阈值，就扩容
+        if (++size &gt; threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+    }
+</code></pre>
+<p><strong>通过分析源码，上面的方法主要做了以下几件事</strong>：</p>
+<ol>
+<li>判断当前桶是否为空，空的就需要初始化（<code>resize</code> 中会判断是否进行初始化）。</li>
+<li>根据当前 <code>key</code> 的 <code>hashcode</code> 定位到具体的桶中并判断是否为空，为空表明没有 <code>Hash</code> 冲突就直接在当前位置创建一个新桶即可。</li>
+<li>如果当前桶有值（ <strong>Hash 冲突</strong>），那么就要比较当前桶中的 <code>key</code>、<code>key</code> 的 <code>hashcode</code> 与写入的 <code>key</code>是否相等，相等就赋值给 e。</li>
+<li>如果当前桶为红黑树，那就要按照红黑树的方式写入数据。</li>
+<li>如果是个链表，就需要将当前的 <code>key、value</code> 封装成一个新节点写入到当前桶的后面（形成链表）。</li>
+<li>接着判断当前链表的大小是否大于预设的阈值，大于时就要转换为红黑树。</li>
+<li>如果在遍历过程中找到 <code>key</code> 相同时直接退出遍历。</li>
+<li>如果 <code>e != null</code> 就相当于存在相同的 <code>key</code>,那就需要将值覆盖。</li>
+<li>最后判断是否需要进行扩容。</li>
+</ol>
+<p>继续看下 treeifyBin 的源码：</p>
+<pre><code class="language-java">final void treeifyBin(Node&lt;K,V&gt;[] tab, int hash) {
+        int n, index; Node&lt;K,V&gt; e;
+　　　　　//链表转为红黑树时，若此时数组长度小于64，扩容数组
+        if (tab == null || (n = tab.length) &lt; MIN_TREEIFY_CAPACITY)
+            resize();
+        else if ((e = tab[index = (n - 1) &amp; hash]) != null) {
+            TreeNode&lt;K,V&gt; hd = null, tl = null;
+　　　　　　　//链表转为树结构
+            do {
+                TreeNode&lt;K,V&gt; p = replacementTreeNode(e, null);
+                if (tl == null)
+                    hd = p;
+                else {
+                    p.prev = tl;
+                    tl.next = p;
+                }
+                tl = p;
+            } while ((e = e.next) != null);
+            if ((tab[index] = hd) != null)
+                hd.treeify(tab);
+        }
+    }
+</code></pre>
+<p>由此可以看到1.8中，数组有两种情况会发生扩容：</p>
+<ol>
+<li>一是超过阈值</li>
+<li>二是链表转为红黑树且数组元素小于64时</li>
+</ol>
+<p>由此在<code>jdk1.8</code>中，默认长度为<code>16</code>情况下，要么元素一直放在同一下标，链表转为红黑树且数组元素小于64时就会扩容，要么超过阈值<code>12</code>时才会扩容。</p>
+<p>依据上面的源码分析，在<code>JDK 1.8</code>中<code>put</code>方法的执行的原理图如下</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAyMDk0NDQxNDU4LnBuZw?x-oss-process=image/format,png" alt="image-20200702094441458" loading="lazy"></figure>
+<h3 id="问点三hashmap的扩容机制是怎么样的jdk7与jdk8有什么不同吗">问点三：HashMap的扩容机制是怎么样的？JDK7与JDK8有什么不同吗？</h3>
+<blockquote>
+<p><code>JDK 1.7</code>的扩容条件是<strong>数组长度大于阈值且存在哈希冲突</strong>，而<code>JDK 1.8</code>扩容条件是<strong>数组长度大于阈值</strong>或<strong>链表转为红黑树且数组元素小于64</strong>时，源码中的体现如下所示：</p>
+</blockquote>
+<p><strong>JDK1.7扩容源码</strong>：</p>
+<pre><code class="language-java">void addEntry(int hash, K key, V value, int bucketIndex) {
+　　　　　//数组长度大于阈值且存在哈希冲突（即当前数组下标有元素），就将数组扩容至2倍
+        if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) {
+            resize(2 * table.length);
+            hash = (null != key) ? hash(key) : 0;
+            bucketIndex = indexFor(hash, table.length);
+        }
+        createEntry(hash, key, value, bucketIndex);
+    }
+</code></pre>
+<p><strong>JDK1.8扩容源码</strong>：</p>
+<pre><code class="language-java">//数组长度大于阈值，就扩容
+if (++size &gt; threshold)
+      resize();
+
+//链表转为红黑树时，若此时数组长度小于64，扩容数组
+if (tab == null || (n = tab.length) &lt; MIN_TREEIFY_CAPACITY)
+      resize();
+</code></pre>
+<h3 id="问点四hashmap中的键值可以为null吗能简单说一下原理吗">问点四：HashMap中的键值可以为Null吗？能简单说一下原理吗？</h3>
+<blockquote>
+<p>JDK两个版本都可以。JDK1.7和1.8本质都是去寻找Hash值为0的那个桶，然后如果key为null，则直接替换值</p>
+</blockquote>
+<h3 id="问点五hashmap中能put两个相同的key吗为什么能或为什么不能">问点五：HashMap中能put两个相同的Key吗？为什么能或为什么不能？</h3>
+<blockquote>
+<p>在<code>JDK7</code>和<code>JDK8</code>中的做法是一样的，若是存入的<code>key</code>值一样，就会将原来的key所对应的value值直接替换掉</p>
+</blockquote>
+<h3 id="问点六聊一聊jdk-7的hashmap中的死锁是怎么回事">问点六：聊一聊JDK 7的HashMap中的“死锁”是怎么回事？</h3>
+<blockquote>
+<p>首先JDK7采用的头插法，会有链表成环的问题，JDK采用的尾插法，不会有循环链表的问题。</p>
+<p><code>HashMap</code>是线程不安全的，在<code>HashMap</code>的源码中并未对其操作进行同步执行，所以在并发访问的时候就会出现线程安全的问题。</p>
+<p>JDK 7死锁出现在高并发的时候，此时两个线程都将对数据进行扩容，每次扩容的时候，会让链表翻转。</p>
+</blockquote>
+<p><code>transfer</code>函数源码（<code>transfer</code>函数是resize扩容方法中调用的另一个方法）：</p>
+<pre><code class="language-java">void transfer(Entry[] newTable, boolean rehash) {
+    int newCapacity = newTable.length;
+    for (Entry&lt;K,V&gt; e : table) {
+    while(null != e) {
+        Entry&lt;K,V&gt; next = e.next; ---------------------(1)
+        if (rehash) {
+            e.hash = null == e.key ? 0 : hash(e.key);
+        }
+        int i = indexFor(e.hash, newCapacity);
+        e.next = newTable[i];
+        newTable[i] = e;
+        e = next;
+    } // while
+    }
+}
+</code></pre>
+<p><strong>假设一个链表，A.next = B  , B.next = null</strong>：</p>
+<ul>
+<li>正常情况下，新扩容的数组应该是位null，然后A.next = newTable[i]，则<code>A.next = null</code>，newTable[i] = A ，B.next = newTable[i]，则<code>B.next = A</code>，newTable[i] = B</li>
+<li>如果两个线程同时转换，此时已然会执行 A.next = newTable[i] , 则将<code>A.next = null变成A.next = B</code>，剩下过程一致，<code>出现循环链表</code></li>
+</ul>
+<h3 id="问点七hashmap是线程安全的吗为什么安全或者不安全">问点七：HashMap是线程安全的吗？为什么安全或者不安全？</h3>
+<blockquote>
+<p>不是线程安全的，比如会在扩容的时候产生循环链表；在put的时候会覆盖别的线程的值</p>
+</blockquote>
+<h3 id="问点八什么-hashmap-的加载因子是075为什么是超过8才用红黑树">问点八：什么 HashMap 的加载因子是0.75？为什么是超过“8”才用红黑树？</h3>
+<blockquote>
+<p>因为HashMap底层的数据结构是哈希表，在插入数据的时候会出现hash冲突，而HashMap的解决方式是使用拉链法，即采用额外的空间来解决冲突。</p>
+<p>而选择加载因子是0.75主要跟数学上泊松分布有关系，选择的参数平均为0.5的泊松分布，计算出来当前加载因子是0.75，这更是空间与时间的一种选择折中。</p>
+<p>而超过8才使用红黑树，源于该泊松分布计算出来的，一个节点哈希冲突8次的概率极为的小，几乎为不可能时间，这也是一次空间与时间的折中。</p>
+</blockquote>
+<p>​</p>
+<pre><code class="language-java">//1个节点哈希冲突n次的概率
+0:    0.60653066
+1:    0.30326533
+2:    0.07581633
+3:    0.01263606
+4:    0.00157952
+5:    0.00015795
+6:    0.00001316
+7:    0.00000094
+8:    0.00000006
+</code></pre>
+<h3 id="问点九hashmap-hashtable-concurrenthashmap的区别">问点九：HashMap、HashTable、ConcurrentHashMap的区别</h3>
+<blockquote>
+<p>HashMap是线程不安全的，在jdk1.7高并发的时候，可能会在扩容的时候，产生循环链表，所以在高并发的时候，不去使用。</p>
+<p>HashTable是一个线程安全的，采用的是synchronize的方式，关键字加在方法上，即对当前HashTable对象加锁，会导致所有的数据加上锁。</p>
+<p>ConcurrentHashMap在JDK1.7的时候使用的是Segment分段锁的思想，将数据分成段，每个段都有个可重入锁，则多线程的时候不会影响到其他线程访问其他段的数据。</p>
+<p>ConcurrentHashMap在JDK1.8的时候使用的是CAS+synchronized方式，抛弃了Segment分段锁的思想，CAS是一个乐观锁，则在不加锁情况下实现赋值，在当前节点为空的时候，会采用CAS的方式添加节点；而用synchronized而不用是可重入锁的原因是因为官方对synchronized做了很多优化。</p>
+</blockquote>
+<p><code>HashTable</code>其中使用synchronize来保证线程安全，即当有一个线程拥有锁的时候，其他的线程都会进入阻塞或者轮询状态,这样会使得效率越来越低。</p>
+<p>而<code>ConcurrentHashMapMap</code>的锁分段技术可以有效的提高并发访问率，<code>HashTable</code>访问效率低下的原因，就是因为所有的线程在竞争同一把锁。</p>
+<p>如果容器中有多把锁，不同的锁锁定不同的位置，这样线程间就不会存在锁的竞争，这样就可以有效的提高并发访问效率,这就是<code>ConcurrentHashMap</code>所使用的锁分段技术将数据一段一段的存储，为每一段都配一把锁，当一个线程只是占用其中的一个数据段时,其他段的数据也能被其他线程访问。</p>
+<p>在JDK1.7中currentHashMap采用的是<strong>Segment分段锁的思想</strong>方式实现：</p>
+<ul>
+<li>Segment是将数据分成段，默认是16，每个段都有一把锁，则理论最高支持16个线程并发</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAzMDkzMjI2ODMxLnBuZw?x-oss-process=image/format,png" alt="image-20200703093226831" loading="lazy"></figure>
+<p>JDK1.8的currentHashMap采用的是**数组+链表+红黑树，抛弃了原有的 Segment 分段锁，而采用了 CAS + synchronized **方式实现：</p>
+<ul>
+<li>
+<p>CAS，是一个乐观锁，他主要思想是<strong>比较然后再执行操作</strong>，比较的是内存的值和预期的原值是否一致，如果不一致，则需要自旋获取新值，但是CAS的最大问题就是可能出现ABA的问题。</p>
+</li>
+<li>
+<p>在<code>no lock when adding to empty bin</code> ，也就是桶为空的时候采用CAS方式添加数据，而不为空的时候采用synchronized 的方式</p>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAzMDkzODAzNDMwLnBuZw?x-oss-process=image/format,png" alt="image-20200703093803430" loading="lazy"></figure>
+</li>
+</ul>
+<h3 id="问点十谈谈你理解的-hashmap讲讲其中的-get和put-过程">问点十：谈谈你理解的 HashMap，讲讲其中的 get和put 过程</h3>
+<p><strong>put方法</strong>：</p>
+<ul>
+<li>考虑是否要初始化</li>
+<li>根据key计算哈希值，找到hash表对应的索引</li>
+<li>然后判断是否出现的hash冲突，如果没有则直接插入，查看是否需要扩容</li>
+<li>JDK1.7出现hash冲突直接插入链表中即可</li>
+<li>JDK1.8出现hash冲突，需要先判断当前是红黑树还是链表，对于链表可能会有一个树化的过程</li>
+</ul>
+<p><strong>get方法</strong>：</p>
+<ul>
+<li>思路与上面一致，只是少了一个扩容和树化的过程</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzAyMDk0NDQxNDU4LnBuZw?x-oss-process=image/format,png" alt="image-20200702094441458" loading="lazy"></figure>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[JavaSE基础知识面试考点总结]]></title>
         <id>https://xzzz2020.github.io/post/amjJC-n_8/</id>
@@ -2885,623 +3582,6 @@ Sample Output<br>
 </blockquote>
 <blockquote>
 <figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623101755205.png" alt="image-20200623101755205" loading="lazy"></figure>
-</blockquote>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[第三章进程同步与死锁]]></title>
-        <id>https://xzzz2020.github.io/post/vUwZiOAP9/</id>
-        <link href="https://xzzz2020.github.io/post/vUwZiOAP9/">
-        </link>
-        <updated>2020-06-22T09:25:58.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5">进程同步</a></li>
-<li><a href="#%E4%BF%A1%E5%8F%B7%E9%87%8F">信号量</a>
-<ul>
-<li><a href="#%E6%95%B4%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F">整型信号量</a></li>
-<li><a href="#%E8%AE%B0%E5%BD%95%E6%80%A7%E4%BF%A1%E5%8F%B7%E9%87%8F">记录性信号量（***）</a></li>
-<li><a href="#and%E5%9E%8B%E4%BF%A1%E5%8F%B7%E9%87%8F">AND型信号量</a></li>
-<li><a href="#%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E5%BA%94%E7%94%A8">信号量的应用（***）</a>
-<ul>
-<li><a href="#%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E4%BA%92%E6%96%A5">利用信号量实现互斥</a></li>
-<li><a href="#%E5%88%A9%E7%94%A8%E4%BF%A1%E5%8F%B7%E9%87%8F%E5%AE%9E%E7%8E%B0%E5%89%8D%E9%A9%B1%E5%85%B3%E7%B3%BB">利用信号量实现前驱关系</a></li>
-<li><a href="#%E8%B5%84%E6%BA%90%E7%9A%84%E5%88%86%E9%85%8D">资源的分配</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#%E5%90%8C%E6%AD%A5%E7%9A%84%E9%97%AE%E9%A2%98">同步的问题</a></li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1">进程间通信</a></li>
-<li><a href="#%E6%AD%BB%E9%94%81%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5">死锁的相关概念</a></li>
-<li><a href="#%E5%A4%84%E7%90%86%E6%AD%BB%E9%94%81%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95">处理死锁的基本方法</a>
-<ul>
-<li><a href="#%E9%A2%84%E9%98%B2%E6%AD%BB%E9%94%81">预防死锁</a></li>
-<li><a href="#%E9%81%BF%E5%85%8D%E6%AD%BB%E9%94%81">避免死锁（***）</a>
-<ul>
-<li><a href="#%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95">银行家算法（***）</a></li>
-</ul>
-</li>
-<li><a href="#%E6%A3%80%E6%B5%8B%E6%AD%BB%E9%94%81">检测死锁</a></li>
-<li><a href="#%E8%A7%A3%E9%99%A4%E6%AD%BB%E9%94%81">解除死锁</a></li>
-</ul>
-</li>
-<li><a href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE">练习题目</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="进程同步">进程同步</h2>
-<p><strong>临界资源</strong>：对一些硬件而言，打印机就是一个临界资源，即多个程序共同需要抢占的资源</p>
-<p><strong>临界区</strong>：每个进程中访问临界资源的代码</p>
-<p><strong>实现互斥的结构</strong>：</p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622150153590.png" alt="image-20200622150153590" style="zoom: 67%;" />
-<p><strong>硬件实现</strong>：</p>
-<ul>
-<li><strong>关中断</strong>：让处理机始终执行一个程序，不进行程序的切换</li>
-<li><strong>指令</strong></li>
-</ul>
-<p><strong>同步应该遵循的规则</strong>：</p>
-<ul>
-<li><strong>空闲让进</strong>：当无进程处于临界区时，表明临界资源处于空闲状态，应允许一个请求进入临界区的进程立即进入自己的临界区，以有效地利用临界资源。</li>
-<li><strong>忙则等待</strong>：当有进程进入临界区时，表明临界资源正在被访问，因而其他试图进入临界区的进程必须等待，以保证对临界资源的互斥访问。</li>
-<li><strong>有限等待</strong>：对要求访问临界资源的进程，应保证在有限时间内能进入自己的临界区，以免陷入“死等”状态。</li>
-<li><strong>让权等待</strong>：当进程不能进入自己的临界区时，应立即释放处理机，以免进程陷入“忙等&quot;</li>
-</ul>
-<p><strong>前驱图：</strong></p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622150703762.png" alt="image-20200622150703762" style="zoom:67%;" />
-<blockquote>
-<p><strong>若想执行S2，则需要先执行S1。</strong></p>
-</blockquote>
-<h2 id="信号量">信号量</h2>
-<h3 id="整型信号量">整型信号量</h3>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622151744719.png" alt="image-20200622151744719" style="zoom:67%;" />
-<h3 id="记录性信号量">记录性信号量（***）</h3>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622151852525.png" alt="image-20200622151852525" style="zoom:67%;" />
-<h3 id="and型信号量">AND型信号量</h3>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622154354678.png" alt="image-20200622154354678" style="zoom:80%;" />
-<h3 id="信号量的应用">信号量的应用（***）</h3>
-<h4 id="利用信号量实现互斥">利用信号量实现互斥</h4>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622153000297.png" alt="image-20200622153000297" style="zoom:50%;" />
-<p><strong>实现算法</strong>：</p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622153444468.png" alt="image-20200622153444468" style="zoom:50%;" />
-<p><strong>符合</strong>：空闲让进，忙则等待和有限等待</p>
-<h4 id="利用信号量实现前驱关系">利用信号量实现前驱关系</h4>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622153525416.png" alt="image-20200622153525416" style="zoom: 67%;" />
-<h4 id="资源的分配">资源的分配</h4>
-<p>申请资源时需要执行P操作，释放资源时执行V操作</p>
-<h2 id="同步的问题">同步的问题</h2>
-<ul>
-<li>生产者-消费者问题</li>
-<li>哲学家进餐问题</li>
-<li>读者-写者问题</li>
-</ul>
-<h2 id="进程间通信">进程间通信</h2>
-<p><strong>低级通信</strong>：信号量机制</p>
-<p><strong>高级通讯</strong>：共享存储器系统、消息传递系统、管道通信。</p>
-<h2 id="死锁的相关概念">死锁的相关概念</h2>
-<p><strong>可抢占资源</strong>：某进程在获得该资源后，该资源可以再被其他进程或系统抢占。</p>
-<p><strong>不可抢占的资源</strong>：一旦系统将某资源分配给该进程后，就不能将它强行收回，只能在进程用完后自行释放。</p>
-<p><strong>死锁的定义</strong>：如果一组进程中的每个进程都在等待仅由该组进程中的其他进程才能引发的事件，那么该组进程就是死锁。</p>
-<p><strong>产生死锁的原因</strong>：</p>
-<ul>
-<li>竞争不可抢占资源引发死锁。</li>
-<li>竞争可消耗资源引发死锁。</li>
-<li>进程推进顺序不当引发死锁。</li>
-</ul>
-<h2 id="处理死锁的基本方法">处理死锁的基本方法</h2>
-<h3 id="预防死锁">预防死锁</h3>
-<ul>
-<li>破坏“请求和保持条件”</li>
-<li>破坏“不可抢占条件”</li>
-<li><strong>破坏“循环等待条件”</strong>：进程统一按照某种线性规则申请资源。例如,输入机资源序号为1,打印机序号为2，磁带机资源序号为3,磁盘资源序号为4，进程在申请资源时，<mark><strong>必须按照从1到4或者从4到1的顺序申请</strong></mark>。</li>
-</ul>
-<h3 id="避免死锁">避免死锁（***）</h3>
-<p><strong>安全状态</strong>：安全状态，是指系统能按某种顺序(P1, P2,Pn)(称此序列为安全序列)，来为每个进程Pi分配其所需的资源,<mark><strong>直到满足每个进程对资源的最大需求</strong></mark>，使每个进程都可以顺利地完成。</p>
-<p><strong>不安全状态</strong>：如果系统无法找到这样一个安全序列， 称系统处于不安全状态。</p>
-<blockquote>
-<p>要避免死锁，需要使系统处于安全状态；系统处于不安全状态，并不一定处于死锁状态</p>
-</blockquote>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622165340017.png" alt="image-20200622165340017" style="zoom:67%;" />
-<ul>
-<li>根据上述定义，当给P1分配2个资源时，则此时P1、P2和P3都无法满足最大需求，处于不安全状态</li>
-</ul>
-<h4 id="银行家算法">银行家算法（***）</h4>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170224200.png" alt="image-20200622170224200" style="zoom:80%;" />
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170321644.png" alt="image-20200622170321644" style="zoom:80%;" />
-<ul>
-<li>先假设分配可以满足，做一次安全检测，如果仍能处于安全状态，则允许分配。</li>
-<li>寻找安全序列的方式只有两种：<strong>每次都从最上面开始</strong>；<strong>按照从上到下顺序循环</strong></li>
-</ul>
-<p><strong>应用</strong>：</p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170415300.png" alt="image-20200622170415300" style="zoom:67%;" />
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622170922576.png" alt="image-20200622170922576" style="zoom:67%;" />
-<p><strong>如果单向顺序，查找安全序列的流程为</strong>：</p>
-<ol>
-<li>判断P0，返现剩余资源不能满足。<strong>判断P1，发现满足，则释放P1分配的资源，此时资源是：5，3，2。</strong></li>
-<li>继续判断P0，返现剩余资源不能满足。P1结束，则直接跳过。判断P2，返现剩余资源不能满足。<strong>判断P3，发现满足，则释放P3分配的资源，此时资源是：7，4，3。</strong></li>
-<li><strong>继续判断P0，发现满足，则释放P0分配的资源，此时资源是：7，5，3。</strong></li>
-<li>P0、 P1结束，直接跳过。<strong>判断P2，发现满足，则释放P2分配的资源，此时资源是：10，5，5.。</strong></li>
-<li>P0、 P1、P2、P3结束，直接跳过。<strong>判断P4，发现满足，则释放P4分配的资源。</strong></li>
-<li><strong>最终的安全序列为：P1、P3、P0、P2、P4。</strong></li>
-<li><strong>确认分配</strong>。</li>
-</ol>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622172205550.png" alt="image-20200622172205550" style="zoom:67%;" />
-<ul>
-<li><strong>此时找不到安全序列，拒绝分配。</strong></li>
-</ul>
-<h3 id="检测死锁">检测死锁</h3>
-<h3 id="解除死锁">解除死锁</h3>
-<h2 id="练习题目">练习题目</h2>
-<blockquote>
-<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622172918571.png" alt="image-20200622172918571" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622172948218.png" alt="image-20200622172948218" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173016842.png" alt="image-20200622173016842" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173053665.png" alt="image-20200622173053665" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173114342.png" alt="image-20200622173114342" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622173233127.png" alt="image-20200622173233127" loading="lazy"></figure>
-</blockquote>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[第二章处理机管理]]></title>
-        <id>https://xzzz2020.github.io/post/IyZhCzd1C/</id>
-        <link href="https://xzzz2020.github.io/post/IyZhCzd1C/">
-        </link>
-        <updated>2020-06-22T06:30:37.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F">程序的执行方式</a>
-<ul>
-<li><a href="#%E9%A1%BA%E5%BA%8F%E6%96%B9%E5%BC%8F">顺序方式（*）</a></li>
-<li><a href="#%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C">并发执行（***）</a></li>
-<li><a href="#%E5%B9%B6%E8%A1%8C%E6%89%A7%E8%A1%8C">并行执行</a></li>
-</ul>
-</li>
-<li><a href="#%E8%BF%9B%E7%A8%8B">进程</a>
-<ul>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%89%B9%E5%BE%81">进程的特征</a></li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81">进程的状态</a></li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97pcb">进程控制块（PCB）</a></li>
-</ul>
-</li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6">进程控制</a>
-<ul>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%9B%9B%E4%B8%AA%E6%93%8D%E4%BD%9C">进程的四个操作</a>
-<ul>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA">进程的创建</a></li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%88%E6%AD%A2">进程的终止</a></li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%98%BB%E5%A1%9E%E5%92%8C%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%94%A4%E9%86%92">进程的阻塞和进程的唤醒</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E6%A6%82%E5%BF%B5">进程调度概念</a>
-<ul>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%9A%84%E6%96%B9%E5%BC%8F">进程调度的方式</a></li>
-<li><a href="#%E8%A1%A1%E9%87%8F%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E6%8C%87%E6%A0%87">衡量调度算法指标</a></li>
-</ul>
-</li>
-<li><a href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95%E8%AE%A1%E7%AE%97">进程调度算法（计算***）</a>
-<ul>
-<li><a href="#%E5%85%88%E6%9D%A5%E5%85%88%E6%9C%8D%E5%8A%A1%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">先来先服务调度算法（***）</a></li>
-<li><a href="#%E7%9F%AD%E4%BD%9C%E4%B8%9A%E4%BC%98%E5%85%88%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">短作业优先调度算法（***）</a></li>
-<li><a href="#%E9%AB%98%E4%BC%98%E5%85%88%E6%9D%83%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">高优先权调度算法（***）</a></li>
-<li><a href="#%E9%AB%98%E5%93%8D%E5%BA%94%E6%AF%94%E4%BC%98%E5%85%88%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">高响应比优先调度算法</a></li>
-<li><a href="#%E6%97%B6%E9%97%B4%E7%89%87%E8%BD%AE%E8%BD%AC%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">时间片轮转调度算法（***）</a></li>
-<li><a href="#%E5%A4%9A%E7%BA%A7%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">多级队列调度算法</a></li>
-<li><a href="#%E5%A4%9A%E7%BA%A7%E5%8F%8D%E9%A6%88%E9%98%9F%E5%88%97%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95">多级反馈队列调度算法</a></li>
-</ul>
-</li>
-<li><a href="#%E7%BA%BF%E7%A8%8B">线程</a></li>
-<li><a href="#%E9%A2%98%E7%9B%AE%E7%BB%83%E4%B9%A0">题目练习</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="程序的执行方式">程序的执行方式</h2>
-<h3 id="顺序方式">顺序方式（*）</h3>
-<p>内存中只能驻留一个程序，前一个程序结束，后一个程序才能进来，并且有着<strong>严格的先后次序</strong></p>
-<p><strong>顺序执行的特点</strong>：</p>
-<ul>
-<li><strong>顺序性</strong>：程序执行有着明确的先后顺序</li>
-<li><strong>封闭性</strong>：程序运行时独占所有资源</li>
-<li><strong>可再现性</strong>：初始条件相同，若程序执行顺序不变，则每次得到的结果一定相同</li>
-</ul>
-<p><strong>问题</strong>：</p>
-<ul>
-<li>无法满足高性能</li>
-</ul>
-<h3 id="并发执行">并发执行（***）</h3>
-<p>并发指一段时间内执行多个程序。多个程序同时进入内存，轮流<strong>交替执行</strong>。</p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622092827851.png" alt="image-20200622092827851" style="zoom:67%;" />
-<p><strong>并发执行的特点</strong>：</p>
-<ul>
-<li>
-<p><strong>间断性</strong>：交替执行就是走走停停</p>
-</li>
-<li>
-<p><strong>失去了封闭性</strong>：程序不再独占系统资源</p>
-</li>
-<li>
-<p><strong>不可再现性</strong>：程序执行有多种结果。</p>
-</li>
-</ul>
-<h3 id="并行执行">并行执行</h3>
-<p>同一时刻有多个程序执行，只能在多处理机上实现</p>
-<h2 id="进程">进程</h2>
-<p>进程是研究并发方式下，程序的执行。</p>
-<p><strong>进程的概念</strong>：进程是进程实体的运行过程，是系统进行资源分配和调度的一一个独立单位。</p>
-<blockquote>
-<p><strong>进程实体</strong>：由程序段、相关数据段和PCB组成</p>
-</blockquote>
-<h3 id="进程的特征">进程的特征</h3>
-<ul>
-<li><mark><strong>并发性</strong></mark>， 多个进程在一段时 间内同存于内存中同时运行</li>
-<li><mark><strong>动态性</strong></mark>，进程由创建而产生，由调度而执行，由撤消而消亡。</li>
-<li><strong>独立性</strong>，进程是能独立运行、资源分配、调度的基本单位。</li>
-<li><strong>结构性</strong>，进程映像由程序、数据、栈和进程控制块( PCB )构成。</li>
-<li><strong>异步性</strong>，进程按各自独立、不可预知的速度向前推进。</li>
-</ul>
-<h3 id="进程的状态">进程的状态</h3>
-<p><strong>有三个状态</strong>：</p>
-<ul>
-<li><strong>就绪状态</strong>：指程序已经处于准备好运行的状态。</li>
-<li><strong>执行状态</strong>：指程序已经获得CPU，正在执行。</li>
-<li><strong>阻塞状态</strong>：指程序的执行因为某些原因无法继续执行。</li>
-</ul>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622093952609.png" alt="image-20200622093952609" style="zoom:50%;" />
-<h3 id="进程控制块pcb">进程控制块（PCB）</h3>
-<ul>
-<li>用来描述进程的基本情况和活动过程，进而控制和管理进程。（<strong>类似于学籍、户口等</strong>）</li>
-<li>进程创建时会建立一个PCB，结束时会收回PCB</li>
-</ul>
-<p><strong>进程控制块中的信息</strong>：</p>
-<ul>
-<li><strong>进程标识符</strong>：包括内部标识符和外部标识符。</li>
-<li><strong>处理机状态</strong>：处理机状态包括通用寄存器、程序计数寄存器、程序状态寄存器、栈寄存器信息。</li>
-<li><strong>进程控制信息</strong>：程序栈和数据地址，同步和通信机制，资源清单,链接指针。</li>
-<li><strong>进程调度信息</strong></li>
-</ul>
-<p><strong>进程控制块中的组织方式</strong></p>
-<ol>
-<li>
-<p><strong>线性方式</strong></p>
-</li>
-<li>
-<p><strong>链接方式</strong></p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622095654092.png" alt="image-20200622095654092" style="zoom:50%;" />
-</li>
-<li>
-<p><strong>索引方式</strong></p>
-</li>
-</ol>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622095909769.png" alt="image-20200622095909769" style="zoom:50%;" />
-<h2 id="进程控制">进程控制</h2>
-<ul>
-<li>
-<p>进程控制用于创建、终止、阻塞和唤醒进程。</p>
-</li>
-<li>
-<p>进程控制由操作系统内核原语来实现。</p>
-<blockquote>
-<p>原语是由若干条指令组成，用于完成一定功能的一个<strong>过程</strong>，所有的指令<strong>要么全做，要么全不做</strong>。（<strong>一个函数</strong>）</p>
-</blockquote>
-</li>
-</ul>
-<p><strong>用户态</strong>：具有较低特权的执行状态，进行执行规定的指令，访问特定的寄存器和存储区。</p>
-<p><strong>系统态（内核态）</strong>：具有较高特权，能执行全部的指令，访问所有的寄存器和存储区。</p>
-<h3 id="进程的四个操作">进程的四个操作</h3>
-<h4 id="进程的创建">进程的创建</h4>
-<p><strong>引起进程创建的事件</strong>：</p>
-<ul>
-<li>用户执行应用程序。</li>
-<li>用户登录。</li>
-<li>启动服务。</li>
-<li>程序创建进程。</li>
-</ul>
-<p><strong>进程创建的过程</strong>（必须要求是原语）：</p>
-<ol>
-<li>申请空白PCB</li>
-<li>为新进程分配资源，如内存空间等</li>
-<li>初始化PCB</li>
-<li>将进程插入就绪队列</li>
-</ol>
-<h4 id="进程的终止">进程的终止</h4>
-<p><strong>引起进程终止的事件</strong>：</p>
-<ul>
-<li>正常结束。</li>
-<li>异常结束。</li>
-<li>外界干预。</li>
-</ul>
-<p><strong>进程的终止过程</strong>：</p>
-<ul>
-<li>
-<p>检查进程状态。</p>
-</li>
-<li>
-<p>有无子孙需要终止。</p>
-</li>
-<li>
-<p>归还进程全部资源。</p>
-</li>
-<li>
-<p>将PCB从进程中移除。</p>
-</li>
-</ul>
-<h4 id="进程的阻塞和进程的唤醒">进程的阻塞和进程的唤醒</h4>
-<h2 id="进程调度概念">进程调度概念</h2>
-<p><strong>处理机调度的层次</strong>：</p>
-<ul>
-<li>高级调度</li>
-<li>低级调度</li>
-<li>中级调度</li>
-</ul>
-<p><strong>引起进程调度的事件</strong>：</p>
-<ul>
-<li>进程终止。</li>
-<li>进程创建。</li>
-<li>进程阻塞。</li>
-<li>进程唤醒。</li>
-<li>外部设备中断。</li>
-</ul>
-<p>进程切换时需要保存和恢复现场。</p>
-<h3 id="进程调度的方式">进程调度的方式</h3>
-<ul>
-<li>
-<p><strong>抢占式调度</strong>：允许调度程序根据某种原则，暂停某个占用处理机的进程，抢占已经分配出去的处理机。抢占的原则有优先权原则、短作业优先原则和时间片原则。</p>
-</li>
-<li>
-<p><strong>非抢占式调度</strong>：进程一旦获得处理机，只有在该进程任务完成或因某事件而阻塞时，才让出处理机，决不允许某进程抢占已经分配出去的处理机。（<strong>只有时间片用完才能调度</strong>）</p>
-</li>
-</ul>
-<h3 id="衡量调度算法指标">衡量调度算法指标</h3>
-<p><strong>面向用户（***）</strong>：</p>
-<ul>
-<li><strong>平均周转时间</strong>：所有周转时间求平均。</li>
-<li><strong>带权周转时间</strong>：一个程序的周转时间除以服务的时间。（&gt;=1）</li>
-<li><strong>平均带权周转时间</strong>：对带权周转时间求平均。</li>
-</ul>
-<blockquote>
-<p><strong>周转时间</strong>：从作业被提交给系统开始，到作业完成为止的这段时间间隔。</p>
-</blockquote>
-<p><strong>面向系统</strong>：</p>
-<ul>
-<li><strong>吞吐量</strong>：在单位时间内系统所完成的作业数。</li>
-<li><strong>处理机利用率</strong>：在过去一 段时间内CPU被占用的时间总和。</li>
-<li><strong>各类资源的平衡利用率</strong>：保证系统所有的资源被合理利用。</li>
-</ul>
-<h2 id="进程调度算法计算">进程调度算法（计算***）</h2>
-<h3 id="先来先服务调度算法">先来先服务调度算法（***）</h3>
-<blockquote>
-<p><strong>先来的进程先抢到CPU，有利于长作业，不利于短作业</strong></p>
-</blockquote>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622112903214.png" alt="image-20200622111911566" style="zoom:67%;" />
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622112903214.png" alt="image-20200622112903214" style="zoom:67%;" />
-<h3 id="短作业优先调度算法">短作业优先调度算法（***）</h3>
-<blockquote>
-<p><strong>在分配时，优先分配给服务时间最短的，降低了系统的平均周转时间，对长作业不利。</strong></p>
-<p><strong>只有在抢占的时候，进程的创建才会导致需要重新分配CPU，非抢占式在进程终止的时候分配。</strong></p>
-</blockquote>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622113117858.png" alt="image-20200622113117858" style="zoom:67%;" />
-<p><strong>非抢占方式：</strong></p>
-<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622114213680.png" alt="image-20200622114213680" loading="lazy"></figure>
-<p><strong>抢占式：</strong></p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622114634375.png" alt="image-20200622114634375" style="zoom:67%;" />
-<h3 id="高优先权调度算法">高优先权调度算法（***）</h3>
-<blockquote>
-<p>按照优先权重分配CPU，优先数越小，优先权越大</p>
-</blockquote>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622115711510.png" alt="image-20200622115711510" style="zoom:67%;" />
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622120734094.png" alt="image-20200622120734094" style="zoom:50%;" />
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622120734094.png" alt="image-20200622120720361" style="zoom:50%;" />
-<h3 id="高响应比优先调度算法">高响应比优先调度算法</h3>
-<blockquote>
-<p>按照响应比去分配CPU资源，既考虑的作业的先后顺序，又优先照顾短作业，同时不会使长作业等太久</p>
-<p>响应比 = 等待时间/服务时间</p>
-</blockquote>
-<h3 id="时间片轮转调度算法">时间片轮转调度算法（***）</h3>
-<blockquote>
-<p>按照先来先服务的将作业放入一个调度队列中，每隔一定的时间片，发生一次调度，一般为10ms到100ms。</p>
-<p>假设时间片为2。</p>
-</blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200624101953231.png" alt="image-20200624101953231" style="zoom:80%;" />
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122733994.png" alt="image-20200622122330474" style="zoom:67%;" />
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122733994.png" alt="image-20200622122733994" style="zoom:50%;" />
-<h3 id="多级队列调度算法">多级队列调度算法</h3>
-<blockquote>
-<p>优先调度优先级高的</p>
-</blockquote>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622122939586.png" alt="image-20200622122939586" style="zoom:50%;" />
-<h3 id="多级反馈队列调度算法">多级反馈队列调度算法</h3>
-<blockquote>
-<p>解决了低优先级队列长时间无法调度的问题</p>
-</blockquote>
-<h2 id="线程">线程</h2>
-<p><strong>为什么提出线程？</strong></p>
-<ul>
-<li>进程是资源的拥有者，在并发时，对进程的切换需要有较大时空的开销。</li>
-<li>一个进程内全部线程都是在同一个地址空间进行，在并发时可以减少系统的开销。</li>
-</ul>
-<p><strong>线程概念</strong>：线程是进程的一个实体，是被系统独立调度的基本单位，只拥有少量的资源(如CPU寄存器资源)。</p>
-<p>如下图所示，每个线程都会有个栈，一共有三个线程：</p>
-<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622142107384.png" alt="image-20200622142107384" style="zoom: 80%;" />
-<p><strong>线程的特点</strong>：</p>
-<ul>
-<li>一个线程<strong>拥有少量的资源</strong>，记录在<strong>线程控制块中</strong>。轻型实体，线程基本上不拥有资源，或者是有较少的资源;</li>
-<li>一个进程的所有线程共享进程所拥有的全部资源。</li>
-<li>线程是处理机调度的基本单位，多个线程可以并发执行。</li>
-</ul>
-<p><strong>线程与进程的比较</strong>：</p>
-<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200623095239272.png" alt="image-20200623095239272" loading="lazy"></figure>
-<p><strong>线程的实现方式</strong>：</p>
-<ul>
-<li><strong>内核级线程</strong>：所有创建、切换等都需要内核的支持，开销较大（<strong>适合多处理器系统</strong>）</li>
-<li><strong>用户级线程</strong>：可以不需要进入内核态创建，但是切换进程需要进入内核（<strong>开销小</strong>）</li>
-<li><strong>组合方式</strong>：建立内核级线程与用户级线程的关系。</li>
-</ul>
-<h2 id="题目练习">题目练习</h2>
-<blockquote>
-<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622093526050.png" alt="image-20200622093526050" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622100444854.png" alt="image-20200622100444854" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622100540099.png" alt="image-20200622100540099" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622103623435.png" alt="image-20200622103623435" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="7"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622103657071.png" alt="image-20200622103657071" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="8"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200622143148015.png" alt="image-20200622143148015" loading="lazy"></figure>
-</blockquote>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[第一章操作系统引论]]></title>
-        <id>https://xzzz2020.github.io/post/ZBrN48x_g/</id>
-        <link href="https://xzzz2020.github.io/post/ZBrN48x_g/">
-        </link>
-        <updated>2020-06-21T12:49:01.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95">操作系统发展</a></li>
-<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8A%9F%E8%83%BD">操作系统的功能</a>
-<ul>
-<li><a href="#%E5%A4%84%E7%90%86%E6%9C%BA%E7%AE%A1%E7%90%86">处理机管理</a></li>
-<li><a href="#%E5%AD%98%E5%82%A8%E5%99%A8%E7%AE%A1%E7%90%86%E5%86%85%E5%AD%98">存储器管理（内存）</a></li>
-<li><a href="#%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86%E9%AB%98%E6%95%88%E4%BD%BF%E7%94%A8io%E8%AE%BE%E5%A4%87">设备管理（高效使用IO设备）</a></li>
-<li><a href="#%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86">文件管理</a></li>
-<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3">操作系统接口</a></li>
-</ul>
-</li>
-<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81">操作系统的基本特征</a></li>
-<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BD%9C%E7%94%A8">操作系统的作用</a></li>
-<li><a href="#%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87">设计目标</a></li>
-<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84">操作系统结构</a></li>
-<li><a href="#%E7%BB%83%E4%B9%A0%E9%A2%98%E7%9B%AE">练习题目</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="操作系统发展">操作系统发展</h2>
-<ul>
-<li><strong>无操作系统</strong></li>
-<li><strong>单道批处理系统</strong></li>
-<li><strong>多道批处理系统</strong>：多个程序交替使用CPU，目的是提高CPU的利用率</li>
-<li><strong>分时系统</strong>：使用户以交互的方式共享计算机，用户感觉到自己在享用到计算机资源，本质还是利用了<code>时分复用技术</code></li>
-<li><strong>实时系统</strong>：在规定的时间开始事件的处理或者在规定时间内完成对事件的处理，对<code>时间要求苛刻</code></li>
-</ul>
-<h2 id="操作系统的功能">操作系统的功能</h2>
-<h3 id="处理机管理">处理机管理</h3>
-<ol>
-<li>进程控制</li>
-<li>进程调度</li>
-<li>进程同步</li>
-<li>进程通信</li>
-<li>死锁</li>
-</ol>
-<h3 id="存储器管理内存">存储器管理（内存）</h3>
-<ol>
-<li>内存分配</li>
-<li>内存共享</li>
-<li>内存扩充</li>
-<li>内存保护</li>
-</ol>
-<h3 id="设备管理高效使用io设备">设备管理（高效使用IO设备）</h3>
-<ol>
-<li>设备处理</li>
-<li>缓冲管理</li>
-<li>设备分配</li>
-<li>设备的独立性</li>
-<li>设备的虚拟性</li>
-</ol>
-<h3 id="文件管理">文件管理</h3>
-<ol>
-<li>文件读/写</li>
-<li>目录管理</li>
-<li>存储空间管理</li>
-<li>文件共享、存储性能优化、存储可靠性和数据一致性</li>
-</ol>
-<h3 id="操作系统接口">操作系统接口</h3>
-<ol>
-<li>
-<p>图形接口</p>
-</li>
-<li>
-<p>系统调用</p>
-</li>
-<li>
-<p>命令调用</p>
-<p>​	<img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202748865.png" alt="image-20200621202748865" style="zoom: 50%;" /></p>
-</li>
-</ol>
-<h2 id="操作系统的基本特征">操作系统的基本特征</h2>
-<ul>
-<li><strong>并发性</strong>：多个程序在同一时间间隔执行</li>
-<li><strong>共享性</strong>：多个并发的程序共同使用计算机资源，提高计算机资源的利用率</li>
-<li><strong>虚拟性</strong>：有时分复用和空分复用两种技术</li>
-<li><strong>异步性</strong>：表现为多任务执行的无序性，主要应对阻塞</li>
-</ul>
-<h2 id="操作系统的作用">操作系统的作用</h2>
-<p>操作系统(Operating System, OS)是<strong>一组控制和管理计算机硬件和软件资源，合理地对各类作业进行调度，以及方便用户使用的程序集合。</strong></p>
-<ul>
-<li><strong>是用户和计算机系统之间的接口</strong></li>
-<li><strong>是系统资源的管理者</strong></li>
-<li><strong>扩充计算机的功能，实现对计算机的抽象</strong></li>
-</ul>
-<h2 id="设计目标">设计目标</h2>
-<ul>
-<li><strong>方便性</strong></li>
-<li><strong>有效性</strong></li>
-<li><strong>扩充性</strong></li>
-<li><strong>开放性</strong></li>
-</ul>
-<h2 id="操作系统结构">操作系统结构</h2>
-<ol>
-<li>无操作系统结构</li>
-<li>模块化结构</li>
-<li>层次结构</li>
-<li>微内核结构</li>
-</ol>
-<h2 id="练习题目">练习题目</h2>
-<blockquote>
-<figure data-type="image" tabindex="1"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621201525920.png" alt="image-20200621201525920" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="2"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202025346.png" alt="image-20200621201751451" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="3"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621201850031.png" alt="image-20200621201850031" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="4"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202047000.png" alt="image-20200621202047000" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="5"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621202056968.png" alt="image-20200621202056968" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="6"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621203755881.png" alt="image-20200621203755881" loading="lazy"></figure>
-</blockquote>
-<blockquote>
-<figure data-type="image" tabindex="7"><img src="https://gitee.com/xzzz2020/PicBed01/raw/master/img/image-20200621203910781.png" alt="image-20200621203910781" loading="lazy"></figure>
 </blockquote>
 ]]></content>
     </entry>
