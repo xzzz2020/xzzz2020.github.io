@@ -22,7 +22,7 @@ a {
 }
 a:link,
 a:visited {
-  border-bottom: 1px #ddd;
+  border-bottom: 1px #000000;
   color: #888;
   opacity: 1;
   transition: all 0.15s linear;
