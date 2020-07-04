@@ -23,7 +23,7 @@ a {
 a:link,
 a:visited {
   border-bottom: 1px #ddd;
-  color: #888;
+  color: #000000;
   opacity: 1;
   transition: all 0.15s linear;
   -ms-transition: all 0.15s linear;
@@ -314,7 +314,7 @@ code {
   margin: 0 8px 8px 0;
   padding: 4px 15px;
   border-radius: 5px;
-  background: #000000;
+  background: #d1dbe0;
 }
 .list_with_title {
   margin: 0;
