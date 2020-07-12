@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>RocketMQ监控平台（附网盘链接） | xzzz2020</title>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【面试题】CAS | xzzz2020</title>
 <link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 <script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
 
-<link rel="canonical" href="https://xzzz2020.github.io/post/rocketmq-jian-kong-ping-tai-fu-wang-pan-lian-jie/" />
+<link rel="canonical" href="https://xzzz2020.github.io/post/DjYrJcxKl/" />
 </head>
 <body>
 <div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
@@ -23,36 +23,74 @@
 
 <div class="main"><div class="main-inner"><div class="content">
 <article class="post">
-<h2 class="post_title sm_margin"><a>RocketMQ监控平台（附网盘链接）</a></h2>
+<h2 class="post_title sm_margin"><a>【面试题】CAS</a></h2>
 <script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
-<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-16</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/RocketMq/" class="tag">RocketMq</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">212字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">1 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-12</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">803字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">3 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
 </section>
 
-<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1592558425469-d86d7a07f311.webp" referrerpolicy="no-referrer">
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1594190679254-87b36228d56a.webp" referrerpolicy="no-referrer">
 
 <div style="display:flex">
 <div class="md_block" id="md_block">
 <div class="round-shape-one"></div>
-<p><code>RocketMQ</code>有一个对其扩展的开源项目<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>，这个项目中有一个子模块叫<code>rocketmq-console</code>，这个便是管理控制台项目了，先将<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>拉到本地，因为我们需要自己对<code>rocketmq-console</code>进行编译打包运行。</p>
-<p>在linux环境下，使用<code>nohub java -jar xxxx &amp;</code>  启动，为了防止端口冲突，已经修改其端口为<strong>9999</strong></p>
 <blockquote>
-<p>链接：<a href="https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA">https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA</a><br>
-提取码：jpg0</p>
+<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
 </blockquote>
-<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/2020053110115547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></figure>
-<h3 id="352-下载并编译打包">3.5.2 下载并编译打包</h3>
-<pre><code class="language-sh">git clone https://github.com/apache/rocketmq-externals
-cd rocketmq-console
-mvn clean package -Dmaven.test.skip=true
-</code></pre>
-<p>注意：打包前在<code>rocketmq-console</code>中配置<code>namesrv</code>集群地址：</p>
-<pre><code class="language-sh">rocketmq.config.namesrvAddr=192.168.25.135:9876;192.168.25.138:9876
-</code></pre>
-<p>启动rocketmq-console：</p>
-<pre><code class="language-sh">java -jar rocketmq-console-ng-1.0.0.jar
-</code></pre>
-<p>启动成功后，我们就可以通过浏览器访问<code>http://localhost:8080</code>进入控制台界面了，如下图：<br>
-<img src="https://img-blog.csdnimg.cn/20200531101225351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<blockquote>
+<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-cas%E5%8E%9F%E7%90%86%E5%8F%8A%E7%BC%BA%E9%99%B7">一、CAS原理及缺陷</a></li>
+<li><a href="#%E4%BA%8C-aba%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3">二、ABA问题及解决</a></li>
+<li><a href="#%E4%B8%89-atomic%E7%B1%BB">三、atomic类</a></li>
+<li><a href="#%E5%9B%9B-unsafe%E7%B1%BB">四、Unsafe类</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-cas原理及缺陷">一、CAS原理及缺陷</h2>
+<p><strong>原理</strong>：</p>
+<ul>
+<li>
+<p>CAS机制当中使用了3个基本操作数：内存地址V，旧的预期值A，要修改的新值B。</p>
+</li>
+<li>
+<p>更新一个变量的时候，只有当变量的预期值A和内存地址V当中的实际值相同时，才会将内存地址V对应的值修改为B。</p>
+</li>
+<li>
+<p>从思想上来说，Synchronized属于悲观锁，悲观地认为程序中的并发情况严重，所以严防死守。</p>
+</li>
+<li>
+<p>CAS属于乐观锁，乐观地认为程序中的并发情况不那么严重，所以让线程不断去尝试更新。</p>
+</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ol>
+<li><strong>在竞争激烈的时候，CPU开销较大</strong></li>
+</ol>
+<p>在并发量比较高的情况下，如果许多线程反复尝试更新某一个变量，却又一直更新不成功，循环往复，会给CPU带来很大的压力。</p>
+<ol start="2">
+<li><strong>不能保证代码块的原子性</strong></li>
+</ol>
+<p>CAS机制所保证的只是一个变量的原子性操作，而不能保证整个代码块的原子性。比如需要保证多个变量共同进行原子性的更新，就不得不使用Synchronized了</p>
+<h2 id="二-aba问题及解决">二、ABA问题及解决</h2>
+<p><strong>什么是ABA？</strong></p>
+<p>CAS的机制是在赋值的时候进行比较，如果此时的数值没有修改，则可以完成修改</p>
+<p>但是，如果一个对象或者变量出现了：<code>A =&gt; B =&gt; ...... =&gt; A</code>，此时CAS算法进行比较，会没有任何问题，进行修改。但是此时可能已经被修改过了无数次，其他线程的修改就丢失了，在复杂的数据结构比如链表，队列，栈、树等都可能出现不可预知的问题</p>
+<p><strong>解决方式–AtomicStampedReference</strong></p>
+<ul>
+<li>加一个版本号，除了比较对象值，还需要比较状态戳，类似于时间戳</li>
+<li>每次修改成功也会同时修改状态戳</li>
+</ul>
+<h2 id="三-atomic类">三、atomic类</h2>
+<p>在高并发条件下，如果都需要对一些基本类型进行修改，就会破坏其原子性</p>
+<p>Java并发包提供了一个原子类，基于的是用了 Unsafe 类的 CAS 操作</p>
+<p><strong>主要分为基本类型 、数组类型、引用类型和对象的属性子四类</strong></p>
+<h2 id="四-unsafe类">四、Unsafe类</h2>
+<p>很多Java的基础类库，包括一些被广泛使用的高性能开发库都是基于Unsafe类开发的，比如Netty、Cassandra、Hadoop、Kafka等。Unsafe类在提升Java运行效率，增强Java语言底层操作能力方面起了很大的作用。</p>
+<p>Java和C++语言的一个重要区别就是Java中我们无法直接操作一块内存区域，不能像C++中那样可以自己申请内存和释放内存。Java中的Unsafe类为我们提供了类似C++手动管理内存的能力，同时也有了指针的问题。</p>
 
 <span id="footnote"></span>
 <div id = "warn"></div>
@@ -60,11 +98,10 @@ mvn clean package -Dmaven.test.skip=true
 <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li>
-<ul>
-<li><a href="#352-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E7%BC%96%E8%AF%91%E6%89%93%E5%8C%85">3.5.2 下载并编译打包</a></li>
-</ul>
-</li>
+<li><a href="#%E4%B8%80-cas%E5%8E%9F%E7%90%86%E5%8F%8A%E7%BC%BA%E9%99%B7">一、CAS原理及缺陷</a></li>
+<li><a href="#%E4%BA%8C-aba%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3">二、ABA问题及解决</a></li>
+<li><a href="#%E4%B8%89-atomic%E7%B1%BB">三、atomic类</a></li>
+<li><a href="#%E5%9B%9B-unsafe%E7%B1%BB">四、Unsafe类</a></li>
 </ul>
 </li>
 </ul>
@@ -108,7 +145,7 @@ if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop)
 var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
 var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
 var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
-content="本文最后更新于2020-06-16，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-16 20:01:12";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+content="本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-12 18:39:31";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
 </script>
 -->
 
@@ -171,8 +208,8 @@ content="本文最后更新于2020-06-16，已超过 1 年没有更新，涉及�
             wxScale.start(this)
         }
     };
-    content = "本文最后更新于2020-06-16，已超过 1 年没有更新，涉及的内容可能已经失效！";
-    var date1 = "2020-06-16 20:01:12";
+    content = "本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-12 18:39:31";
     date1 = date1.replace("-", "/");
     var date2 = new Date();
     var date3 = date2.getTime() - new Date(date1).getTime();

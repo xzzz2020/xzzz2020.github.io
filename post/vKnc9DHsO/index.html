@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【面试题】Java内存模型 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/vKnc9DHsO/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1594551040724" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【面试题】Java内存模型</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-12</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2947字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">11 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1594204514141-80c88f000da7.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
+</blockquote>
+<blockquote>
+<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8Bjmm">一、Java内存模型JMM</a></li>
+<li><a href="#%E4%BA%8C-%E5%86%85%E5%AD%98%E9%97%B4%E4%BA%A4%E4%BA%92%E6%93%8D%E4%BD%9C">二、内存间交互操作</a></li>
+<li><a href="#%E4%B8%89-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%89%E5%A4%A7%E7%89%B9%E6%80%A7">三、内存模型三大特性</a>
+<ul>
+<li><a href="#%E5%8E%9F%E5%AD%90%E6%80%A7">原子性</a></li>
+<li><a href="#%E5%8F%AF%E8%A7%81%E6%80%A7">可见性</a></li>
+<li><a href="#%E6%9C%89%E5%BA%8F%E6%80%A7">有序性</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E9%87%8D%E6%8E%92%E5%BA%8F">四、重排序</a></li>
+<li><a href="#%E4%BA%94-happens-before%E5%8E%9F%E5%88%99">五、happens-before原则</a></li>
+<li><a href="#%E5%85%AD-volatitle">六、volatitle</a>
+<ul>
+<li><a href="#1-volatitle%E5%8F%98%E9%87%8F%E4%B8%BA%E4%BD%95%E7%AB%8B%E5%8D%B3%E5%8F%AF%E8%A7%81">1. volatitle变量为何立即可见？</a></li>
+<li><a href="#2-%E5%A6%82%E4%BD%95%E7%A6%81%E6%AD%A2%E9%87%8D%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96">2. 如何禁止重排序优化？</a></li>
+<li><a href="#3-%E5%92%8Csynchronized%E7%9A%84%E5%8C%BA%E5%88%AB">3. 和synchronized的区别？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%83-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F">七、单例模式</a>
+<ul>
+<li><a href="#1-%E9%A5%BF%E6%B1%89%E5%BC%8F">1. 饿汉式</a></li>
+<li><a href="#2-%E6%99%AE%E9%80%9A%E7%9A%84%E6%87%92%E6%B1%89%E5%BC%8F">2. <strong>普通的懒汉式</strong></a></li>
+<li><a href="#3-%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95%E7%9A%84%E6%87%92%E6%B1%89%E5%BC%8F">3. 同步方法的懒汉式</a></li>
+<li><a href="#4-%E4%BA%8C%E6%AC%A1%E6%A3%80%E6%9F%A5">4. 二次检查</a></li>
+<li><a href="#5-holder%E6%96%B9%E5%BC%8F">5. Holder方式</a></li>
+<li><a href="#6-%E6%9E%9A%E4%B8%BE">6. 枚举</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-java内存模型jmm">一、Java内存模型JMM</h2>
+<p>处理器上的寄存器的读写的速度比内存快几个数量级，为了解决这种速度矛盾，在它们之间加入了高速缓存。</p>
+<p>加入高速缓存带来了一个新的问题：缓存一致性。如果多个缓存共享同一块主内存区域，那么多个缓存的数据可能会不一致，需要一些协议来解决这个问题。</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200711163213039.png" alt="image-20200711163213039" style="zoom:50%;" />
+<p>所有的变量都存储在主内存中，每个线程还有自己的工作内存，工作内存存储在高速缓存或者寄存器中，保存了该线程使用的变量的主内存副本拷贝。</p>
+<p>线程只能直接操作工作内存中的变量，不同线程之间的变量值传递需要通过主内存来完成。</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200711163313895.png" alt="image-20200711163313895" style="zoom:50%;" />
+<h2 id="二-内存间交互操作">二、内存间交互操作</h2>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTYzNDA4ODI2LnBuZw?x-oss-process=image/format,png" alt="image-20200711163408826" loading="lazy"></figure>
+<pre><code class="language-go">1. lock（锁定）：作用于`主内存`的变量，它把一个变量标识为一条线程独占的状态。
+2. unlock（解锁）：作用于`主内存`的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。
+
+// 读入工作内存
+3. read（读取）：主内存 ---&gt; 工作内存。
+4. load（载入）：把read操作从主内存中得到的`变量值` ---&gt; `工作内存的变量副本`。
+
+// 中间步骤
+5. use（使用）：工作内存中一个`变量的值`---&gt;`执行引擎`，每当虚拟机遇到一个需要`使用到变量的值`的字节码指令时将会执行这个操作。
+6. assign（赋值）：把一个`从执行引擎`接收到的值---赋给---&gt;`工作内存的变量`，每当虚拟机遇到一个给变量`赋值`的字节码指令时执行这个操作。
+
+// 写入主内存
+7. store（存储）：把工作内存中一个`变量的值`---&gt;`主内存`。
+8. write（写入）：把store操作从工作内存中得到的变量的值---&gt;主内存的变量。
+</code></pre>
+<h2 id="三-内存模型三大特性">三、内存模型三大特性</h2>
+<h3 id="原子性">原子性</h3>
+<p>Java 内存模型保证了 read、load、use、assign、store、write、lock 和 unlock 操作具有原子性，例如对一个 int类型的变量执行 assign 赋值操作，这个操作就是原子性的。但是 Java 内存模型允许虚拟机将没有被 volatile 修饰的64 位数据（long，double）的读写操作划分为两次 32 位的操作来进行，即 load、store、read 和 write 操作可以不具备原子性。</p>
+<p><strong>int 等原子性的类型在多线程环境中不会出现线程安全问题？</strong></p>
+<p>有一个错误认识就是，int 等原子性的类型在多线程环境中不会出现线程安全问题。前面的线程不安全示例代码中，cnt 属于 int 类型变量，1000 个线程对它进行自增操作之后，得到的值为 997 而不是 1000。<br>
+为了方便讨论，将内存间的交互操作简化为 3 个：load、assign、store。</p>
+<p>下图演示了两个线程同时对 cnt 进行操作，load、assign、store 这一系列操作整体上看不具备原子性，那么在 T1修改 cnt 并且还没有将修改后的值写入主内存，T2 依然可以读入旧值。可以看出，这两个线程虽然执行了两次自增运算，但是主内存中 cnt 的值最后为 1 而不是 2。因此<strong>对 int 类型读写操作满足原子性只是说明 load、assign、store 这些单个操作具备原子性。</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTYzOTU5NDg2LnBuZw?x-oss-process=image/format,png" alt="image-20200711163959486" loading="lazy"></figure>
+<p><strong>如何保证原子性呢？</strong></p>
+<ul>
+<li>Atomic原子类可以利用CAS的方式，在不加锁的情况下保证原子性</li>
+<li>synchronized 互斥锁来保证操作的原子性，它对应的内存间交互操作为：lock 和unlock</li>
+</ul>
+<h3 id="可见性">可见性</h3>
+<p>可见性指当一个线程修改了共享变量的值，其它线程能够立即得知这个修改。Java 内存模型是通过在变量修改后将新值同步回主内存，在变量读取前从主内存刷新变量值来实现可见性的。</p>
+<p><strong>主要有三种实现可见性的方式</strong>：</p>
+<ul>
+<li>volatile关键字，是工作内存失效</li>
+<li>synchronized，对一个变量执行 unlock 操作之前，必须把变量值同步回主内存 。</li>
+<li><strong>final</strong>，被 final 关键字修饰的字段在构造器中一旦初始化完成，并且没有发生 this 逃逸（其它线程通过 this 引用访问到初始化了一半的对象），那么其它线程就能看见 final 字段的值。</li>
+</ul>
+<pre><code class="language-java">public class FinalTest{
+    final int i;
+    static FinalTest obj;
+
+    public FinalTest(){
+        i  =1;
+        /**
+         *这里会使正在被构造的对象逸出，如果和上一句做了重排序，那么其他线程就可以通过obj访问到还为被初始化的final域。
+         **/
+        obj = this;
+    }
+}
+</code></pre>
+<p>类的 final 域在编译器层面会保证在类的构造器运行结束之前一定要初始化完成，同时 Java 内存模型会保证对象实例化后它的 final 域对其他线程是可见的，然而非 final 域并没有这种待遇。例如如下代码：</p>
+<pre><code class="language-java">public class FinalFiled {
+    final int x;
+    int y;
+    static FinalFiled f;
+
+    public FinalFiled() {
+        x = 100;
+        y = 100;
+    }
+
+    static void writer() {
+        f = new FinalFiled();
+    }
+
+    static void reader() {
+        if (f != null) {
+            int i = f.x;  // 保证此时一定是 100
+            int j = f.y;  // 有可能此时还是 0
+        }
+    }
+}
+</code></pre>
+<h3 id="有序性">有序性</h3>
+<p>有序性是指：在本线程内观察，所有操作都是有序的。在一个线程观察另一个线程，所有操作都是无序的，无序是因为发生了指令重排序。在 Java 内存模型中，允许编译器和处理器对指令进行重排序，重排序过程不会影响到单线程程序的执行，却会影响到多线程并发执行的正确性。</p>
+<p><strong>如何保证有序性？</strong></p>
+<ul>
+<li>volatile 关键字通过添加内存屏障的方式来禁止指令重排，即重排序时不能把后面的指令放到内存屏障之前。</li>
+<li>通过 synchronized 来保证有序性，它保证每个时刻只有一个线程执行同步代码，相当于是让线程顺序执行同步代码。</li>
+</ul>
+<h2 id="四-重排序">四、重排序</h2>
+<p>执行任务的时候，为了提高编译器和处理器的执行性能，编译器和处理器(包括内存系统，内存在行为没有重排但是存储的时候是有变化的)会对指令重排序。编译器优化的重排序是在编译时期完成的，指令重排序和内存重排序是处理器重排序</p>
+<ol>
+<li>编译器优化的重排序，在不改变单线程语义的情况下重新安排语句的执行顺序</li>
+<li>指指令级并行重排序，处理器的指令级并行技术将多条指令重叠执行，如果不存在数据的依赖性将会改变语句对应机器指令的执行顺序</li>
+<li>内存系统的重排序，因为使用了读写缓存区，使得看起来并不是顺序执行的</li>
+</ol>
+<h2 id="五-happens-before原则">五、happens-before原则</h2>
+<ol>
+<li>程序顺序规则：一个线程中的每个操作，happens-before于该线程中的任意后续操作。</li>
+<li>监视器锁规则：对一个锁的解锁，happens-before于随后对这个锁的加锁。</li>
+<li>volatile规则：对一个volatile域的写，happens-before于任意后续对这个volatile域的读。</li>
+<li>传递性：如果Ahappens-before B，并且B happens-before C，那么A happens-before C。</li>
+<li>start()规则：如果线程A执行操作ThreadB.start()，那么A线程的ThreadB.start()操作happens-before于线程B中的任意操作。</li>
+<li>join()规则：如果线程A执行操作ThreadB.join()并成功返回，那么线程B的任意操作happens-before于线程A从ThreadB.join()操作成功返回。</li>
+</ol>
+<p><strong>含义</strong>：两个操作之间存在happens-before关系，并不意味着Java平台的具体实现必须按照happens-before关系指定的顺序来执行。如果重排序之后的执行结果，与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。所以只要能够满足<strong>A的操作结果一定要对B可见</strong></p>
+<h2 id="六-volatitle">六、volatitle</h2>
+<h3 id="1-volatitle变量为何立即可见">1. volatitle变量为何立即可见？</h3>
+<p>在对有volatile修饰符修饰的共享变量进行写操作时，汇编代码会多一条lock前缀的指令。该指令有如下两个作用：</p>
+<ol>
+<li>将当前缓存行的数据回写到内存中</li>
+<li>使其他cpu里缓存了该内存地址的数据无效(缓存一致性机制)</li>
+</ol>
+<h3 id="2-如何禁止重排序优化">2. 如何禁止重排序优化？</h3>
+<p>通过插入内存屏障禁止在内存屏障前后的指令执行重排序优化</p>
+<h3 id="3-和synchronized的区别">3. 和synchronized的区别？</h3>
+<ul>
+<li>volatile本质是在告诉JVM当前变量在寄存器(工作内存)中的值是不确定的,需要从主存中读取; synchronized则是锁定当前变量， 只有当前线程可以访问该变量,其他线程被阻塞住直到该线程完成变量操作为止</li>
+<li>volatile仅能使用在变量级别; synchronized则可以使用在变量、方法和类级别</li>
+<li>volatile仅能实现变量的修改可见性,不能保证原子性;而synchronized则可以保证变量修改的可见性和原子性</li>
+<li>volatile不会造成线程的阻塞; synchronized可能会造成线程的阻塞</li>
+<li>volatile标记的变量不会被编译器优化; synchronized标记的变量可以被编译器优化</li>
+</ul>
+<h2 id="七-单例模式">七、单例模式</h2>
+<h3 id="1-饿汉式">1. 饿汉式</h3>
+<pre><code>public class Singleton {
+
+    private final static Singleton INSTANCE = new Singleton();
+    
+    private Singleton(){}
+
+    public static Singleton getInstance(){
+        return INSTANCE;
+    }
+
+}
+</code></pre>
+<h3 id="2-普通的懒汉式">2. <strong>普通的懒汉式</strong></h3>
+<pre><code class="language-java">public class Singleton {  
+    private static Singleton instance;  
+    private Singleton (){}  
+  
+    public static Singleton getInstance() {  
+    if (instance == null) {  
+        instance = new Singleton();  
+    }  
+    return instance;  
+    }  
+}
+</code></pre>
+<ul>
+<li>线程不安全，不支持多线程</li>
+</ul>
+<h3 id="3-同步方法的懒汉式">3. 同步方法的懒汉式</h3>
+<pre><code class="language-java">class Singleton{
+    private static Singleton singleton;
+    
+    private Singleton(){}
+    
+    public static synchronized Singleton getSingleton(){
+        if (singleton==null){
+            singleton = new Singleton();
+        }
+        return singleton;
+    }
+}
+</code></pre>
+<ul>
+<li>线程安全，但是性能差</li>
+</ul>
+<h3 id="4-二次检查">4. 二次检查</h3>
+<pre><code class="language-java">class Singleton{
+    private static volatile Singleton singleton;
+
+    private Singleton(){}
+
+    public static  Singleton getSingleton(){
+        if (singleton==null){
+            synchronized (Singleton.class){
+                if (singleton==null){
+                    singleton = new Singleton();
+                }
+            }
+        }
+        return singleton;
+    }
+}
+</code></pre>
+<ul>
+<li>需要加一个volatile关键字，避免指令重排序如果不加volatile关键字，可能会出现空指针异常，因为在构造singleton的时候，可能也会构造其他的对象，如果出现了指令重排序，会导致singleton构造完成时，其他对象没有构造完成</li>
+</ul>
+<h3 id="5-holder方式">5. Holder方式</h3>
+<pre><code class="language-java">class Singleton{
+    
+    private Singleton(){}
+
+    private static class instanceHolder {
+        private static Singleton singleton = new Singleton();
+    }
+
+    public static  Singleton getSingleton(){
+        return instanceHolder.singleton;
+    }
+}
+</code></pre>
+<ul>
+<li>
+<p>静态内部类方式在Singleton类被装载时并不会立即实例化，而是在需要实例化时，调用getInstance方法，才会装载SingletonInstance类，从而完成对象的实例化。</p>
+</li>
+<li>
+<p>同时，因为类的静态属性只会在第一次加载类的时候初始化，也就保证了SingletonInstance中的对象只会被实例化一次，并且这个过程也是线程安全的。</p>
+</li>
+</ul>
+<h3 id="6-枚举">6. 枚举</h3>
+<pre><code class="language-java">class Singleton{
+    private Singleton(){}
+
+    private enum enmuSingleton{
+        INSTANCE;
+
+        private Singleton singleton;
+        enmuSingleton(){
+            singleton = new Singleton();
+        }
+
+        public Singleton getSingleton() {
+            return singleton;
+        }
+    }
+
+
+    public static  Singleton getSingleton(){
+        return enmuSingleton.INSTANCE.getSingleton();
+    }
+}
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8Bjmm">一、Java内存模型JMM</a></li>
+<li><a href="#%E4%BA%8C-%E5%86%85%E5%AD%98%E9%97%B4%E4%BA%A4%E4%BA%92%E6%93%8D%E4%BD%9C">二、内存间交互操作</a></li>
+<li><a href="#%E4%B8%89-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%89%E5%A4%A7%E7%89%B9%E6%80%A7">三、内存模型三大特性</a>
+<ul>
+<li><a href="#%E5%8E%9F%E5%AD%90%E6%80%A7">原子性</a></li>
+<li><a href="#%E5%8F%AF%E8%A7%81%E6%80%A7">可见性</a></li>
+<li><a href="#%E6%9C%89%E5%BA%8F%E6%80%A7">有序性</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E9%87%8D%E6%8E%92%E5%BA%8F">四、重排序</a></li>
+<li><a href="#%E4%BA%94-happens-before%E5%8E%9F%E5%88%99">五、happens-before原则</a></li>
+<li><a href="#%E5%85%AD-volatitle">六、volatitle</a>
+<ul>
+<li><a href="#1-volatitle%E5%8F%98%E9%87%8F%E4%B8%BA%E4%BD%95%E7%AB%8B%E5%8D%B3%E5%8F%AF%E8%A7%81">1. volatitle变量为何立即可见？</a></li>
+<li><a href="#2-%E5%A6%82%E4%BD%95%E7%A6%81%E6%AD%A2%E9%87%8D%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96">2. 如何禁止重排序优化？</a></li>
+<li><a href="#3-%E5%92%8Csynchronized%E7%9A%84%E5%8C%BA%E5%88%AB">3. 和synchronized的区别？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%83-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F">七、单例模式</a>
+<ul>
+<li><a href="#1-%E9%A5%BF%E6%B1%89%E5%BC%8F">1. 饿汉式</a></li>
+<li><a href="#2-%E6%99%AE%E9%80%9A%E7%9A%84%E6%87%92%E6%B1%89%E5%BC%8F">2. <strong>普通的懒汉式</strong></a></li>
+<li><a href="#3-%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95%E7%9A%84%E6%87%92%E6%B1%89%E5%BC%8F">3. 同步方法的懒汉式</a></li>
+<li><a href="#4-%E4%BA%8C%E6%AC%A1%E6%A3%80%E6%9F%A5">4. 二次检查</a></li>
+<li><a href="#5-holder%E6%96%B9%E5%BC%8F">5. Holder方式</a></li>
+<li><a href="#6-%E6%9E%9A%E4%B8%BE">6. 枚举</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-12 18:43:53";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-12 18:43:53";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>31</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

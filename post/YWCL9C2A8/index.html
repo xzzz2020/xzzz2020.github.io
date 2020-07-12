@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>RocketMQ监控平台（附网盘链接） | xzzz2020</title>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【面试题】阻塞队列 | xzzz2020</title>
 <link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 <script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
 
-<link rel="canonical" href="https://xzzz2020.github.io/post/rocketmq-jian-kong-ping-tai-fu-wang-pan-lian-jie/" />
+<link rel="canonical" href="https://xzzz2020.github.io/post/YWCL9C2A8/" />
 </head>
 <body>
 <div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
@@ -23,36 +23,99 @@
 
 <div class="main"><div class="main-inner"><div class="content">
 <article class="post">
-<h2 class="post_title sm_margin"><a>RocketMQ监控平台（附网盘链接）</a></h2>
+<h2 class="post_title sm_margin"><a>【面试题】阻塞队列</a></h2>
 <script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
-<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-16</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/RocketMq/" class="tag">RocketMq</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">212字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">1 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-12</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1181字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">5 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
 </section>
 
-<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1592558425469-d86d7a07f311.webp" referrerpolicy="no-referrer">
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1594033849958-7302586341c9.webp" referrerpolicy="no-referrer">
 
 <div style="display:flex">
 <div class="md_block" id="md_block">
 <div class="round-shape-one"></div>
-<p><code>RocketMQ</code>有一个对其扩展的开源项目<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>，这个项目中有一个子模块叫<code>rocketmq-console</code>，这个便是管理控制台项目了，先将<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>拉到本地，因为我们需要自己对<code>rocketmq-console</code>进行编译打包运行。</p>
-<p>在linux环境下，使用<code>nohub java -jar xxxx &amp;</code>  启动，为了防止端口冲突，已经修改其端口为<strong>9999</strong></p>
 <blockquote>
-<p>链接：<a href="https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA">https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA</a><br>
-提取码：jpg0</p>
+<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
 </blockquote>
-<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/2020053110115547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></figure>
-<h3 id="352-下载并编译打包">3.5.2 下载并编译打包</h3>
-<pre><code class="language-sh">git clone https://github.com/apache/rocketmq-externals
-cd rocketmq-console
-mvn clean package -Dmaven.test.skip=true
-</code></pre>
-<p>注意：打包前在<code>rocketmq-console</code>中配置<code>namesrv</code>集群地址：</p>
-<pre><code class="language-sh">rocketmq.config.namesrvAddr=192.168.25.135:9876;192.168.25.138:9876
-</code></pre>
-<p>启动rocketmq-console：</p>
-<pre><code class="language-sh">java -jar rocketmq-console-ng-1.0.0.jar
-</code></pre>
-<p>启动成功后，我们就可以通过浏览器访问<code>http://localhost:8080</code>进入控制台界面了，如下图：<br>
-<img src="https://img-blog.csdnimg.cn/20200531101225351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<blockquote>
+<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-arrayblockingqueue">一、ArrayBlockingQueue</a></li>
+<li><a href="#%E4%BA%8C-linkedblockingqueue">二、LinkedBlockingQueue</a></li>
+<li><a href="#%E4%B8%89-priorityblockingqueue">三、PriorityBlockingQueue</a></li>
+<li><a href="#%E5%9B%9B-delayqueue">四、DelayQueue</a></li>
+<li><a href="#%E4%BA%94-synchronousqueue">五、SynchronousQueue</a></li>
+<li><a href="#%E5%85%AD-linkedtransferqueue">六、LinkedTransferQueue</a></li>
+<li><a href="#%E4%B8%83-linkedblockingdeque">七、LinkedBlockingDeque</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-arrayblockingqueue">一、ArrayBlockingQueue</h2>
+<ul>
+<li>
+<p><strong>用数组实现的有界阻塞队列</strong>。</p>
+</li>
+<li>
+<p>此队列按照先进先出（FIFO）的原则对元素进行排序。</p>
+</li>
+<li>
+<p><strong>默认情况下不保证访问者公平的访问队列</strong>，所谓公平访问队列是指先阻塞的线程先访问，通常情况下为了保证公平性会降低吞吐量。</p>
+</li>
+</ul>
+<h2 id="二-linkedblockingqueue">二、LinkedBlockingQueue</h2>
+<ul>
+<li>
+<p>基于链表的无界阻塞队列，默认创建一个类似无限大小的容量</p>
+</li>
+<li>
+<p>同 ArrayListBlockingQueue 类似，此队列按照先进先出（FIFO）的原则对元素进行排序。而</p>
+</li>
+<li>
+<p>LinkedBlockingQueue 之所以能够高效的处理并发数据，还因为其<strong>对于生产者端和消费者端分别采用了独立的锁来控制数据同步，这也意味着在高并发的情况下生产者和消费者可以并行地操作队列中的数据，以此来提高整个队列的并发性能。</strong></p>
+</li>
+</ul>
+<h2 id="三-priorityblockingqueue">三、PriorityBlockingQueue</h2>
+<ul>
+<li>
+<p>是一个支持优先级的无界队列。</p>
+</li>
+<li>
+<p>默认情况下元素采取自然顺序升序排列。 可以自定义实现compareTo()方法来指定元素进行排序规则，或者初始化 PriorityBlockingQueue 时，指定构造参数 Comparator 来对元素进行排序。需要注意的是不能保证同优先级元素的顺序。</p>
+</li>
+</ul>
+<h2 id="四-delayqueue">四、DelayQueue</h2>
+<ul>
+<li>
+<p>是一个支持延时获取元素的无界阻塞队列。</p>
+</li>
+<li>
+<p>队列使用 PriorityQueue 来实现。队列中的元素必须实现 Delayed 接口，<strong>在创建元素时可以指定多久才能从队列中获取当前元素。只有在延迟期满时才能从队列中提取元素。</strong></p>
+</li>
+<li>
+<p>可以用于：<strong>缓存系统设计</strong>，当可以取出任务时，代表缓存期到了；定时任务调度 ，保 存 当 天 将 会 执 行 的任务和执行时间 ，一旦从DelayQueue 中获取到任务就开始执行</p>
+</li>
+</ul>
+<h2 id="五-synchronousqueue">五、SynchronousQueue</h2>
+<ul>
+<li>是一个不存储元素的阻塞队列。</li>
+<li>每一个put 操作必须等待一个 take 操作，否则不能继续添加元素。</li>
+<li>负责把生产者线程处理的数据直接传递给消费者线程。队列本身并不存储任何元素，非常适合于传递性场景,比如在一个线程中使用的数据，传递给另外一个线程使用</li>
+<li>SynchronousQueue 的 吞 吐 量 高 于 LinkedBlockingQueue 和ArrayBlockingQueue</li>
+</ul>
+<h2 id="六-linkedtransferqueue">六、LinkedTransferQueue</h2>
+<p>是 一 个 由 链 表 结 构 组 成 的无界阻塞 TransferQueue 队 列 。 相对于其他阻塞队列 ，LinkedTransferQueue 多了 tryTransfer 和 transfer 方法，<strong>是一种预占的模式，判断有没有线程空闲，有就直接让其拿走，没有就占着这个位置直到任务被拿到或者超时或者中断</strong>：</p>
+<ol>
+<li><strong>transfer 方法</strong>： 如果当前有消费者正在等待接收元素（消费者使用 take()方法或带时间限制的poll()方法时）， transfer 方法可以把生产者传入的元素立刻 transfer（传输）给消费者。如果没有消费者在等待接收元素， transfer 方法会将元素存放在队列的 tail 节点，并等到该元素被消费者消费了才返回。</li>
+<li><strong>tryTransfer 方法</strong>。则是用来试探下生产者传入的元素是否能直接传给消费者。如果没有消费者等待接收元素，则返回 false。和 transfer 方法的区别是 tryTransfer 方法无论消费者是否接收，方法立即返回。而 transfer 方法是必须等到消费者消费了才返回。</li>
+</ol>
+<p>对于带有时间限制的 tryTransfer(E e, long timeout, TimeUnit unit)方法，则是试图把生产者传入的元素直接传给消费者，但是如果没有消费者消费该元素则等待指定的时间再返回，如果超时还没消费元素，则返回 false，如果在超时时间内消费了元素，则返回 true。</p>
+<h2 id="七-linkedblockingdeque">七、LinkedBlockingDeque</h2>
+<p>是一个由链表结构组成的双向阻塞队列。所谓双向队列指的你可以从队列的两端插入和移出元素。双端队列因为多了一个操作队列的入口，在多线程同时入队时，也就减少了一半的竞争。</p>
+<p>在初始化 LinkedBlockingDeque 时可以设置容量防止其过渡膨胀。另外双向阻塞队列可以运用在<br>
+“工作窃取”模式中，Fork/Join框架会窃取其他线程队尾的任务。</p>
 
 <span id="footnote"></span>
 <div id = "warn"></div>
@@ -60,11 +123,13 @@ mvn clean package -Dmaven.test.skip=true
 <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li>
-<ul>
-<li><a href="#352-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E7%BC%96%E8%AF%91%E6%89%93%E5%8C%85">3.5.2 下载并编译打包</a></li>
-</ul>
-</li>
+<li><a href="#%E4%B8%80-arrayblockingqueue">一、ArrayBlockingQueue</a></li>
+<li><a href="#%E4%BA%8C-linkedblockingqueue">二、LinkedBlockingQueue</a></li>
+<li><a href="#%E4%B8%89-priorityblockingqueue">三、PriorityBlockingQueue</a></li>
+<li><a href="#%E5%9B%9B-delayqueue">四、DelayQueue</a></li>
+<li><a href="#%E4%BA%94-synchronousqueue">五、SynchronousQueue</a></li>
+<li><a href="#%E5%85%AD-linkedtransferqueue">六、LinkedTransferQueue</a></li>
+<li><a href="#%E4%B8%83-linkedblockingdeque">七、LinkedBlockingDeque</a></li>
 </ul>
 </li>
 </ul>
@@ -108,7 +173,7 @@ if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop)
 var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
 var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
 var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
-content="本文最后更新于2020-06-16，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-16 20:01:12";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+content="本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-12 18:38:05";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
 </script>
 -->
 
@@ -171,8 +236,8 @@ content="本文最后更新于2020-06-16，已超过 1 年没有更新，涉及�
             wxScale.start(this)
         }
     };
-    content = "本文最后更新于2020-06-16，已超过 1 年没有更新，涉及的内容可能已经失效！";
-    var date1 = "2020-06-16 20:01:12";
+    content = "本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-12 18:38:05";
     date1 = date1.replace("-", "/");
     var date2 = new Date();
     var date3 = date2.getTime() - new Date(date1).getTime();

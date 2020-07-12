@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【面试题】JUC并发包 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/2imuXDnFS/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1594551040724" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【面试题】JUC并发包</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-12</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2688字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">11 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1593642532871-8b12e02d091c.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
+</blockquote>
+<blockquote>
+<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-countdownlatch">1. CountDownLatch</a></li>
+<li><a href="#2-cyclicbarrier">2. CyclicBarrier</a></li>
+<li><a href="#3-semaphore">3. Semaphore</a></li>
+<li><a href="#4-futuretask">4. FutureTask</a></li>
+<li><a href="#5-forkjoin">5. ForkJoin</a>
+<ul>
+<li><a href="#forkjoinpool">ForkJoinPool</a></li>
+<li><a href="#forkjointask">ForkJoinTask</a></li>
+</ul>
+</li>
+<li><a href="#6-exchange">6. Exchange</a></li>
+<li><a href="#7-condition">7. Condition</a></li>
+<li><a href="#8-stampedlock">8. StampedLock</a></li>
+<li><a href="#9-reentrantreadwritelock%E8%AF%BB%E5%86%99%E9%94%81">9. ReentrantReadWriteLock读写锁</a></li>
+<li><a href="#10-%E9%94%81%E7%9A%84%E4%BD%BF%E7%94%A8%E6%8E%A8%E8%8D%90">10. 锁的使用推荐</a>
+<ul>
+<li><a href="#%E6%AF%94%E8%BE%83">比较</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="1-countdownlatch">1. CountDownLatch</h2>
+<ul>
+<li>
+<p>用来控制一个线程等待多个线程。</p>
+</li>
+<li>
+<p>维护了一个计数器 cnt，每次调用 countDown() 方法会让计数器的值减 1，减到 0 的时候，那些因为调用 await() 方法而在等待的线程就会被唤醒</p>
+</li>
+<li>
+<p>计数器的初始值是<strong>线程的数量或者任务的数量</strong></p>
+</li>
+<li>
+<p>每当一个线程执行完毕后，计数器的值就-1，当计数器的值为0时，表示所有线程都执行完毕，然后在闭锁上等待的线程就可以恢复工作了。</p>
+</li>
+<li>
+<p>通过CAS成功置为0的那个线程将会同时承担起唤醒队列中第一个节点线程的任务</p>
+</li>
+</ul>
+<p><strong>不足</strong>：CountDownLatch是一次性的，计数器的值只能在构造方法中初始化一次，之后没有任何机制再次对其设置值，当CountDownLatch使用完毕后，它不能再次被使用。</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTUzNDI3NjQ2LnBuZw?x-oss-process=image/format,png" alt="image-20200711153427646" loading="lazy"></figure>
+<p><strong>文章地址</strong>：<a href="https://blog.csdn.net/qq_43040688/article/details/105935307">https://blog.csdn.net/qq_43040688/article/details/105935307</a></p>
+<h2 id="2-cyclicbarrier">2. CyclicBarrier</h2>
+<ul>
+<li>
+<p>用来控制多个线程互相等待，只有当多个线程都到达时，这些线程才会继续执行。</p>
+</li>
+<li>
+<p>和 CountdownLatch 相似，都是通过维护计数器来实现的。线程执行 await() 方法之后计数器会减 1，并进行等待，直到计数器为 0，所有调用 await() 方法而在等待的线程才能继续执行。</p>
+</li>
+<li></li>
+<li>
+<p>CyclicBarrier 有两个构造函数，其中 parties 指示计数器的初始值，barrierAction 在所有线程都到达屏障的时候会执行一次。</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTUzNDQ0NDMwLnBuZw?x-oss-process=image/format,png" alt="image-20200711153444430" loading="lazy"></figure>
+<p><strong>CyclicBarrier 和 CountdownLatch 的区别？</strong></p>
+<ul>
+<li>CyclicBarrier 的计数器通过调用 reset() 方法可以循环使用，所以它才叫做循环屏障，而CountdownLatch 是一次性的。</li>
+<li>CountdownLatch 用于一个线程等待一组线程执行完任务  ，CyclicBarrier 用于一组线程互相等待</li>
+</ul>
+<h2 id="3-semaphore">3. Semaphore</h2>
+<p>Semaphore 类似于操作系统中的信号量，可以控制对互斥资源的访问线程数。</p>
+<p>以下代码模拟了对某个服务的并发请求，每次只能有 3 个客户端同时访问，请求总数为 10。</p>
+<pre><code class="language-java">public class SemaphoreExample {
+    public static void main(String[] args) {
+        final int clientCount = 3;
+        final int totalRequestCount = 10;
+        Semaphore semaphore = new Semaphore(clientCount);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i &lt; totalRequestCount; i++) {
+            executorService.execute(()-&gt;{
+                try {
+                    semaphore.acquire();
+                    System.out.print(semaphore.availablePermits() + &quot; &quot;);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    semaphore.release();
+                }
+            });
+        } 
+        executorService.shutdown();
+    }
+}
+</code></pre>
+<p><strong>实现循环打印？</strong></p>
+<p>下面的例子有ABC三个线程。A负责输出1 4 7 B负责输出2 5 8 C负责3 6 9。要求通过信号量机制 控制这三个线程按照顺序输出。</p>
+<p><strong>思路就是考虑前驱图，利用信号量实现</strong>：</p>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        new SemaphoreTest().print();
+    }
+}
+
+
+class SemaphoreTest {
+    private int i = 1;
+    private Semaphore s1 = new Semaphore(1);
+    private Semaphore s2 = new Semaphore(0);
+    private Semaphore s3 = new Semaphore(0);
+    private ExecutorService es = Executors.newFixedThreadPool(3);
+    public void print(){
+        es.execute(()-&gt;{
+            while (i&lt;7){
+                try {
+                    s1.acquire();
+                    System.out.println(i);
+                    i++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }finally {
+                    s2.release();
+                }
+            }
+        });
+        es.execute(()-&gt;{
+            while (i&lt;8){
+                try {
+                    s2.acquire();
+                    System.out.println(i);
+                    i++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }finally {
+                    s3.release();
+                }
+            }
+        });
+        es.execute(()-&gt;{
+            while (i&lt;9){
+                try {
+                    s3.acquire();
+                    System.out.println(i);
+                    i++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }finally {
+                    s1.release();
+                }
+            }
+        });
+        es.shutdown();
+    }
+}
+</code></pre>
+<p>或者利用两个线程通过加锁，输出完就唤醒，自己等待，来实现循环打印</p>
+<h2 id="4-futuretask">4. FutureTask</h2>
+<p>在介绍 Callable 时我们知道它可以有返回值，返回值通过 Future 进行封装。FutureTask 实现了 RunnableFuture 接口，该接口继承自 Runnable 和 Future 接口，<strong>这使得 FutureTask 既可以当做一个任务执行，也可以有返回值。</strong></p>
+<pre><code class="language-java">public class FutureTaskExample {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;Integer&gt;(new Callable&lt;Integer&gt;() {
+            @Override
+            public Integer call() throws Exception {
+                int result = 0;for (int i = 0; i &lt; 100; i++) {
+                    Thread.sleep(10);
+                    result += i;
+                } 
+                return result;
+            }
+        });
+        Thread computeThread = new Thread(futureTask);
+        computeThread.start();
+        Thread otherThread = new Thread(() -&gt; {
+            System.out.println(&quot;other task is running...&quot;);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        otherThread.start();
+        System.out.println(futureTask.get());//获取返回值
+    }
+}
+</code></pre>
+<h2 id="5-forkjoin">5. ForkJoin</h2>
+<p>一个用于并行执行任务的框架， 是一个把大任务分割成若干个小任务，最终汇总每个小任务结果后得到大任务结果的框架，主要用于并行计算中</p>
+<p><strong>思想</strong>：分治，fork分解任务，join收集数据</p>
+<p>Java标准库提供的<code>java.util.Arrays.parallelSort(array)</code>可以进行并行排序，它的原理就是内部通过Fork/Join对大数组分拆进行并行排序，在多核CPU上就可以大大提高排序的速度。</p>
+<h3 id="forkjoinpool">ForkJoinPool</h3>
+<p>ForkJoin 使用 ForkJoinPool 来启动，它是一个特殊的线程池，线程数量取决于 CPU 核数</p>
+<p>ForkJoinPool 实现了工作窃取算法来提高 CPU 的利用率。每个线程都维护了一个双端队列，用来存储需要执行的任务。工作窃取算法允许空闲的线程从其它线程的双端队列中窃取一个任务来执行。窃取的任务必须是最晚的任务，避免和队列所属线程发生竞争。例如下图中，Thread2 从 Thread1 的队列中拿出最晚的 Task1 任务，Thread1 会拿出Task2 来执行，这样就避免发生竞争。但是如果队列中只有一个任务时还是会发生竞争。</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTYyNzUyMjE4LnBuZw?x-oss-process=image/format,png" alt="image-20200711162752218" loading="lazy"></figure>
+<h3 id="forkjointask">ForkJoinTask</h3>
+<p>ForkJoinTask就是ForkJoinPool里面的每一个任务。他主要有两个子类：<code>RecursiveAction</code>和<code>RecursiveTask</code>。然后通过fork()方法去分配任务执行任务，通过join()方法汇总任务结果，</p>
+<h2 id="6-exchange">6. Exchange</h2>
+<ul>
+<li>用于两个工作线程之间交换数据的封装工具类</li>
+<li>简单说就是一个线程在完成一定的事务后想与另一个线程交换数据，则<strong>第一个先拿出数据的线程会一直等待第二个线程，直到第二个线程拿着数据到来时才能彼此交换对应数据</strong></li>
+<li><strong>如果交换的是引用类型，发送的对象和接收的对象是同一个对象，可能会用严重的线程安全问题</strong></li>
+</ul>
+<h2 id="7-condition">7. Condition</h2>
+<ul>
+<li>提供了类似Object的监视器方法，<strong>与Lock配合可以实现等待/通知模式</strong>，但是这两者在使用方式以及功能特性上还是有差别的，等待是用await，通知是signal或者signalAll。</li>
+<li>await和Object.wait()类似，都会自动的释放锁，并且在唤起后需要重新获得锁</li>
+<li>想要await操作必须需要获得到锁</li>
+</ul>
+<p><strong>wait和await的区别？</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">wait</th>
+<th style="text-align:center">await</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">是配合synchronized关键字的</td>
+<td style="text-align:center">是配合Lock锁的</td>
+</tr>
+<tr>
+<td style="text-align:center">等待队列的唤醒受到JVM的影响，是随机的唤醒</td>
+<td style="text-align:center">等待队列FIFO的，先阻塞先唤醒</td>
+</tr>
+<tr>
+<td style="text-align:center">不可以被打断</td>
+<td style="text-align:center">可以被打断</td>
+</tr>
+<tr>
+<td style="text-align:center">等待队列只有一个</td>
+<td style="text-align:center">每一个Condition都具有一个等待队列，可以创建多个Condition</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-stampedlock">8. StampedLock</h2>
+<p>如果我们深入分析ReadWriteLock，会发现它有个潜在的问题：<font color="red">如果有线程正在读，写线程需要等待读线程释放锁后才能获取写锁，即读的过程中不允许写，这是一种悲观的读锁。</p>
+<p>要进一步提升并发执行效率，Java 8引入了新的读写锁：StampedLock。</p>
+<p><strong>出现的问题</strong>：如果有999个需要读锁，1个需要写锁，此时，写的线程，很难得到执行。</p>
+<p>StampedLock和ReadWriteLock相比，改进之处在于：<code>读的过程中也允许获取写锁后写入</code>！这样一来，我们读的数据就可能不一致，所以，<strong>需要一点额外的代码来判断读的过程中是否有写入，这种读锁是一种乐观锁</strong>。</p>
+<p><strong>乐观锁的意思就是乐观地估计读的过程中大概率不会有写入，因此被称为乐观锁。反过来，悲观锁则是读的过程中拒绝有写入，也就是写入必须等待。</strong></p>
+<p>显然乐观锁的并发效率更高，但一旦有小概率的写入导致读取的数据不一致，需要能检测出来，再读一遍就行。</p>
+<blockquote>
+<p>这是个不可重入锁。</p>
+</blockquote>
+<pre><code class="language-java">public class Point {
+
+
+    private final StampedLock stampedLock = new StampedLock();
+
+    private double x;
+    private double y;
+
+    public void move(double deltaX, double deltaY) {
+        long stamp = stampedLock.writeLock(); // 获取写锁
+        try {
+            x += deltaX;
+            y += deltaY;
+        } finally {
+            stampedLock.unlockWrite(stamp); // 释放写锁
+        }
+    }
+
+    public double distanceFromOrigin() {
+        long stamp = stampedLock.tryOptimisticRead(); // 获得一个乐观读锁
+        // 注意下面两行代码不是原子操作
+        // 假设x,y = (100,200)
+        double currentX = x;
+        // 此处已读取到x=100，但x,y可能被写线程修改为(300,400)
+        double currentY = y;
+        // 此处已读取到y，如果没有写入，读取是正确的(100,200)
+        // 如果有写入，读取是错误的(100,400)
+        if (!stampedLock.validate(stamp)) { // 检查乐观读锁后是否有其他写锁发生
+            stamp = stampedLock.readLock(); // 获取一个悲观读锁
+            try {
+                currentX = x;
+                currentY = y;
+            } finally {
+                stampedLock.unlockRead(stamp); // 释放悲观读锁
+            }
+        }
+        return Math.sqrt(currentX * currentX + currentY * currentY);
+    }
+}
+</code></pre>
+<h2 id="9-reentrantreadwritelock读写锁">9. ReentrantReadWriteLock读写锁</h2>
+<blockquote>
+<p>一般情况下都不会使用</p>
+</blockquote>
+<ul>
+<li>读锁和写锁是分离的</li>
+<li>一个线程读的时候允许其他线程也可以读</li>
+<li>一个线程写的时候不允许其他线程写</li>
+<li>读和写也不允许同时进行</li>
+</ul>
+<p><strong>出现的问题是</strong>：可能会造成饥饿现象，写的线程迟迟无法执行任务</p>
+<h2 id="10-锁的使用推荐">10. 锁的使用推荐</h2>
+<blockquote>
+<p>原文：<a href="https://blog.csdn.net/qq_43040688/article/details/106032189">https://blog.csdn.net/qq_43040688/article/details/106032189</a></p>
+</blockquote>
+<h3 id="比较">比较</h3>
+<table>
+<thead>
+<tr>
+<th>synchronized</th>
+<th>StampedLock</th>
+<th>Lock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是JVM的的内置锁，每个JDK版本都会优化</td>
+<td>是一个Java类，可以更好的扩展</td>
+<td>是一个Java类，可以更好的扩展</td>
+</tr>
+<tr>
+<td>都是悲观锁</td>
+<td>提供了写的乐观锁</td>
+<td>都是悲观锁，但是提供了自旋锁，或者不阻塞的获取锁</td>
+</tr>
+<tr>
+<td>性能一般，因为有一个从用户态到内核态的过程</td>
+<td>性能最好，可以代替读写锁</td>
+<td>性能十分不稳定，在复杂的读写环境下，性能十分差</td>
+</tr>
+<tr>
+<td>不具有公平锁</td>
+<td>不具有公平锁</td>
+<td>具有公平锁</td>
+</tr>
+<tr>
+<td>锁会自动释放</td>
+<td>锁需要手动释放</td>
+<td>锁需要手动释放</td>
+</tr>
+</tbody>
+</table>
+<h3 id="总结">总结</h3>
+<ul>
+<li><code>StampedLock</code>是性能最好的，可以<font color="gold">胜任复杂的读写多线程环境</li>
+<li>令人惊奇的是<code>synchronized</code> ，<font color="gold">由于是内置锁，每个JDK版本都会优化，尤其在复杂的读写多线程情况下，表现依然很优秀。</li>
+<li><code>Lock</code>虽然提供了读写锁，<font color="gold">但是性能特别差；而<code>ReentrantLock</code>性能十分好，同时功能丰富</li>
+</ul>
+<p><strong>个人推荐</strong>：如果时读写环境，推荐使用<code>StampedLock</code>；如果是正常的加锁，推荐使用<code>synchronized</code>；如果需要对锁有更多的控制，推荐使用<code>ReentrantLock</code></p>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-countdownlatch">1. CountDownLatch</a></li>
+<li><a href="#2-cyclicbarrier">2. CyclicBarrier</a></li>
+<li><a href="#3-semaphore">3. Semaphore</a></li>
+<li><a href="#4-futuretask">4. FutureTask</a></li>
+<li><a href="#5-forkjoin">5. ForkJoin</a>
+<ul>
+<li><a href="#forkjoinpool">ForkJoinPool</a></li>
+<li><a href="#forkjointask">ForkJoinTask</a></li>
+</ul>
+</li>
+<li><a href="#6-exchange">6. Exchange</a></li>
+<li><a href="#7-condition">7. Condition</a></li>
+<li><a href="#8-stampedlock">8. StampedLock</a></li>
+<li><a href="#9-reentrantreadwritelock%E8%AF%BB%E5%86%99%E9%94%81">9. ReentrantReadWriteLock读写锁</a></li>
+<li><a href="#10-%E9%94%81%E7%9A%84%E4%BD%BF%E7%94%A8%E6%8E%A8%E8%8D%90">10. 锁的使用推荐</a>
+<ul>
+<li><a href="#%E6%AF%94%E8%BE%83">比较</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-12 18:45:03";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-12 18:45:03";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>31</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

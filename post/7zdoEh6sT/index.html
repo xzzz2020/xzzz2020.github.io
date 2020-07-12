@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【面试题】Java并发实现原理 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/7zdoEh6sT/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1594551040724" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【面试题】Java并发实现原理</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-12</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2940字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">11 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1594136976553-38699ae9047c.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
+</blockquote>
+<blockquote>
+<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-%E7%B1%BB%E9%94%81%E5%92%8C%E5%AF%B9%E8%B1%A1%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB">1. 类锁和对象锁的区别</a></li>
+<li><a href="#2-synchronize%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">2. synchronize底层实现原理</a></li>
+<li><a href="#3-%E4%BB%80%E4%B9%88%E6%98%AF%E9%94%81%E9%87%8D%E5%85%A5">3. 什么是锁重入？</a></li>
+<li><a href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%AF%B9synchronized%E5%97%A4%E4%B9%8B%E4%BB%A5%E9%BC%BB">4. 为什么会对synchronized嗤之以鼻</a></li>
+<li><a href="#4-%E9%94%81%E4%BC%98%E5%8C%96">4. 锁优化</a></li>
+<li><a href="#5-%E8%87%AA%E6%97%8B%E9%94%81%E5%92%8C%E8%87%AA%E9%80%82%E5%BA%94%E8%87%AA%E6%97%8B%E9%94%81">5. 自旋锁和自适应自旋锁</a></li>
+<li><a href="#6-%E9%94%81%E6%B6%88%E9%99%A4">6. 锁消除</a></li>
+<li><a href="#7-%E9%94%81%E7%B2%97%E5%8C%96">7. 锁粗化</a></li>
+<li><a href="#8-%E9%94%81%E8%86%A8%E8%83%80%E5%92%8C%E9%94%81%E9%99%8D%E7%BA%A7">8. 锁膨胀和锁降级</a></li>
+<li><a href="#9-%E5%81%8F%E5%90%91%E9%94%81">9. 偏向锁</a></li>
+<li><a href="#10-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81">10. 轻量级锁</a></li>
+<li><a href="#10-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81">10. 重量级锁</a></li>
+<li><a href="#11-reentrantlock">11. ReentrantLock</a></li>
+<li><a href="#12-synchronize%E5%92%8Creentrantlock">12. synchronize和ReentrantLock</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="1-类锁和对象锁的区别">1. 类锁和对象锁的区别</h2>
+<p><strong>对象锁</strong></p>
+<ul>
+<li>对象锁有两种，第一种是在普通方法上加synchronize关键字，一种是使用synchronize同步代码块同步一个对象</li>
+</ul>
+<pre><code class="language-java">//同步代码块
+public void func() {
+    synchronized (this) {
+    // ...
+    }
+}
+
+//同步一个方法
+public synchronized void func () {
+	// ...
+}
+</code></pre>
+<p>作用都是同一个对象，如果不同线程去争抢同一个对象的头，就会陷入阻塞，如果是争抢不同对象的头，则不会阻塞</p>
+<p><strong>类锁</strong></p>
+<ul>
+<li>类锁有两种，第一种是在静态方法上加synchronize关键字，一种是使用synchronize同步代码块同步类</li>
+</ul>
+<pre><code class="language-java">//同步一个类
+public void func() {
+    synchronized (SynchronizedExample.class) {
+    // ...
+    }
+}
+public synchronized static void fun() {
+	// ...
+}
+</code></pre>
+<p>作用于整个类，如果是一个类不同的对象，调用这些方法的时候，会陷入阻塞</p>
+<p><strong>类锁是一种特殊的对象锁，类锁和对象锁互不干扰，也就是说一个线程访问同步静态方法，另一个线程访问同步普通方法，是不会阻塞的</strong></p>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Solution solution = new Solution();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                solution.fun2();
+            }
+        });
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Solution.fun1();
+            }
+        });
+        executor.shutdown();
+    }
+
+}
+
+
+class Solution {
+
+    public  synchronized static void fun1(){
+        System.out.println(&quot;fun1...&quot;);
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public  synchronized void fun2(){
+        System.out.println(&quot;fun2...&quot;);
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<h2 id="2-synchronize底层实现原理">2. synchronize底层实现原理</h2>
+<p>每个对象出生就有一个对象头，而Mark Word的中会包含锁信息和hashcode信息</p>
+<p>synchronize获取锁的过程其实是在Mark Word加入线程信息的过程</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzA4MTYwMjQ2NDE2LnBuZw?x-oss-process=image/format,png" alt="image-20200708160246416" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzA4MTYwMzQyMjk2LnBuZw?x-oss-process=image/format,png" alt="image-20200708160342296" loading="lazy"></figure>
+<p><strong>Monitor :每个Java对象天生自带了一把看不见的锁</strong></p>
+<h2 id="3-什么是锁重入">3. 什么是锁重入？</h2>
+<p>就是如果一个线程获取了一个对象的锁，如果在这个时候，又尝试获取这个对象的锁，会直接进入：</p>
+<pre><code class="language-java">class Solution {
+    private void test(){
+        synchronized (this){
+            synchronized (this){
+                //执行代码
+            }
+        }
+    }
+}
+</code></pre>
+<p>synchronize和ReentrantLock都是支持可重入的</p>
+<h2 id="4-为什么会对synchronized嗤之以鼻">4. 为什么会对synchronized嗤之以鼻</h2>
+<ul>
+<li>早期版本中, synchronized属于重量级锁,依赖于Mutex Lock实现</li>
+<li>线程之间的切换需要从用户态转换到核心态,开销较大</li>
+</ul>
+<h2 id="4-锁优化">4. 锁优化</h2>
+<ul>
+<li>synchronized有四种状态无锁、偏向锁、轻量级锁、重量级锁</li>
+<li>偏向锁不会使用CAS操作获取锁，直接让第一次获取对象头mark word线程访问，当有其他线程争用对象头时，会结束偏向，膨胀成轻量级锁</li>
+<li>轻量级锁会使用CAS操作来获取锁，当获取锁失败的时候，会采用自旋的方式，如果多次失败，会锁升级为重量级锁</li>
+<li>同时优化了自旋使用自适应自旋，自旋的次数不固定，会根据上次自旋的次数来决定这次自旋的次数来决定这次自旋的次数</li>
+<li>重量级锁和轻量级锁的差异在于，线程获取不到锁，就会陷入阻塞，切换锁的性能十分差，频繁的切换锁就会造成大量的性能优化</li>
+<li>锁升级策略主要应对一系列操作频繁的获取锁和释放锁，将扩大加锁的范围，一次加锁就可以完成操作</li>
+<li>锁消除会根据逃逸分析，当共享变量并不会被其他线程访问，则可以消除加锁的过程</li>
+</ul>
+<h2 id="5-自旋锁和自适应自旋锁">5. 自旋锁和自适应自旋锁</h2>
+<p>互斥同步进入阻塞状态的开销都很大，应该尽量避免。在许多应用中，共享数据的锁定状态只会持续很短的一段时间。自旋锁的思想是让一个线程在请求一个共享数据的锁时执行忙循环（自旋）一段时间，如果在这段时间内能获得锁，就可以避免进入阻塞状态。自旋锁虽然能避免进入阻塞状态从而减少开销，但是它需要进行忙循环操作占用 CPU 时间，<strong>它只适用于共享数据的锁定状态很短的场景。</strong></p>
+<p>在 JDK 1.6 中引入了自适应的自旋锁。<strong>自适应意味着自旋的次数不再固定了，而是由前一次在同一个锁上的自旋次数及锁的拥有者的状态来决定。</strong></p>
+<h2 id="6-锁消除">6. 锁消除</h2>
+<p>锁消除是指对于被检测出不可能存在竞争的共享数据的锁进行消除。</p>
+<p>锁消除主要是通过<strong>逃逸分析</strong>来支持，如果堆上的共享数据不可能逃逸出去被其它线程访问到，那么就可以把它们当成私有数据对待，也就可以将它们的锁进行消除。</p>
+<p>对于一些看起来没有加锁的代码，其实隐式的加了很多锁。例如下面的字符串拼接代码就隐式加了锁</p>
+<pre><code class="language-java">public static String concatString(String s1, String s2, String s3) {
+    return s1 + s2 + s3;
+}
+</code></pre>
+<p>String 是一个不可变的类，编译器会对 String 的拼接自动优化。在 JDK 1.5 之前，会转化为 StringBuffer 对象的连续 append() 操作（JDK1.6之后变成StringBuider）：</p>
+<pre><code class="language-java">public static String concatString(String s1, String s2, String s3) {
+    StringBuffer sb = new StringBuffer();
+    sb.append(s1);
+    sb.append(s2);
+    sb.append(s3);
+    return sb.toString();
+}
+</code></pre>
+<p>每个 append() 方法中都有一个同步块。虚拟机观察变量 sb，很快就会发现它的动态作用域被限制在 concatString()方法内部。也就是说，sb 的<strong>所有引用永远不会逃逸到 concatString() 方法之外</strong>，其他线程无法访问到它，因此可以进行消除。</p>
+<p>​</p>
+<h2 id="7-锁粗化">7. 锁粗化</h2>
+<p>如果一系列的连续操作都对同一个对象反复加锁和解锁，频繁的加锁操作就会导致性能损耗。</p>
+<p>上一节的示例代码中连续的 append() 方法就属于这类情况。如果虚拟机探测到由这样的一串零碎的操作都对同一个对象加锁，将会把加锁的范围扩展（粗化）到整个操作序列的外部。对于上一节的示例代码就是扩展到第一个append() 操作之前直至最后一个 append() 操作之后，这样只需要加锁一次就可以了。</p>
+<h2 id="8-锁膨胀和锁降级">8. 锁膨胀和锁降级</h2>
+<p><strong>所谓锁的升级、降级，就是 JVM 优化 synchronized 运行的机制，当 JVM 检测到不同的竞争状况时，会自动切换到适合的锁实现，这种切换就是锁的升级、降级。</strong></p>
+<h2 id="9-偏向锁">9. 偏向锁</h2>
+<p>偏向锁的思想是偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作，甚至连 CAS操作也不再需要。</p>
+<p>当锁对象第一次被线程获得的时候，进入偏向状态，标记为 1 01。同时使用 CAS 操作将线程 ID 记录到 Mark Word中，如果 CAS 操作成功，这个线程以后每次进入这个锁相关的同步块就不需要再进行任何同步操作。</p>
+<p>当有另外一个线程去尝试获取这个锁对象时，偏向状态就宣告结束，此时撤销偏向（Revoke Bias）后恢复到未锁定状态或者轻量级锁状态</p>
+<h2 id="10-轻量级锁">10. 轻量级锁</h2>
+<p>轻量级锁是相对于传统的重量级锁而言，它使用 CAS 操作来避免重量级锁使用互斥量的开销。对于绝大部分的锁，在整个同步周期内都是不存在竞争的，因此也就不需要都使用互斥量进行同步，可以先采用 CAS 操作进行同步，如果 CAS 失败了再改用互斥量进行同步。</p>
+<p>当尝试获取一个锁对象时，如果锁对象标记为001，说明锁对象的锁未锁定（unlocked）状态。此时虚拟机在当前线程的虚拟机栈中创建 Lock Record，然后使用 CAS 操作将对象的 Mark Word 更新为 Lock Record 指针。如果 CAS操作成功了，那么线程就获取了该对象上的锁，并且对象的 Mark Word 的锁标记变为 00，表示该对象处于轻量级锁状态。</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTkyMzAzNTU5LnBuZw?x-oss-process=image/format,png" alt="image-20200711192303559" loading="lazy"></figure>
+<p>如果 CAS 操作失败了，虚拟机首先会检查对象的 Mark Word 是否指向当前线程的虚拟机栈，如果是的话说明当前线程已经拥有了这个锁对象，那就可以直接进入同步块继续执行，否则说明这个锁对象已经被其他线程线程抢占了。</p>
+<p>当竞争线程尝试占用轻量级锁失败多次之后（使用自旋）轻量级锁就会膨胀为重量级锁，重量级线程指针指向竞争线程，竞争线程也会阻塞，等待轻量级线程释放锁后唤醒他。</p>
+<h2 id="10-重量级锁">10. 重量级锁</h2>
+<p>重量级锁的加锁、解锁过程和轻量级锁差不多，区别是：<strong>竞争失败后，线程阻塞，释放锁后，唤醒阻塞的线程，不使用自旋锁，不会那么消耗CPU，所以重量级锁适合用在同步块执行时间长的情况下。</strong></p>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzA4MTYyOTA0NjU2LnBuZw?x-oss-process=image/format,png" alt="image-20200708162904656" loading="lazy"></figure>
+<h2 id="11-reentrantlock">11. ReentrantLock</h2>
+<ul>
+<li>ReentrantLock 是 java.util.concurrent（J.U.C）包中的锁。</li>
+<li>ReenTrantLock的实现是一种自旋锁， 通过循环调用CAS操作来实现加锁。</li>
+<li>它的性能比较好也是因为避免了使线程进入内核态的阻塞状态。想尽办法避免线程进入内核的阻塞状态是我们去分析和理解锁设计的关键钥匙。</li>
+<li>支持公平锁，但是只是相对公平，并不能一定的保证公平，可以避免线程的饥饿现象，即长时间获取不到CPU的执行权，但是如果没有业务需求，不建议使用，因为其会降低性能</li>
+<li>必须手动的释放锁，一般使用try...catch..finally释放锁</li>
+<li>支持可重入</li>
+</ul>
+<h2 id="12-synchronize和reentrantlock">12. synchronize和ReentrantLock</h2>
+<ul>
+<li>Lock基于<code>AQS</code>实现，通过<code>int类型状态</code>和<code>CAS机制</code>来维护锁的获取与释放</li>
+<li>synchronized需要通过<code>monitor</code>，经历一个从用户态到内核态的转变过程，更加耗时</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">比较</th>
+<th style="text-align:center">synchronized</th>
+<th style="text-align:center">Lock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">锁的实现</td>
+<td style="text-align:center">是java内置关键字，在jvm层面</td>
+<td style="text-align:center">是个java类</td>
+</tr>
+<tr>
+<td style="text-align:center">能否判断状态</td>
+<td style="text-align:center">无法判断是否获取锁的状态</td>
+<td style="text-align:center">可以判断是否获取到锁</td>
+</tr>
+<tr>
+<td style="text-align:center">释放锁的方式</td>
+<td style="text-align:center">会自动释放锁</td>
+<td style="text-align:center">需在finally中手工释放锁（unlock()方法释放锁），否则容易造成线程死锁</td>
+</tr>
+<tr>
+<td style="text-align:center">等待可中断</td>
+<td style="text-align:center">线程会一直等待下去</td>
+<td style="text-align:center">如果尝试获取不到锁，线程可以不用一直等待就结束</td>
+</tr>
+<tr>
+<td style="text-align:center">公平锁</td>
+<td style="text-align:center">不支持</td>
+<td style="text-align:center">支持公平锁</td>
+</tr>
+<tr>
+<td style="text-align:center">性能</td>
+<td style="text-align:center">新版本 Java 对 synchronized 进行了很多优化，例如自旋锁等</td>
+<td style="text-align:center">基于<code>AQS</code>实现，性能和synchronize差不多</td>
+</tr>
+</tbody>
+</table>
+<p><strong>使用建议</strong>：</p>
+<p>除非需要使用 ReentrantLock 的高级功能，否则优先使用 synchronized。这是因为 synchronized 是 JVM 实现的一种锁机制，JVM 原生地支持它，而 ReentrantLock 不是所有的 JDK 版本都支持。并且使用 synchronized 不用担心没有释放锁而导致死锁问题，因为 JVM 会确保锁的释放。</p>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-%E7%B1%BB%E9%94%81%E5%92%8C%E5%AF%B9%E8%B1%A1%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB">1. 类锁和对象锁的区别</a></li>
+<li><a href="#2-synchronize%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">2. synchronize底层实现原理</a></li>
+<li><a href="#3-%E4%BB%80%E4%B9%88%E6%98%AF%E9%94%81%E9%87%8D%E5%85%A5">3. 什么是锁重入？</a></li>
+<li><a href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%AF%B9synchronized%E5%97%A4%E4%B9%8B%E4%BB%A5%E9%BC%BB">4. 为什么会对synchronized嗤之以鼻</a></li>
+<li><a href="#4-%E9%94%81%E4%BC%98%E5%8C%96">4. 锁优化</a></li>
+<li><a href="#5-%E8%87%AA%E6%97%8B%E9%94%81%E5%92%8C%E8%87%AA%E9%80%82%E5%BA%94%E8%87%AA%E6%97%8B%E9%94%81">5. 自旋锁和自适应自旋锁</a></li>
+<li><a href="#6-%E9%94%81%E6%B6%88%E9%99%A4">6. 锁消除</a></li>
+<li><a href="#7-%E9%94%81%E7%B2%97%E5%8C%96">7. 锁粗化</a></li>
+<li><a href="#8-%E9%94%81%E8%86%A8%E8%83%80%E5%92%8C%E9%94%81%E9%99%8D%E7%BA%A7">8. 锁膨胀和锁降级</a></li>
+<li><a href="#9-%E5%81%8F%E5%90%91%E9%94%81">9. 偏向锁</a></li>
+<li><a href="#10-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81">10. 轻量级锁</a></li>
+<li><a href="#10-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81">10. 重量级锁</a></li>
+<li><a href="#11-reentrantlock">11. ReentrantLock</a></li>
+<li><a href="#12-synchronize%E5%92%8Creentrantlock">12. synchronize和ReentrantLock</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-12 18:42:22";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-12，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-12 18:42:22";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>31</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

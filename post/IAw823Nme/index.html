@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>RocketMQ监控平台（附网盘链接） | xzzz2020</title>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【面试题】虚拟内存 | xzzz2020</title>
 <link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 <script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
 
-<link rel="canonical" href="https://xzzz2020.github.io/post/rocketmq-jian-kong-ping-tai-fu-wang-pan-lian-jie/" />
+<link rel="canonical" href="https://xzzz2020.github.io/post/IAw823Nme/" />
 </head>
 <body>
 <div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
@@ -23,36 +23,84 @@
 
 <div class="main"><div class="main-inner"><div class="content">
 <article class="post">
-<h2 class="post_title sm_margin"><a>RocketMQ监控平台（附网盘链接）</a></h2>
+<h2 class="post_title sm_margin"><a>【面试题】虚拟内存</a></h2>
 <script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
-<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-06-16</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/RocketMq/" class="tag">RocketMq</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">212字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">1 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-06</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2046字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">7 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
 </section>
 
-<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1592558425469-d86d7a07f311.webp" referrerpolicy="no-referrer">
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1593448709466-19035025d538.webp" referrerpolicy="no-referrer">
 
 <div style="display:flex">
 <div class="md_block" id="md_block">
 <div class="round-shape-one"></div>
-<p><code>RocketMQ</code>有一个对其扩展的开源项目<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>，这个项目中有一个子模块叫<code>rocketmq-console</code>，这个便是管理控制台项目了，先将<a href="https://github.com/apache/rocketmq-externals">incubator-rocketmq-externals</a>拉到本地，因为我们需要自己对<code>rocketmq-console</code>进行编译打包运行。</p>
-<p>在linux环境下，使用<code>nohub java -jar xxxx &amp;</code>  启动，为了防止端口冲突，已经修改其端口为<strong>9999</strong></p>
 <blockquote>
-<p>链接：<a href="https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA">https://pan.baidu.com/s/1_z8UOFyPwOQKIa_VAl5nTA</a><br>
-提取码：jpg0</p>
+<p>本文档为面试精华版，如果是初学者，建议从专栏学习：<a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
 </blockquote>
-<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/2020053110115547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></figure>
-<h3 id="352-下载并编译打包">3.5.2 下载并编译打包</h3>
-<pre><code class="language-sh">git clone https://github.com/apache/rocketmq-externals
-cd rocketmq-console
-mvn clean package -Dmaven.test.skip=true
-</code></pre>
-<p>注意：打包前在<code>rocketmq-console</code>中配置<code>namesrv</code>集群地址：</p>
-<pre><code class="language-sh">rocketmq.config.namesrvAddr=192.168.25.135:9876;192.168.25.138:9876
-</code></pre>
-<p>启动rocketmq-console：</p>
-<pre><code class="language-sh">java -jar rocketmq-console-ng-1.0.0.jar
-</code></pre>
-<p>启动成功后，我们就可以通过浏览器访问<code>http://localhost:8080</code>进入控制台界面了，如下图：<br>
-<img src="https://img-blog.csdnimg.cn/20200531101225351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDQwNjg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></p>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98virtual-memory">1. 什么是虚拟内存(Virtual Memory)?</a></li>
+<li><a href="#2-%E5%B1%80%E9%83%A8%E6%80%A7%E5%8E%9F%E7%90%86">2. 局部性原理</a></li>
+<li><a href="#3-%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8">3. 虚拟存储器</a></li>
+<li><a href="#4-%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%9A%84%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0">4. 虚拟内存的技术实现</a></li>
+<li><a href="#5-%E8%AF%B7%E6%B1%82%E5%88%86%E9%A1%B5%E4%B8%8E%E5%88%86%E9%A1%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%8D%E5%90%8C">5. 请求分页与分页存储管理的不同？</a></li>
+<li><a href="#6-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B">6. 常见的页面置换算法有哪些？</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="1-什么是虚拟内存virtual-memory">1. 什么是虚拟内存(Virtual Memory)?</h2>
+<p>这个在我们平时使用电脑特别是Windows 系统的时候太常见了。很多时候我们使用点开了很多占内存的软件，这些软件占用的内存可能已经远远超出了我们电脑本身具有的物理内存。为什么可以这样呢?正是因为虚拟内存的存在，<strong>通过虚拟内存可以让程序可以拥有超过系统物理内存大小的可用内存空间。</strong></p>
+<p>另外，<strong>虚拟内存为每个进程提供了一个一致的、私有的地址空间，它让每个进程产生了一种自己在独享主存的错觉(每个进程拥有一片连续完整的内存空间)。 这样会更加有效地管理内存并减少出错。</strong></p>
+<p><strong>总结而言就是</strong>：</p>
+<ul>
+<li>可以将内存扩展到外部磁盘存储器上，使得程序可以拥有超过物理内存的的空间大小</li>
+<li>让程序有一种错觉，认为自己获得了连续的可⽤的内存，而实际上这些内存分散在物理内存上甚至存放在外部磁盘上</li>
+</ul>
+<h2 id="2-局部性原理">2. 局部性原理</h2>
+<p>局部性原理是虚拟内存技术的基础，正是因为程序运⾏具有局部性原理，才可以只装⼊部分程序到内存就开始运行。</p>
+<p><strong>局部性原理表现在以下两个方面</strong>：</p>
+<ol>
+<li><strong>时间局部性</strong> ：如果程序中的某条指令⼀旦执⾏，不久以后该指令可能再次执⾏；如果某数据被访问过，不久以后该数据可能再次被访问。产⽣时间局部性的典型原因，是由于在程序中存在着⼤量的循环操作。</li>
+<li><strong>空间局部性</strong> ：⼀旦程序访问了某个存储单元，在不久之后，其附近的存储单元也将被访问，即程序在⼀段时间内所访问的地址，可能集中在⼀定的范围之内，这是因为指令通常是顺序存放、顺序执⾏的，数据也⼀般是以向量、数组、表等形式簇聚存储的。</li>
+</ol>
+<p>时间局部性是通过将近来使⽤的指令和数据保存到⾼速缓存存储器中，并使⽤⾼速缓存的层次结构实现。空间局部性通常是使⽤较⼤的⾼速缓存，并将预取机制集成到⾼速缓存控制逻辑中实现。虚拟内存技术实际上就是建⽴了 “内存⼀外存”的两级存储器的结构，</p>
+<h2 id="3-虚拟存储器">3. 虚拟存储器</h2>
+<p>基于局部性原理，在程序装入时，可以将程序的一部分装入内存，而将其他部分留在外存，就可以启动程序执行。由于外存往往比内存大很多，所以我们运行的软件的内存大小实际上是可以比计算机系统实际的内存大小大的。在程序执行过程中，当所访问的信息不在内存时，由操作系统将所需要的部分调入内存，然后继续执行程序。另一方面，操作系统将内存中暂时不使用的内容换到外存上，从而腾出空间存放将要调入内存的信息。这样，<strong>计算机好像为用户提供了一个比实际内存大的多的存储器一虚拟存储器。</strong></p>
+<p>实际上，我觉得虚拟内存同样<strong>是一种时间换空间的策略</strong>，你用CPU 的计算时间，页的调入调出花费的时间，换来了一个虚拟的更大的空间来支持程序的运行。</p>
+<h2 id="4-虚拟内存的技术实现">4. 虚拟内存的技术实现</h2>
+<p><strong>虚拟内存的实现需要建立在离散分配的内存管理方式的基础上，虚拟内存的实现有以下三种方式</strong>:</p>
+<ol>
+<li><strong>请求分页存储管理</strong>:建立在分页管理之上，<code>为了支持虚拟存储器功能而增加了请求调页功能和页面置换功能。</code>请求分页是目前最常用的一种实现虚拟存储器的方法。请求分页存储管理系统中，在作业开始运行之前，仅装入当前要执行的部分段即可运行。假如在作业运行的过程中发现要访问的页面不在内存，则由处理器通知操作系统按照对应的页面置换算法将相应的页面调入到主存，同时操作系统也可以将暂时不用的页面置换到外存中。</li>
+<li><strong>请求分段存储管理</strong>:建立在分段存储管理之.上，<code>增加了请求调段功能、分段置换功能。</code>请求分段储存管理方式就如同请求分页储存管理方式一样，在作业开始运行之前，仅装入当前要执行的部分段即可运行;在执行过程中，可使用请求调入中断动态装入要访问但又不在内存的程序段;当内存空间已满，而又需要装入新的段时，根据置换功能适当调出某个段，以便腾出空间而装入新的段。</li>
+<li><strong>请求段页式存储管理</strong></li>
+</ol>
+<h2 id="5-请求分页与分页存储管理的不同">5. 请求分页与分页存储管理的不同？</h2>
+<p>根本区别在于，是否要求将程序所需全部的地址空间都装入内存，分页存储是这样要求的，所以无法提供虚拟内存</p>
+<h2 id="6-常见的页面置换算法有哪些">6. 常见的页面置换算法有哪些？</h2>
+<p>在程序运行过程中，如果要访问的页面不在内存中，就发生缺页中断从而将该页调入内存中。此时如果内存已无空闲空间，系统必须从内存中调出一个页面到磁盘对换区中来腾出空间。</p>
+<p>页面置换算法和缓存淘汰策略类似，可以将内存看成磁盘的缓存。在缓存系统中，缓存的大小有限，当有新的缓存到达时，需要淘汰一部分已经存在的缓存，这样才有空间存放新的缓存数据。</p>
+<p>页面置换算法的主要目标是使页面置换频率最低（也可以说缺页率最低）。</p>
+<ul>
+<li>
+<p><strong>最佳置换算法（OPT）</strong>：理论上最好的算法，每次置换选择的将是最久不会被访问的页面</p>
+</li>
+<li>
+<p><strong>最近最久未使用（LRU）</strong>:  记录的是页面上次的访问时间，实现方式有栈或者寄存器两种，对于栈每次置换栈顶元素，每次访问都会将页面置于栈底；寄存器保存的是访问时间，每次置换掉访问时间离现在最晚的的</p>
+</li>
+<li>
+<p><strong>最少使用（LFU）</strong>：该置换算法选择在之前时期使⽤最少的⻚⾯作为淘汰页，记录的是一段时间内的使用频率。</p>
+</li>
+<li>
+<p><strong>先进先出（FIFO）</strong>：每次置换的将是最先进来的页面</p>
+</li>
+<li>
+<p><strong>第二次机会算法</strong> ：由于先进先出可能会将经常使用的页面置换出去，所以增加了一个访问位，当页面被访问时，将该位置成1，当发生缺页中断时，会将该位置成0，会给该页面一次机会。</p>
+</li>
+<li>
+<p><strong>最近未使用（NRU）</strong>：每个页面都有两个状态位：R 与 M，当页面被访问时设置页面的 R=1，当页面被修改时设置 M=1。其中 R 位会定时被清零。当发生缺页中断时，最先置换00，最后置换11的页面，至于中间的两个分类，NRU 优先换出已经被修改的脏页面（R=0，M=1），而不是被频繁使用的干净页面（R=1，M=0）</p>
+</li>
+</ul>
 
 <span id="footnote"></span>
 <div id = "warn"></div>
@@ -60,11 +108,12 @@ mvn clean package -Dmaven.test.skip=true
 <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li>
-<ul>
-<li><a href="#352-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E7%BC%96%E8%AF%91%E6%89%93%E5%8C%85">3.5.2 下载并编译打包</a></li>
-</ul>
-</li>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98virtual-memory">1. 什么是虚拟内存(Virtual Memory)?</a></li>
+<li><a href="#2-%E5%B1%80%E9%83%A8%E6%80%A7%E5%8E%9F%E7%90%86">2. 局部性原理</a></li>
+<li><a href="#3-%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8">3. 虚拟存储器</a></li>
+<li><a href="#4-%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%9A%84%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0">4. 虚拟内存的技术实现</a></li>
+<li><a href="#5-%E8%AF%B7%E6%B1%82%E5%88%86%E9%A1%B5%E4%B8%8E%E5%88%86%E9%A1%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%8D%E5%90%8C">5. 请求分页与分页存储管理的不同？</a></li>
+<li><a href="#6-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B">6. 常见的页面置换算法有哪些？</a></li>
 </ul>
 </li>
 </ul>
@@ -108,7 +157,7 @@ if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop)
 var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
 var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
 var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
-content="本文最后更新于2020-06-16，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-06-16 20:01:12";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+content="本文最后更新于2020-07-06，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-06 15:35:49";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
 </script>
 -->
 
@@ -171,8 +220,8 @@ content="本文最后更新于2020-06-16，已超过 1 年没有更新，涉及�
             wxScale.start(this)
         }
     };
-    content = "本文最后更新于2020-06-16，已超过 1 年没有更新，涉及的内容可能已经失效！";
-    var date1 = "2020-06-16 20:01:12";
+    content = "本文最后更新于2020-07-06，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-06 15:35:49";
     date1 = date1.replace("-", "/");
     var date2 = new Date();
     var date3 = date2.getTime() - new Date(date1).getTime();
