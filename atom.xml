@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-07-12T10:51:40.733Z</updated>
+    <updated>2020-07-26T10:53:56.585Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -11,1737 +11,2411 @@
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
     <entry>
-        <title type="html"><![CDATA[【面试题】ThreadLocal]]></title>
-        <id>https://xzzz2020.github.io/post/aX_Ohmt2H/</id>
-        <link href="https://xzzz2020.github.io/post/aX_Ohmt2H/">
+        <title type="html"><![CDATA[【总结】Redis持久化]]></title>
+        <id>https://xzzz2020.github.io/post/Y_OlIRTju/</id>
+        <link href="https://xzzz2020.github.io/post/Y_OlIRTju/">
         </link>
-        <updated>2020-07-12T10:46:31.000Z</updated>
+        <updated>2020-07-26T10:51:23.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%8C%81%E4%B9%85%E5%8C%96%E7%9A%84%E6%84%8F%E4%B9%89">一、持久化的意义</a></li>
+<li><a href="#%E6%8C%81%E4%B9%85%E5%8C%96%E8%AF%A6%E8%A7%A3">持久化详解</a>
+<ul>
+<li><a href="#1-rdb%E5%92%8Caof%E4%B8%A4%E7%A7%8D%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BB%8B%E7%BB%8D">1、RDB和AOF两种持久化机制的介绍</a></li>
+<li><a href="#2-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BC%98%E7%82%B9">2、RDB持久化机制的优点</a></li>
+<li><a href="#3-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E7%BC%BA%E7%82%B9">3、RDB持久化机制的缺点</a></li>
+<li><a href="#4-aof%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BC%98%E7%82%B9">4、AOF持久化机制的优点</a></li>
+<li><a href="#5-aof%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E7%BC%BA%E7%82%B9">5、AOF持久化机制的缺点</a></li>
+<li><a href="#6-rdb%E5%92%8Caof%E5%88%B0%E5%BA%95%E8%AF%A5%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9">6、RDB和AOF到底该如何选择</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<blockquote>
+<p>主要解决以下问题：</p>
+<ul>
+<li>
+<p>redis的持久化，RDB，AOF，区别，各自的特点是什么，适合什么场景</p>
+</li>
+<li>
+<p>redis的企业级的持久化方案是什么，是用来跟哪些企业级的场景结合起来使用的？？？</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="一-持久化的意义">一、持久化的意义</h2>
+<p>比如你部署了一个redis，作为cache缓存，当然也可以保存一些较为重要的数据</p>
+<p>如果没有持久化的话，redis遇到灾难性故障的时候，就会丢失所有的数据</p>
+<p>如果通过持久化将数据搞一份儿在磁盘上去，然后定期比如说同步和备份到一些云存储服务上去，那么就可以保证数据不丢失全部，还是可以恢复一部分数据回来的</p>
+<h2 id="持久化详解">持久化详解</h2>
+<h3 id="1-rdb和aof两种持久化机制的介绍">1、RDB和AOF两种持久化机制的介绍</h3>
+<p>RDB持久化机制，对redis中的数据执行周期性的持久化</p>
+<p>AOF机制对每条写入命令作为日志，以append-only的模式写入一个日志文件中，在redis重启的时候，可以通过回放AOF日志中的写入指令来重新构建整个数据集</p>
+<p>如果我们想要redis仅仅作为纯内存的缓存来用，那么可以禁止RDB和AOF所有的持久化机制</p>
+<p>通过RDB或AOF，都可以将redis内存中的数据给持久化到磁盘上面来，然后可以将这些数据备份到别的地方去，比如说阿里云，云服务</p>
+<p>如果redis挂了，服务器上的内存和磁盘上的数据都丢了，可以从云服务上拷贝回来之前的数据，放到指定的目录中，然后重新启动redis，redis就会自动根据持久化数据文件中的数据，去恢复内存中的数据，继续对外提供服务</p>
+<p>如果同时使用RDB和AOF两种持久化机制，那么在redis重启的时候，会使用AOF来重新构建数据，因为AOF中的数据更加完整。</p>
+<h3 id="2-rdb持久化机制的优点">2、RDB持久化机制的优点</h3>
+<p>（1）RDB会生成多个数据文件，每个数据文件都代表了某一个时刻中redis的数据，这种多个数据文件的方式，非常适合做冷备，可以将这种完整的数据文件发送到一些远程的安全存储上去，比如说Amazon的S3云服务上去，在国内可以是阿里云的ODPS分布式存储上，以预定好的备份策略来定期备份redis中的数据</p>
+<p>（2）RDB对redis对外提供的读写服务，影响非常小，可以让redis保持高性能，因为redis主进程只需要fork一个子进程，让子进程执行磁盘IO操作来进行RDB持久化即可</p>
+<p>（3）相对于AOF持久化机制来说，直接基于RDB数据文件来重启和恢复redis进程，更加快速</p>
+<h3 id="3-rdb持久化机制的缺点">3、RDB持久化机制的缺点</h3>
+<p>（1）如果想要在redis故障时，尽可能少的丢失数据，那么RDB没有AOF好。一般来说，RDB数据快照文件，都是每隔5分钟，或者更长时间生成一次，这个时候就得接受一旦redis进程宕机，那么会丢失最近5分钟的数据</p>
+<p>（2）RDB每次在fork子进程来执行RDB快照数据文件生成的时候，如果数据文件特别大，可能会导致对客户端提供的服务暂停数毫秒，或者甚至数秒</p>
+<h3 id="4-aof持久化机制的优点">4、AOF持久化机制的优点</h3>
+<p>（1）AOF可以更好的保护数据不丢失，一般AOF会每隔1秒，通过一个后台线程执行一次fsync操作，最多丢失1秒钟的数据</p>
+<p>（2）AOF日志文件以append-only模式写入，所以没有任何磁盘寻址的开销，写入性能非常高，而且文件不容易破损，即使文件尾部破损，也很容易修复</p>
+<p>（3）AOF日志文件即使过大的时候，出现后台重写操作，也不会影响客户端的读写。因为在rewrite log的时候，会对其中的指导进行压缩，创建出一份需要恢复数据的最小日志出来。再创建新日志文件的时候，老的日志文件还是照常写入。当新的merge后的日志文件ready的时候，再交换新老日志文件即可。</p>
+<p>（4）AOF日志文件的命令通过非常可读的方式进行记录，这个特性非常适合做灾难性的误删除的紧急恢复。比如某人不小心用flushall命令清空了所有数据，只要这个时候后台rewrite还没有发生，那么就可以立即拷贝AOF文件，将最后一条flushall命令给删了，然后再将该AOF文件放回去，就可以通过恢复机制，自动恢复所有数据</p>
+<h3 id="5-aof持久化机制的缺点">5、AOF持久化机制的缺点</h3>
+<p>（1）对于同一份数据来说，AOF日志文件通常比RDB数据快照文件更大</p>
+<p>（2）AOF开启后，支持的写QPS会比RDB支持的写QPS低，因为AOF一般会配置成每秒fsync一次日志文件，当然，每秒一次fsync，性能也还是很高的</p>
+<h3 id="6-rdb和aof到底该如何选择">6、RDB和AOF到底该如何选择</h3>
+<p>（1）不要仅仅使用RDB，因为那样会导致你丢失很多数据</p>
+<p>（2）也不要仅仅使用AOF，因为那样有两个问题，第一，你通过AOF做冷备，没有RDB做冷备，来的恢复速度更快; 第二，RDB每次简单粗暴生成数据快照，更加健壮，可以避免AOF这种复杂的备份和恢复机制的bug</p>
+<p>（3）综合使用AOF和RDB两种持久化机制，用AOF来保证数据不丢失，作为数据恢复的第一选择; 用RDB来做不同程度的冷备，在AOF文件都丢失或损坏不可用的时候，还可以使用RDB来进行快速的数据恢复</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】跳跃表]]></title>
+        <id>https://xzzz2020.github.io/post/MiE8tJSYr/</id>
+        <link href="https://xzzz2020.github.io/post/MiE8tJSYr/">
+        </link>
+        <updated>2020-07-26T10:49:55.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%B7%83%E8%A1%A8">一、为什么要使用跳跃表？</a></li>
+<li><a href="#%E4%BA%8C-%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%B3%E8%B7%83%E8%A1%A8">二、什么是跳跃表？</a></li>
+<li><a href="#%E4%B8%89-redis%E5%AE%9E%E7%8E%B0">三、Redis实现</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-为什么要使用跳跃表">一、为什么要使用跳跃表？</h2>
+<p>Zset要支持随机的插入和删除，所以它 <strong>不宜使用数组来实现</strong>，关于排序问题，我们也很容易就想到 <strong>红黑树/ 平衡树</strong> 这样的树形结构，为什么 Redis 不使用这样一些结构呢？</p>
+<ul>
+<li><strong>性能考虑：</strong> 在高并发的情况下，树形结构需要执行一些类似于 rebalance 这样的可能涉及整棵树的操作，相对来说跳跃表的变化只涉及局部</li>
+<li><strong>实现考虑：</strong> 在复杂度与红黑树相同的情况下，跳跃表实现起来更简单，看起来也更加直观；</li>
+<li><strong>大小考虑</strong>：平衡树结构更复杂，占的空间更多，而跳跃表相对简单</li>
+</ul>
+<h2 id="二-什么是跳跃表">二、什么是跳跃表？</h2>
+<p>对于一个普通链表，需要这个链表按照 score 值进行排序，这也就意味着，当我们需要添加新的元素时，我们需要定位到插入点，这样才可以继续保证链表是有序的，通常我们会使用 <strong>二分查找法</strong>，但二分查找是有序数组的，链表没办法进行位置定位，我们除了遍历整个找到第一个比给定数据大的节点为止 <em>（时间复杂度 O(n))</em> 似乎没有更好的办法。</p>
+<p><strong>假如我们每相邻两个节点之间就增加一个指针，让指针指向下下一个节点，如图所示</strong>：</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzc4OTY4OTAtOGNhZTJjMjYxYzk1MGIzMi5wbmc?x-oss-process=image/format,png" alt="img" loading="lazy"></figure>
+<ul>
+<li>这样所有新增的指针连成了一个新的链表，但它包含的数据却只有原来的一半</li>
+</ul>
+<p>现在假设我们想要查找数据时，可以根据这条新的链表查找，如果碰到比待查找数据大的节点时，再回到原来的链表中进行查找，比如，我们想要查找 7，查找的路径则是沿着下图中标注出的红色指针所指向的方向进行的：</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2JiZjUwYTNlLWYxM2UtNDlmZi04MmRmLTM0OGRiZjNiMTE2NS5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ul>
+<li>通过新增加的指针查找，我们不再需要与链表上的每一个节点逐一进行比较，这样改进之后需要比较的节点数大概只有原来的一半</li>
+</ul>
+<p>利用同样的方式，我们可以在新产生的链表上，继续为每两个相邻的节点增加一个指针，从而产生第三层链表：</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2EyM2NjZTQ5LTEyYjgtNDkwMC1hNjhhLTEwM2E3OTEzNGNhMi5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ul>
+<li>在这个新的三层链表结构中，我们试着 <strong>查找 13</strong>，那么沿着最上层链表首先比较的是 11，发现 11 比 13 小，于是我们就知道只需要到 11 后面继续查找，<strong>从而一下子跳过了 11 前面的所有节点。</strong></li>
+</ul>
+<p>可以想象，当链表足够长，这样的多层链表结构可以帮助我们跳过很多下层节点，从而加快查找的效率，这样查找过程就非常类似于一个二分查找，使得查找的时间复杂度可以降低到 O(logn)。</p>
+<p>但是，这种方法在插入数据的时候有很大的问题。新插入一个节点之后，就会打乱上下相邻两层链表上节点个数严格的 2:1 的对应关系。如果要维持这种对应关系，就必须把新插入的节点后面的所有节点 （也包括新插入的节点） 重新进行调整，这会让时间复杂度重新蜕化成 O(n)。删除数据也有同样的问题。</p>
+<p>为了避免这一问题，不要求上下相邻两层链表之间的节点个数有严格的对应关系，而是 <strong>为每个节点随机出一个层数(level)</strong>。比如，一个节点随机出的层数是 3，那么就把它链入到第 1 层到第 3 层这三层链表中。</p>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzdiODRlYTJiLWM1OGItNDZhMi1hYzA1LTUwMTRkZjdkMGM4MS5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<p>从上面的创建和插入的过程中可以看出，每一个节点的层数（level）是随机出来的，而且新插入一个节点并不会影响到其他节点的层数，因此，<strong>插入操作只需要修改节点前后的指针，而不需要对多个节点都进行调整</strong>，这就降低了插入操作的复杂度。</p>
+<p>现在我们假设从我们刚才创建的这个结构中查找 23 这个不存在的数，那么查找路径会如下图：</p>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzVjYjM2YTY4LWE1ZTEtNDgzYi1hYzY5LWUwNWYzOTE0ZDA4NS5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<h2 id="三-redis实现">三、Redis实现</h2>
+<ul>
+<li><strong>随机层数</strong>：对于每一个新插入的节点，都需要调用一个随机算法给它分配一个合理的层数，Redis 跳跃表默认允许最大的层数是 32</li>
+<li><strong>插入节点实现</strong>：1.找到当前我需要插入的位置 ，其中包括相同 score 时的处理，如果值相同，则比较value值，是一个字符串的比较；2.创建新节点，调整前后的指针指向，完成插入</li>
+<li><strong>元素排名的实现</strong>：跳跃表本身是有序的，Redis 在 skiplist 的 forward 指针上进行了优化，给每一个 forward 指针都增加了 <code>span</code> 属性，用来表示从前一个节点沿着当前层的 forward 指针跳到当前这个节点中间会跳过多少个节点。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】网络原理]]></title>
+        <id>https://xzzz2020.github.io/post/SfR2cO5PD/</id>
+        <link href="https://xzzz2020.github.io/post/SfR2cO5PD/">
+        </link>
+        <updated>2020-07-26T10:47:15.000Z</updated>
         <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E7%AE%80%E4%BB%8B">简介</a></li>
-<li><a href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E9%97%AE%E9%A2%98">内存泄漏问题</a></li>
+<li><a href="#%E4%B8%80-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bosi%E5%92%8Ctcpip%E7%BB%93%E6%9E%84%E5%92%8C%E5%8A%9F%E8%83%BD%E5%88%86%E5%88%AB%E7%94%A8%E5%88%B0%E5%93%AA%E4%BA%9B%E5%8D%8F%E8%AE%AE">一、简单介绍一下OSI和TCP/IP结构和功能，分别用到哪些协议？</a>
+<ul>
+<li><a href="#1-%E5%BA%94%E7%94%A8%E5%B1%82">1. 应用层</a></li>
+<li><a href="#2-%E8%BF%90%E8%BE%93%E5%B1%82">2. 运输层</a></li>
+<li><a href="#3-%E7%BD%91%E7%BB%9C%E5%B1%82">3. 网络层</a></li>
+<li><a href="#4-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82">4. 数据链路层</a></li>
+<li><a href="#5-%E7%89%A9%E7%90%86%E5%B1%82">5. 物理层</a></li>
 </ul>
 </li>
-</ul>
-</p>
-<h2 id="简介">简介</h2>
+<li><a href="#%E4%BA%8C-tcp-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B">二、TCP 三次握手和四次挥手</a>
 <ul>
-<li>
-<p>threadlocal在线程间是隔离的，不共享，用于存储线程的变量</p>
-</li>
-<li>
-<p>即使多个线程使用同一个ThreadLocal，也只能访问自己的属性</p>
-</li>
-</ul>
-<p>ThreadLocal是使用的Key/Value的结构实现，内部有一个ThreadLocalMap</p>
-<h2 id="内存泄漏问题">内存泄漏问题</h2>
-<p>ThreadLocal 从理论上讲并不是用来解决多线程并发问题的，因为根本不存在多线程竞争。</p>
-<p>在一些场景尤其是使用线程池)下，线程不会关闭，由于 ThreadLocal.ThreadLocalMap 的底层数据结构导致 ThreadLocal中key可以被回收，但是这些key为null的Entry的value就会一直存在一条强引用链，会造成内存泄漏的情况，应该尽可能在每次使用 ThreadLocal 后手动调用 remove()，以避免出现 ThreadLocal 经典的内存泄漏甚至是造成自身业务混乱的风险。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【面试题】JUC并发包]]></title>
-        <id>https://xzzz2020.github.io/post/2imuXDnFS/</id>
-        <link href="https://xzzz2020.github.io/post/2imuXDnFS/">
-        </link>
-        <updated>2020-07-12T10:45:03.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
-</blockquote>
-<blockquote>
-<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#1-countdownlatch">1. CountDownLatch</a></li>
-<li><a href="#2-cyclicbarrier">2. CyclicBarrier</a></li>
-<li><a href="#3-semaphore">3. Semaphore</a></li>
-<li><a href="#4-futuretask">4. FutureTask</a></li>
-<li><a href="#5-forkjoin">5. ForkJoin</a>
-<ul>
-<li><a href="#forkjoinpool">ForkJoinPool</a></li>
-<li><a href="#forkjointask">ForkJoinTask</a></li>
+<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B">1. 为什么要三次握手？</a></li>
+<li><a href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B">2. 为什么要四次挥手？</a></li>
 </ul>
 </li>
-<li><a href="#6-exchange">6. Exchange</a></li>
-<li><a href="#7-condition">7. Condition</a></li>
-<li><a href="#8-stampedlock">8. StampedLock</a></li>
-<li><a href="#9-reentrantreadwritelock%E8%AF%BB%E5%86%99%E9%94%81">9. ReentrantReadWriteLock读写锁</a></li>
-<li><a href="#10-%E9%94%81%E7%9A%84%E4%BD%BF%E7%94%A8%E6%8E%A8%E8%8D%90">10. 锁的使用推荐</a>
+<li><a href="#%E4%B8%89-tcp%E5%92%8Cudp%E7%9A%84%E5%8C%BA%E5%88%AB">三、TCP和UDP的区别</a></li>
+<li><a href="#%E5%9B%9B-tcp-%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93">四、TCP 协议如何保证可靠传输</a>
 <ul>
-<li><a href="#%E6%AF%94%E8%BE%83">比较</a></li>
-<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li><a href="#41-%E8%BF%9E%E7%BB%ADarq%E5%8D%8F%E8%AE%AE">4.1 连续ARQ协议</a></li>
+<li><a href="#42-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6">4.2  滑动窗口和流量控制</a></li>
+<li><a href="#43-%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6">4.3 拥塞控制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BE%93%E5%85%A5url%E5%9C%B0%E5%9D%80-%E6%98%BE%E7%A4%BA%E4%B8%BB%E9%A1%B5%E7%9A%84%E8%BF%87%E7%A8%8B">五、 在浏览器中输入url地址 -&gt;&gt; 显示主页的过程</a></li>
+<li><a href="#%E5%85%AD-%E7%8A%B6%E6%80%81%E7%A0%81">六、状态码</a></li>
+<li><a href="#%E4%B9%9D-%E5%90%84%E5%8D%8F%E8%AE%AE%E4%B8%8Ehttp%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%85%B3%E7%B3%BB">九、各协议与HTTP协议的关系</a></li>
+<li><a href="#%E5%8D%81-http%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5">十、HTTP长连接和短连接</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-cookie%E7%9A%84%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%E5%92%8Csession%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">十一、Cookie的作用是什么?和Session有什么区别？</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-http-10%E5%92%8Chttp-11%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">十二、HTTP 1.0和HTTP 1.1的主要区别是什么?</a></li>
+<li><a href="#%E5%8D%81%E4%B8%89-uri%E5%92%8Curl%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">十三、URI和URL的区别是什么?</a></li>
+<li><a href="#%E5%8D%81%E5%9B%9B-http-%E5%92%8C-https-%E7%9A%84%E5%8C%BA%E5%88%AB">十四、HTTP 和 HTTPS 的区别？</a></li>
+<li><a href="#%E5%8D%81%E4%BA%94-http20">十五、HTTP/2.0</a>
+<ul>
+<li><a href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E5%B8%A7%E5%B1%82">二进制分帧层</a></li>
+<li><a href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%8E%A8%E9%80%81">服务端推送</a></li>
+<li><a href="#%E9%A6%96%E9%83%A8%E5%8E%8B%E7%BC%A9">首部压缩</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E5%85%AD-get%E5%92%8Cpost%E7%9A%84%E6%AF%94%E8%BE%83">十六、GET和POST的比较</a></li>
+<li><a href="#%E5%8D%81%E4%B8%83-socket%E7%AE%80%E4%BB%8B">十七、Socket简介</a>
+<ul>
+<li><a href="#1-socket%E7%9A%84%E9%80%9A%E8%AE%AF%E6%B5%81%E7%A8%8B">1. Socket的通讯流程</a></li>
+<li><a href="#2-%E5%88%A9%E7%94%A8java%E5%AE%9E%E7%8E%B0socket%E5%AE%9E%E7%8E%B0tcp%E5%92%8Cudp">2. 利用Java实现Socket实现TCP和UDP</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </p>
-<h2 id="1-countdownlatch">1. CountDownLatch</h2>
+<h2 id="一-简单介绍一下osi和tcpip结构和功能分别用到哪些协议">一、简单介绍一下OSI和TCP/IP结构和功能，分别用到哪些协议？</h2>
+<p>一般我们采用折中的思想，将计算系网络分为五层：</p>
+<ul>
+<li><strong>应用层</strong></li>
+<li><strong>运输层</strong></li>
+<li><strong>网络层</strong></li>
+<li><strong>数据链路层</strong></li>
+<li><strong>物理层</strong></li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTMyMDQyOTk0LnBuZw?x-oss-process=image/format,png" alt="image-20200722132042994" loading="lazy"></figure>
+<h3 id="1-应用层">1. 应用层</h3>
+<ul>
+<li>**应用层(application-layer）的任务是通过应用进程间的交互来完成特定网络应用。**应用层协议定义的是应用进程（进程：主机中正在运行的程序）间的通信和交互的规则。</li>
+</ul>
+<p><strong>常用的协议有</strong>：</p>
+<ul>
+<li>域名系统DNS协议</li>
+<li>支持万维网应用的 <strong>HTTP协议</strong></li>
+<li>支持电子邮件的 <strong>SMTP协议</strong></li>
+</ul>
+<p><strong>简单介绍一下DNS协议</strong></p>
+<ul>
+<li>负责将IP地址和域名相互映射，这样人们不需要记住复杂的IP地址，而只需要记住方便记忆的域名即可</li>
+</ul>
+<p><strong>简单介绍一下Http协议</strong></p>
 <ul>
 <li>
-<p>用来控制一个线程等待多个线程。</p>
+<p>所有的 WWW（万维网） 文件都必须遵守这个标准。设计 HTTP 最初的目的是为了提供一种发布和接收 HTML 页面的方法。</p>
 </li>
 <li>
-<p>维护了一个计数器 cnt，每次调用 countDown() 方法会让计数器的值减 1，减到 0 的时候，那些因为调用 await() 方法而在等待的线程就会被唤醒</p>
-</li>
-<li>
-<p>计数器的初始值是<strong>线程的数量或者任务的数量</strong></p>
-</li>
-<li>
-<p>每当一个线程执行完毕后，计数器的值就-1，当计数器的值为0时，表示所有线程都执行完毕，然后在闭锁上等待的线程就可以恢复工作了。</p>
-</li>
-<li>
-<p>通过CAS成功置为0的那个线程将会同时承担起唤醒队列中第一个节点线程的任务</p>
+<p>支持客户/服务器模式，客户端可以发送请求，服务器会相应请求并返回数据</p>
 </li>
 </ul>
-<p><strong>不足</strong>：CountDownLatch是一次性的，计数器的值只能在构造方法中初始化一次，之后没有任何机制再次对其设置值，当CountDownLatch使用完毕后，它不能再次被使用。</p>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTUzNDI3NjQ2LnBuZw?x-oss-process=image/format,png" alt="image-20200711153427646" loading="lazy"></figure>
-<p><strong>文章地址</strong>：<a href="https://blog.csdn.net/qq_43040688/article/details/105935307">https://blog.csdn.net/qq_43040688/article/details/105935307</a></p>
-<h2 id="2-cyclicbarrier">2. CyclicBarrier</h2>
+<h3 id="2-运输层">2. 运输层</h3>
+<ul>
+<li><strong>运输层(transport layer)的主要任务就是负责向两台主机进程之间的通信提供通用的数据传输服务</strong>。</li>
+</ul>
+<p><strong>常用协议</strong>：</p>
+<ul>
+<li><strong>传输控制协议 TCP</strong>：面向连接的、可靠的</li>
+<li><strong>用户数据协议 UDP</strong>：面向无连接的、不可靠的</li>
+</ul>
+<h3 id="3-网络层">3. 网络层</h3>
+<ul>
+<li><strong>网络层的任务就是选择合适的网间路由和交换结点， 确保数据及时传送。</strong></li>
+</ul>
+<p><strong>常用协议</strong>：</p>
+<ul>
+<li><strong>IP协议</strong></li>
+</ul>
+<h3 id="4-数据链路层">4. 数据链路层</h3>
+<ul>
+<li><strong>两台主机之间的数据传输，总是在一段一段的链路上传送的，这就需要使用专门的链路层的协议。</strong></li>
+</ul>
+<h3 id="5-物理层">5. 物理层</h3>
+<ul>
+<li><strong>在物理层上所传送的数据单位是比特。 物理层(physical layer)的作用是实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异。</strong></li>
+</ul>
+<h2 id="二-tcp-三次握手和四次挥手">二、TCP 三次握手和四次挥手</h2>
+<h3 id="1-为什么要三次握手">1. 为什么要三次握手？</h3>
 <ul>
 <li>
-<p>用来控制多个线程互相等待，只有当多个线程都到达时，这些线程才会继续执行。</p>
+<p><strong>三次握手的目的是建立可靠的通信信道，说到通讯，简单来说就是数据的发送与接收，而三次握手最主要的目的就是双方确认自己与对方的发送与接收是正常的。</strong></p>
 </li>
 <li>
-<p>和 CountdownLatch 相似，都是通过维护计数器来实现的。线程执行 await() 方法之后计数器会减 1，并进行等待，直到计数器为 0，所有调用 await() 方法而在等待的线程才能继续执行。</p>
+<p>第一次握手:建立连接时，客户端发送SYN包(syn=j)到服务器，并进入SYN_ SEND状态,等待服务器确认;</p>
 </li>
-<li></li>
 <li>
-<p>CyclicBarrier 有两个构造函数，其中 parties 指示计数器的初始值，barrierAction 在所有线程都到达屏障的时候会执行一次。</p>
+<p>第二次握手:服务器收到SYN 包,必须确认客户的SYN(ack=j+1) ,同时自己也发送一个SYN包(syn=k) ,即<br>
+SYN+ACK包，此时服务器进入SYN_RECV状态:</p>
+</li>
+<li>
+<p>第三次握手:客户端收到服务器的SYN+ACK包,向服务器发送确认包ACK(ack=k+1),此包发送完毕,客户端和服务器进入ESTABLISHED状态,完成三次握手。</p>
 </li>
 </ul>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTUzNDQ0NDMwLnBuZw?x-oss-process=image/format,png" alt="image-20200711153444430" loading="lazy"></figure>
-<p><strong>CyclicBarrier 和 CountdownLatch 的区别？</strong></p>
-<ul>
-<li>CyclicBarrier 的计数器通过调用 reset() 方法可以循环使用，所以它才叫做循环屏障，而CountdownLatch 是一次性的。</li>
-<li>CountdownLatch 用于一个线程等待一组线程执行完任务  ，CyclicBarrier 用于一组线程互相等待</li>
-</ul>
-<h2 id="3-semaphore">3. Semaphore</h2>
-<p>Semaphore 类似于操作系统中的信号量，可以控制对互斥资源的访问线程数。</p>
-<p>以下代码模拟了对某个服务的并发请求，每次只能有 3 个客户端同时访问，请求总数为 10。</p>
-<pre><code class="language-java">public class SemaphoreExample {
-    public static void main(String[] args) {
-        final int clientCount = 3;
-        final int totalRequestCount = 10;
-        Semaphore semaphore = new Semaphore(clientCount);
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        for (int i = 0; i &lt; totalRequestCount; i++) {
-            executorService.execute(()-&gt;{
-                try {
-                    semaphore.acquire();
-                    System.out.print(semaphore.availablePermits() + &quot; &quot;);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    semaphore.release();
-                }
-            });
-        } 
-        executorService.shutdown();
-    }
-}
-</code></pre>
-<p><strong>实现循环打印？</strong></p>
-<p>下面的例子有ABC三个线程。A负责输出1 4 7 B负责输出2 5 8 C负责3 6 9。要求通过信号量机制 控制这三个线程按照顺序输出。</p>
-<p><strong>思路就是考虑前驱图，利用信号量实现</strong>：</p>
-<pre><code class="language-java">public class Test {
-    public static void main(String[] args) {
-        new SemaphoreTest().print();
-    }
-}
-
-
-class SemaphoreTest {
-    private int i = 1;
-    private Semaphore s1 = new Semaphore(1);
-    private Semaphore s2 = new Semaphore(0);
-    private Semaphore s3 = new Semaphore(0);
-    private ExecutorService es = Executors.newFixedThreadPool(3);
-    public void print(){
-        es.execute(()-&gt;{
-            while (i&lt;7){
-                try {
-                    s1.acquire();
-                    System.out.println(i);
-                    i++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
-                    s2.release();
-                }
-            }
-        });
-        es.execute(()-&gt;{
-            while (i&lt;8){
-                try {
-                    s2.acquire();
-                    System.out.println(i);
-                    i++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
-                    s3.release();
-                }
-            }
-        });
-        es.execute(()-&gt;{
-            while (i&lt;9){
-                try {
-                    s3.acquire();
-                    System.out.println(i);
-                    i++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
-                    s1.release();
-                }
-            }
-        });
-        es.shutdown();
-    }
-}
-</code></pre>
-<p>或者利用两个线程通过加锁，输出完就唤醒，自己等待，来实现循环打印</p>
-<h2 id="4-futuretask">4. FutureTask</h2>
-<p>在介绍 Callable 时我们知道它可以有返回值，返回值通过 Future 进行封装。FutureTask 实现了 RunnableFuture 接口，该接口继承自 Runnable 和 Future 接口，<strong>这使得 FutureTask 既可以当做一个任务执行，也可以有返回值。</strong></p>
-<pre><code class="language-java">public class FutureTaskExample {
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;Integer&gt;(new Callable&lt;Integer&gt;() {
-            @Override
-            public Integer call() throws Exception {
-                int result = 0;for (int i = 0; i &lt; 100; i++) {
-                    Thread.sleep(10);
-                    result += i;
-                } 
-                return result;
-            }
-        });
-        Thread computeThread = new Thread(futureTask);
-        computeThread.start();
-        Thread otherThread = new Thread(() -&gt; {
-            System.out.println(&quot;other task is running...&quot;);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        otherThread.start();
-        System.out.println(futureTask.get());//获取返回值
-    }
-}
-</code></pre>
-<h2 id="5-forkjoin">5. ForkJoin</h2>
-<p>一个用于并行执行任务的框架， 是一个把大任务分割成若干个小任务，最终汇总每个小任务结果后得到大任务结果的框架，主要用于并行计算中</p>
-<p><strong>思想</strong>：分治，fork分解任务，join收集数据</p>
-<p>Java标准库提供的<code>java.util.Arrays.parallelSort(array)</code>可以进行并行排序，它的原理就是内部通过Fork/Join对大数组分拆进行并行排序，在多核CPU上就可以大大提高排序的速度。</p>
-<h3 id="forkjoinpool">ForkJoinPool</h3>
-<p>ForkJoin 使用 ForkJoinPool 来启动，它是一个特殊的线程池，线程数量取决于 CPU 核数</p>
-<p>ForkJoinPool 实现了工作窃取算法来提高 CPU 的利用率。每个线程都维护了一个双端队列，用来存储需要执行的任务。工作窃取算法允许空闲的线程从其它线程的双端队列中窃取一个任务来执行。窃取的任务必须是最晚的任务，避免和队列所属线程发生竞争。例如下图中，Thread2 从 Thread1 的队列中拿出最晚的 Task1 任务，Thread1 会拿出Task2 来执行，这样就避免发生竞争。但是如果队列中只有一个任务时还是会发生竞争。</p>
-<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTYyNzUyMjE4LnBuZw?x-oss-process=image/format,png" alt="image-20200711162752218" loading="lazy"></figure>
-<h3 id="forkjointask">ForkJoinTask</h3>
-<p>ForkJoinTask就是ForkJoinPool里面的每一个任务。他主要有两个子类：<code>RecursiveAction</code>和<code>RecursiveTask</code>。然后通过fork()方法去分配任务执行任务，通过join()方法汇总任务结果，</p>
-<h2 id="6-exchange">6. Exchange</h2>
-<ul>
-<li>用于两个工作线程之间交换数据的封装工具类</li>
-<li>简单说就是一个线程在完成一定的事务后想与另一个线程交换数据，则<strong>第一个先拿出数据的线程会一直等待第二个线程，直到第二个线程拿着数据到来时才能彼此交换对应数据</strong></li>
-<li><strong>如果交换的是引用类型，发送的对象和接收的对象是同一个对象，可能会用严重的线程安全问题</strong></li>
-</ul>
-<h2 id="7-condition">7. Condition</h2>
-<ul>
-<li>提供了类似Object的监视器方法，<strong>与Lock配合可以实现等待/通知模式</strong>，但是这两者在使用方式以及功能特性上还是有差别的，等待是用await，通知是signal或者signalAll。</li>
-<li>await和Object.wait()类似，都会自动的释放锁，并且在唤起后需要重新获得锁</li>
-<li>想要await操作必须需要获得到锁</li>
-</ul>
-<p><strong>wait和await的区别？</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">wait</th>
-<th style="text-align:center">await</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">是配合synchronized关键字的</td>
-<td style="text-align:center">是配合Lock锁的</td>
-</tr>
-<tr>
-<td style="text-align:center">等待队列的唤醒受到JVM的影响，是随机的唤醒</td>
-<td style="text-align:center">等待队列FIFO的，先阻塞先唤醒</td>
-</tr>
-<tr>
-<td style="text-align:center">不可以被打断</td>
-<td style="text-align:center">可以被打断</td>
-</tr>
-<tr>
-<td style="text-align:center">等待队列只有一个</td>
-<td style="text-align:center">每一个Condition都具有一个等待队列，可以创建多个Condition</td>
-</tr>
-</tbody>
-</table>
-<h2 id="8-stampedlock">8. StampedLock</h2>
-<p>如果我们深入分析ReadWriteLock，会发现它有个潜在的问题：<font color="red">如果有线程正在读，写线程需要等待读线程释放锁后才能获取写锁，即读的过程中不允许写，这是一种悲观的读锁。</p>
-<p>要进一步提升并发执行效率，Java 8引入了新的读写锁：StampedLock。</p>
-<p><strong>出现的问题</strong>：如果有999个需要读锁，1个需要写锁，此时，写的线程，很难得到执行。</p>
-<p>StampedLock和ReadWriteLock相比，改进之处在于：<code>读的过程中也允许获取写锁后写入</code>！这样一来，我们读的数据就可能不一致，所以，<strong>需要一点额外的代码来判断读的过程中是否有写入，这种读锁是一种乐观锁</strong>。</p>
-<p><strong>乐观锁的意思就是乐观地估计读的过程中大概率不会有写入，因此被称为乐观锁。反过来，悲观锁则是读的过程中拒绝有写入，也就是写入必须等待。</strong></p>
-<p>显然乐观锁的并发效率更高，但一旦有小概率的写入导致读取的数据不一致，需要能检测出来，再读一遍就行。</p>
+<p><strong>目的是</strong>：为了初始化Sequence Number的初始值，同时保证建立可靠的连接</p>
 <blockquote>
-<p>这是个不可重入锁。</p>
+<p>SYN和ACK中的Sequence Number初始化使用了随机值，而每个包都有个序号，超时重传机制根据这个序号来判断确认收到了是哪个包。在三次握手的时候，告诉了对方初始化的序号是多少，这样就可以根据序号对应接下来哪些包收到了。</p>
 </blockquote>
-<pre><code class="language-java">public class Point {
-
-
-    private final StampedLock stampedLock = new StampedLock();
-
-    private double x;
-    private double y;
-
-    public void move(double deltaX, double deltaY) {
-        long stamp = stampedLock.writeLock(); // 获取写锁
-        try {
-            x += deltaX;
-            y += deltaY;
-        } finally {
-            stampedLock.unlockWrite(stamp); // 释放写锁
-        }
-    }
-
-    public double distanceFromOrigin() {
-        long stamp = stampedLock.tryOptimisticRead(); // 获得一个乐观读锁
-        // 注意下面两行代码不是原子操作
-        // 假设x,y = (100,200)
-        double currentX = x;
-        // 此处已读取到x=100，但x,y可能被写线程修改为(300,400)
-        double currentY = y;
-        // 此处已读取到y，如果没有写入，读取是正确的(100,200)
-        // 如果有写入，读取是错误的(100,400)
-        if (!stampedLock.validate(stamp)) { // 检查乐观读锁后是否有其他写锁发生
-            stamp = stampedLock.readLock(); // 获取一个悲观读锁
-            try {
-                currentX = x;
-                currentY = y;
-            } finally {
-                stampedLock.unlockRead(stamp); // 释放悲观读锁
-            }
-        }
-        return Math.sqrt(currentX * currentX + currentY * currentY);
-    }
-}
-</code></pre>
-<h2 id="9-reentrantreadwritelock读写锁">9. ReentrantReadWriteLock读写锁</h2>
-<blockquote>
-<p>一般情况下都不会使用</p>
-</blockquote>
+<p><strong>首次握手的隐患---SYN超时</strong></p>
 <ul>
-<li>读锁和写锁是分离的</li>
-<li>一个线程读的时候允许其他线程也可以读</li>
-<li>一个线程写的时候不允许其他线程写</li>
-<li>读和写也不允许同时进行</li>
+<li>Server收到Client的SYN ,回复SYN-ACK的时候未收到ACK确认</li>
+<li>Server不断重试直至超时, Linux默认等待63秒才断开连接</li>
+<li>可能会遭到SYN Flood攻击，即恶意用户发送一个SYN后，就下线，让服务端等到63秒，最后导致SYN等待队列被占满，无法和正常的用户建立连接</li>
 </ul>
-<p><strong>出现的问题是</strong>：可能会造成饥饿现象，写的线程迟迟无法执行任务</p>
-<h2 id="10-锁的使用推荐">10. 锁的使用推荐</h2>
-<blockquote>
-<p>原文：<a href="https://blog.csdn.net/qq_43040688/article/details/106032189">https://blog.csdn.net/qq_43040688/article/details/106032189</a></p>
-</blockquote>
-<h3 id="比较">比较</h3>
-<table>
-<thead>
-<tr>
-<th>synchronized</th>
-<th>StampedLock</th>
-<th>Lock</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>是JVM的的内置锁，每个JDK版本都会优化</td>
-<td>是一个Java类，可以更好的扩展</td>
-<td>是一个Java类，可以更好的扩展</td>
-</tr>
-<tr>
-<td>都是悲观锁</td>
-<td>提供了写的乐观锁</td>
-<td>都是悲观锁，但是提供了自旋锁，或者不阻塞的获取锁</td>
-</tr>
-<tr>
-<td>性能一般，因为有一个从用户态到内核态的过程</td>
-<td>性能最好，可以代替读写锁</td>
-<td>性能十分不稳定，在复杂的读写环境下，性能十分差</td>
-</tr>
-<tr>
-<td>不具有公平锁</td>
-<td>不具有公平锁</td>
-<td>具有公平锁</td>
-</tr>
-<tr>
-<td>锁会自动释放</td>
-<td>锁需要手动释放</td>
-<td>锁需要手动释放</td>
-</tr>
-</tbody>
-</table>
-<h3 id="总结">总结</h3>
+<p><strong>针对SYN Flood的防护措施</strong></p>
 <ul>
-<li><code>StampedLock</code>是性能最好的，可以<font color="gold">胜任复杂的读写多线程环境</li>
-<li>令人惊奇的是<code>synchronized</code> ，<font color="gold">由于是内置锁，每个JDK版本都会优化，尤其在复杂的读写多线程情况下，表现依然很优秀。</li>
-<li><code>Lock</code>虽然提供了读写锁，<font color="gold">但是性能特别差；而<code>ReentrantLock</code>性能十分好，同时功能丰富</li>
+<li>SYN队列满后,通过tcp_syncookies参数回发SYN Cookie</li>
+<li>若为正常连接则Client会回发SYN Cookie ,直接根据cookie建立连接，不会因为队列满而无法建立连接；如果是恶意用户，则不会发送Cookie</li>
 </ul>
-<p><strong>个人推荐</strong>：如果时读写环境，推荐使用<code>StampedLock</code>；如果是正常的加锁，推荐使用<code>synchronized</code>；如果需要对锁有更多的控制，推荐使用<code>ReentrantLock</code></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【面试题】Java内存模型]]></title>
-        <id>https://xzzz2020.github.io/post/vKnc9DHsO/</id>
-        <link href="https://xzzz2020.github.io/post/vKnc9DHsO/">
-        </link>
-        <updated>2020-07-12T10:43:53.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
-</blockquote>
-<blockquote>
-<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
+<p><strong>建立连接后, Client出现故障怎么办？</strong></p>
+<ul>
+<li><strong>保护机制</strong>：向对方发送保活探测报文,如果未收到响应则继续发送，尝试次数达到保活探测数仍未收到响应则中断连接</li>
+</ul>
+<p><strong>下面是三次握手的含义</strong>：</p>
+<ul>
 <li>
-<ul>
-<li><a href="#%E4%B8%80-java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8Bjmm">一、Java内存模型JMM</a></li>
-<li><a href="#%E4%BA%8C-%E5%86%85%E5%AD%98%E9%97%B4%E4%BA%A4%E4%BA%92%E6%93%8D%E4%BD%9C">二、内存间交互操作</a></li>
-<li><a href="#%E4%B8%89-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%89%E5%A4%A7%E7%89%B9%E6%80%A7">三、内存模型三大特性</a>
-<ul>
-<li><a href="#%E5%8E%9F%E5%AD%90%E6%80%A7">原子性</a></li>
-<li><a href="#%E5%8F%AF%E8%A7%81%E6%80%A7">可见性</a></li>
-<li><a href="#%E6%9C%89%E5%BA%8F%E6%80%A7">有序性</a></li>
-</ul>
+<p>第一次握手：Client 什么都不能确认；Server 确认了对方发送正常，自己接收正常</p>
 </li>
-<li><a href="#%E5%9B%9B-%E9%87%8D%E6%8E%92%E5%BA%8F">四、重排序</a></li>
-<li><a href="#%E4%BA%94-happens-before%E5%8E%9F%E5%88%99">五、happens-before原则</a></li>
-<li><a href="#%E5%85%AD-volatitle">六、volatitle</a>
-<ul>
-<li><a href="#1-volatitle%E5%8F%98%E9%87%8F%E4%B8%BA%E4%BD%95%E7%AB%8B%E5%8D%B3%E5%8F%AF%E8%A7%81">1. volatitle变量为何立即可见？</a></li>
-<li><a href="#2-%E5%A6%82%E4%BD%95%E7%A6%81%E6%AD%A2%E9%87%8D%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96">2. 如何禁止重排序优化？</a></li>
-<li><a href="#3-%E5%92%8Csynchronized%E7%9A%84%E5%8C%BA%E5%88%AB">3. 和synchronized的区别？</a></li>
-</ul>
+<li>
+<p>第二次握手：Client 确认了：自己发送、接收正常，对方发送、接收正常；Server 确认了：对方发送正常，自己接收正常</p>
 </li>
-<li><a href="#%E4%B8%83-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F">七、单例模式</a>
-<ul>
-<li><a href="#1-%E9%A5%BF%E6%B1%89%E5%BC%8F">1. 饿汉式</a></li>
-<li><a href="#2-%E6%99%AE%E9%80%9A%E7%9A%84%E6%87%92%E6%B1%89%E5%BC%8F">2. <strong>普通的懒汉式</strong></a></li>
-<li><a href="#3-%E5%90%8C%E6%AD%A5%E6%96%B9%E6%B3%95%E7%9A%84%E6%87%92%E6%B1%89%E5%BC%8F">3. 同步方法的懒汉式</a></li>
-<li><a href="#4-%E4%BA%8C%E6%AC%A1%E6%A3%80%E6%9F%A5">4. 二次检查</a></li>
-<li><a href="#5-holder%E6%96%B9%E5%BC%8F">5. Holder方式</a></li>
-<li><a href="#6-%E6%9E%9A%E4%B8%BE">6. 枚举</a></li>
-</ul>
+<li>
+<p>第三次握手：Client 确认了：自己发送、接收正常，对方发送、接收正常；Server 确认了：自己发送、接收正常，对方发送、接收正常</p>
 </li>
 </ul>
-</li>
-</ul>
-</p>
-<h2 id="一-java内存模型jmm">一、Java内存模型JMM</h2>
-<p>处理器上的寄存器的读写的速度比内存快几个数量级，为了解决这种速度矛盾，在它们之间加入了高速缓存。</p>
-<p>加入高速缓存带来了一个新的问题：缓存一致性。如果多个缓存共享同一块主内存区域，那么多个缓存的数据可能会不一致，需要一些协议来解决这个问题。</p>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200711163213039.png" alt="image-20200711163213039" style="zoom:50%;" />
-<p>所有的变量都存储在主内存中，每个线程还有自己的工作内存，工作内存存储在高速缓存或者寄存器中，保存了该线程使用的变量的主内存副本拷贝。</p>
-<p>线程只能直接操作工作内存中的变量，不同线程之间的变量值传递需要通过主内存来完成。</p>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200711163313895.png" alt="image-20200711163313895" style="zoom:50%;" />
-<h2 id="二-内存间交互操作">二、内存间交互操作</h2>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTYzNDA4ODI2LnBuZw?x-oss-process=image/format,png" alt="image-20200711163408826" loading="lazy"></figure>
-<pre><code class="language-go">1. lock（锁定）：作用于`主内存`的变量，它把一个变量标识为一条线程独占的状态。
-2. unlock（解锁）：作用于`主内存`的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。
-
-// 读入工作内存
-3. read（读取）：主内存 ---&gt; 工作内存。
-4. load（载入）：把read操作从主内存中得到的`变量值` ---&gt; `工作内存的变量副本`。
-
-// 中间步骤
-5. use（使用）：工作内存中一个`变量的值`---&gt;`执行引擎`，每当虚拟机遇到一个需要`使用到变量的值`的字节码指令时将会执行这个操作。
-6. assign（赋值）：把一个`从执行引擎`接收到的值---赋给---&gt;`工作内存的变量`，每当虚拟机遇到一个给变量`赋值`的字节码指令时执行这个操作。
-
-// 写入主内存
-7. store（存储）：把工作内存中一个`变量的值`---&gt;`主内存`。
-8. write（写入）：把store操作从工作内存中得到的变量的值---&gt;主内存的变量。
-</code></pre>
-<h2 id="三-内存模型三大特性">三、内存模型三大特性</h2>
-<h3 id="原子性">原子性</h3>
-<p>Java 内存模型保证了 read、load、use、assign、store、write、lock 和 unlock 操作具有原子性，例如对一个 int类型的变量执行 assign 赋值操作，这个操作就是原子性的。但是 Java 内存模型允许虚拟机将没有被 volatile 修饰的64 位数据（long，double）的读写操作划分为两次 32 位的操作来进行，即 load、store、read 和 write 操作可以不具备原子性。</p>
-<p><strong>int 等原子性的类型在多线程环境中不会出现线程安全问题？</strong></p>
-<p>有一个错误认识就是，int 等原子性的类型在多线程环境中不会出现线程安全问题。前面的线程不安全示例代码中，cnt 属于 int 类型变量，1000 个线程对它进行自增操作之后，得到的值为 997 而不是 1000。<br>
-为了方便讨论，将内存间的交互操作简化为 3 个：load、assign、store。</p>
-<p>下图演示了两个线程同时对 cnt 进行操作，load、assign、store 这一系列操作整体上看不具备原子性，那么在 T1修改 cnt 并且还没有将修改后的值写入主内存，T2 依然可以读入旧值。可以看出，这两个线程虽然执行了两次自增运算，但是主内存中 cnt 的值最后为 1 而不是 2。因此<strong>对 int 类型读写操作满足原子性只是说明 load、assign、store 这些单个操作具备原子性。</strong></p>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTYzOTU5NDg2LnBuZw?x-oss-process=image/format,png" alt="image-20200711163959486" loading="lazy"></figure>
-<p><strong>如何保证原子性呢？</strong></p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTMzNjQ1NDg3LnBuZw?x-oss-process=image/format,png" alt="image-20200722133645487" loading="lazy"></figure>
+<blockquote>
+<p>SYN 是 TCP/IP 建立连接时使用的握手信号。在客户机和服务器之间建立正常的 TCP 网络连接时，客户机首先发出一个 SYN 消息，服务器使用 SYN-ACK  应答表示接收到了这个消息，最后客户机再以 ACK(Acknowledgement）消息响应。这样在客户机和服务器之间才能建立起可靠的 TCP  连接，数据才可以在客户机和服务器之间传递。</p>
+</blockquote>
+<h3 id="2-为什么要四次挥手">2. 为什么要四次挥手？</h3>
 <ul>
-<li>Atomic原子类可以利用CAS的方式，在不加锁的情况下保证原子性</li>
-<li>synchronized 互斥锁来保证操作的原子性，它对应的内存间交互操作为：lock 和unlock</li>
+<li>客户端-发送一个 FIN，用来关闭客户端到服务器的数据传送</li>
+<li>服务器-收到这个 FIN，它发回一 个 ACK，确认序号为收到的序号加1 。和 SYN 一样，一个 FIN 将占用一个序号</li>
+<li>服务器-关闭与客户端的连接，发送一个FIN给客户端</li>
+<li>客户端-发回 ACK 报文确认，并将确认序号设置为收到序号加1</li>
 </ul>
-<h3 id="可见性">可见性</h3>
-<p>可见性指当一个线程修改了共享变量的值，其它线程能够立即得知这个修改。Java 内存模型是通过在变量修改后将新值同步回主内存，在变量读取前从主内存刷新变量值来实现可见性的。</p>
-<p><strong>主要有三种实现可见性的方式</strong>：</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTMzODU3OTMzLnBuZw?x-oss-process=image/format,png" alt="image-20200722133857933" loading="lazy"></figure>
+<blockquote>
+<p>举个例子：A 和 B 打电话，通话即将结束后，A 说“我没啥要说的了”，B回答“我知道了”，但是 B 可能还会有要说的话，A 不能要求 B  跟着自己的节奏结束通话，于是 B 可能又巴拉巴拉说了一通，最后 B 说“我说完了”，A 回答“知道了”，这样通话才算结束</p>
+</blockquote>
+<p><strong>服务器出现大量CLOSE_WAIT状态的原因？</strong></p>
 <ul>
-<li>volatile关键字，是工作内存失效</li>
-<li>synchronized，对一个变量执行 unlock 操作之前，必须把变量值同步回主内存 。</li>
-<li><strong>final</strong>，被 final 关键字修饰的字段在构造器中一旦初始化完成，并且没有发生 this 逃逸（其它线程通过 this 引用访问到初始化了一半的对象），那么其它线程就能看见 final 字段的值。</li>
+<li>可能浏览器发送关闭请求后，服务器在忙于读写</li>
+<li>也可能代码出现了问题，特别是释放资源的代码忘记释放了资源</li>
 </ul>
-<pre><code class="language-java">public class FinalTest{
-    final int i;
-    static FinalTest obj;
-
-    public FinalTest(){
-        i  =1;
-        /**
-         *这里会使正在被构造的对象逸出，如果和上一句做了重排序，那么其他线程就可以通过obj访问到还为被初始化的final域。
-         **/
-        obj = this;
-    }
-}
-</code></pre>
-<p>类的 final 域在编译器层面会保证在类的构造器运行结束之前一定要初始化完成，同时 Java 内存模型会保证对象实例化后它的 final 域对其他线程是可见的，然而非 final 域并没有这种待遇。例如如下代码：</p>
-<pre><code class="language-java">public class FinalFiled {
-    final int x;
-    int y;
-    static FinalFiled f;
-
-    public FinalFiled() {
-        x = 100;
-        y = 100;
-    }
-
-    static void writer() {
-        f = new FinalFiled();
-    }
-
-    static void reader() {
-        if (f != null) {
-            int i = f.x;  // 保证此时一定是 100
-            int j = f.y;  // 有可能此时还是 0
-        }
-    }
-}
-</code></pre>
-<h3 id="有序性">有序性</h3>
-<p>有序性是指：在本线程内观察，所有操作都是有序的。在一个线程观察另一个线程，所有操作都是无序的，无序是因为发生了指令重排序。在 Java 内存模型中，允许编译器和处理器对指令进行重排序，重排序过程不会影响到单线程程序的执行，却会影响到多线程并发执行的正确性。</p>
-<p><strong>如何保证有序性？</strong></p>
+<h2 id="三-tcp和udp的区别">三、TCP和UDP的区别</h2>
 <ul>
-<li>volatile 关键字通过添加内存屏障的方式来禁止指令重排，即重排序时不能把后面的指令放到内存屏障之前。</li>
-<li>通过 synchronized 来保证有序性，它保证每个时刻只有一个线程执行同步代码，相当于是让线程顺序执行同步代码。</li>
+<li>TCP是面向连接，需要通过三次握手建立可靠连接，而UDP是面向无连接的</li>
+<li><strong>可靠性</strong>：TCP有ARQ协议、超时重传等，可以保证其可靠性，而UDP没有这些东西，只是尽最大努力交付,不保证可靠交付</li>
+<li><strong>有序性</strong>：TCP利用序列号可以保证其有序性，到达可能无序，最后会进行排序，而UDP无法保证有序性</li>
+<li><strong>速度</strong>：TCP比较复杂所以比减慢，UDP比较快</li>
+<li><strong>量级</strong>：TCP报文是20个字节，UDP报文是8个字节</li>
 </ul>
-<h2 id="四-重排序">四、重排序</h2>
-<p>执行任务的时候，为了提高编译器和处理器的执行性能，编译器和处理器(包括内存系统，内存在行为没有重排但是存储的时候是有变化的)会对指令重排序。编译器优化的重排序是在编译时期完成的，指令重排序和内存重排序是处理器重排序</p>
+<p>UDP 在传送数据之前不需要先建立连接，远地主机在收到 UDP 报文后，不需要给出任何确认。虽然 UDP 不提供可靠交付，但在某些情况下 UDP 确是一种最有效的工作方式（一般用于即时通信），比如： QQ 语音、 QQ 视频 、直播等等</p>
+<p>TCP 提供面向连接的服务。在传送数据之前必须先建立连接，数据传送结束后要释放连接。TCP 一般用于文件传输、发送和接收邮件、远程登录等场景。</p>
+<h2 id="四-tcp-协议如何保证可靠传输">四、TCP 协议如何保证可靠传输</h2>
 <ol>
-<li>编译器优化的重排序，在不改变单线程语义的情况下重新安排语句的执行顺序</li>
-<li>指指令级并行重排序，处理器的指令级并行技术将多条指令重叠执行，如果不存在数据的依赖性将会改变语句对应机器指令的执行顺序</li>
-<li>内存系统的重排序，因为使用了读写缓存区，使得看起来并不是顺序执行的</li>
+<li>应用数据被分割成 TCP 认为最适合发送的数据块。</li>
+<li>TCP 给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
+<li><strong>校验和：</strong> TCP 将保持它首部和数据的检验和。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。如果收到段的检验和有差错，TCP 将丢弃这个报文段和不确认收到此报文段。</li>
+<li>TCP 的接收端会丢弃重复的数据。</li>
+<li><strong>流量控制：</strong> TCP  连接的每一方都有固定大小的缓冲空间，TCP的接收端只允许发送端发送接收端缓冲区能接纳的数据。当接收方来不及处理发送方的数据，能提示发送方降低发送的速率，防止包丢失。TCP 使用的流量控制协议是可变大小的滑动窗口协议。 （TCP 利用滑动窗口实现流量控制）</li>
+<li><strong>拥塞控制：</strong> 当网络拥塞时，减少数据的发送。</li>
+<li><strong>ARQ协议：</strong> 也是为了实现可靠传输的，它的基本原理就是每发完一个分组就停止发送，等待对方确认。在收到确认后再发下一个分组。</li>
+<li><strong>超时重传：</strong> 当 TCP 发出一个段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，将重发这个报文段。</li>
 </ol>
-<h2 id="五-happens-before原则">五、happens-before原则</h2>
-<ol>
-<li>程序顺序规则：一个线程中的每个操作，happens-before于该线程中的任意后续操作。</li>
-<li>监视器锁规则：对一个锁的解锁，happens-before于随后对这个锁的加锁。</li>
-<li>volatile规则：对一个volatile域的写，happens-before于任意后续对这个volatile域的读。</li>
-<li>传递性：如果Ahappens-before B，并且B happens-before C，那么A happens-before C。</li>
-<li>start()规则：如果线程A执行操作ThreadB.start()，那么A线程的ThreadB.start()操作happens-before于线程B中的任意操作。</li>
-<li>join()规则：如果线程A执行操作ThreadB.join()并成功返回，那么线程B的任意操作happens-before于线程A从ThreadB.join()操作成功返回。</li>
-</ol>
-<p><strong>含义</strong>：两个操作之间存在happens-before关系，并不意味着Java平台的具体实现必须按照happens-before关系指定的顺序来执行。如果重排序之后的执行结果，与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。所以只要能够满足<strong>A的操作结果一定要对B可见</strong></p>
-<h2 id="六-volatitle">六、volatitle</h2>
-<h3 id="1-volatitle变量为何立即可见">1. volatitle变量为何立即可见？</h3>
-<p>在对有volatile修饰符修饰的共享变量进行写操作时，汇编代码会多一条lock前缀的指令。该指令有如下两个作用：</p>
-<ol>
-<li>将当前缓存行的数据回写到内存中</li>
-<li>使其他cpu里缓存了该内存地址的数据无效(缓存一致性机制)</li>
-</ol>
-<h3 id="2-如何禁止重排序优化">2. 如何禁止重排序优化？</h3>
-<p>通过插入内存屏障禁止在内存屏障前后的指令执行重排序优化</p>
-<h3 id="3-和synchronized的区别">3. 和synchronized的区别？</h3>
+<h3 id="41-连续arq协议">4.1 连续ARQ协议</h3>
+<p>对于ARQ协议，如果每个数据报都发送确认收到，将十分消耗网络资源，在此问题上，提出了连续ARQ协议：</p>
 <ul>
-<li>volatile本质是在告诉JVM当前变量在寄存器(工作内存)中的值是不确定的,需要从主存中读取; synchronized则是锁定当前变量， 只有当前线程可以访问该变量,其他线程被阻塞住直到该线程完成变量操作为止</li>
-<li>volatile仅能使用在变量级别; synchronized则可以使用在变量、方法和类级别</li>
-<li>volatile仅能实现变量的修改可见性,不能保证原子性;而synchronized则可以保证变量修改的可见性和原子性</li>
-<li>volatile不会造成线程的阻塞; synchronized可能会造成线程的阻塞</li>
-<li>volatile标记的变量不会被编译器优化; synchronized标记的变量可以被编译器优化</li>
+<li>连续 ARQ 协议可提高信道利用率。发送方维持一个发送窗口，凡位于发送窗口内的分组可以连续发送出去，而不需要等待对方确认。接收方一般采用累计确认，对按序到达的最后一个分组发送确认，表明到这个分组为止的所有分组都已经正确收到了。</li>
 </ul>
-<h2 id="七-单例模式">七、单例模式</h2>
-<h3 id="1-饿汉式">1. 饿汉式</h3>
-<pre><code>public class Singleton {
-
-    private final static Singleton INSTANCE = new Singleton();
-    
-    private Singleton(){}
-
-    public static Singleton getInstance(){
-        return INSTANCE;
-    }
-
-}
-</code></pre>
-<h3 id="2-普通的懒汉式">2. <strong>普通的懒汉式</strong></h3>
-<pre><code class="language-java">public class Singleton {  
-    private static Singleton instance;  
-    private Singleton (){}  
-  
-    public static Singleton getInstance() {  
-    if (instance == null) {  
-        instance = new Singleton();  
-    }  
-    return instance;  
-    }  
-}
-</code></pre>
-<ul>
-<li>线程不安全，不支持多线程</li>
-</ul>
-<h3 id="3-同步方法的懒汉式">3. 同步方法的懒汉式</h3>
-<pre><code class="language-java">class Singleton{
-    private static Singleton singleton;
-    
-    private Singleton(){}
-    
-    public static synchronized Singleton getSingleton(){
-        if (singleton==null){
-            singleton = new Singleton();
-        }
-        return singleton;
-    }
-}
-</code></pre>
-<ul>
-<li>线程安全，但是性能差</li>
-</ul>
-<h3 id="4-二次检查">4. 二次检查</h3>
-<pre><code class="language-java">class Singleton{
-    private static volatile Singleton singleton;
-
-    private Singleton(){}
-
-    public static  Singleton getSingleton(){
-        if (singleton==null){
-            synchronized (Singleton.class){
-                if (singleton==null){
-                    singleton = new Singleton();
-                }
-            }
-        }
-        return singleton;
-    }
-}
-</code></pre>
-<ul>
-<li>需要加一个volatile关键字，避免指令重排序如果不加volatile关键字，可能会出现空指针异常，因为在构造singleton的时候，可能也会构造其他的对象，如果出现了指令重排序，会导致singleton构造完成时，其他对象没有构造完成</li>
-</ul>
-<h3 id="5-holder方式">5. Holder方式</h3>
-<pre><code class="language-java">class Singleton{
-    
-    private Singleton(){}
-
-    private static class instanceHolder {
-        private static Singleton singleton = new Singleton();
-    }
-
-    public static  Singleton getSingleton(){
-        return instanceHolder.singleton;
-    }
-}
-</code></pre>
+<h3 id="42-滑动窗口和流量控制">4.2  滑动窗口和流量控制</h3>
 <ul>
 <li>
-<p>静态内部类方式在Singleton类被装载时并不会立即实例化，而是在需要实例化时，调用getInstance方法，才会装载SingletonInstance类，从而完成对象的实例化。</p>
+<p><strong>RTT</strong>：发送一个数据包到收到对应的ACK ,所花费的时间</p>
 </li>
 <li>
-<p>同时，因为类的静态属性只会在第一次加载类的时候初始化，也就保证了SingletonInstance中的对象只会被实例化一次，并且这个过程也是线程安全的。</p>
+<p><strong>RTO</strong>：重传时间间隔，将根据RTT进行改变</p>
 </li>
 </ul>
-<h3 id="6-枚举">6. 枚举</h3>
-<pre><code class="language-java">class Singleton{
-    private Singleton(){}
-
-    private enum enmuSingleton{
-        INSTANCE;
-
-        private Singleton singleton;
-        enmuSingleton(){
-            singleton = new Singleton();
-        }
-
-        public Singleton getSingleton() {
-            return singleton;
-        }
-    }
-
-
-    public static  Singleton getSingleton(){
-        return enmuSingleton.INSTANCE.getSingleton();
-    }
-}
+<p><strong>滑动窗口的作用</strong>：</p>
+<ul>
+<li>
+<p><strong>保证TCP的可靠性</strong>：采用ARQ协议和超时重传机制保证可靠性</p>
+</li>
+<li>
+<p><strong>实现流量控制</strong>：TCP 利用滑动窗口实现流量控制。流量控制是为了控制发送方发送速率，保证接收方来得及接收。 接收方发送的确认报文中的窗口字段可以用来控制发送方窗口大小，从而影响发送方的发送速率。将窗口字段设置为 0，则发送方不能发送数据。</p>
+</li>
+</ul>
+<h3 id="43-拥塞控制">4.3 拥塞控制</h3>
+<ul>
+<li>
+<p>当网络比较拥堵时，会控制发送数据的速度，防止发送较大的文件导致网络瘫痪</p>
+</li>
+<li>
+<p>为了进行拥塞控制，TCP 发送方要维持一个 <strong>拥塞窗口(cwnd)</strong> 的状态变量。拥塞控制窗口的大小取决于网络的拥塞程度，并且动态变化。发送方让自己的发送窗口取为拥塞窗口和接收方的接受窗口中较小的一个。</p>
+</li>
+</ul>
+<p><strong>有四种算法</strong>：</p>
+<ul>
+<li><strong>慢开始：</strong>  慢开始算法的思路是当主机开始发送数据时，如果立即把大量数据字节注入到网络，那么可能会引起网络阻塞，因为现在还不知道网络的符合情况。经验表明，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是由小到大逐渐增大拥塞窗口数值。cwnd初始值为1，每经过一个传播轮次，cwnd加倍。</li>
+<li><strong>拥塞避免：</strong> 拥塞避免算法的思路是让拥塞窗口cwnd缓慢增大，即每经过一个往返时间RTT就把发送放的cwnd加1.</li>
+<li><strong>快重传与快恢复：</strong> 在 TCP/IP 中，快速重传和恢复（fast retransmit and  recovery，FRR）是一种拥塞控制算法，它能快速恢复丢失的数据包。没有 FRR，如果数据包丢失了，TCP  将会使用定时器来要求传输暂停。在暂停的这段时间内，没有新的或复制的数据包被发送。有了  FRR，如果接收机接收到一个不按顺序的数据段，它会立即给发送机发送一个重复确认。如果发送机接收到三个重复确认，它会假定确认件指出的数据段丢失了，并立即重传这些丢失的数据段。有了 FRR，就不会因为重传时要求的暂停被耽误。  当有单独的数据包丢失时，快速重传和恢复（FRR）能最有效地工作。当有多个数据信息包在某一段很短的时间内丢失时，它则不能很有效地工作。</li>
+</ul>
+<h2 id="五-在浏览器中输入url地址-显示主页的过程">五、 在浏览器中输入url地址 -&gt;&gt; 显示主页的过程</h2>
+<p><strong>总体来说分为以下几个过程</strong>:</p>
+<ol>
+<li>浏览器解析域名查找IP地址，使用的协议是DNS协议，DNS过程为：浏览器缓存、路由器缓存、DNS缓存</li>
+<li>与服务器三次握手建立TCP连接（在建立TCP协议时，需要发送数据，需要使用IP协议、IP数据包在路由器之间传输，路由器的选择使用的OSPF协议、路由器和服务器通信时，需要将IP地址转换成MAC地址，需要用到ARP协议）</li>
+<li>向服务器发送HTTP请求</li>
+<li>服务器处理请求并返回HTTP响应</li>
+<li>可能会释放TCP连接，这取决于HTTP版本</li>
+<li>浏览器解析渲染页面</li>
+<li>连接结束</li>
+</ol>
+<h2 id="六-状态码">六、状态码</h2>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTM1NTI2NzY3LnBuZw?x-oss-process=image/format,png" alt="image-20200722135526767" loading="lazy"></figure>
+<p><strong>1XX 信息</strong>：</p>
+<ul>
+<li>100 Continue ：表明到目前为止都很正常，客户端可以继续发送请求或者忽略这个响应</li>
+</ul>
+<p><strong>2XX 成功</strong>“：</p>
+<ul>
+<li><strong>200 OK</strong></li>
+<li>204 No Content ：请求已经成功处理，但是返回的响应报文不包含实体的主体部分。一般在只需要从客户端往服务器发送信息，而不需要返回数据时使用。</li>
+<li>206 Partial Content ：表示客户端进行了范围请求，响应报文包含由 Content-Range 指定范围的实体内容。</li>
+</ul>
+<p><strong>3XX 重定向</strong>：</p>
+<ul>
+<li>301 Moved Permanently ：永久性重定向</li>
+<li>302 Found ：临时性重定向</li>
+<li>303 See Other ：和 302 有着相同的功能，但是 303 明确要求客户端应该采用 GET 方法获取资源。<br>
+注：虽然 HTTP 协议规定 301、302 状态下重定向时不允许把 POST 方法改成 GET 方法，但是大多数浏览器都会在 301、302 和 303 状态下的重定向把 POST 方法改成 GET 方法。</li>
+<li><strong>304 Not Modified</strong> ：如果请求报文首部包含一些条件，例如：If-Match，If-Modified-Since，If-NoneMatch，If-Range，If-Unmodified-Since，如果不满足条件，则服务器会返回 304 状态码。</li>
+<li>307 Temporary Redirect ：临时重定向，与 302 的含义类似，但是 307 要求浏览器不会把重定向请求的<br>
+POST 方法改成 GET 方法。</li>
+</ul>
+<p><strong>4XX 客户端错误</strong>：</p>
+<ul>
+<li>**400 Bad Request ：**请求报文中存在语法错误。</li>
+<li>**401 Unauthorized ：**该状态码表示发送的请求需要有认证信息（BASIC 认证、DIGEST 认证）。如果之前已进行过一次请求，则表示用户认证失败。</li>
+<li><strong>403 Forbidden</strong> ：请求被拒绝，比如说IP被禁止</li>
+<li><strong>404 Not Found</strong>：可能输入错误了URL</li>
+</ul>
+<p><strong>5XX 服务器错误</strong>：</p>
+<ul>
+<li>**500 Internal Server Error ：**服务器正在执行请求时发生错误。</li>
+<li>**503 Service Unavailable ：**服务器暂时处于超负载或正在进行停机维护，现在无法处理请求，可能连接池满了或者服务器宕机</li>
+</ul>
+<h2 id="九-各协议与http协议的关系">九、各协议与HTTP协议的关系</h2>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTM1NjE2MDA1LnBuZw?x-oss-process=image/format,png" alt="image-20200722135616005" loading="lazy"></figure>
+<h2 id="十-http长连接和短连接">十、HTTP长连接和短连接</h2>
+<p>在HTTP/1.0中默认使用短连接。也就是说，客户端和服务器每进行一次HTTP操作，就建立一次连接，任务结束就中断连接。当客户端浏览器访问的某个HTML或其他类型的Web页中包含有其他的Web资源（如JavaScript文件、图像文件、CSS文件等），每遇到这样一个Web资源，浏览器就会重新建立一个HTTP会话。</p>
+<p>而从HTTP/1.1起，默认使用长连接，用以保持连接特性。使用长连接的HTTP协议，会在响应头加入这行代码：</p>
+<pre><code>Connection:keep-alive
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【面试题】Java并发实现原理]]></title>
-        <id>https://xzzz2020.github.io/post/7zdoEh6sT/</id>
-        <link href="https://xzzz2020.github.io/post/7zdoEh6sT/">
-        </link>
-        <updated>2020-07-12T10:42:22.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
-</blockquote>
+<p>在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</p>
+<h2 id="十一-cookie的作用是什么和session有什么区别">十一、Cookie的作用是什么?和Session有什么区别？</h2>
+<p>Cookie 和 Session都是用来跟踪浏览器用户身份的会话方式，但是两者的应用场景不太一样。</p>
+<p><strong>Cookie 一般用来保存用户信息</strong> 比如①我们在 Cookie  中保存已经登录过得用户信息，下次访问网站的时候页面可以自动帮你登录的一些基本信息给填了；②一般的网站都会有保持登录也就是说下次你再访问网站的时候就不需要重新登录了，这是因为用户登录的时候我们可以存放了一个 Token 在 Cookie 中，下次登录的时候只需要根据 Token 值来查找用户即可(为了安全考虑，重新登录一般要将 Token  重写)；③登录一次网站后访问网站其他页面不需要重新登录。<strong>Session 的主要作用就是通过服务端记录用户的状态。</strong> 典型的场景是购物车，当你要添加商品到购物车的时候，系统不知道是哪个用户操作的，因为 HTTP 协议是无状态的。服务端给特定的用户创建特定的 Session 之后就可以标识这个用户并且跟踪这个用户了。</p>
+<p>Cookie 数据保存在客户端(浏览器端)，Session 数据保存在服务器端。</p>
+<p>Cookie 存储在客户端中，而Session存储在服务器上，相对来说 Session 安全性更高。如果要在 Cookie 中存储一些敏感信息，不要直接写入 Cookie 中，最好能将 Cookie 信息加密然后使用到的时候再去服务器端解密。</p>
+<h2 id="十二-http-10和http-11的主要区别是什么">十二、HTTP 1.0和HTTP 1.1的主要区别是什么?</h2>
+<ol>
+<li><strong>长连接</strong> : <strong>在HTTP/1.0中，默认使用的是短连接</strong>，也就是说每次请求都要重新建立一次连接。HTTP 是基于TCP/IP协议的,每一次建立或者断开连接都需要三次握手四次挥手的开销，如果每次请求都要这样的话，开销会比较大。因此最好能维持一个长连接，可以用个长连接来发多个请求。<strong>HTTP 1.1起，默认使用长连接</strong> ,默认开启Connection： keep-alive。 <strong>HTTP/1.1的持续连接有非流水线方式和流水线方式</strong> 。流水线方式是客户在收到HTTP的响应报文之前就能接着发送新的请求报文。与之相对应的非流水线方式是客户在收到前一个响应后才能发送下一个请求。</li>
+<li><strong>错误状态响应码</strong> :在HTTP1.1中新增了24个错误状态响应码，如409（Conflict）表示请求的资源与资源的当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除。</li>
+<li><strong>缓存处理</strong>  :在HTTP1.0中主要使用header里的If-Modified-Since,Expires来做为缓存判断的标准，HTTP1.1则引入了更多的缓存控制策略例如Entity tag，If-Unmodified-Since, If-Match, If-None-Match等更多可供选择的缓存头来控制缓存策略。</li>
+<li><strong>带宽优化及网络连接的使用</strong>  :HTTP1.0中，存在一些浪费带宽的现象，例如客户端只是需要某个对象的一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能，HTTP1.1则在请求头引入了range头域，它允许只请求资源的某个部分，即返回码是206（Partial Content），这样就方便了开发者自由的选择以便于充分利用带宽和连接。</li>
+</ol>
+<h2 id="十三-uri和url的区别是什么">十三、URI和URL的区别是什么?</h2>
+<ul>
+<li>URI(Uniform Resource Identifier) 是统一资源标志符，可以唯一标识一个资源。</li>
+<li>URL(Uniform Resource Location) 是统一资源定位符，可以提供该资源的路径。它是一种具体的 URI，即 URL 可以用来标识一个资源，而且还指明了如何 locate 这个资源。</li>
+</ul>
+<h2 id="十四-http-和-https-的区别">十四、HTTP 和 HTTPS 的区别？</h2>
 <blockquote>
-<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+<p>如果有恶意的软件劫持了用户发送的请求，最后模仿服务器向浏览器发送响应，浏览器是无法识别的，这就是劫持。</p>
 </blockquote>
-<p><ul class="markdownIt-TOC">
+<ol>
 <li>
+<p><strong>端口</strong> ：HTTP的URL由“http://”起始且默认使用端口80，而HTTPS的URL由“https://”起始且默认使用端口443。</p>
+</li>
+<li>
+<p>HTTPS需要到CA申请证书，HTTP不需要</p>
+</li>
+<li>
+<p><strong>安全性和资源消耗</strong>：</p>
+<p>HTTP协议运行在TCP之上，所有传输的内容都是明文，客户端和服务器端都无法验证对方的身份。HTTPS是运行在SSL/TLS之上的HTTP协议，SSL/TLS 运行在TCP之上。所有传输的内容都经过加密，加密采用对称加密，但对称加密的密钥用服务器方的证书进行了非对称加密。所以说，HTTP 安全性没有  HTTPS高，但是 HTTPS 比HTTP耗费更多服务器资源。</p>
 <ul>
-<li><a href="#1-%E7%B1%BB%E9%94%81%E5%92%8C%E5%AF%B9%E8%B1%A1%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB">1. 类锁和对象锁的区别</a></li>
-<li><a href="#2-synchronize%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">2. synchronize底层实现原理</a></li>
-<li><a href="#3-%E4%BB%80%E4%B9%88%E6%98%AF%E9%94%81%E9%87%8D%E5%85%A5">3. 什么是锁重入？</a></li>
-<li><a href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E5%AF%B9synchronized%E5%97%A4%E4%B9%8B%E4%BB%A5%E9%BC%BB">4. 为什么会对synchronized嗤之以鼻</a></li>
-<li><a href="#4-%E9%94%81%E4%BC%98%E5%8C%96">4. 锁优化</a></li>
-<li><a href="#5-%E8%87%AA%E6%97%8B%E9%94%81%E5%92%8C%E8%87%AA%E9%80%82%E5%BA%94%E8%87%AA%E6%97%8B%E9%94%81">5. 自旋锁和自适应自旋锁</a></li>
-<li><a href="#6-%E9%94%81%E6%B6%88%E9%99%A4">6. 锁消除</a></li>
-<li><a href="#7-%E9%94%81%E7%B2%97%E5%8C%96">7. 锁粗化</a></li>
-<li><a href="#8-%E9%94%81%E8%86%A8%E8%83%80%E5%92%8C%E9%94%81%E9%99%8D%E7%BA%A7">8. 锁膨胀和锁降级</a></li>
-<li><a href="#9-%E5%81%8F%E5%90%91%E9%94%81">9. 偏向锁</a></li>
-<li><a href="#10-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81">10. 轻量级锁</a></li>
-<li><a href="#10-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81">10. 重量级锁</a></li>
-<li><a href="#11-reentrantlock">11. ReentrantLock</a></li>
-<li><a href="#12-synchronize%E5%92%8Creentrantlock">12. synchronize和ReentrantLock</a></li>
+<li>对称加密：密钥只有一个，加密解密为同一个密码，且加解密速度快，典型的对称加密算法有DES、AES等；</li>
+<li>非对称加密：密钥成对出现（且根据公钥无法推知私钥，根据私钥也无法推知公钥），加密解密使用不同密钥（公钥加密需要私钥解密，私钥加密需要公钥解密），相对对称加密速度较慢，典型的非对称加密算法有RSA、DSA等。</li>
+<li>哈希算法:将任意长度的信息转换为固定长度的值,算法不可逆，比如说MD5算法</li>
 </ul>
 </li>
-</ul>
-</p>
-<h2 id="1-类锁和对象锁的区别">1. 类锁和对象锁的区别</h2>
-<p><strong>对象锁</strong></p>
+</ol>
+<blockquote>
+<p>SSL(Security Sockets Layer ,安全套接层)</p>
 <ul>
-<li>对象锁有两种，第一种是在普通方法上加synchronize关键字，一种是使用synchronize同步代码块同步一个对象</li>
+<li>
+<p>为网络通信提供安全及数据完整性的一-种安全协议</p>
+</li>
+<li>
+<p>是操作系统对外的API , SSL3.0后更名为TLS</p>
+</li>
+<li>
+<p>采用身份验证和数据加密保证网络通信的安全和数据的完整性</p>
+</li>
 </ul>
-<pre><code class="language-java">//同步代码块
-public void func() {
-    synchronized (this) {
-    // ...
-    }
-}
-
-//同步一个方法
-public synchronized void func () {
-	// ...
-}
-</code></pre>
-<p>作用都是同一个对象，如果不同线程去争抢同一个对象的头，就会陷入阻塞，如果是争抢不同对象的头，则不会阻塞</p>
-<p><strong>类锁</strong></p>
+</blockquote>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200722173112251.png" alt="image-20200722173112251" style="zoom:50%;" />
+<p><strong>HTTPS真的很安全吗?</strong></p>
 <ul>
-<li>类锁有两种，第一种是在静态方法上加synchronize关键字，一种是使用synchronize同步代码块同步类</li>
+<li>浏览器默认填充http:// ，请求到服务器后需要进行https的跳转，在建立起HTTPS连接之前存在一次明文的HTTP请求和重定向，有被劫持的风险</li>
+<li>可以使用HSTS ( HTTP Strict Transport Security )优化</li>
 </ul>
-<pre><code class="language-java">//同步一个类
-public void func() {
-    synchronized (SynchronizedExample.class) {
-    // ...
-    }
-}
-public synchronized static void fun() {
-	// ...
-}
-</code></pre>
-<p>作用于整个类，如果是一个类不同的对象，调用这些方法的时候，会陷入阻塞</p>
-<p><strong>类锁是一种特殊的对象锁，类锁和对象锁互不干扰，也就是说一个线程访问同步静态方法，另一个线程访问同步普通方法，是不会阻塞的</strong></p>
-<pre><code class="language-java">public class Test {
-    public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        Solution solution = new Solution();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                solution.fun2();
-            }
-        });
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Solution.fun1();
-            }
-        });
-        executor.shutdown();
-    }
-
-}
-
-
-class Solution {
-
-    public  synchronized static void fun1(){
-        System.out.println(&quot;fun1...&quot;);
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+<blockquote>
+<p>HSTS的作用是强制客户端（如浏览器）使用HTTPS与服务器创建连接。 HSTS最为核心的是一个HTTP响应头（HTTP Response Header），正是它可以让浏览器得知，在接下来的一段时间内，当前域名只能通过HTTPS进行访问，并且在浏览器发现当前连接不安全的情况下，强制拒绝用户的后续访问要求。</p>
+<p>比如设置在第一次HTTP连接中，得知要在接下来1年内在个对于当前域名及其子域名的后续通信应该强制性的只使用HTTPS，直到超过有效期为止。</p>
+<p>同时，第一次的HTTP连接也可能会被劫持，所以浏览器中可以内置一个列表，放入那些必须使用https的域名，保证安全性</p>
+</blockquote>
+<h2 id="十五-http20">十五、HTTP/2.0</h2>
+<p><strong>HTTP/1.x 缺陷，HTTP/1.x 实现简单是以牺牲性能为代价的</strong></p>
+<ul>
+<li>客户端需要使用多个连接才能实现并发和缩短延迟；</li>
+<li>不会压缩请求和响应首部，从而导致不必要的网络流量；</li>
+<li>不支持有效的资源优先级，致使底层 TCP 连接的利用率低下。</li>
+</ul>
+<h3 id="二进制分帧层">二进制分帧层</h3>
+<ul>
+<li>HTTP/2.0 将报文分成 HEADERS 帧和 DATA 帧，它们都是二进制格式的。</li>
+</ul>
+<h3 id="服务端推送">服务端推送</h3>
+<ul>
+<li>HTTP/2.0 在客户端请求一个资源时，会把相关的资源一起发送给客户端，客户端就不需要再次发起请求了。例如客户端请求 page.html 页面，服务端就把 script.js 和 style.css 等与之相关的资源一起发给客户端。</li>
+</ul>
+<h3 id="首部压缩">首部压缩</h3>
+<ul>
+<li>HTTP/1.1 的首部带有大量信息，而且每次都要重复发送。</li>
+<li>HTTP/2.0 要求客户端和服务器同时维护和更新一个包含之前见过的首部字段表，从而避免了重复传输。<br>
+不仅如此，HTTP/2.0 也使用 Huffman 编码对首部字段进行压缩。</li>
+</ul>
+<h2 id="十六-get和post的比较">十六、GET和POST的比较</h2>
+<ul>
+<li><strong>作用不同</strong>：GET 用于获取资源，而 POST 用于传输实体主体。</li>
+<li><strong>参数不同</strong>：GET 和 POST 的请求都能使用额外的参数，但是 GET 的参数是以查询字符串出现在 URL 中，URL长度可能会受到浏览器的限制，而 POST 的参数存储在实体主体中，长度没有限制。不能因为 POST 参数存储在实体主体中就认为它的安全性更高，因为照样可以通过一些抓包工具（Fiddler）查看。</li>
+<li><strong>安全和幂等性</strong>：安全的 HTTP 方法不会改变服务器状态，也就是说它只是可读的，而幂等性指同样的请求被执行一次与连续执行多次的效果是一样的  。GET 方法是安全的也是幂等的，而 POST 却不是，因为 POST 的目的是传送实体主体内容，这个内容可能是用户上传的表单数据，上传成功之后，服务器可能把这个数据存储到数据库中，因此状态也就发生了改变。</li>
+<li><strong>缓存</strong>：GET请求可以被缓存、被存储，保存在浏览器上，而POST是非幂等的，所以必须交由服务器处理</li>
+</ul>
+<h2 id="十七-socket简介">十七、Socket简介</h2>
+<ul>
+<li>Socket是对TCP/IP协议的抽象，是操作系统对外开放的接口</li>
+</ul>
+<h3 id="1-socket的通讯流程">1. Socket的通讯流程</h3>
+<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTc1MTU5OTQ0LnBuZw?x-oss-process=image/format,png" alt="image-20200722175159944" loading="lazy"></figure>
+<h3 id="2-利用java实现socket实现tcp和udp">2. 利用Java实现Socket实现TCP和UDP</h3>
+<p><strong>TCPServer</strong></p>
+<pre><code class="language-java">public class TCPServer {
+    public static void main(String[] args) throws IOException {
+        //创建socket,并将socket绑定到65000端口
+        ServerSocket ss = new ServerSocket(65000);
+        //死循环，使得socket一直等待并处理客户端发送过来的请求
+        while (true) {
+            //监听65000端口，直到客户端返回连接信息后才返回
+            Socket socket = ss.accept();
+            //获取客户端的请求信息后，执行相关业务逻辑
+            new LengthCalculator(socket).start();
         }
     }
+}
+</code></pre>
+<p><strong>LengthCalculator</strong></p>
+<pre><code class="language-java">public class LengthCalculator extends Thread {
+    private Socket socket;
 
-    public  synchronized void fun2(){
-        System.out.println(&quot;fun2...&quot;);
+    public LengthCalculator(Socket socket) {
+        this.socket = socket;
+    }
+
+    @Override
+    public void run() {
         try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException e) {
+            //获取socket的输出流
+            OutputStream os = socket.getOutputStream();
+            //获取socket的输入流
+            InputStream is = socket.getInputStream();
+            int ch;
+            byte[] buff = new byte[1024];
+            //buff主要用来读取输入的内容，存成byte数组，ch主要用来获取读取数组的长度
+            ch = is.read(buff);
+            //将接收流的byte数组转换成字符串，这里获取的内容是客户端发送过来的字符串
+            String content = new String(buff, 0, ch);
+            System.out.println(content);
+            //往输出流里写入获得的字符串的长度，回发给客户端
+            os.write(String.valueOf(content.length()).getBytes());
+            //不要忘记关闭输入输出流以及socket
+            is.close();
+            os.close();
+            socket.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
 </code></pre>
-<h2 id="2-synchronize底层实现原理">2. synchronize底层实现原理</h2>
-<p>每个对象出生就有一个对象头，而Mark Word的中会包含锁信息和hashcode信息</p>
-<p>synchronize获取锁的过程其实是在Mark Word加入线程信息的过程</p>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzA4MTYwMjQ2NDE2LnBuZw?x-oss-process=image/format,png" alt="image-20200708160246416" loading="lazy"></figure>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzA4MTYwMzQyMjk2LnBuZw?x-oss-process=image/format,png" alt="image-20200708160342296" loading="lazy"></figure>
-<p><strong>Monitor :每个Java对象天生自带了一把看不见的锁</strong></p>
-<h2 id="3-什么是锁重入">3. 什么是锁重入？</h2>
-<p>就是如果一个线程获取了一个对象的锁，如果在这个时候，又尝试获取这个对象的锁，会直接进入：</p>
-<pre><code class="language-java">class Solution {
-    private void test(){
-        synchronized (this){
-            synchronized (this){
-                //执行代码
-            }
-        }
+<p><strong>TCPClient</strong></p>
+<pre><code class="language-java">public class TCPClient {
+    public static void main(String[] args) throws IOException {
+        //创建socket，并指定连接的是本机的端口号为65000的服务器socket
+        Socket socket = new Socket(&quot;127.0.0.1&quot;, 65000);
+        //获取输出流
+        OutputStream os = socket.getOutputStream();
+        //获取输入流
+        InputStream is = socket.getInputStream();
+        //将要传递给server的字符串参数转换成byte数组，并数组写入到输出流中
+        os.write(&quot;hello world&quot;.getBytes());
+        int ch;
+        byte[] buff = new byte[1024];
+        //buff主要用来读取输入的内容，存成byte数组，ch主要用来获取读取数组的长度
+        ch = is.read(buff);
+        //将接收流的byte数组转换成字符串，这里是从服务端回发回来的字符串参数的长度
+        String content = new String(buff, 0, ch);
+        System.out.println(content);
+        //不要忘记关闭输入输出流以及socket
+        is.close();
+        os.close();
+        socket.close();
     }
 }
 </code></pre>
-<p>synchronize和ReentrantLock都是支持可重入的</p>
-<h2 id="4-为什么会对synchronized嗤之以鼻">4. 为什么会对synchronized嗤之以鼻</h2>
-<ul>
-<li>早期版本中, synchronized属于重量级锁,依赖于Mutex Lock实现</li>
-<li>线程之间的切换需要从用户态转换到核心态,开销较大</li>
-</ul>
-<h2 id="4-锁优化">4. 锁优化</h2>
-<ul>
-<li>synchronized有四种状态无锁、偏向锁、轻量级锁、重量级锁</li>
-<li>偏向锁不会使用CAS操作获取锁，直接让第一次获取对象头mark word线程访问，当有其他线程争用对象头时，会结束偏向，膨胀成轻量级锁</li>
-<li>轻量级锁会使用CAS操作来获取锁，当获取锁失败的时候，会采用自旋的方式，如果多次失败，会锁升级为重量级锁</li>
-<li>同时优化了自旋使用自适应自旋，自旋的次数不固定，会根据上次自旋的次数来决定这次自旋的次数来决定这次自旋的次数</li>
-<li>重量级锁和轻量级锁的差异在于，线程获取不到锁，就会陷入阻塞，切换锁的性能十分差，频繁的切换锁就会造成大量的性能优化</li>
-<li>锁升级策略主要应对一系列操作频繁的获取锁和释放锁，将扩大加锁的范围，一次加锁就可以完成操作</li>
-<li>锁消除会根据逃逸分析，当共享变量并不会被其他线程访问，则可以消除加锁的过程</li>
-</ul>
-<h2 id="5-自旋锁和自适应自旋锁">5. 自旋锁和自适应自旋锁</h2>
-<p>互斥同步进入阻塞状态的开销都很大，应该尽量避免。在许多应用中，共享数据的锁定状态只会持续很短的一段时间。自旋锁的思想是让一个线程在请求一个共享数据的锁时执行忙循环（自旋）一段时间，如果在这段时间内能获得锁，就可以避免进入阻塞状态。自旋锁虽然能避免进入阻塞状态从而减少开销，但是它需要进行忙循环操作占用 CPU 时间，<strong>它只适用于共享数据的锁定状态很短的场景。</strong></p>
-<p>在 JDK 1.6 中引入了自适应的自旋锁。<strong>自适应意味着自旋的次数不再固定了，而是由前一次在同一个锁上的自旋次数及锁的拥有者的状态来决定。</strong></p>
-<h2 id="6-锁消除">6. 锁消除</h2>
-<p>锁消除是指对于被检测出不可能存在竞争的共享数据的锁进行消除。</p>
-<p>锁消除主要是通过<strong>逃逸分析</strong>来支持，如果堆上的共享数据不可能逃逸出去被其它线程访问到，那么就可以把它们当成私有数据对待，也就可以将它们的锁进行消除。</p>
-<p>对于一些看起来没有加锁的代码，其实隐式的加了很多锁。例如下面的字符串拼接代码就隐式加了锁</p>
-<pre><code class="language-java">public static String concatString(String s1, String s2, String s3) {
-    return s1 + s2 + s3;
+<p><strong>UDPServer</strong></p>
+<pre><code class="language-java">public class UDPServer {
+    public static void main(String[] args) throws IOException {
+        //服务端接受客户端发送的数据报
+        DatagramSocket socket = new DatagramSocket(65001); //监听的端口号
+        byte[] buff = new byte[100]; //存储从客户端接受到的内容
+        DatagramPacket packet = new DatagramPacket(buff, buff.length);
+        //接受客户端发送过来的内容，并将内容封装进DatagramPacket对象中
+        socket.receive(packet);
+        byte[] data = packet.getData(); //从DatagramPacket对象 中获取到真正存储的数据
+        //将数据从二进制转换成字符串形式
+        String content = new String(data, 0, packet.getLength());
+        System.out.println(content);
+        //将要发送给客户端的数据转换成二进制
+        byte[] sendedContent = String.valueOf(content.length()).getBytes();
+        //服务端给客户端发送数据报
+        //从DatagramPacket对象中获取到数据的来源地址与端口号
+        DatagramPacket packetToClient = new DatagramPacket(sendedContent,
+                sendedContent.length, packet.getAddress(), packet.getPort());
+        socket.send(packetToClient); //发送数据给客户端
+    }
 }
 </code></pre>
-<p>String 是一个不可变的类，编译器会对 String 的拼接自动优化。在 JDK 1.5 之前，会转化为 StringBuffer 对象的连续 append() 操作（JDK1.6之后变成StringBuider）：</p>
-<pre><code class="language-java">public static String concatString(String s1, String s2, String s3) {
-    StringBuffer sb = new StringBuffer();
-    sb.append(s1);
-    sb.append(s2);
-    sb.append(s3);
-    return sb.toString();
+<p><strong>UDPClient</strong></p>
+<pre><code class="language-java">public class UDPClient {
+    public static void main(String[] args) throws IOException {
+        //客户端发数据报给服务端
+        DatagramSocket socket = new DatagramSocket();
+        //要发送给服务端的数据
+        byte[] buf = &quot;Hello World&quot;.getBytes();
+        //将IP地址封装成InetAddress对象
+        InetAddress address = InetAddress.getByName(&quot;127.0.0.1&quot;);
+        //将要发送给服务端的数据封装成DatagramPacket对象需要填写上ip地址与端口号
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address,
+                65001);
+        //发送数据给服务端
+        socket.send(packet);
+        //客户端接受服务端发送过来的数据报
+        byte[] data = new byte[100];
+        //创建DtagramPacket对 象用来存储服务端发送过来的数据
+        DatagramPacket receivedPacket = new DatagramPacket(data, data.length);
+        //将接受到的数据存储到DatagramPacket对象中
+        socket.receive(receivedPacket);
+        //将服务器端发送过来的数据取出来并打印到控制台
+        String content = new String(receivedPacket.getData(), 0,
+                receivedPacket.getLength());
+        System.out.println(content);
+    }
 }
 </code></pre>
-<p>每个 append() 方法中都有一个同步块。虚拟机观察变量 sb，很快就会发现它的动态作用域被限制在 concatString()方法内部。也就是说，sb 的<strong>所有引用永远不会逃逸到 concatString() 方法之外</strong>，其他线程无法访问到它，因此可以进行消除。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】SQL语句]]></title>
+        <id>https://xzzz2020.github.io/post/B4oG0L7Z4/</id>
+        <link href="https://xzzz2020.github.io/post/B4oG0L7Z4/">
+        </link>
+        <updated>2020-07-26T10:45:24.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0">一、常用数据处理函数</a>
+<ul>
+<li><a href="#1-substr">1. substr</a></li>
+<li><a href="#2-trim">2. trim</a></li>
+<li><a href="#3-ifnull">3. ifnull</a></li>
+<li><a href="#4-case-when-then-else-end">4. case … when … then … else ... end</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%B8%B8%E7%94%A8%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0">二、常用聚合函数</a></li>
+<li><a href="#%E4%B8%89-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2">三、分组查询</a>
+<ul>
+<li><a href="#1-group-by">1. group by</a></li>
+<li><a href="#2-having">2. having</a></li>
+<li><a href="#3-select-%E8%AF%AD%E5%8F%A5%E9%A1%BA%E5%BA%8F%E6%80%BB%E7%BB%93">3. select 语句顺序总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E9%87%8D%E7%82%B9">四、连接查询（重点）</a>
+<ul>
+<li><a href="#%E5%86%85%E8%BF%9E%E6%8E%A5%E5%A4%96%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%8C%BA%E5%88%AB">内连接外连接的区别？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E8%A7%86%E5%9B%BE%E7%9A%84%E4%BD%9C%E7%94%A8">五、视图的作用</a></li>
+<li><a href="#%E5%85%AD-%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95">六、如何创建删除索引？</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-常用数据处理函数">一、常用数据处理函数</h2>
+<table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>substr</td>
+<td>取子串（substr(被截取的字符串,起始下标,截取的长度)）</td>
+</tr>
+<tr>
+<td>trim</td>
+<td>去空</td>
+</tr>
+<tr>
+<td>Ifnull</td>
+<td>可以将 null 转换成一个具体值</td>
+</tr>
+<tr>
+<td>case … when … then … else ... end</td>
+<td>多个条件判断</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-substr">1. substr</h3>
+<p>查询姓名以 M 开头所有的员工</p>
+<pre><code class="language-sql">select * from emp where substr(ename, 1, 1)=upper('m');
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NTQxNjgwLnBuZw?x-oss-process=image/format,png" alt="image-20200714105541680" loading="lazy"></figure>
+<h3 id="2-trim">2. trim</h3>
+<p><code>会去首尾空格，不会去除中间的空格</code></p>
+<p>取得工作岗位为 manager 的所有员工</p>
+<pre><code class="language-sql">select * from emp where job=trim(upper('manager '));
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NTMzNDc1LnBuZw?x-oss-process=image/format,png" alt="image-20200714105533475" loading="lazy"></figure>
+<h3 id="3-ifnull">3. ifnull</h3>
+<pre><code class="language-sql">select ifnull(comm,0) from emp; 
+</code></pre>
+<p>如果 comm 为 null 就替换为 0 在 SQL 语句当中若有 NULL 值参与数学运算，计算结果一定是 NULL 为了防止计算结果出现 NULL，建议先使用 ifnull 空值处理函数预先处理。 以下 SQL 是计算年薪的：</p>
+<pre><code class="language-sql">select empno,ename,sal,(sal+ifnull(comm,0))*12 as yearsal from emp;  
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTEwMDExOTE4LnBuZw?x-oss-process=image/format,png" alt="image-20200714110011918" loading="lazy"></figure>
+<h3 id="4-case-when-then-else-end">4. case … when … then … else ... end</h3>
+<p>如果 job 为 MANAGERG 薪水上涨 10%,如果 job 为 SALESMAN 工资上涨 50%</p>
+<pre><code class="language-sql">select empno, ename, job, sal, case job when 'MANAGER' then sal*1.1 when 'SALESMAN' then sal*1.5 end as newsal from emp;
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NzA5NzUxLnBuZw?x-oss-process=image/format,png" alt="image-20200714105709751" loading="lazy"></figure>
+<p>其他的工资不动，需要加else</p>
+<pre><code class="language-sql">select e.*,sal ,case job when 'salesman' then sal*1.1 when 'clerk' then sal*1.2 else sal end as new_sal from emp e;
+</code></pre>
+<h2 id="二-常用聚合函数">二、常用聚合函数</h2>
+<table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>count</td>
+<td>取得记录数</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>取平均</td>
+</tr>
+<tr>
+<td>max</td>
+<td>取最大的数</td>
+</tr>
+<tr>
+<td>min</td>
+<td>取最小的数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>分组函数自动忽略空值，不需要手动的加 where 条件排除空值。</li>
+<li>select count(*) from emp where xxx; 符合条件的所有记录总数。</li>
+<li>select count(comm) from emp; comm 这个字段中不为空的元素总数。</li>
+<li>聚合函数不能直接使用在 where 关键字后面。</li>
+</ul>
+<h2 id="三-分组查询">三、分组查询</h2>
+<h3 id="1-group-by">1. group by</h3>
+<p>取得每个工作岗位的工资合计，要求显示岗位名称和工资合计</p>
+<pre><code class="language-sql">select job, sum(sal) from emp group by job;
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTEwOTE0MjE4LnBuZw?x-oss-process=image/format,png" alt="image-20200714110914218" loading="lazy"></figure>
+<p><strong>注意</strong>：在 SQL 语句中若有 group by 语句，那么在 select 语句后面只能跟聚合函数+参与分组的字段。</p>
+<p><strong>错误示范</strong>：<code>select empno,deptno,avg(sal) from emp group by deptno;</code></p>
+<h3 id="2-having">2. having</h3>
+<p>如果想对分组数据再进行过滤需要使用 having 子句</p>
+<p>取得每个岗位的平均工资大于 2000</p>
+<pre><code class="language-sql">select job, avg(sal) from emp group by job having avg(sal) &gt;2000;
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTExMTI0OTQxLnBuZw?x-oss-process=image/format,png" alt="image-20200714111124941" loading="lazy"></figure>
+<h3 id="3-select-语句顺序总结">3. select 语句顺序总结</h3>
+<pre><code class="language-sql">select 字段
+from 表名
+where …….
+group by ……..
+having …….(就是为了过滤分组后的数据而存在的—不可以单独的出现)
+order by ……..
+</code></pre>
+<p><strong>语句的执行顺序</strong>：</p>
+<ol>
+<li>
+<p>首先执行 where 语句过滤原始数据</p>
+</li>
+<li>
+<p>执行 group by 进行分组</p>
+</li>
+<li>
+<p>执行 having 对分组数据进行操作</p>
+</li>
+<li>
+<p>执行 select 选出数据</p>
+</li>
+<li>
+<p>执行 order by 排序</p>
+</li>
+</ol>
+<p><strong>原则</strong>：能在 where 中过滤的数据，尽量在 where 中过滤，效率较高。 having 的过滤是专门对分组之后的数据进行过滤的。</p>
+<h2 id="四-连接查询重点">四、连接查询（重点）</h2>
+<p><code>也可以叫跨表查询， 需要关联多个表进行查询</code></p>
+<blockquote>
+<p>SQL99语法相比92语法，将连接条件和where分离</p>
+</blockquote>
+<h3 id="内连接外连接的区别">内连接外连接的区别？</h3>
+<ul>
+<li><strong>内连接</strong>：只有两张表相匹配的行才能出现在结果集</li>
+<li><strong>外连接</strong>：左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示</li>
+</ul>
+<p><strong>内连接</strong></p>
+<ul>
+<li>表 1 inner join 表 2 on 关联条件</li>
+<li>做连接查询的时候一定要写上关联条件</li>
+<li>inner 可以省略</li>
+</ul>
+<p><strong>外连接</strong></p>
+<ul>
+<li>
+<p>左外连接</p>
+<ul>
+<li>
+<p>表 1 left outer join 表 2 on 关联条件</p>
+</li>
+<li>
+<p>做连接查询的时候一定要写上关联条件</p>
+</li>
+<li>
+<p>outer 可以省略</p>
+</li>
+</ul>
+</li>
+<li>
+<p>右外连接</p>
+<ul>
+<li>
+<p>表 1 right outer join 表 2 on 关联条件</p>
+</li>
+<li>
+<p>做连接查询的时候一定要写上关联条件</p>
+</li>
+<li>
+<p>outer 可以省略</p>
+<ul>
+<li>左外连接（左连接）和右外连接（右连接）的区别：</li>
+<li>左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>左外连接（左连接）和右外连接（右连接）的区别</strong>：</p>
+<ul>
+<li>左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示,不符合条件的不显示</li>
+<li>右连接恰恰相反，以上左连接和右连接也可以加入 outer 关键字，但一般不建议这种写法</li>
+</ul>
+<h2 id="五-视图的作用">五、视图的作用</h2>
+<ul>
+<li>
+<p>某些频繁使用的查询语句(如级联查询)，可能很复杂，可以利用视图<code>简化查询</code>，重用sql</p>
+</li>
+<li>
+<p><code>保护数据</code>，只授予特定权限，如查询权限</p>
+</li>
+<li>
+<p>视图本身不包含数据，<code>只是对sql语句的一个封装</code>，如果需要封装复杂的sql需要先测试性能</p>
+</li>
+<li>
+<p>用于数据检索，不能更新数据</p>
+</li>
+</ul>
+<h2 id="六-如何创建删除索引">六、如何创建删除索引？</h2>
+<blockquote>
+<p>修改索引需要先删除在添加</p>
+</blockquote>
+<ol>
+<li>添加PRIMARY KEY（主键索引）</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD PRIMARY KEY ( `column` ) 
+</code></pre>
+<ol start="2">
+<li>添加UNIQUE(唯一索引)</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD UNIQUE ( `column` ) 
+</code></pre>
+<ol start="3">
+<li>添加INDEX(普通索引)</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD INDEX index_name ( `column` )
+</code></pre>
+<ol start="4">
+<li>添加FULLTEXT(全文索引)</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD FULLTEXT ( `column`) 
+</code></pre>
+<ol start="5">
+<li>添加多列索引</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD INDEX index_name ( `column1`, `column2`, `column3` )
+</code></pre>
+<ol start="6">
+<li>删除索引</li>
+</ol>
+<pre><code class="language-sql">DROP INDEX login_name_index ON user;
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】MySQL索引总结]]></title>
+        <id>https://xzzz2020.github.io/post/EM2P_CVYa/</id>
+        <link href="https://xzzz2020.github.io/post/EM2P_CVYa/">
+        </link>
+        <updated>2020-07-26T10:44:21.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E5%B9%BA%E8%A6%81%E7%94%A8%E7%B4%A2%E5%BC%95">一、为什幺要用索引？</a></li>
+<li><a href="#%E4%BA%8C-%E7%B4%A2%E5%BC%95%E8%BF%99%E4%B9%88%E5%A4%9A%E4%BC%98%E7%82%B9%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AF%B9%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%88%97%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%B4%A2%E5%BC%95%E5%91%A2">二、索引这么多优点，为什么不对表中的每一个列创建一个索引呢？</a></li>
+<li><a href="#%E4%B8%89-%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">三、使用索引的注意事项？</a></li>
+<li><a href="#%E5%9B%9B-%E7%B4%A2%E5%BC%95%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E5%A4%B1%E6%95%88">四、索引什么时候会失效？</a></li>
+<li><a href="#%E4%BA%94-%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E5%8E%9F%E5%88%99%E6%98%AF%E4%BB%80%E4%B9%88">五、最左前缀原则是什么？</a></li>
+<li><a href="#%E5%85%AD-mysql%E7%B4%A2%E5%BC%95%E7%9A%84%E4%B8%BB%E8%A6%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">六、MySQL索引的主要数据结构</a>
+<ul>
+<li><a href="#1-%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">1. 哈希索引</a></li>
+<li><a href="#2-b%E6%A0%91%E7%B4%A2%E5%BC%95">2. B+树索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%83-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B4%A2%E5%BC%95%E8%83%BD%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6">七、为什么索引能提高查询速度？</a></li>
+<li><a href="#%E5%85%AB-%E7%B4%A2%E5%BC%95%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%9E%8B">八、索引都有哪些类型？</a>
+<ul>
+<li><a href="#1-%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95primary-key">1. 主键索引(Primary Key)</a></li>
+<li><a href="#2-%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95">2. 二级索引(辅助索引)</a></li>
+<li><a href="#3-%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">3. 聚集索引</a></li>
+<li><a href="#4-%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">4. 非聚集索引</a></li>
+<li><a href="#5-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95">5. 覆盖索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B9%9D-%E7%B4%A2%E5%BC%95%E5%88%9B%E5%BB%BA%E7%9A%84%E5%8E%9F%E5%88%99">九、索引创建的原则</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-为什幺要用索引">一、为什幺要用索引？</h2>
+<ol>
+<li>通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性。</li>
+<li>可以大大加快数据的检索速度（大大减少的检索的数据量）,  这也是创建索引的最主要的原因。</li>
+<li>帮助服务器避免排序和临时表。</li>
+<li>将随机IO变为顺序IO</li>
+<li>可以加速表和表之间的连接，特别是在实现数据的参考完整性方面特别有意义。</li>
+</ol>
+<h2 id="二-索引这么多优点为什么不对表中的每一个列创建一个索引呢">二、索引这么多优点，为什么不对表中的每一个列创建一个索引呢？</h2>
+<ol>
+<li>当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，这样就降低了数据的维护速度。</li>
+<li>索引需要占物理空间，除了数据表占数据空间之外，每一个索引还要占一定的物理空间，如果要建立聚簇索引，那么需要的空间就会更大。</li>
+<li>创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增加。</li>
+</ol>
+<h2 id="三-使用索引的注意事项">三、使用索引的注意事项？</h2>
+<ul>
+<li>
+<p>在经常需要搜索的列上，可以加快搜索的速度；</p>
+</li>
+<li>
+<p>在经常使用在WHERE子句中的列上面创建索引，加快条件的判断速度。</p>
+</li>
+<li>
+<p>在经常需要排序的列上创建索引，因为索引已经排序，这样查询可以利用索引的排序，加快排序查询时间</p>
+</li>
+<li>
+<p>在使用InnoDB时使用与业务无关的自增主键作为主键</p>
+</li>
+<li>
+<p>避免索引失效</p>
+</li>
+</ul>
+<h2 id="四-索引什么时候会失效">四、索引什么时候会失效？</h2>
+<ul>
+<li>
+<p>有or关键字必须所有字段全有索引;</p>
+</li>
+<li>
+<p>复合索引未用左列字段;</p>
+</li>
+<li>
+<p>like以%开头</p>
+</li>
+<li>
+<p>where中索引列有运算</p>
+</li>
+<li>
+<p>where中索引列使用了函数</p>
+</li>
+<li>
+<p>如果mysql觉得全表扫描更快时（数据少）</p>
+</li>
+</ul>
+<h2 id="五-最左前缀原则是什么">五、最左前缀原则是什么？</h2>
+<p>主要针对的聚合索引是否生效，假如有一个聚合索引ABC：</p>
+<ul>
+<li>最左边的列必须要用到，比如这个A列</li>
+<li>中间是不能断的，如只查询了A和C列，只会用到C的索引</li>
+<li>遇到范围后，终止，比如where条件是这样的，where  A = x and B &gt;y  and C = z，这个时候只会用到AB索引，无法使用C索引</li>
+</ul>
+<h2 id="六-mysql索引的主要数据结构">六、MySQL索引的主要数据结构</h2>
+<h3 id="1-哈希索引">1. 哈希索引</h3>
+<p>​	对于哈希索引来说，底层的数据结构就是哈希表，因此在绝大多数需求为单条记录查询的时候，可以选择哈希索引，查询性能最快；其余大部分场景，建议选择BTree索引</p>
+<ul>
+<li>因为Hash索引比较的是经过Hash计算的值，所以只能进行等式比较，不能用于范围查询</li>
+<li>当哈希值大量重复且数据量非常大时，其检索效率并没有Btree索引高的</li>
+<li>哈希值映射的真正数据在哈希表中就不一定按照顺序排列，所以无法利用Hash索引来加速任何排序操作</li>
+</ul>
+<h3 id="2-b树索引">2. B+树索引</h3>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTc1NDMyNDA1LnBuZw?x-oss-process=image/format,png" alt="image-20200717175432405" loading="lazy"></figure>
+<ul>
+<li>
+<p>为磁盘或其他直接存取的辅助设备而设计的平衡二叉树</p>
+</li>
+<li>
+<p>所有的记录节点都是按照键值的大小<code>顺序存放</code>在同一层的叶节点</p>
+</li>
+<li>
+<p>同时最后一层叶字节点之间存在指针，这样可以保证其是连续的数据排列</p>
+</li>
+</ul>
 <p>​</p>
-<h2 id="7-锁粗化">7. 锁粗化</h2>
-<p>如果一系列的连续操作都对同一个对象反复加锁和解锁，频繁的加锁操作就会导致性能损耗。</p>
-<p>上一节的示例代码中连续的 append() 方法就属于这类情况。如果虚拟机探测到由这样的一串零碎的操作都对同一个对象加锁，将会把加锁的范围扩展（粗化）到整个操作序列的外部。对于上一节的示例代码就是扩展到第一个append() 操作之前直至最后一个 append() 操作之后，这样只需要加锁一次就可以了。</p>
-<h2 id="8-锁膨胀和锁降级">8. 锁膨胀和锁降级</h2>
-<p><strong>所谓锁的升级、降级，就是 JVM 优化 synchronized 运行的机制，当 JVM 检测到不同的竞争状况时，会自动切换到适合的锁实现，这种切换就是锁的升级、降级。</strong></p>
-<h2 id="9-偏向锁">9. 偏向锁</h2>
-<p>偏向锁的思想是偏向于让第一个获取锁对象的线程，这个线程在之后获取该锁就不再需要进行同步操作，甚至连 CAS操作也不再需要。</p>
-<p>当锁对象第一次被线程获得的时候，进入偏向状态，标记为 1 01。同时使用 CAS 操作将线程 ID 记录到 Mark Word中，如果 CAS 操作成功，这个线程以后每次进入这个锁相关的同步块就不需要再进行任何同步操作。</p>
-<p>当有另外一个线程去尝试获取这个锁对象时，偏向状态就宣告结束，此时撤销偏向（Revoke Bias）后恢复到未锁定状态或者轻量级锁状态</p>
-<h2 id="10-轻量级锁">10. 轻量级锁</h2>
-<p>轻量级锁是相对于传统的重量级锁而言，它使用 CAS 操作来避免重量级锁使用互斥量的开销。对于绝大部分的锁，在整个同步周期内都是不存在竞争的，因此也就不需要都使用互斥量进行同步，可以先采用 CAS 操作进行同步，如果 CAS 失败了再改用互斥量进行同步。</p>
-<p>当尝试获取一个锁对象时，如果锁对象标记为001，说明锁对象的锁未锁定（unlocked）状态。此时虚拟机在当前线程的虚拟机栈中创建 Lock Record，然后使用 CAS 操作将对象的 Mark Word 更新为 Lock Record 指针。如果 CAS操作成功了，那么线程就获取了该对象上的锁，并且对象的 Mark Word 的锁标记变为 00，表示该对象处于轻量级锁状态。</p>
-<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzExMTkyMzAzNTU5LnBuZw?x-oss-process=image/format,png" alt="image-20200711192303559" loading="lazy"></figure>
-<p>如果 CAS 操作失败了，虚拟机首先会检查对象的 Mark Word 是否指向当前线程的虚拟机栈，如果是的话说明当前线程已经拥有了这个锁对象，那就可以直接进入同步块继续执行，否则说明这个锁对象已经被其他线程线程抢占了。</p>
-<p>当竞争线程尝试占用轻量级锁失败多次之后（使用自旋）轻量级锁就会膨胀为重量级锁，重量级线程指针指向竞争线程，竞争线程也会阻塞，等待轻量级线程释放锁后唤醒他。</p>
-<h2 id="10-重量级锁">10. 重量级锁</h2>
-<p>重量级锁的加锁、解锁过程和轻量级锁差不多，区别是：<strong>竞争失败后，线程阻塞，释放锁后，唤醒阻塞的线程，不使用自旋锁，不会那么消耗CPU，所以重量级锁适合用在同步块执行时间长的情况下。</strong></p>
-<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzA4MTYyOTA0NjU2LnBuZw?x-oss-process=image/format,png" alt="image-20200708162904656" loading="lazy"></figure>
-<h2 id="11-reentrantlock">11. ReentrantLock</h2>
+<p><strong>B+树相对于B树的区别？</strong></p>
 <ul>
-<li>ReentrantLock 是 java.util.concurrent（J.U.C）包中的锁。</li>
-<li>ReenTrantLock的实现是一种自旋锁， 通过循环调用CAS操作来实现加锁。</li>
-<li>它的性能比较好也是因为避免了使线程进入内核态的阻塞状态。想尽办法避免线程进入内核的阻塞状态是我们去分析和理解锁设计的关键钥匙。</li>
-<li>支持公平锁，但是只是相对公平，并不能一定的保证公平，可以避免线程的饥饿现象，即长时间获取不到CPU的执行权，但是如果没有业务需求，不建议使用，因为其会降低性能</li>
-<li>必须手动的释放锁，一般使用try...catch..finally释放锁</li>
-<li>支持可重入</li>
+<li>单一节点存储的元素更多，使得查询的IO次数更少，所以也就使得它更适合做为数据库MySQL的底层数据结构了</li>
+<li>所有的查询都要查找到叶子节点，查询性能是稳定的，而B树，每个节点都可以查找到数据，所以不稳定。</li>
+<li>所有的叶子节点形成了一个有序链表，更加便于查找。</li>
 </ul>
-<h2 id="12-synchronize和reentrantlock">12. synchronize和ReentrantLock</h2>
+<p><strong>B+树与红黑树的比较？</strong></p>
 <ul>
-<li>Lock基于<code>AQS</code>实现，通过<code>int类型状态</code>和<code>CAS机制</code>来维护锁的获取与释放</li>
-<li>synchronized需要通过<code>monitor</code>，经历一个从用户态到内核态的转变过程，更加耗时</li>
+<li><strong>更少的查找次数</strong>：平衡树查找操作的时间复杂度和树高 h 相关，O(h)=O(logdN)，其中 d 为每个节点的出度。红黑树的出度为 2，而 B+ Tree 的出度一般都非常大，所以红黑树的树高 h 很明显比 B+ Tree 大非常多，查找的次数也就更多。</li>
+<li><strong>利用磁盘预读特性</strong>：为了减少磁盘 I/O 操作，磁盘往往不是严格按需读取，而是每次都会预读。预读过程中，磁盘进行顺序读取，顺序读取不需要进行磁盘寻道，并且只需要很短的磁盘旋转时间，速度会非常快。数据库系统将索引的一个节点的大小设置为页的大小，使得一次 I/O 就能完全载入一个节点。并且可以利用预读特性，相邻的节点也能够被预先载入</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">比较</th>
-<th style="text-align:center">synchronized</th>
-<th style="text-align:center">Lock</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">锁的实现</td>
-<td style="text-align:center">是java内置关键字，在jvm层面</td>
-<td style="text-align:center">是个java类</td>
-</tr>
-<tr>
-<td style="text-align:center">能否判断状态</td>
-<td style="text-align:center">无法判断是否获取锁的状态</td>
-<td style="text-align:center">可以判断是否获取到锁</td>
-</tr>
-<tr>
-<td style="text-align:center">释放锁的方式</td>
-<td style="text-align:center">会自动释放锁</td>
-<td style="text-align:center">需在finally中手工释放锁（unlock()方法释放锁），否则容易造成线程死锁</td>
-</tr>
-<tr>
-<td style="text-align:center">等待可中断</td>
-<td style="text-align:center">线程会一直等待下去</td>
-<td style="text-align:center">如果尝试获取不到锁，线程可以不用一直等待就结束</td>
-</tr>
-<tr>
-<td style="text-align:center">公平锁</td>
-<td style="text-align:center">不支持</td>
-<td style="text-align:center">支持公平锁</td>
-</tr>
-<tr>
-<td style="text-align:center">性能</td>
-<td style="text-align:center">新版本 Java 对 synchronized 进行了很多优化，例如自旋锁等</td>
-<td style="text-align:center">基于<code>AQS</code>实现，性能和synchronize差不多</td>
-</tr>
-</tbody>
-</table>
-<p><strong>使用建议</strong>：</p>
-<p>除非需要使用 ReentrantLock 的高级功能，否则优先使用 synchronized。这是因为 synchronized 是 JVM 实现的一种锁机制，JVM 原生地支持它，而 ReentrantLock 不是所有的 JDK 版本都支持。并且使用 synchronized 不用担心没有释放锁而导致死锁问题，因为 JVM 会确保锁的释放。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【面试题】Java并发基础]]></title>
-        <id>https://xzzz2020.github.io/post/k2Dw6UqvL/</id>
-        <link href="https://xzzz2020.github.io/post/k2Dw6UqvL/">
-        </link>
-        <updated>2020-07-12T10:40:57.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
-</blockquote>
-<blockquote>
-<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
+<p><strong>B+数树和B-树的区别？</strong></p>
+<ul>
 <li>
-<ul>
-<li><a href="#1-%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB">1. 进程和线程的区别</a></li>
-<li><a href="#2-start-%E6%96%B9%E6%B3%95%E5%92%8Crun%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB">2. start() 方法和run()方法的区别</a></li>
-<li><a href="#3-java-%E7%BA%BF%E7%A8%8B%E5%AE%9E%E7%8E%B0%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F">3. JAVA 线程实现/创建方式</a></li>
-<li><a href="#4-%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%A4%84%E7%90%86%E7%BA%BF%E7%A8%8B%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC">4. 如何实现处理线程的返回值</a></li>
-<li><a href="#5-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81">5. 线程的状态</a></li>
-<li><a href="#6sleep%E5%92%8Cwait%E6%96%B9%E6%B3%95%E7%9A%84%E5%B7%AE%E5%BC%82">6.sleep和wait方法的差异</a></li>
-<li><a href="#7-notify-%E5%92%8C-notifyall%E7%9A%84%E5%8C%BA%E5%88%AB">7. notify 和 notifyAll的区别</a></li>
-<li><a href="#8-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B%E6%9C%BA%E5%88%B6">8. 守护线程机制</a></li>
-<li><a href="#9-%E4%B8%AD%E6%96%AD%E6%9C%BA%E5%88%B6">9. 中断机制</a>
-<ul>
-<li><a href="#interruptedexception">InterruptedException</a></li>
-<li><a href="#interrupted">interrupted()</a></li>
-</ul>
+<p>B+树相当于B-树的变种，主要差异在于B+树数据都保存在叶子节点，同时叶子节点之间形成了链表</p>
 </li>
-<li><a href="#10-%E4%BF%9D%E8%AF%81%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E6%96%B9%E5%BC%8F">10. 保证线程安全的方式</a>
-<ul>
-<li><a href="#%E4%B8%8D%E5%8F%AF%E5%8F%98%E5%AF%B9%E8%B1%A1">不可变对象</a></li>
-<li><a href="#%E4%BA%92%E6%96%A5%E5%90%8C%E6%AD%A5">互斥同步</a></li>
-<li><a href="#%E9%9D%9E%E9%98%BB%E5%A1%9E%E5%90%8C%E6%AD%A5-cas">非阻塞同步--CAS</a></li>
-<li><a href="#%E6%97%A0%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88">无同步方案</a></li>
-</ul>
+<li>
+<p>B+树查询时间复杂度固定是logn，B-树查询复杂度最好是 O(1)</p>
 </li>
-<li><a href="#11-java-%E4%B8%AD%E7%94%A8%E5%88%B0%E7%9A%84%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6">11. Java 中用到的线程调度</a></li>
-</ul>
+<li>
+<p>B+树相邻接点的指针可以大大增加区间访问性，可使用在范围查询等，而B-树每个节点 key 和 data 在一起，则无法区间查找</p>
 </li>
 </ul>
-</p>
-<h2 id="1-进程和线程的区别">1. 进程和线程的区别</h2>
-<blockquote>
-<p>初期计算机采用串行方式执行任务，需要等待用户输入指令，效率很低；接着计算机采用批处理批量执行用户指令，但是如果有一条指令需要读取大量的数据，此时CPU仍然处于停滞状态，此时就出现了进程。</p>
-<p>进程有自己的内存空间，互相之间不干扰，可以保存自己的运行状态可以互相切换，虽然一个CPU依然只能运行一个进程，但当时间片比较小的时候，看起来就像是运行多个程序一样</p>
-<p>而线程是为了更进一步的粒度控制，是进程的一个子任务，共享进程的资源，相互切换更加迅速</p>
-</blockquote>
-<p><strong>进程和线程的区别？</strong></p>
+<p><strong>MyISAM和InnoDB实现BTree索引方式的区别？</strong></p>
+<ul>
+<li>
+<p><strong>MyISAM</strong>：B+Tree叶节点的data域存放的是数据记录的地址。在索引检索的时候，首先按照B+Tree搜索算法搜索索引，如果指定的Key存在，则取出其 data 域的值，然后以 data 域的值为地址读取相应的数据记录。这被称为“非聚簇索引”。</p>
+</li>
+<li>
+<p><strong>InnoDB</strong>：其数据文件本身就是索引文件。相比MyISAM，索引文件和数据文件是分离的，其表数据文件本身就是按B+Tree组织的一个索引结构，树的叶节点data域保存了完整的数据记录。这个索引的key是数据表的主键，因此InnoDB表数据文件本身就是主索引。这被称为“聚簇索引（或聚集索引）”，而其余的索引都作为辅助索引，辅助索引的data域存储相应记录主键的值而不是地址，这也是和MyISAM不同的地方。在根据主索引搜索时，直接找到key所在的节点即可取出数据；在根据辅助索引查找时，则需要先取出主键的值，在走一遍主索引。</p>
+</li>
+</ul>
+<h2 id="七-为什么索引能提高查询速度">七、为什么索引能提高查询速度？</h2>
+<p>MySQL底层每16k的数据为一页，一页中有多个记录值。</p>
+<p>如果我们写select * from user where indexname = 'xxx'这样没有进行任何优化的sql语句，默认会这样做：</p>
 <ol>
-<li><strong>拥有资源</strong>：进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源</li>
-<li><strong>调度</strong>：线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换</li>
-<li><strong>系统开销</strong>：由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、I/O 设备等，所付出的开销远大于创建或撤销线程时的开销。类似地，在进行进程切换时，涉及当前执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置，而线程切换时只需保存和设置少量寄存器内容，开销很小</li>
-<li><strong>通信方面</strong>：线程间可以通过直接读写同一进程中的数据进行通信，但是进程通信需要借助 IPC。</li>
+<li><strong>定位到记录所在的页：需要遍历双向链表，找到所在的页</strong></li>
+<li><strong>从所在的页内中查找相应的记录：由于不是根据主键查询，只能遍历所在页的单链表了</strong></li>
 </ol>
-<p><strong>Java与进程和线程的关系</strong>：</p>
-<ul>
-<li>Java对操作系统提供的功能进行封装,包括进程和线程</li>
-<li>运行一个程序会产生一个进程,进程包含至少一个线程</li>
-<li>每个进程对应一个JVM实例,多个线程共享JVM里的堆</li>
-<li>Java采用单线程编程模型,程序会自动创建主线程</li>
-<li>主线程可以创建子线程,原则上要后于子线程完成执行</li>
-</ul>
-<h2 id="2-start-方法和run方法的区别">2. start() 方法和run()方法的区别</h2>
+<p>很明显，在数据量很大的情况下这样查找会很慢！这样的时间复杂度为O（n）。</p>
+<p>使用了索引其实就是将无序的数据变成相对有序，其实底层结构就是B+树，B+树作为树的一种实现，时间复杂度近似为O(logn)，能够让我们很快地查找出对应的记录。</p>
+<h2 id="八-索引都有哪些类型">八、索引都有哪些类型？</h2>
+<h3 id="1-主键索引primary-key">1. 主键索引(Primary Key)</h3>
 <ul>
 <li>
-<p>Thread中调用start方法默认调用的start0方法，会创建一个子线程并执行run方法。</p>
+<p>数据表的主键列使用的就是主键索引。</p>
 </li>
 <li>
-<p>Thread中run方法，默认调用的是类属性中Runnable接口的run方法，这个体现了策略模式，即执行和策略分离，由用户定义执行的策略</p>
-</li>
-</ul>
-<h2 id="3-java-线程实现创建方式">3. JAVA 线程实现/创建方式</h2>
-<p><strong>有三种使用线程的方法</strong> ：</p>
-<ul>
-<li>实现 Runnable 接口；</li>
-<li>实现 Callable 接口；</li>
-<li>继承 Thread 类</li>
-</ul>
-<p>实现 Runnable 和 Callable 接口的类只能当做一个可以在线程中运行的任务，不是真正意义上的线程，因此最后还需要通过 Thread 来调用。可以说任务是通过线程驱动从而执行的 。</p>
-<p><strong>实现接口比继承 Thread  要好，因为</strong>：</p>
-<ul>
-<li>Java 不支持多重继承，因此继承了 Thread 类就无法继承其它类，但是可以实现多个接口；</li>
-<li>类可能只要求可执行就行，继承整个 Thread 类开销过大。</li>
-</ul>
-<h2 id="4-如何实现处理线程的返回值">4. 如何实现处理线程的返回值</h2>
-<ul>
-<li>主线程等待法：利用循环不断的判断，控制和实现很复杂</li>
-<li>使用Thread的join方法，阻塞主线程</li>
-<li>使用Callable接口实现：通过FutureTask或者线程池获取</li>
-</ul>
-<h2 id="5-线程的状态">5. 线程的状态</h2>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzA4MTUxNTQ2MjM5LnBuZw?x-oss-process=image/format,png" alt="image-20200708151546239" loading="lazy"></figure>
-<p><strong>新建（New）</strong></p>
-<ul>
-<li>创建后尚未启动。</li>
-</ul>
-<p><strong>可运行（Runnable）</strong></p>
-<ul>
-<li>可能正在运行，也可能正在等待 CPU 时间片。</li>
-<li>包含了操作系统线程状态中的 Running 和 Ready。</li>
-</ul>
-<p><strong>阻塞（Blocked）</strong></p>
-<ul>
-<li>等待获取一个排它锁，如果其线程释放了锁就会结束此状态。</li>
-</ul>
-<p><strong>无限期等待（Waiting）</strong></p>
-<ul>
-<li>等待其它线程显式地唤醒，否则不会被分配 CPU 时间片。</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>进入方法</th>
-<th>退出方法</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>没有设置 Timeout 参数的 Object.wait() 方法</td>
-<td>Object.notify() / Object.notifyAll()</td>
-</tr>
-<tr>
-<td>没有设置 Timeout 参数的 Thread.join() 方法</td>
-<td>被调用的线程执行完毕</td>
-</tr>
-<tr>
-<td>LockSupport.park() 方法</td>
-<td>LockSupport.unpark(Thread)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>限期等待（Timed Waiting）</strong></p>
-<ul>
-<li>无需等待其它线程显式地唤醒，在一定时间之后会被系统自动唤醒。</li>
-<li>调用 Thread.sleep() 方法使线程进入限期等待状态时，常常用“使一个线程睡眠”进行描述。</li>
-<li>调用 Object.wait() 方法使线程进入限期等待或者无限期等待时，常常用“挂起一个线程”进行描述。</li>
-<li>睡眠和挂起是用来描述行为，而阻塞和等待用来描述状态。</li>
-<li>阻塞和等待的区别在于，阻塞是被动的，它是在等待获取一个排它锁。而等待是主动的，通过调用 Thread.sleep() 和Object.wait() 等方法进入</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>进入方法</th>
-<th>退出方法</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Thread.sleep() 方法</td>
-<td>时间结束</td>
-</tr>
-<tr>
-<td>设置了 Timeout 参数的 Object.wait() 方法</td>
-<td>时间结束 / Object.notify() / Object.notifyAll()</td>
-</tr>
-<tr>
-<td>设置了 Timeout 参数的 Thread.join() 方法</td>
-<td>时间结束 / 被调用的线程执行完毕</td>
-</tr>
-<tr>
-<td>LockSupport.parkNanos() 方法</td>
-<td>LockSupport.unpark(Thread)</td>
-</tr>
-<tr>
-<td>LockSupport.parkUntil() 方法</td>
-<td>LockSupport.unpark(Thread)</td>
-</tr>
-</tbody>
-</table>
-<p><strong>死亡（Terminated）</strong></p>
-<ul>
-<li>可以是线程结束任务之后自己结束，或者产生了异常而结束</li>
-</ul>
-<h2 id="6sleep和wait方法的差异">6.sleep和wait方法的差异</h2>
-<p><strong>最主要的本质区别</strong>：</p>
-<ul>
-<li>Thread.sleep只会让出CPU ,<code>不会导致锁行为的改变</code></li>
-<li>Object.wait不仅让出CPU ,<code>还会释放已经占有的同步资源锁</code></li>
-</ul>
-<h2 id="7-notify-和-notifyall的区别">7. notify 和 notifyAll的区别</h2>
-<p><strong>锁池</strong>：</p>
-<p>假设线程A已经拥有了某个对象(不是类)的锁，而其它线程B、C想要调用这个对象的某个synchronized方法(或者块)，由于B、C线程在进入对象的synchronized方法(或者块)之前必须先获得该对象锁的拥有权，而恰巧该对象的锁目前正被线程A所占用，此时B、C线程就会被阻塞，进入一个地方去等待锁的释放，这个地方便是该对象的锁池</p>
-<p><strong>等待池</strong>：</p>
-<p>假设线程A调用了某个对象的wait()方法，线程A就会释放该对象的锁，同时线程A就进入到了该对象的等待池中，进入到等待池中的线程不会去竞争该对象的锁。</p>
-<p><strong>notifyAll会让所有处于等待池的线程全部进入锁池去竞争获取锁的机会</strong></p>
-<p><strong>notify只会随机选取一个处于等待池中的线程进入锁池去竞争获取锁的机会。</strong></p>
-<h2 id="8-守护线程机制">8. 守护线程机制</h2>
-<ul>
-<li>
-<p>守护线程是程序运行时在后台提供服务的线程，不属于程序中不可或缺的部分。</p>
+<p>一张数据表有只能有一个主键，并且主键不能为null，不能重复。</p>
 </li>
 <li>
-<p>当所有非守护线程结束时，程序也就终止，同时会杀死所有守护线程。</p>
-</li>
-<li>
-<p>main() 属于非守护线程。</p>
-</li>
-<li>
-<p>可以使用 setDaemon() 方法将一个线程设置为守护线程</p>
+<p>在mysql的InnoDB的表中，当没有显示的指定表的主键时，InnoDB会自动先检查表中是否有唯一索引的字段，如果有，则选择该字段为默认的主键，否则InnoDB将会自动创建一个6Byte的自增主键。</p>
 </li>
 </ul>
-<pre><code class="language-java">public static void main(String[] args) {
-    Thread thread = new Thread(new MyRunnable());
-    thread.setDaemon(true);
-}
-</code></pre>
-<h2 id="9-中断机制">9. 中断机制</h2>
-<h3 id="interruptedexception">InterruptedException</h3>
-<p>通过调用一个线程的 interrupt() 来中断该线程，<code>如果该线程处于阻塞、限期等待或者无限期等待状态，那么就会抛出 InterruptedException，从而提前结束该线程。但是不能中断 I/O 阻塞和 synchronized 锁阻塞。</code><br>
-对于以下代码，在 main() 中启动一个线程之后再中断它，由于线程中调用了 Thread.sleep() 方法，因此会抛出一个InterruptedException，从而提前结束线程，不执行之后的语句。</p>
-<pre><code class="language-java">public class InterruptExample {
-    private static class MyThread1 extends Thread {
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(2000);
-                System.out.println(&quot;Thread run&quot;);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public static void main(String[] args) throws InterruptedException {
-        Thread thread1 = new MyThread1();
-        thread1.start();
-        thread1.interrupt();
-        System.out.println(&quot;Main run&quot;);
-    }
-}
-</code></pre>
-<h3 id="interrupted">interrupted()</h3>
-<p>如果一个线程的 run() 方法执行一个无限循环，并且没有执行 sleep() 等会抛出 InterruptedException 的操作，那么调用线程的 interrupt() 方法就无法使线程提前结束。</p>
-<p>但是调用 interrupt() 方法会<code>设置线程的中断标记</code>，此时调用 interrupted() 方法会返回 true。因此可以在循环体中使用 interrupted() 方法来判断线程是否处于中断状态，从而提前结束线程。</p>
-<pre><code class="language-java">public class InterruptExample {
-    private static class MyThread2 extends Thread {
-        @Override
-        public void run() {
-            while (!interrupted()) {
-                // ..
-            } 
-            System.out.println(&quot;Thread end&quot;);
-        }
-    }
-    public static void main(String[] args) throws InterruptedException {
-        Thread thread2 = new MyThread2();
-        thread2.start();
-        thread2.interrupt();
-    }
-}
-</code></pre>
-<h2 id="10-保证线程安全的方式">10. 保证线程安全的方式</h2>
-<h3 id="不可变对象">不可变对象</h3>
-<p>这是一种<code>无锁</code>的设计模式，因为<code>对于不可变对象没有任何机会去修改这个对象的属性或者引用类型</code></p>
-<ul>
-<li>final 关键字修饰的基本数据类型</li>
-<li>String</li>
-<li>枚举类型</li>
-<li>Number 部分子类，如 Long 和 Double 等数值包装类型，BigInteger 和 BigDecimal 等大数据类型。但同为Number 的原子类 AtomicInteger 和 AtomicLong 则是可变的。</li>
-<li>对于集合类型，可以使用 Collections.unmodifiableXXX() 方法来获取一个不可变的集合，先对原始的集合进行拷贝，需要对集合进行修改的方法都直接抛出异常</li>
-</ul>
-<h3 id="互斥同步">互斥同步</h3>
-<p>synchronize和ReentrantLock</p>
-<h3 id="非阻塞同步-cas">非阻塞同步--CAS</h3>
-<p>是一种乐观锁，先进行操作，如果没有其它线程争用共享数据，那操作就成功了，否则采取补偿措施（不断地重试，直到成功为止）。这种乐观的并发策略的许多实现都不需要将线程阻塞，因此这种同步操作称为非阻塞同步。</p>
-<p>乐观锁需要操作和冲突检测这两个步骤具备原子性，这里就不能再使用互斥同步来保证了，只能靠硬件来完成。硬件支持的原子性操作最典型的是：比较并交换（Compare-and-Swap，CAS）。CAS 指令需要有 3 个操作数，分别是内存地址 V、旧的预期值 A 和新值 B。当执行操作时，只有当 V 的值等于 A，才将 V 的值更新为 B。</p>
-<h3 id="无同步方案">无同步方案</h3>
-<p>要保证线程安全，并不是一定就要进行同步。如果一个方法本来就不涉及共享数据，那它自然就无须任何同步措施去保证正确性。</p>
+<h3 id="2-二级索引辅助索引">2. 二级索引(辅助索引)</h3>
+<p>二级索引又称为辅助索引，是因为二级索引的叶子节点在InnoDB中存储的数据是主键。也就是说，通过二级索引，可以定位主键的位置；在MyISAM中存储的数据是地址。</p>
 <ol>
-<li>
-<p><strong>栈封闭</strong><br>
-多个线程访问同一个方法的局部变量时，不会出现线程安全问题，因为局部变量存储在虚拟机栈中，属于线程私有的。</p>
-<pre><code class="language-java">public class StackClosedExample {
-    public void add100() {
-        int cnt = 0;
-        for (int i = 0; i &lt; 100; i++) {
-            cnt++;
-        } 
-        
-        System.out.println(cnt);
-    }
-
-    public static void main(String[] args) {
-        StackClosedExample example = new StackClosedExample();
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(() -&gt; example.add100());
-        executorService.execute(() -&gt; example.add100());
-        executorService.shutdown();
-    }
-}
-</code></pre>
-</li>
-<li>
-<p><strong>线程本地存储</strong></p>
-<p>可以使用<strong>ThreadLocal</strong>，实现线程本地存储功能，这样不同线程访问数据时，只能访问属于本线程的数据，不会干扰到其他点线程</p>
-</li>
-<li>
-<p><strong>可重入代码</strong></p>
-<p>最简单的理解就是任何变量都是局部变量，保证在被任何一个函数调用时都以同样的方式运行美，也就是说多个线程执行这个代码，只要赋予方法参数相同，方法结果则都一样</p>
-</li>
+<li><strong>唯一索引(Unique Key)</strong> ：唯一索引也是一种约束。**唯一索引的属性列不能出现重复的数据，但是允许数据为NULL，一张表允许创建多个唯一索引。**建立唯一索引的目的大部分时候都是为了该属性列的数据的唯一性，而不是为了查询效率。</li>
+<li><strong>普通索引(Index)</strong> ：<strong>普通索引的唯一作用就是为了快速查询数据，一张表允许创建多个普通索引，并允许数据重复和NULL。</strong></li>
+<li><strong>前缀索引(Prefix)</strong> ：前缀索引只适用于字符串类型的数据。前缀索引是对文本的前几个字符创建索引，相比普通索引建立的数据更小， 因为只取前几个字符。</li>
+<li><strong>全文索引(Full Text)</strong> ：全文索引主要是为了检索大文本数据中的关键字的信息，是目前搜索引擎数据库使用的一种技术。Mysql5.6之前只有MYISAM引擎支持全文索引，5.6之后InnoDB也支持了全文索引。</li>
 </ol>
-<h2 id="11-java-中用到的线程调度">11. Java 中用到的线程调度</h2>
-<p><strong>抢占式调度</strong>：</p>
-<p>抢占式调度指的是每条线程执行的时间、线程的切换都由系统控制，系统控制指的是在系统某种运行机制下，可能每条线程都分同样的执行时间片，也可能是某些线程执行的时间片较长，甚至某些线程得不到执行的时间片。在这种机制下，一个线程的堵塞不会导致整个进程堵塞。</p>
-<p>Java 中线程会按优先级分配 CPU 时间片运行， 且优先级越高越优先执行，但优先级高并不代表能独自占用执行时间片，可能是优先级高得到越多的执行时间片，反之，优先级低的分到的执行时间少但不会分配不到执行时间</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【面试题】CAS]]></title>
-        <id>https://xzzz2020.github.io/post/DjYrJcxKl/</id>
-        <link href="https://xzzz2020.github.io/post/DjYrJcxKl/">
-        </link>
-        <updated>2020-07-12T10:39:31.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
-</blockquote>
-<blockquote>
-<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
+<h3 id="3-聚集索引">3. 聚集索引</h3>
+<p>聚集索引即索引结构和数据一起存放的索引。InnoDB存储引擎中主键索引属于聚集索引，B+树的每个非叶子节点存储索引，叶子节点存储索引和索引对应的数据。</p>
+<p><strong>优点</strong>：</p>
 <ul>
-<li><a href="#%E4%B8%80-cas%E5%8E%9F%E7%90%86%E5%8F%8A%E7%BC%BA%E9%99%B7">一、CAS原理及缺陷</a></li>
-<li><a href="#%E4%BA%8C-aba%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3">二、ABA问题及解决</a></li>
-<li><a href="#%E4%B8%89-atomic%E7%B1%BB">三、atomic类</a></li>
-<li><a href="#%E5%9B%9B-unsafe%E7%B1%BB">四、Unsafe类</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-cas原理及缺陷">一、CAS原理及缺陷</h2>
-<p><strong>原理</strong>：</p>
-<ul>
-<li>
-<p>CAS机制当中使用了3个基本操作数：内存地址V，旧的预期值A，要修改的新值B。</p>
-</li>
-<li>
-<p>更新一个变量的时候，只有当变量的预期值A和内存地址V当中的实际值相同时，才会将内存地址V对应的值修改为B。</p>
-</li>
-<li>
-<p>从思想上来说，Synchronized属于悲观锁，悲观地认为程序中的并发情况严重，所以严防死守。</p>
-</li>
-<li>
-<p>CAS属于乐观锁，乐观地认为程序中的并发情况不那么严重，所以让线程不断去尝试更新。</p>
-</li>
+<li>聚集索引的查询速度非常的快，因为整个B+树本身就是一颗多叉平衡树，叶子节点也都是有序的，定位到索引的节点，就相当于定位到了数据。</li>
 </ul>
 <p><strong>缺点</strong>：</p>
-<ol>
-<li><strong>在竞争激烈的时候，CPU开销较大</strong></li>
-</ol>
-<p>在并发量比较高的情况下，如果许多线程反复尝试更新某一个变量，却又一直更新不成功，循环往复，会给CPU带来很大的压力。</p>
-<ol start="2">
-<li><strong>不能保证代码块的原子性</strong></li>
-</ol>
-<p>CAS机制所保证的只是一个变量的原子性操作，而不能保证整个代码块的原子性。比如需要保证多个变量共同进行原子性的更新，就不得不使用Synchronized了</p>
-<h2 id="二-aba问题及解决">二、ABA问题及解决</h2>
-<p><strong>什么是ABA？</strong></p>
-<p>CAS的机制是在赋值的时候进行比较，如果此时的数值没有修改，则可以完成修改</p>
-<p>但是，如果一个对象或者变量出现了：<code>A =&gt; B =&gt; ...... =&gt; A</code>，此时CAS算法进行比较，会没有任何问题，进行修改。但是此时可能已经被修改过了无数次，其他线程的修改就丢失了，在复杂的数据结构比如链表，队列，栈、树等都可能出现不可预知的问题</p>
-<p><strong>解决方式–AtomicStampedReference</strong></p>
 <ul>
-<li>加一个版本号，除了比较对象值，还需要比较状态戳，类似于时间戳</li>
-<li>每次修改成功也会同时修改状态戳</li>
+<li><strong>依赖于有序的数据</strong> ：因为B+树是多路平衡树，如果索引的数据不是有序的，那么就需要在插入时排序，如果数据是整型还好，否则类似于字符串或UUID这种又长又难比较的数据，插入或查找的速度肯定比较慢。</li>
+<li><strong>更新代价大</strong>：如果对索引列的数据被修改时，那么对应的索引也将会被修改，可能涉及自旋操作维护平衡， 而且况聚集索引的叶子节点还存放着数据，修改代价肯定是较大的， 所以对于主键索引来说，主键一般都是不可被修改的。</li>
 </ul>
-<h2 id="三-atomic类">三、atomic类</h2>
-<p>在高并发条件下，如果都需要对一些基本类型进行修改，就会破坏其原子性</p>
-<p>Java并发包提供了一个原子类，基于的是用了 Unsafe 类的 CAS 操作</p>
-<p><strong>主要分为基本类型 、数组类型、引用类型和对象的属性子四类</strong></p>
-<h2 id="四-unsafe类">四、Unsafe类</h2>
-<p>很多Java的基础类库，包括一些被广泛使用的高性能开发库都是基于Unsafe类开发的，比如Netty、Cassandra、Hadoop、Kafka等。Unsafe类在提升Java运行效率，增强Java语言底层操作能力方面起了很大的作用。</p>
-<p>Java和C++语言的一个重要区别就是Java中我们无法直接操作一块内存区域，不能像C++中那样可以自己申请内存和释放内存。Java中的Unsafe类为我们提供了类似C++手动管理内存的能力，同时也有了指针的问题。</p>
+<h3 id="4-非聚集索引">4. 非聚集索引</h3>
+<p>非聚集索引即索引结构和数据分开存放的索引，比如说MyISAM中的索引保存的指向数据文件的指针。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li><strong>更新代价比聚集索引要小</strong>：非聚集索引的更新代价就没有聚集索引那么大了，非聚集索引的叶子节点是不存放数据的</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li><strong>可能会二次查询(回表)</strong> :这应该是非聚集索引最大的缺点了。 当查到索引对应的指针或主键后，可能还需要根据指针或主键再到数据文件或表中查询。</li>
+</ul>
+<p><strong>非聚集索引一定回表查询吗(覆盖索引)?</strong></p>
+<ul>
+<li>不一定。</li>
+<li>虽然MYISAM的主键索引确实需要回表， 因为它的主键索引的叶子节点存放的是指针。但是如果SQL查的就是主键呢?</li>
+<li>或者想要查询的字段刚好建立了索引，查到对应的字段直接返回就行了，无需回表查询</li>
+</ul>
+<h3 id="5-覆盖索引">5. 覆盖索引</h3>
+<ul>
+<li>如果一个索引包含（或者说覆盖）所有需要查询的字段的值，我们就称之为“覆盖索引”。我们知道InnoDB存储引擎中，如果不是主键索引，叶子节点存储的是主键+列值。最终还是要“回表”，也就是先定位主键值，再定位行记录，它的性能较扫一遍索引树更低，这样就会比较慢。覆盖索引就是把要查询出的列和索引是对应的，不做回表操作</li>
+<li>假如索引是AB列，想要查询出来的列是AB+主键列，则此时是覆盖索引；而想要查询出来的列是ABC列，C的数据不在索引中，就需要回表。所以切忌使用Select *</li>
+</ul>
+<p><strong>总结：覆盖索引的优化及限制</strong></p>
+<p><strong>优点</strong>：</p>
+<p>1、索引项通常比记录要小，所以MySQL访问更少的数据。</p>
+<p>2、索引都按值得大小存储，相对于随机访问记录，需要更少的I/O。</p>
+<p>3、数据引擎能更好的缓存索引，比如MyISAM只缓存索引。</p>
+<p>4、覆盖索引对InnoDB尤其有用，因为InnoDB使用聚集索引组织数据，如果二级索引包含查询所需的数据，就不再需要在聚集索引中查找了。</p>
+<p><strong>限制：</strong></p>
+<p>1、覆盖索引也并不适用于任意的索引类型，索引必须存储列的值。</p>
+<p>2、Hash和full-text索引不存储值，因此MySQL只能使用BTree。</p>
+<p>3、不同的存储引擎实现覆盖索引都是不同的，并不是所有的存储引擎都支持覆盖索引。</p>
+<p>4、如果要使用覆盖索引，一定要注意SELECT列表值取出需要的列，不可以SELECT * ，因为如果将所有字段一起做索引会导致索引文件过大，查询性能下降。</p>
+<h2 id="九-索引创建的原则">九、索引创建的原则</h2>
+<p><strong>最左前缀原则</strong>：</p>
+<ul>
+<li>虽然我目前的Mysql版本较高，好像不遵守最左前缀原则，索引也会生效。 但是我们仍应遵守最左前缀原则，以免版本更迭带来的麻烦。</li>
+</ul>
+<p><strong>选择合适的字段</strong></p>
+<ol>
+<li>索引字段的数据应该尽量不为NULL，因为对于数据为NULL的字段，数据库较难优化。如果字段频繁被查询，但又避免不了为NULL，建议使用默认值。</li>
+<li>我们创建索引的字段应该是查询操作非常频繁的字段，而不是增删改比较多的。</li>
+<li>被作为WHERE条件查询的字段，应该被考虑建立索引。</li>
+<li>经常用于连接的字段可能是一些外键列，对于外键列并不一定要建立外键，只是说该列涉及到表与表的关系。对于频繁被连接查询的字段，可以考虑建立索引，提高多表连接查询的效率。</li>
+</ol>
+<p><strong>需要注意的地方</strong></p>
+<ul>
+<li>注意避免冗余索引</li>
+<li>考虑在字符串类型的字段上使用前缀索引代替普通索引，前缀索引仅限于字符串类型，较普通索引会占用更小的空间，所以可以考虑使用前缀索引带替普通索引。</li>
+</ul>
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[【面试题】阻塞队列]]></title>
-        <id>https://xzzz2020.github.io/post/YWCL9C2A8/</id>
-        <link href="https://xzzz2020.github.io/post/YWCL9C2A8/">
+        <title type="html"><![CDATA[【总结】MySql架构]]></title>
+        <id>https://xzzz2020.github.io/post/aY-DgheCd/</id>
+        <link href="https://xzzz2020.github.io/post/aY-DgheCd/">
         </link>
-        <updated>2020-07-12T10:38:05.000Z</updated>
+        <updated>2020-07-26T10:43:07.000Z</updated>
         <content type="html"><![CDATA[<blockquote>
-<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
-</blockquote>
-<blockquote>
-<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
 </blockquote>
 <p><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E4%B8%80-arrayblockingqueue">一、ArrayBlockingQueue</a></li>
-<li><a href="#%E4%BA%8C-linkedblockingqueue">二、LinkedBlockingQueue</a></li>
-<li><a href="#%E4%B8%89-priorityblockingqueue">三、PriorityBlockingQueue</a></li>
-<li><a href="#%E5%9B%9B-delayqueue">四、DelayQueue</a></li>
-<li><a href="#%E4%BA%94-synchronousqueue">五、SynchronousQueue</a></li>
-<li><a href="#%E5%85%AD-linkedtransferqueue">六、LinkedTransferQueue</a></li>
-<li><a href="#%E4%B8%83-linkedblockingdeque">七、LinkedBlockingDeque</a></li>
+<li><a href="#%E4%B8%80-mysql-%E7%9A%84%E6%9E%B6%E6%9E%84%E5%9B%BE">一、Mysql 的架构图</a></li>
+<li><a href="#%E4%BA%8C-server-%E5%B1%82">二、Server 层</a>
+<ul>
+<li><a href="#1-%E8%BF%9E%E6%8E%A5%E5%99%A8">1. 连接器</a></li>
+<li><a href="#2-%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98">2. 查询缓存</a></li>
+<li><a href="#3-%E5%88%86%E6%9E%90%E5%99%A8">3. 分析器</a></li>
+<li><a href="#4%E4%BC%98%E5%8C%96%E5%99%A8">4.优化器</a></li>
+<li><a href="#5-%E6%89%A7%E8%A1%8C%E5%99%A8">5. 执行器</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B">三、执行流程</a></li>
 </ul>
 </li>
 </ul>
 </p>
-<h2 id="一-arrayblockingqueue">一、ArrayBlockingQueue</h2>
+<h2 id="一-mysql-的架构图">一、Mysql 的架构图</h2>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200714160802785.png" alt="image-20200714160802785" style="zoom: 80%;" />
+<ul>
+<li><strong>客户端</strong>：比如window和linux的黑窗口、SQLlyog、java的JDBC标准等等</li>
+<li><strong>Server 层</strong>：主要包括连接器、查询缓存、分析器、优化器、执行器等，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图，函数等，还有一个通用的日志模块 binglog 日志模块。</li>
+<li><strong>存储引擎</strong>：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、 MyISAM、 Memory 等多个存储引擎，其中 InnoDB 引擎有自有的日志模块 redolog 模块。 现在最常用的存储引擎是 InnoDB，它从MySQL 5.5.5 版本开始就被当做默认存储引擎了。</li>
+<li><strong>数据</strong>：都是二进制文件</li>
+</ul>
+<h2 id="二-server-层">二、Server 层</h2>
+<h3 id="1-连接器">1. 连接器</h3>
 <ul>
 <li>
-<p><strong>用数组实现的有界阻塞队列</strong>。</p>
+<p>连接器主要和身份认证和权限相关的功能相关</p>
 </li>
 <li>
-<p>此队列按照先进先出（FIFO）的原则对元素进行排序。</p>
+<p>客户端通过连接器连接到MySql</p>
 </li>
 <li>
-<p><strong>默认情况下不保证访问者公平的访问队列</strong>，所谓公平访问队列是指先阻塞的线程先访问，通常情况下为了保证公平性会降低吞吐量。</p>
+<p>客户端连接连接器是需要网络时间，所以建议使用数据库连接池，可以复用连接</p>
 </li>
 </ul>
-<h2 id="二-linkedblockingqueue">二、LinkedBlockingQueue</h2>
+<h3 id="2-查询缓存">2. 查询缓存</h3>
+<ul>
+<li>查询缓存主要用来缓存我们所执行的 SELECT 语句以及该语句的结果集。</li>
+<li>连接建立后，执行查询语句的时候，会先查询缓存， MySQL 会先校验这个 sql 是否执行过，以 Key-Value 的形式缓存在内存中</li>
+<li>如果缓存 key 被命中，就会直接返回给客户端，如果没有命中，就会执行后续的操作，完成后也会把<br>
+结果缓存起来，方便下一次调用</li>
+<li>MySQL 查询不建议使用缓存，因为查询缓存失效在实际业务场景中可能会非常频繁，假如你对一个表更新的话，这个表上的所有的查询缓存都会被清空，MySQL 8.0 版本后删除了缓存的功能</li>
+<li>缓存虽然能够提升数据库的查询性能，但是缓存同时也带来了额外的开销，每次查询后都要做一次缓存操作，失效后还要销毁。</li>
+</ul>
+<p><strong>存在的问题</strong></p>
 <ul>
 <li>
-<p>基于链表的无界阻塞队列，默认创建一个类似无限大小的容量</p>
+<p>查询缓存的内存分配问题，不可避免地产生一些内存碎片；</p>
 </li>
 <li>
-<p>同 ArrayListBlockingQueue 类似，此队列按照先进先出（FIFO）的原则对元素进行排序。而</p>
+<p>查询缓存对是否是一样的查询语句，要求非常苛刻，而且还不智能</p>
 </li>
 <li>
-<p>LinkedBlockingQueue 之所以能够高效的处理并发数据，还因为其<strong>对于生产者端和消费者端分别采用了独立的锁来控制数据同步，这也意味着在高并发的情况下生产者和消费者可以并行地操作队列中的数据，以此来提高整个队列的并发性能。</strong></p>
+<p>查询缓存中涉及的表，每一个表对象都有一个属于自己的全局性质的锁，表对象的DML操作，必须优先判断是否需要清理相关查询缓存的记录信息，将不可避免地出现锁等待事件</p>
+</li>
+<li>
+<p>表若是做DDL等类似操作，触发相关表的查询缓存信息清空</p>
 </li>
 </ul>
-<h2 id="三-priorityblockingqueue">三、PriorityBlockingQueue</h2>
+<h3 id="3-分析器">3. 分析器</h3>
+<p>没有命中缓存的话， SQL 语句就会经过分析器，分析器说白了就是要先看你的 SQL 语句要干嘛，再检查你的<br>
+SQL 语句语法是否正确。 分析器也会分为几步：</p>
 <ul>
 <li>
-<p>是一个支持优先级的无界队列。</p>
+<p><strong>第一步，词法分析</strong>，一条 SQL 语句有多个字符串组成，首先要提取关键字，比如 select，提出查询的表，提出字段名，提出查询条件等等。做完这些操作后，就会进入第二步。</p>
 </li>
 <li>
-<p>默认情况下元素采取自然顺序升序排列。 可以自定义实现compareTo()方法来指定元素进行排序规则，或者初始化 PriorityBlockingQueue 时，指定构造参数 Comparator 来对元素进行排序。需要注意的是不能保证同优先级元素的顺序。</p>
+<p><strong>第二步，语法分析</strong>，主要就是判断你输入的 sql 是否正确，是否符合 MySQL 的语法。</p>
 </li>
 </ul>
-<h2 id="四-delayqueue">四、DelayQueue</h2>
+<p>完成这 2 步之后， MySQL 就准备开始执行了，但是如何执行，怎么执行是最好的结果呢？这个时候就需要优化器上场了</p>
+<h3 id="4优化器">4.优化器</h3>
+<p>优化器的作用就是它认为的最优的执行方案去执行（有时候可能也不是最优），比如多个索引的时候该如何选<br>
+择索引，多表查询的时候如何选择关联顺序等。可以说，经过了优化器之后可以说这个语句具体该如何执行就已经<br>
+定下来。</p>
+<h3 id="5-执行器">5. 执行器</h3>
 <ul>
-<li>
-<p>是一个支持延时获取元素的无界阻塞队列。</p>
-</li>
-<li>
-<p>队列使用 PriorityQueue 来实现。队列中的元素必须实现 Delayed 接口，<strong>在创建元素时可以指定多久才能从队列中获取当前元素。只有在延迟期满时才能从队列中提取元素。</strong></p>
-</li>
-<li>
-<p>可以用于：<strong>缓存系统设计</strong>，当可以取出任务时，代表缓存期到了；定时任务调度 ，保 存 当 天 将 会 执 行 的任务和执行时间 ，一旦从DelayQueue 中获取到任务就开始执行</p>
-</li>
+<li>当选择了执行方案后， MySQL 就准备开始执行了，首先执行前会校验该用户有没有权限，如果没有权限，就会返回错误信息，如果有权限，就会去调用引擎的接口， 从存储引擎返回执行的结果。</li>
 </ul>
-<h2 id="五-synchronousqueue">五、SynchronousQueue</h2>
-<ul>
-<li>是一个不存储元素的阻塞队列。</li>
-<li>每一个put 操作必须等待一个 take 操作，否则不能继续添加元素。</li>
-<li>负责把生产者线程处理的数据直接传递给消费者线程。队列本身并不存储任何元素，非常适合于传递性场景,比如在一个线程中使用的数据，传递给另外一个线程使用</li>
-<li>SynchronousQueue 的 吞 吐 量 高 于 LinkedBlockingQueue 和ArrayBlockingQueue</li>
-</ul>
-<h2 id="六-linkedtransferqueue">六、LinkedTransferQueue</h2>
-<p>是 一 个 由 链 表 结 构 组 成 的无界阻塞 TransferQueue 队 列 。 相对于其他阻塞队列 ，LinkedTransferQueue 多了 tryTransfer 和 transfer 方法，<strong>是一种预占的模式，判断有没有线程空闲，有就直接让其拿走，没有就占着这个位置直到任务被拿到或者超时或者中断</strong>：</p>
+<h2 id="三-执行流程">三、执行流程</h2>
 <ol>
-<li><strong>transfer 方法</strong>： 如果当前有消费者正在等待接收元素（消费者使用 take()方法或带时间限制的poll()方法时）， transfer 方法可以把生产者传入的元素立刻 transfer（传输）给消费者。如果没有消费者在等待接收元素， transfer 方法会将元素存放在队列的 tail 节点，并等到该元素被消费者消费了才返回。</li>
-<li><strong>tryTransfer 方法</strong>。则是用来试探下生产者传入的元素是否能直接传给消费者。如果没有消费者等待接收元素，则返回 false。和 transfer 方法的区别是 tryTransfer 方法无论消费者是否接收，方法立即返回。而 transfer 方法是必须等到消费者消费了才返回。</li>
+<li>客户端连接连接器</li>
+<li>分析器处理客户端的SQL语句，进行词法分析和语法分析，检查SQL语法是否正确</li>
+<li>优化器优化分析器处理的语句，选择一个它认为的最优的执行方案去执行，比如多个索引的时候该如何选<br>
+择索引，多表查询的时候如何选择关联顺序等</li>
+<li>最后执行器执行优化器确定的方案，但是由于不了解数据是怎么存储的，需要调用存储引擎的接口，从存储引擎返回执行的结果</li>
+<li>存储引擎决定怎么存储数据，常见的有三种：InnoDB存储引擎、MyISAM存储引擎和Memory引擎（博主主要掌握的InnoDB存储引擎）</li>
+<li>当然中间还有一个查询缓存，会存储查询出来的数据，但是查询缓存命中不高，MySQL 查询不建议使用缓存，因为查询缓存失效在实际业务场景中可能会非常频繁，假如你对一个表更新的话，这个表上的所有的查询缓存都会被清空，MySQL 8.0 版本后删除了缓存的功能，</li>
 </ol>
-<p>对于带有时间限制的 tryTransfer(E e, long timeout, TimeUnit unit)方法，则是试图把生产者传入的元素直接传给消费者，但是如果没有消费者消费该元素则等待指定的时间再返回，如果超时还没消费元素，则返回 false，如果在超时时间内消费了元素，则返回 true。</p>
-<h2 id="七-linkedblockingdeque">七、LinkedBlockingDeque</h2>
-<p>是一个由链表结构组成的双向阻塞队列。所谓双向队列指的你可以从队列的两端插入和移出元素。双端队列因为多了一个操作队列的入口，在多线程同时入队时，也就减少了一半的竞争。</p>
-<p>在初始化 LinkedBlockingDeque 时可以设置容量防止其过渡膨胀。另外双向阻塞队列可以运用在<br>
-“工作窃取”模式中，Fork/Join框架会窃取其他线程队尾的任务。</p>
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[【面试题】线程池]]></title>
-        <id>https://xzzz2020.github.io/post/oJRLv7myX/</id>
-        <link href="https://xzzz2020.github.io/post/oJRLv7myX/">
+        <title type="html"><![CDATA[【总结】MySQL存储引擎]]></title>
+        <id>https://xzzz2020.github.io/post/j_WKr1zJr/</id>
+        <link href="https://xzzz2020.github.io/post/j_WKr1zJr/">
         </link>
-        <updated>2020-07-12T10:36:31.000Z</updated>
+        <updated>2020-07-26T10:42:13.000Z</updated>
         <content type="html"><![CDATA[<blockquote>
-<p>该文章为面试精华版，如果是初学者，建议学习专栏：<a href="https://blog.csdn.net/qq_43040688/category_9910156.html">Java并发专栏</a></p>
-</blockquote>
-<blockquote>
-<p>Java并发需要结合JVM以及操作系统的相关知识，建议先学习这两个部分：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a> 和 <a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
 </blockquote>
 <p><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E4%B8%80-threadpoolexecutor%E5%8F%82%E6%95%B0%E5%90%AB%E4%B9%89">一、ThreadPoolExecutor参数含义</a>
-<ul>
-<li><a href="#1-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84%E7%BA%BF%E7%A8%8B">1. 什么时候创建新的线程？</a></li>
-<li><a href="#2-%E5%A6%82%E4%BD%95%E5%85%B3%E9%97%AD%E7%BA%BF%E7%A8%8B%E6%B1%A0">2. 如何关闭线程池？</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%8C-%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5">二、拒绝策略</a></li>
-<li><a href="#%E4%B8%89-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E7%8A%B6%E6%80%81">三、线程池的状态</a></li>
-<li><a href="#%E5%9B%9B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%88%86%E7%B1%BB">四、线程池分类</a>
-<ul>
-<li><a href="#newcachedthreadpool">newCachedThreadPool</a></li>
-<li><a href="#newfixedthreadpool">newFixedThreadPool</a></li>
-<li><a href="#newsinglethreadexecutor">newSingleThreadExecutor</a></li>
-<li><a href="#newscheduledthreadpool">newScheduledThreadPool</a></li>
-<li><a href="#newworkstealingpool">newWorkStealingPool</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%94-%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%A5%BD%E5%A4%84">五、使用线程池的好处</a></li>
+<li><a href="#%E4%B8%80-myisam-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">一、MyISAM 存储引擎</a></li>
+<li><a href="#%E4%BA%8C-innodb-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">二、InnoDB 存储引擎</a></li>
+<li><a href="#%E4%B8%89-memory-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">三、MEMORY 存储引擎</a></li>
+<li><a href="#%E5%9B%9B-myisam%E5%92%8Cinnodb%E5%8C%BA%E5%88%AB">四、MyISAM和InnoDB区别</a></li>
 </ul>
 </li>
 </ul>
 </p>
-<h2 id="一-threadpoolexecutor参数含义">一、ThreadPoolExecutor参数含义</h2>
-<pre><code class="language-java">public ThreadPoolExecutor(int corePoolSize,
-                              int maximumPoolSize,
-                              long keepAliveTime,
-                              TimeUnit unit,
-                              BlockingQueue&lt;Runnable&gt; workQueue,
-                              ThreadFactory threadFactory,
-                              RejectedExecutionHandler handler)
-</code></pre>
-<ul>
-<li><strong>corePoolSize</strong>：线程池始终线程数，即使有些是空闲的。设置<code>allowCoreThreadTimeOut</code>参数为true，才会进行回收。</li>
-<li><strong>maximumPoolSize</strong>：线程池最大线程数，表示在线程池中最多能创建多少个线程。如果当线程池中的数量到达这个数字时，新来的任务会抛出异常。</li>
-<li><strong>keepAliveTime</strong>：表示线程没有任务执行时最多能保持多少时间会回收，然后线程池的数目维持在corePoolSize。</li>
-<li><strong>unit</strong>：参数keepAliveTime的时间单位</li>
-<li><strong>workQueue</strong>：一个阻塞队列，所有的任务都会先放在这里，务；如果对当前对线程的需求超过了corePoolSize大小，会用来存储等待执行的任。</li>
-<li><strong>threadFactory</strong>：线程工厂，主要用来创建线程，比如指定线程的名字。</li>
-<li><strong>handler</strong>：如果线程池已满，新的任务处理方式。</li>
-</ul>
-<p><strong>注意一点</strong>：<mark>初始化线程池时，线程数为0</mark></p>
-<h3 id="1-什么时候创建新的线程">1. 什么时候创建新的线程？</h3>
-<ul>
-<li>线程初始化时线程数为0</li>
-<li>当前线程数小于corePoolSize时，提交任务会直接创建新的线程</li>
-<li>当前线程数大于等于为corePoolSize时，提交任务会放到阻塞队列中，当阻塞队列满时会创建线程</li>
-</ul>
-<h3 id="2-如何关闭线程池">2. 如何关闭线程池？</h3>
-<p><strong>shutdown（高安全低响应）</strong></p>
-<ul>
-<li>
-<p>本质上执行的是<code>interrupt</code>方法</p>
-</li>
-<li>
-<p>阻止新来的任务提交，会将线程池的状态改成SHUTDOWN，当再将执行execute提交任务时，如果测试到状态不为RUNNING，则执行拒绝策略，从而达到阻止新任务提交的目的。</p>
-</li>
-<li>
-<p>对已经提交了的任务不会产生任何影响，当已经提交的任务执行完后，它会将那些闲置的线程进行中断，这个过程是异步的，也就是说只会打断空闲线程，如果当前还有任务队列还有任务未执行，线程将继续把任务执行完。</p>
-</li>
-</ul>
-<p><strong>shutdownNow（低安全高响应）</strong></p>
-<ul>
-<li>
-<p>阻止新来的任务提交，将线程池的状态改成STOP，当再将执行execute提交任务时，如果测试到状态不为RUNNING，则抛出rejectedExecution，从而达到阻止新任务提交的目的.</p>
-</li>
-<li>
-<p>会中断空闲进程，同时也会中断当前正在运行的线程，即workers中的线程。</p>
-</li>
-<li>
-<p>另外它还将workQueue中的任务给移除，并将这些任务添加到列表中进行返回。</p>
-</li>
-<li>
-<p>如遇已经激活的任务，并且处于阻塞状态时，shutdownNow()会执行1次中断阻塞的操作，此时对应的线程报InterruptedException，如果后续还要等待某个资源，则按正常逻辑等待某个资源的到达。例如，一个线程正在sleep状态中，此时执行shutdownNow()，它向该线程发起interrupt()请求，而sleep()方法遇到有interrupt()请求时，会抛出InterruptedException()，并继续往下执行。在这里要提醒注意的是，在激活的任务中，如果有多个sleep(),该方法只会中断第一个sleep()，而后面的仍然按照正常的执行逻辑进行。</p>
-</li>
-</ul>
-<p>高安全低响应体现在shutdown等待任务执行完成再关闭，可以保证任务一定被执行，但是关闭线程池需要等待较长的时间</p>
-<p>低安全高响应体现在shutdownNow会关闭正在执行任务的线程，任务可能并没有执行完毕，也不会回退到任务队列中，将会消失，但是关闭线程池不需要等待较长的时间</p>
-<p><strong>如果一个任务执行时间很长，导致线程池长时间关闭不了，可以在创建线程的时候将其设置为守护线程，此时被守护的线程是主线程，只要主线程执行完成，线程池就会强制关闭，可以配合awaitTermination使用</strong>：</p>
-<pre><code class="language-java">ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1,2,
-        30, TimeUnit.SECONDS,new ArrayBlockingQueue&lt;&gt;(5), r -&gt; {
-    Thread t = new Thread(r);
-    t.setDaemon(true);
-    return t;
-},new ThreadPoolExecutor.AbortPolicy());
-
-public static void main(String[] args) throws InterruptedException {
-    ThreadPoolExecutor threadPoolExecutor = bulidThreadPoolExecutor();
-    threadPoolExecutor.shutdown();
-    threadPoolExecutor.awaitTermination(5,TimeUnit.SECONDS);
-    System.out.println(&quot;强制关闭&quot;);
-}
-</code></pre>
-<h2 id="二-拒绝策略">二、拒绝策略</h2>
-<p>线程池中的线程已经用完了，无法继续为新任务服务，同时，等待队列也已经排满了，再也<br>
-塞不下新任务了。这时候我们就需要拒绝策略机制合理的处理这个问题。<br>
-<strong>JDK 内置的拒绝策略如下</strong>：</p>
-<ol>
-<li><strong>AbortPolicy</strong> ： 直接抛出异常，阻止系统正常运行。</li>
-<li><strong>CallerRunsPolicy</strong> ： 导致该方法直接在调用者的主线程中执行，而不是在线程池中执行。从而导致主线程在该任务执行结束之前不能提交任何任务。从而有效的阻止了任务的提交。</li>
-<li><strong>DiscardOldestPolicy</strong> ： 丢弃最老的一个请求，也就是即将被执行的一个任务，会直接出队，并尝试再<br>
-次提交当前任务。</li>
-<li><strong>DiscardPolicy</strong> ：默认情况下它将丢弃被拒绝的任务</li>
-</ol>
-<p>以上内置拒绝策略均实现了 RejectedExecutionHandler 接口，若以上策略仍无法满足实际<br>
-需要，完全可以自己扩展 RejectedExecutionHandler 接口。</p>
-<h2 id="三-线程池的状态">三、线程池的状态</h2>
-<ul>
-<li><strong>RUNNING</strong>：能够接收新任务，以及对已添加的任务进行处理。</li>
-<li><strong>SHUTDOWN</strong>：不接收新任务，但能处理已添加的任务。</li>
-<li><strong>STOP</strong>：程池处在STOP状态时，不接收新任务，不处理已添加的任务，并且会中断正在处理的任务。</li>
-<li><strong>TIDYING</strong>：当所有的任务已终止</li>
-<li><strong>TERMINATED</strong>：线程池彻底终止，就变成TERMINATED状态。</li>
-</ul>
-<h2 id="四-线程池分类">四、线程池分类</h2>
-<p>Java 里面线程池的顶级接口是 Executor，但是严格意义上讲 Executor 并不是一个线程池，而<br>
-只是一个执行线程的工具。真正的线程池接口是 ExecutorService</p>
 <blockquote>
-<p><strong>摘自阿里巴巴开发手册</strong>:</p>
-<p>【强制】线程池不允许使用 Executors 去创建，而是通过 ThreadPoolExecutor 的方式，这样 的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。 说明：Executors 返回的线程池对象的弊端如下：</p>
-<p>1）FixedThreadPool 和 SingleThreadPool: 允许的请求队列长度为 Integer.MAX_VALUE，可能会堆积大量的请求，从而导致 OOM。</p>
-<p>2）CachedThreadPool 和 ScheduledThreadPool: 允许的创建线程数量为 Integer.MAX_VALUE，可能会创建大量的线程，从而导致 OOM。</p>
+<p>存储引擎是表级别的，不同的表可以使用不同的存储引擎！！！</p>
 </blockquote>
-<h3 id="newcachedthreadpool">newCachedThreadPool</h3>
+<h2 id="一-myisam-存储引擎">一、MyISAM 存储引擎</h2>
 <ul>
-<li><strong>线程池的参数</strong>：coreSize线程数0，最大线程数无限制，线程的允许空闲时间是60s，阻塞队列是SynchronousQueue</li>
-<li>这个线程池适用情况是<code>短任务</code>情况。</li>
-<li>采用SynchronousQueue，每当提交一个任务，都会超过阻塞队列的长度，导致创建线程，所以说：每当提交一个任务，都会创建一个线程，可能造成OOM。</li>
-<li>当线程空闲1分钟就会，销毁，所以该线程池会频繁的创建和销毁线程，最终会线程池会自己销毁</li>
+<li>
+<p>没有提供对数据库事务的支持，也不支持行级锁和外键，所以写操作需要锁定整个表，效率便会低一些</p>
+</li>
+<li>
+<p>执行读取操作的速度很快，而且不占用大量的内存和存储资源，在设计之初就预想数据组织成有固定长度的记录，按顺序存储的</p>
+</li>
+<li>
+<p>可以手工或者自动执行检查和修复操作，但是和事务恢复以及崩溃恢复不同，可能导致一些数据丢失，而且修复操作是非常慢的。</p>
+</li>
 </ul>
-<h3 id="newfixedthreadpool">newFixedThreadPool</h3>
+<h2 id="二-innodb-存储引擎">二、InnoDB 存储引擎</h2>
 <ul>
-<li>coreSize和最大线程数都是用户输入的，阻塞队列用的LinkedBlockingQueue，线程的允许空闲时间是0s</li>
-<li>该线程池的线程数是用户自定义的，不会增加，不会减少，线程池不会自己销毁，但是并不是刚开始就会直接创建coreSize的线程</li>
-<li>阻塞队列是无限大的，不会执行拒绝策略。</li>
-<li>可能会堆集无限的请求，导致OOM</li>
+<li>是 MySQL 默认的事务型存储引擎，只有在需要它不支持的特性时，才考虑使用其它存储引擎。<br>
+实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ 间隙锁（Next-Key Locking）防止幻影读。</li>
+<li>主索引是聚簇索引，在索引中保存了数据，从而避免直接读取磁盘，因此对查询性能有很大的提升。</li>
+<li>内部做了很多优化，包括从磁盘读取数据时采用的可预测性读、能够加快读操作并且自动创建的自适应哈希索引、能够加速插入操作的插入缓冲区等。</li>
+<li>支持真正的在线热备份。其它存储引擎不支持在线热备份，要获取一致性视图需要停止对所有表的写入，而在读写混合场景中，停止写入可能也意味着停止读取</li>
 </ul>
-<h3 id="newsinglethreadexecutor">newSingleThreadExecutor</h3>
+<h2 id="三-memory-存储引擎">三、MEMORY 存储引擎</h2>
 <ul>
-<li>相当于线程数为1的newFixedThreadPool，缺点和newFixedThreadPool一样</li>
+<li>数据存在内存</li>
+<li>不支持持久化</li>
 </ul>
-<p><strong>和一个线程的区别？</strong></p>
+<h2 id="四-myisam和innodb区别">四、MyISAM和InnoDB区别</h2>
+<p>MyISAM是MySQL的默认数据库引擎（5.5版之前）。虽然性能极佳，而且提供了大量的特性，包括全文索引、压缩、空间函数等，但MyISAM不支持事务和行级锁，而且最大的缺陷就是崩溃后无法安全恢复。不过，5.5版本之后，MySQL引入了InnoDB（事务性数据库引擎），MySQL 5.5版本后默认的存储引擎为InnoDB。</p>
+<p>大多数时候我们使用的都是 InnoDB 存储引擎，但是在某些情况下使用 MyISAM 也是合适的比如读密集的情况下。（如果你不介意 MyISAM 崩溃恢复问题的话）。</p>
+<p><strong>两者的对比：</strong></p>
+<ol>
+<li><strong>是否支持行级锁</strong> : MyISAM 只有表级锁(table-level locking)，而InnoDB 支持行级锁(row-level locking)和表级锁,默认为行级锁。</li>
+<li><strong>是否支持事务和崩溃后的安全恢复： MyISAM</strong> 强调的是性能，每次查询具有原子性,其执行速度比InnoDB类型更快，但是不提供事务支持。但是<strong>InnoDB</strong> 提供事务支持事务，外部键等高级数据库功能。 具有事务(commit)、回滚(rollback)和崩溃修复能力(crash recovery capabilities)的事务安全(transaction-safe (ACID compliant))型表。</li>
+<li><strong>是否支持外键：</strong> MyISAM不支持，而InnoDB支持。</li>
+<li><strong>是否支持MVCC</strong> ：仅 InnoDB 支持。应对高并发事务, MVCC比单纯的加锁更高效;MVCC只在 <code>READ COMMITTED</code> 和 <code>REPEATABLE READ</code> 两个隔离级别下工作;MVCC可以使用 乐观(optimistic)锁 和 悲观(pessimistic)锁来实现;各数据库中MVCC实现并不统一。</li>
+<li><strong>索引的差别</strong>：MyISAM的B+Tree叶节点的data域存放的是数据记录的地址，然后以 data 域的值为地址读取相应的数据记录；InnoDB的数据文件本身就是索引文件，在根据主索引搜索时，直接找到key所在的节点即可取出数据；在根据辅助索引查找时，则需要先取出主键的值，再走一遍主索引。 因此，在设计表的时候，不建议使用过长的字段作为主键，也不建议使用非单调的字段作为主键，否则会降低查询的素的。</li>
+</ol>
+<p>一般情况下我们选择 InnoDB 都是没有问题的，但是某些情况下你并不在乎可扩展能力和并发能力，也不需要事务支持，也不在乎崩溃后的安全恢复问题的话，选择MyISAM也是一个不错的选择。但是一般情况下，我们都是需要考虑到这些问题的。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】InnoDB存储引擎]]></title>
+        <id>https://xzzz2020.github.io/post/M3FXzw5ip/</id>
+        <link href="https://xzzz2020.github.io/post/M3FXzw5ip/">
+        </link>
+        <updated>2020-07-26T10:41:10.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-innodb%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F">一、InnoDB存储引擎工作方式</a></li>
+<li><a href="#%E4%BA%8C-%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7">二、关键特性</a>
+<ul>
+<li><a href="#1-%E6%8F%92%E5%85%A5%E7%BC%93%E5%AD%98">1. 插入缓存</a></li>
+<li><a href="#2-%E4%B8%A4%E6%AC%A1%E5%86%99">2. 两次写</a></li>
+<li><a href="#3-%E8%87%AA%E9%80%82%E5%BA%94%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">3. 自适应哈希索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-redo-log-binlog%E5%92%8Cundo-log">三、redo log、binlog和undo log</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AFredo-log">1. 什么是redo log？</a></li>
+<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AFbinlog">2. 什么是binlog？</a></li>
+<li><a href="#3-redo-log%E5%92%8Cbinlog%E5%8C%BA%E5%88%AB">3. redo log和binlog区别</a></li>
+<li><a href="#4-%E5%9B%9E%E6%BB%9A%E6%97%A5%E5%BF%97undo-log">4. 回滚日志（undo log）</a></li>
+<li><a href="#5-redo-log%E5%92%8Cundo-log%E7%9A%84%E5%8C%BA%E5%88%AB">5. redo log和undo log的区别</a></li>
+<li><a href="#6-%E4%B8%80%E6%9D%A1%E6%9B%B4%E6%96%B0%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E9%A1%BA%E5%BA%8F">6. 一条更新语句执行的顺序</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-innodb存储引擎工作方式">一、InnoDB存储引擎工作方式</h2>
+<ul>
+<li>将数据库文件按页（每页16k）读取到缓冲池，然后按照最近最少使用的算法（LRU）保留缓存数据。</li>
+<li>如果数据发生更改，总是<code>先修改缓存池的页</code>（脏页），然后再保存在磁盘中</li>
+</ul>
+<h2 id="二-关键特性">二、关键特性</h2>
+<h3 id="1-插入缓存">1. 插入缓存</h3>
+<ul>
+<li>因为主键是表唯一标识，所以插入顺序按照主键递增（自增主键）的顺序插入。</li>
+<li>因此，插入的聚集索引一般是顺序的，不需要对磁盘随机读取，所以速度很快。</li>
+<li>但是一个表不止有聚集索引，索引的插入不再是顺序的</li>
+<li>插入索引对于非聚集索引，不是一次性插入到索引页，先判断索引页是否在缓存池。如果在，直接插入；如果不在，先放入插入缓存，<code>将多个插入合并在一个中</code>(因为都是在一个索引页中)，在根据磁盘IO情况更新到磁盘中。</li>
+<li><code>索引必须是辅助索引，索引不是唯一的</code></li>
+<li>默认最多占一半缓存池空间</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>由于并没有及时把索引更新到磁盘中，如果数据库宕机，则<code>需要很多的时间恢复数据</code></li>
+</ul>
+<h3 id="2-两次写">2. 两次写</h3>
+<ul>
+<li>当数据库宕机时，数据库可能正在写一个页面，而这个页面只写了一部分，则称之为部分写失效，从而导致数据丢失</li>
+<li>如果此时直接使用Undo日志，由于页出现了损坏，所以此时是无意义的</li>
+<li><code>在执行Undo日志之前，先需要一个页副本用来恢复的没有写之前的状态，再进行重做。</code></li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwNDA5MTgzNjAwOTI2LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<ul>
+<li>doublewrite由两部分组成：内存中的doublewrite buffer，物理磁盘共享表中的两个区</li>
+<li><code>在缓冲池脏页刷新时，先将数据拷贝到内存中的doublewrite buffer，然后在写入物理磁盘共享表中的两个区，然后在更新磁盘数据</code></li>
+<li>由于doublewrite是连续的，所以对其的IO操作时顺序写的，开销不大</li>
+</ul>
+<h3 id="3-自适应哈希索引">3. 自适应哈希索引</h3>
+<ul>
+<li>哈希是一种查找办法，常用于join连接操作</li>
+<li>会监控表上索引的查找，如果建立哈希索引可以提供速度，则建立哈希索引。</li>
+<li>哈希索引通过缓存池中的B+数构造而来，因此建立速度很快</li>
+<li>并不是整个表都需要建立哈希索引，InnoDB会根据访问的频率为某些页单独建立哈希索引</li>
+</ul>
+<h2 id="三-redo-log-binlog和undo-log">三、redo log、binlog和undo log</h2>
+<h3 id="1-什么是redo-log">1. 什么是redo log？</h3>
+<ul>
+<li>
+<p>redo  log是InnoDB存储引擎层的日志，又称重做日志文件，<strong>用于记录事务操作的变化，记录的是数据修改之后的值，不管事务是否提交都会记录下来。在实例和介质失败（media failure）时，redo log文件就能派上用场，如数据库掉电，InnoDB存储引擎会使用redo  log恢复到掉电前的时刻，以此来保证数据的完整性。</strong></p>
+</li>
+<li>
+<p><strong>在一条更新语句进行执行的时候，InnoDB引擎会把更新记录写到redo log日志中，然后更新内存</strong>，此时算是语句执行完了，然后<strong>在空闲的时候或者是按照设定的更新策略将redo log中的内容更新到磁盘中</strong>，这里涉及到<code>WAL</code>即<code>Write Ahead logging</code>技术，<strong>他的关键点是先写日志，再写磁盘。</strong></p>
+</li>
+<li>
+<p>有了redo log日志，那么在数据库进行异常重启的时候，可以根据redo log日志进行恢复，也就达到了<code>crash-safe</code>。</p>
+</li>
+<li>
+<p><strong>redo log日志的大小是固定的，即记录满了以后就从头循环写，并且会暂停当前的所有数据更改操作，先将redo log日志同步到磁盘中。</strong></p>
+</li>
+</ul>
+<h3 id="2-什么是binlog">2. 什么是binlog？</h3>
+<ul>
+<li>可以作为数据恢复，在MySQL层面保证数据一致性的</li>
+<li>属于逻辑日志，是以二进制的形式记录的是这个语句的原始逻辑</li>
+<li>也可以用于主从之间保证数据一致性</li>
+</ul>
+<h3 id="3-redo-log和binlog区别">3. redo log和binlog区别</h3>
+<ul>
+<li>
+<p>redo log是属于innoDB层面，binlog属于MySQL Server层面的，这样在数据库用别的存储引擎时可以达到一致性的要求。</p>
+</li>
+<li>
+<p>redo log是物理日志，记录该数据页更新的内容；binlog是逻辑日志，记录的是这个更新语句的原始逻辑</p>
+</li>
+<li>
+<p>redo log是循环写，日志空间大小固定；binlog是追加写，是指一份写到一定大小的时候会更换下一个文件，不会覆盖。</p>
+</li>
+<li>
+<p>binlog可以作为恢复数据使用，也可以用于主从复制搭建，redo log作为异常宕机或者介质故障后的数据恢复使用。</p>
+</li>
+</ul>
+<h3 id="4-回滚日志undo-log">4. 回滚日志（undo log）</h3>
+<ul>
+<li>
+<p>属于InnoDB层面保证事务的原子性</p>
+</li>
+<li>
+<p>保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读</p>
+</li>
+</ul>
+<h3 id="5-redo-log和undo-log的区别">5. redo log和undo log的区别</h3>
+<ul>
+<li>redo log是保证事务持久性的，undo log是保证事务原子性的</li>
+<li>undo log用于备份一个事务开始前的数据，不会影响原本的数据，都是先在备份中更改，最后写入磁盘</li>
+<li>redo log用于记录每一个数据更新的内容，用于在二次写中恢复破损的数据</li>
+</ul>
+<h3 id="6-一条更新语句执行的顺序">6. 一条更新语句执行的顺序</h3>
+<p>update T set c=c+1 where ID=2;</p>
+<ul>
+<li>执行器先找引擎取 ID=2 这一行。ID 是主键，引擎直接用树搜索找到这一行。如果 ID=2 这一行所在的数据页本来就在内存中，就直接返回给执行器；否则，需要先从磁盘读入内存，然后再返回。</li>
+<li>执行器拿到引擎给的行数据，把这个值加上 1，比如原来是 N，现在就是 N+1，得到新的一行数据，再调用引擎接口写入这行新数据。</li>
+<li>引擎将这行新数据更新到内存中，同时将这个更新操作记录到 redo log 里面，此时 redo log 处于 prepare 状态。然后告知执行器执行完成了，随时可以提交事务。</li>
+<li>执行器生成这个操作的 binlog，并把 binlog 写入磁盘。</li>
+<li>执行器调用引擎的提交事务接口，引擎把刚刚写入的 redo log 改成提交（commit）状态，更新完成。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】数据库优化策略]]></title>
+        <id>https://xzzz2020.github.io/post/5NPno0The/</id>
+        <link href="https://xzzz2020.github.io/post/5NPno0The/">
+        </link>
+        <updated>2020-07-26T10:39:35.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E4%BC%98%E5%8C%96">一、数据结构的优化</a></li>
+<li><a href="#%E4%BA%8C-%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BC%98%E5%8C%96">二、服务器优化</a></li>
+<li><a href="#%E4%B8%89-%E7%BA%BF%E4%B8%8A%E5%AE%9A%E4%BD%8D">三、线上定位</a></li>
+<li><a href="#%E5%9B%9B-%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96">四、查询语句的优化</a>
+<ul>
+<li><a href="#1-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%97%B6%E9%97%B4%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF">1. sql 语句的时间花在哪儿?</a></li>
+<li><a href="#2-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4%E5%8F%88%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF%E4%BA%86">2. sql 语句的执行时间,又花在哪儿了?</a></li>
+<li><a href="#3-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF">3. sql 语句的优化思路？</a></li>
+<li><a href="#4-%E5%A6%82%E4%BD%95%E5%AE%9A%E9%87%8F%E5%88%86%E6%9E%90%E6%9F%A5%E7%9A%84%E5%A4%9A%E5%B0%91%E8%A1%8C%E5%92%8C%E6%98%AF%E5%90%A6%E6%B2%BF%E7%9D%80%E7%B4%A2%E5%BC%95%E6%9F%A5">4. 如何定量分析查的多少行,和是否沿着索引查?</a></li>
+<li><a href="#5-%E5%B8%B8%E8%A7%81%E7%9A%84%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">5. 常见的查询优化</a></li>
+<li><a href="#6-%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96">6. 缓存优化</a></li>
+<li><a href="#7-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">7. 读写分离</a></li>
+<li><a href="#8-mysql-%E7%9A%84%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8">8. mysql 的分库分表</a></li>
+<li><a href="#9-explain%E4%BD%BF%E7%94%A8">9. EXPLAIN使用</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E7%B4%A2%E5%BC%95%E5%8F%8A%E4%BC%98%E5%8C%96">五、索引及优化</a>
+<ul>
+<li><a href="#1-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%9C%E7%94%A8">1. 索引的作用</a></li>
+<li><a href="#2-%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%86%E7%B1%BB">2. 索引的分类</a></li>
+<li><a href="#3-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BC%98%E7%82%B9%E6%9F%A5%E7%9A%84%E5%BF%AB">3. 索引的优点（查的快）</a></li>
+<li><a href="#4-%E7%B4%A2%E5%BC%95%E7%9A%84%E7%BC%BA%E7%82%B9%E5%A2%9E%E5%88%A0%E6%94%B9%E6%85%A2">4. 索引的缺点（增删改慢）</a></li>
+<li><a href="#5-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E6%88%96%E5%AD%97%E6%AE%B5%E9%80%82%E5%90%88%E5%8A%A0%E7%B4%A2%E5%BC%95">5. 哪些情况或字段适合加索引</a></li>
+<li><a href="#6-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8D%E9%80%82%E5%90%88%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">6. 哪些情况不适合创建索引</a></li>
+<li><a href="#7-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88">7. 哪些情况会造成索引失效</a></li>
+<li><a href="#8-%E7%B4%A2%E5%BC%95%E5%8E%9F%E7%90%86">8. 索引原理</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96">六、插入优化</a></li>
+<li><a href="#%E4%B8%83-%E5%A4%A7%E8%A1%A8%E4%BC%98%E5%8C%96">七、大表优化</a>
+<ul>
+<li><a href="#1-%E9%99%90%E5%AE%9A%E6%95%B0%E6%8D%AE%E7%9A%84%E8%8C%83%E5%9B%B4">1. 限定数据的范围</a></li>
+<li><a href="#2-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">2. 读/写分离</a></li>
+<li><a href="#3-%E5%9E%82%E7%9B%B4%E5%88%86%E5%8C%BA">3. 垂直分区</a></li>
+<li><a href="#4-%E6%B0%B4%E5%B9%B3%E5%88%86%E5%8C%BA">4. 水平分区</a></li>
+<li><a href="#5-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%88%86%E5%BA%93%E7%AD%96%E7%95%A5">5. 数据库分库策略</a></li>
+<li><a href="#6-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E4%B9%8B%E5%90%8Eid-%E4%B8%BB%E9%94%AE%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86">6. 分库分表之后,id 主键如何处理？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-数据结构的优化">一、数据结构的优化</h2>
+<p><strong>三大范式</strong>：</p>
+<ul>
+<li>数据库设计尽量遵循三范式</li>
+<li>根据实际情况进行取舍，有时可能会拿冗余换速度，减少表的关联查询，用空间换时间</li>
+<li>对于需要经常联合查询的表，可以建立中间表以提高查询效率</li>
+<li>对于字段较多的表，如果有些字段的使用频率很低，可以将这些字段分离出来形成新表</li>
+</ul>
+<p><strong>数据库命令规范</strong>：</p>
+<ul>
+<li>所有数据库对象名称必须使用小写字母并用下划线分割</li>
+<li>数据库对象的命名要能做到见名识意，并且最后不要超过 32 个字符</li>
+<li>所有存储相同数据的列名和列类型必须一致（一般作为关联列，如果查询时关联列类型不一致会自动进行数据类型隐式转换，会造成列上的索引失效，导致查询效率降低）</li>
+</ul>
+<p><strong>列的选择</strong>：</p>
+<ul>
+<li>字段类型优先级 整型 &gt; date,time &gt; char,varchar &gt; blob</li>
+<li>尽量不要有null，可以设置为不允许空，或者加一个默认值</li>
+<li>数据大小够用就行</li>
+<li>不要使用大数据字段，如TEXT，BLOB</li>
+<li>财务数据使用decimal，不会丢失精度</li>
+</ul>
+<p><strong>主键的选择</strong>：</p>
+<ul>
+<li>在 myisam 中,字符串索引会被压缩,用字符串做主键性能不如整型</li>
+<li>用递增的值,不要用离散的值,离散值会导致文件在磁盘的位置有间隔,浪费空间且不易连续读取</li>
+</ul>
+<h2 id="二-服务器优化">二、服务器优化</h2>
+<p><strong>优化服务器硬件</strong></p>
+<ul>
+<li>配置较大的内存</li>
+<li>配置高速磁盘，比如 SSD</li>
+<li>配置多核处理器， MySQL 是多线程的数据库，多处理器可以提高同时执行多个线程的能力</li>
+</ul>
+<p><strong>优化 MySQL 的参数</strong></p>
+<ul>
+<li>
+<p>修改my.conf 或者 my.ini 配置文件</p>
+</li>
+<li>
+<p><strong>key_buffer_size</strong>：表示索引缓冲区大小，缓存数据，只对MyISAM表起作用，不是越大越好，大小取决于内存</p>
+</li>
+<li>
+<p><strong>innodb_buffer_pool_size</strong>：表示InnoDB类型表和索引的最大缓存，值越大查询速度越快</p>
+</li>
+<li>
+<p><strong>query_cache_size</strong>：表示查询缓冲区大小，MySQL8以上已经移除</p>
+</li>
+<li>
+<p><strong>max_connections</strong>：表示数据库的最大连接数，也不是越多越好，过多连接可能会导致僵死</p>
+</li>
+</ul>
+<h2 id="三-线上定位">三、线上定位</h2>
+<p><strong>发现系统运行缓慢，如何定位和分析查询慢的 sql 语句 ？</strong></p>
+<ol>
+<li>开启 mysql 慢日志查询 定位查询较慢的 sql 语句 （200ms 500ms ）</li>
+<li>使用 EXPLAIN 关键字可以让你知道 MySQL 是如何处理你的 SQL 语句的。这可以帮你分析你的查询语句或是表结构的性能瓶颈。 EXPLAIN 的查询结果还会告诉你你的索引主键被如何利用的，你的数据表是如何被搜索和排序的……等等，等等</li>
+<li>代码中可以使用 AOP 的操作 对每个持久层的 service 方法 打印执行时间，将所有执行时间较长的 sql 语句进行预警</li>
+<li>查看sql语句是否出现了临时表，临时表可能会通过IO落地到磁盘上，要尽可能避免</li>
+</ol>
+<h2 id="四-查询语句的优化">四、查询语句的优化</h2>
+<h3 id="1-sql-语句的时间花在哪儿">1. sql 语句的时间花在哪儿?</h3>
+<ul>
+<li>等待数据的等待时间，以及执行SQL语句时间.</li>
+<li>这两个时间并非孤立的, 如果单条语句执行的快了,对其他语句的锁定的也就少了</li>
+</ul>
+<h3 id="2-sql-语句的执行时间又花在哪儿了">2. sql 语句的执行时间,又花在哪儿了?</h3>
+<ul>
+<li>查 ----&gt; 沿着索引查,甚至全表扫描</li>
+<li>取 ----&gt; 查到行后,把数据取出来(sending data)</li>
+</ul>
+<h3 id="3-sql-语句的优化思路">3. sql 语句的优化思路？</h3>
+<ul>
+<li>不查, 通过业务逻辑来计算,比如论坛的注册会员数,我们可以根据前 3 个月统计的每天注册数, 用程序来估算</li>
+<li>少查, 尽量精准数据,少取行. 我们观察新闻网站,评论内容等,一般一次性取列表 10-30 条左右</li>
+<li>必须要查,尽量走在索引上查询行</li>
+<li>取时, 取尽量少的列</li>
+</ul>
+<h3 id="4-如何定量分析查的多少行和是否沿着索引查">4. 如何定量分析查的多少行,和是否沿着索引查?</h3>
+<ul>
+<li>用 explain 来分析</li>
+</ul>
+<h3 id="5-常见的查询优化">5. 常见的查询优化</h3>
+<ul>
+<li>SELECT 语句务必指明字段名称（避免直接使用 select * ），使用*时，分析器，会要分析出都有什么列，会消耗很多时间，同时执行的时候，会返回很多没有必要的列</li>
+<li>SQL 语句要避免造成索引失效的写法</li>
+<li>当只需要一条数据的时候，使用 limit 1，这样就通过sql语句过滤，而避免了执行时的过滤</li>
+<li>如果排序字段没有用到索引，就尽量少排序</li>
+<li>如果限制条件中其他字段没有索引，尽量少用 or</li>
+<li>避免在 where 子句中对字段进行 null 值判断</li>
+<li>不建议使用%前缀模糊查询</li>
+<li>避免在 where 子句中对字段进行表达式操作</li>
+<li>Join 优化 能用 inner join 就不用 left join right join，如必须使用 一定要已小表为驱动</li>
+<li>可以使用连接查询（JOIN）代替子查询，连接查询时不需要建立临时表，其速度比子查询快</li>
+</ul>
+<h3 id="6-缓存优化">6. 缓存优化</h3>
+<ul>
+<li>为了提高查询速度，我们可以通过不同的方式去缓存我们的结果从而提高响应效，可以去打开查询缓存或者使用Redis</li>
+</ul>
+<h3 id="7-读写分离">7. 读写分离</h3>
+<ul>
+<li>如果数据库的使用场景读的操作比较的时候，为了避免写的操作所造成的性能影响 可以采用读写分离的架构，读写分离，解决的是，数据库的写入，影响了查询的效率。读写分离的基本原理是让主数据库处理事务性增、改、删操作（INSERT、 UPDATE、 DELETE），而从数据库处理 SELECT 查询操作</li>
+</ul>
+<h3 id="8-mysql-的分库分表">8. mysql 的分库分表</h3>
+<ul>
+<li>
+<p>数据量越来越大时，单体数据库无法满足要求，可以考虑分库分表</p>
+</li>
+<li>
+<p>两种拆分方案：</p>
+<ul>
+<li>垂直拆分：（分库）业务表太多？ 将业务细化 不同的小业务专门用一个库来维护</li>
+<li>水平拆分：（分表）单个表存的数据太多，装不下了？ 将该表查分成多个</li>
+</ul>
+</li>
+<li>
+<p>分库分表常用工具： MyCat</p>
+</li>
+</ul>
+<h3 id="9-explain使用">9. EXPLAIN使用</h3>
+<p><strong>select_type，表示 SELECT 语句的类型，取值如下</strong></p>
+<ul>
+<li><strong>SIMPLE</strong>：表示简单查询，其中不包含连接查询和子查询</li>
+<li><strong>PRIMARY</strong>：主键查血</li>
+<li><strong>UNION</strong>：表示连接查询</li>
+<li><strong>UNION RESULT</strong> ：连接查询的结果</li>
+<li><strong>SUBQUERY</strong>：子查询</li>
+</ul>
+<p><strong>type ，表示表的连接类型 ，取值如下</strong>：</p>
+<ul>
+<li><strong>system</strong>：表仅有一行，这是 const 类型的特列，平时不会出现，这个也可以忽略不计</li>
+<li><strong>const</strong>：数据表最多只有一个匹配行，因为只匹配一行数据，所以很快，常用于 PRIMARY KEY 或者 UNIQUE 索引的查询，<code>可理解为 const 是最优化的</code></li>
+<li><strong>eq_ref</strong> ：读取本表中和关联表表中的每行组合成的一行，索引是主键或唯一非 NULL 索引</li>
+<li><strong>ref</strong>：查询条件索引既不是 UNIQUE 也不是 PRIMARY KEY 的情况</li>
+<li><strong>ref_or_null</strong>：该联接类型如同 ref，但是添加了 MySQL 可以专门搜索包含 NULL 值的行。在解决子查询中经常使用该联接类型的优化。</li>
+</ul>
+<p>上面这五种情况都是很理想的索引使用情况。</p>
+<ul>
+<li><strong>index_merge</strong>：该联接类型表示使用了索引合并优化方法。在这种情况下， key 列包含了使用的索引的清单</li>
+<li><strong>unique_subquery</strong>：是一个索引查找函数,可以完全替换子查询,效率更高。</li>
+<li><strong>index_subquery</strong>：只检索给定范围的行,使用一个索引来选择行</li>
+<li><strong>range</strong>：只检索给定范围的行,使用一个索引来选择行</li>
+<li><strong>index</strong>：该联接类型与 ALL 相同,除了只有索引树被扫描。</li>
+<li><strong>ALL</strong>：对于每个来自于先前的表的行组合,进行完整的表扫描，性能最差</li>
+</ul>
+<p>**possible_keys，可能用到的索引  **</p>
+<p>**key，最终用的索引 ，如果没有选择索引,键是 NULL  **</p>
+<h2 id="五-索引及优化">五、索引及优化</h2>
+<blockquote>
+<p>注意避免冗余索引，比如说(name)和(name,price)，(name)就是冗余索引</p>
+</blockquote>
+<h3 id="1-索引的作用">1. 索引的作用</h3>
+<p>当表中的数据量越来越大时，索引对于性能的影响愈发重要。索引优化应该是对查询性能优化最有效的手段了。</p>
+<p>索引能够轻易将查询性能提高好几个数量级。有了索引相当于我们给数据库的数据加了目录一样，可以快速的找到数据，如果不适用索引则需要一点一点去查找数据。 简单来说提高数据查询的效率。</p>
+<h3 id="2-索引的分类">2. 索引的分类</h3>
+<ul>
+<li>普通索引 index :加速查找</li>
+<li>唯一索引
+<ul>
+<li>主键索引： primary key ：加速查找+约束（不为空且唯一）</li>
+<li>唯一索引： unique：加速查找+约束 （唯一）</li>
+</ul>
+</li>
+<li>联合索引（组合索引）</li>
+</ul>
+<h3 id="3-索引的优点查的快">3. 索引的优点（查的快）</h3>
+<ol>
+<li>可以通过建立唯一索引或者主键索引,保证数据库表中每一行数据的唯一性.</li>
+<li>建立索引可以大大提高检索的数据,以及减少表的检索行数</li>
+<li>在表连接的连接条件 可以加速表与表直接的相连</li>
+<li>在分组和排序字句进行数据检索,可以减少查询时间中 分组 和 排序时所消耗的时间(数据库的记录会重新排序)</li>
+<li>建立索引,在查询中使用索引 可以提高性能</li>
+</ol>
+<h3 id="4-索引的缺点增删改慢">4. 索引的缺点（增删改慢）</h3>
+<ol>
+<li>在创建索引和维护索引 会耗费时间,随着数据量的增加而增加</li>
+<li>索引文件会占用物理空间,除了数据表需要占用物理空间之外,每一个索引还会占用一定的物理空间</li>
+<li>当对表的数据进行 INSERT,UPDATE,DELETE 的时候,索引也要动态的维护,这样就会降低数据的维护速度,(建立索引会占用磁盘空间的索引文件。一般情况这个问题不太严重，但如果你在一个大表上创建了多种组合索引，索引文件的会膨胀很快)</li>
+</ol>
+<h3 id="5-哪些情况或字段适合加索引">5. 哪些情况或字段适合加索引</h3>
+<ol>
+<li>在经常需要搜索的列上,可以加快索引的速度</li>
+<li>主键列上可以确保列的唯一性</li>
+<li>在表与表的而连接条件上加上索引,可以加快连接查询的速度</li>
+<li>在经常需要排序(order by),分组(group by)和的 distinct 列上加索引 可以加快排序查询的时间</li>
+</ol>
+<h3 id="6-哪些情况不适合创建索引">6. 哪些情况不适合创建索引</h3>
+<ol>
+<li>查询中很少使用到的列 不应该创建索引,如果建立了索引然而还会降低 mysql 的性能和增大了空间需求.</li>
+<li>很少数据的列也不应该建立索引,比如 一个性别字段 0或者1,在查询中,结果集的数据占了表中数据行的比例比较大,mysql 需要扫描的行数很多,增加索引,并不能提高效率</li>
+<li>定义为 text 和 image 和 bit 数据类型的列不应该增加索引,</li>
+<li>当表的修改(UPDATE,INSERT,DELETE)操作远远大于检索(SELECT)操作时不应该创建索引,这两个操作是互斥的关系</li>
+</ol>
+<h3 id="7-哪些情况会造成索引失效">7. 哪些情况会造成索引失效</h3>
+<ol>
+<li>如果条件中有 or，即使其中有条件带索引也不会使用(这也是为什么尽量少用 or 的原因)</li>
+<li>索引字段的值不能有 null 值，有 null 值会使该列索引失效</li>
+<li>对于多列索引，不是使用的第一部分，则不会使用索引（最左原则）</li>
+<li>like 查询以%开头</li>
+<li>如果列类型是字符串，那一定要在条件中将数据使用单引号引用起来,否则不使用索引</li>
+<li>在索引的列上使用表达式或者函数会使索引失效</li>
+</ol>
+<h3 id="8-索引原理">8. 索引原理</h3>
+<ul>
+<li>
+<p>MySQL 的基本存储结构是页(记录都存在页里边)：</p>
+</li>
+<li>
+<p>各个数据页可以组成一个双向链表</p>
+</li>
+<li>
+<p>每个数据页中的记录又可以组成一个单向链表</p>
+<ul>
+<li>每个数据页都会为存储在它里边儿的记录生成一个页目录，在通过主键查找某条记录的时候可以在页目录中使用二分法快速定位到对应的槽，然后再遍历该槽对应分组中的记录即可快速找到指定的记录</li>
+<li>以其他列(非主键)作为搜索条件：只能从最小记录开始依次遍历单链表中的每条记录。</li>
+</ul>
+</li>
+</ul>
+<p>所以说，如果我们写 select * from user where indexname = 'xxx'这样没有进行任何优化的 sql 语句，默认会这样做：</p>
+<ol>
+<li>定位到记录所在的页：需要遍历双向链表，找到所在的页</li>
+<li>从所在的页内中查找相应的记录：由于不是根据主键查询，只能遍历所在页的单链表了<br>
+很明显，在数据量很大的情况下这样查找会很慢！这样的时间复杂度为 O（n）</li>
+</ol>
+<p><strong>使用索引之后</strong></p>
+<ul>
+<li>其实就是将无序的数据变成有序(相对)：</li>
+<li>很明显的是：没有用索引我们是需要遍历双向链表来定位对应的页，现在通过 “目录” 就可以很快地定位到对应的页上了！（二分查找，时间复杂度近似为 O(logn)）</li>
+<li>其实底层结构就是 B+树， B+树作为树的一种实现，能够让我们很快地查找出对应的记录</li>
+</ul>
+<p><strong>面试题</strong></p>
+<p>有商品表, 有主键,goods_id, 栏目列 cat_id, 价格 price说:在价格列上已经加了索引,但按价格查询还是很慢,<br>
+问可能是什么原因,怎么解决?</p>
+<p>答: 在实际场景中,一个电商网站的商品分类很多,直接在所有商品中,按价格查商品,是极少的,一般客户都来到分类下,然后再查.</p>
+<p>改正: 去掉单独的 Price 列的索引, 加 (cat_id,price)复合索引再查询</p>
+<p><strong>索引优化策略</strong></p>
+<ol>
+<li>选择唯一性索引</li>
+<li>唯一性索引的值是唯一的，可以更快速的通过该索引来确定某条记录。</li>
+<li>为经常需要排序、分组和联合操作的字段建立索引：</li>
+<li>为常作为查询条件的字段建立索引。</li>
+<li>限制索引的数目： 越多的索引，会使更新表变得很浪费时间。</li>
+<li>尽量使用数据量少的索引</li>
+<li>如果索引的值很长，那么查询的速度会受到影响。</li>
+<li>尽量使用前缀来索引</li>
+<li>如果索引字段的值很长，最好使用值的前缀来索引。</li>
+<li>删除不再使用或者很少使用的索引</li>
+<li>最左前缀匹配原则，非常重要的原则。</li>
+<li>尽量选择区分度高的列作为索引</li>
+<li>区分度的公式是表示字段不重复的比例</li>
+<li>索引列不能参与计算，保持列“干净”：带函数的查询不参与索引。</li>
+<li>尽量的扩展索引，不要新建索引。</li>
+</ol>
+<h2 id="六-插入优化">六、插入优化</h2>
+<p><strong>InnoDB</strong>：</p>
+<ol>
+<li>
+<p>禁用唯一性检查，唯一性校验会降低插入记录的速度，可以在插入记录之前禁用唯一性检查，插入数据完成后再开启</p>
+</li>
+<li>
+<p>禁用外键检查，插入数据之前执行禁止事务的自动提交</p>
+</li>
+<li>
+<p>禁止自动提交，插入数据之前执行禁止事务的自动提交</p>
+</li>
+<li>
+<p>批量插入数据，可以使用一条 INSERT 语句插入一条数据</p>
+</li>
+</ol>
+<h2 id="七-大表优化">七、大表优化</h2>
+<p>当MySQL单表记录数过大时，数据库的CRUD性能会明显下降，一些常见的优化措施如下：</p>
+<h3 id="1-限定数据的范围">1. 限定数据的范围</h3>
+<p>务必禁止不带任何限制数据范围条件的查询语句。比如：我们当用户在查询订单历史的时候，我们可以控制在一个月的范围内；</p>
+<h3 id="2-读写分离">2. 读/写分离</h3>
+<p>经典的数据库拆分方案，主库负责写，从库负责读；</p>
+<h3 id="3-垂直分区">3. 垂直分区</h3>
+<p><strong>根据数据库里面数据表的相关性进行拆分。</strong> 例如，用户表中既有用户的登录信息又有用户的基本信息，可以将用户表拆分成两个单独的表，甚至放到单独的库做分库。</p>
+<p><strong>简单来说垂直拆分是指数据表列的拆分，把一张列比较多的表拆分为多张表。</strong> 如下图所示，这样来说大家应该就更容易理解了</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTU0ODA2MDU2LnBuZw?x-oss-process=image/format,png" alt="image-20200717154806056" loading="lazy"></figure>
+<h3 id="4-水平分区">4. 水平分区</h3>
+<p><strong>保持数据表结构不变，通过某种策略存储数据分片。这样每一片数据分散到不同的表或者库中，达到了分布式的目的。 水平拆分可以支撑非常大的数据量。</strong></p>
+<p>水平拆分是指数据表行的拆分，表的行数超过200万行时，就会变慢，这时可以把一张的表的数据拆成多张表来存放。举个例子：我们可以将用户信息表拆分成多个用户信息表，这样就可以避免单一表数据量过大对性能造成影响。</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTU0OTEwMjc3LnBuZw?x-oss-process=image/format,png" alt="image-20200717154910277" loading="lazy"></figure>
+<p>分表仅仅是解决了单一表数据过大的问题，但由于表的数据还是在同一台机器上，其实对于提升MySQL并发能力没有什么意义，所以 <strong>水平拆分最好分库</strong> 。</p>
+<h3 id="5-数据库分库策略">5. 数据库分库策略</h3>
+<ul>
+<li><strong>客户端代理：</strong>  <strong>分片逻辑在应用端，封装在jar包中，通过修改或者封装JDBC层来实现。</strong> 当当网的 <strong>Sharding-JDBC</strong> 、阿里的TDDL是两种比较常用的实现。</li>
+<li><strong>中间件代理：</strong> <strong>在应用和数据中间加了一个代理层。分片逻辑统一维护在中间件服务中。</strong> 我们现在谈的 <strong>Mycat</strong> 、360的Atlas、网易的DDB等等都是这种架构的实现。</li>
+</ul>
+<h3 id="6-分库分表之后id-主键如何处理">6. 分库分表之后,id 主键如何处理？</h3>
+<p>因为要是分成多个表之后，每个表都是从 1 开始累加，这样是不对的，我们需要一个全局唯一的 id 来支持。</p>
+<p>生成全局 id 有下面这几种方式：</p>
+<ul>
+<li><strong>UUID</strong>：不适合作为主键，因为太长了，并且无序不可读，查询效率低。比较适合用于生成唯一的名字的标示比如文件的名字。</li>
+<li><strong>数据库自增 id</strong> : : 两台数据库分别设置不同步长，生成不重复ID的策略来实现高可用。这种方式生成的 id 有序，但是需要独立部署数据库实例，成本高，还会有性能瓶颈。</li>
+<li><strong>利用 redis 生成 id :</strong> 性能比较好，灵活方便，不依赖于数据库。但是，引入了新的组件造成系统更加复杂，可用性降低，编码更加复杂，增加了系统成本。</li>
+<li><strong>Twitter的snowflake算法 、美团的Leaf分布式ID生成系统</strong></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】数据库基础]]></title>
+        <id>https://xzzz2020.github.io/post/74It5jkMz/</id>
+        <link href="https://xzzz2020.github.io/post/74It5jkMz/">
+        </link>
+        <updated>2020-07-26T10:37:57.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E8%83%BD%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B%E4%BB%80%E4%B9%88%E6%98%AFmysql%E5%90%97">一、能简单介绍一下什么是Mysql吗？</a></li>
+<li><a href="#%E4%BA%8C-sql-%E7%9A%84%E5%88%86%E7%B1%BB">二、SQL 的分类</a></li>
+<li><a href="#%E4%B8%89-%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%89%E5%A4%A7%E8%8C%83%E5%BC%8F">三、数据库三大范式</a>
+<ul>
+<li><a href="#1-%E7%AC%AC%E4%B8%80%E8%8C%83%E5%BC%8F">1. 第一范式</a></li>
+<li><a href="#2-%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F">2. 第二范式</a></li>
+<li><a href="#3-%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F">3. 第三范式</a></li>
+<li><a href="#4-%E6%80%BB%E7%BB%93">4. 总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E4%BA%8B%E5%8A%A1%E7%9A%84%E7%AE%80%E4%BB%8B">四、事务的简介</a></li>
+<li><a href="#%E4%BA%94-%E4%BA%8B%E5%8A%A1%E7%9A%84%E7%89%B9%E6%80%A7">五、事务的特性</a>
+<ul>
+<li><a href="#1-%E5%8E%9F%E5%AD%90%E6%80%A7">1. 原子性</a></li>
+<li><a href="#2-%E4%B8%80%E8%87%B4%E6%80%A7">2. 一致性</a></li>
+<li><a href="#3-%E9%9A%94%E7%A6%BB%E6%80%A7">3. 隔离性</a></li>
+<li><a href="#4-%E6%8C%81%E4%B9%85%E6%80%A7">4. 持久性</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-%E5%B9%B6%E5%8F%91%E4%BA%8B%E5%8A%A1%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98">六、并发事务出现的问题</a></li>
+<li><a href="#%E4%B8%83-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">七、事务隔离级别</a>
+<ul>
+<li><a href="#1-%E5%9B%9B%E4%B8%AA%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">1. 四个隔离级别</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AB-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E5%92%8C%E5%B9%B6%E5%8F%91%E7%AD%96%E7%95%A5">八、数据库锁和并发策略</a>
+<ul>
+<li><a href="#1-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%94%81">1. 常见的锁</a></li>
+<li><a href="#2-%E9%A1%B5%E7%BA%A7%E9%94%81">2. 页级锁</a></li>
+<li><a href="#3-%E4%B9%90%E8%A7%82%E9%94%81">3. 乐观锁</a></li>
+<li><a href="#4-%E6%82%B2%E8%A7%82%E9%94%81">4. 悲观锁</a></li>
+<li><a href="#5-innodb%E9%94%81%E7%AE%97%E6%B3%95">5. InnoDB锁算法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B9%9D-%E7%BB%99%E5%AE%9A%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E8%AF%B4%E6%98%8E%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%80%9D%E8%B7%AF">九、给定业务场景说明设计数据库的思路</a></li>
+<li><a href="#%E5%8D%81-%E8%AF%B4%E4%B8%80%E4%B8%8B%E4%BB%80%E4%B9%88%E6%98%AF%E6%B1%A0%E5%8C%96%E8%AE%BE%E8%AE%A1">十、说一下什么是池化设计</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-%E4%B8%80%E6%9D%A1sql%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E6%85%A2%E7%9A%84%E5%8E%9F%E5%9B%A0">十一、一条SQL语句执行慢的原因？</a>
+<ul>
+<li><a href="#1-%E5%88%86%E7%B1%BB%E8%AE%A8%E8%AE%BA">1. 分类讨论</a></li>
+<li><a href="#2-%E9%92%88%E5%AF%B9%E5%81%B6%E5%B0%94%E5%BE%88%E6%85%A2%E7%9A%84%E6%83%85%E5%86%B5">2. 针对偶尔很慢的情况</a>
+<ul>
+<li><a href="#a-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9C%A8%E5%88%B7%E6%96%B0%E8%84%8F%E9%A1%B5flush">a. 数据库在刷新脏页（flush）</a></li>
+<li><a href="#b-%E6%8B%BF%E4%B8%8D%E5%88%B0%E9%94%81%E6%88%91%E8%83%BD%E6%80%8E%E4%B9%88%E5%8A%9E">b. 拿不到锁我能怎么办</a></li>
+</ul>
+</li>
+<li><a href="#3-%E9%92%88%E5%AF%B9%E4%B8%80%E7%9B%B4%E9%83%BD%E8%BF%99%E4%B9%88%E6%85%A2%E7%9A%84%E6%83%85%E5%86%B5">3. 针对一直都这么慢的情况</a>
+<ul>
+<li><a href="#a-%E6%B2%A1%E7%94%A8%E5%88%B0%E7%B4%A2%E5%BC%95">a. 没用到索引</a></li>
+<li><a href="#b-%E7%94%A8%E5%88%B0%E4%BA%86%E7%B4%A2%E5%BC%95%E4%BD%86%E6%98%AF%E7%B3%BB%E7%BB%9F%E8%AF%AF%E5%88%A4%E4%BA%86">b. 用到了索引，但是系统误判了</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-能简单介绍一下什么是mysql吗">一、能简单介绍一下什么是Mysql吗？</h2>
+<ul>
+<li>MySQL 是一种关系型数据库</li>
+<li>在Java企业级开发中非常常用，因为 MySQL 是开源免费的</li>
+<li>阿里巴巴数据库系统也大量用到了 MySQL，因此它的稳定性是有保障的</li>
+<li>MySQL的默认端口号是<strong>3306</strong></li>
+</ul>
+<h2 id="二-sql-的分类">二、SQL 的分类</h2>
+<ul>
+<li>
+<p><strong>DQL--数据查询语言</strong>：代表关键字:select</p>
+</li>
+<li>
+<p><strong>DML--数据操纵语言</strong>：代表关键字:insert,delete,update</p>
+</li>
+<li>
+<p><strong>DDL--数据定义语言</strong>：代表关键字:create ,drop,alter,</p>
+</li>
+<li>
+<p><strong>TCL--事务控制语言</strong>：代表关键字:commit ,rollback;</p>
+</li>
+<li>
+<p><strong>DCL--数据控制语言</strong>：代表关键字:grant,revoke.</p>
+</li>
+</ul>
+<h2 id="三-数据库三大范式">三、数据库三大范式</h2>
+<h3 id="1-第一范式">1. 第一范式</h3>
+<p><code>数据库表中不能出现重复记录，每个字段是原子性的不能再分</code></p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">newSingleThreadExecutor</th>
-<th style="text-align:center">Thread</th>
+<th style="text-align:center">学生编号</th>
+<th style="text-align:center">学生姓名</th>
+<th style="text-align:center">联系方式</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">任务执行完成后，不会自动销毁，可以复用</td>
-<td style="text-align:center">任务执行完成后，会自动销毁</td>
+<td style="text-align:center">1001</td>
+<td style="text-align:center">张三</td>
+<td style="text-align:center">zs@gmail.com,1359999999</td>
 </tr>
 <tr>
-<td style="text-align:center">可以将任务存储在阻塞队列中，逐个执行</td>
-<td style="text-align:center">无法存储任务，只能执行一个任务</td>
+<td style="text-align:center">1002</td>
+<td style="text-align:center">李四</td>
+<td style="text-align:center">ls@gmail.com,13699999999</td>
+</tr>
+<tr>
+<td style="text-align:center">1001</td>
+<td style="text-align:center">王五</td>
+<td style="text-align:center">ww@163.net,13488888888</td>
 </tr>
 </tbody>
 </table>
-<h3 id="newscheduledthreadpool">newScheduledThreadPool</h3>
 <ul>
-<li>可以创建定时的任务，以固定周期执行或者固定的延迟时间执行</li>
-<li><strong>如果任务时间超过了定时时长，就无法按照预定的时间执行</strong></li>
-<li>而Linux<code>crontab</code>定时处理器<strong>为了确保时间的正确性，会重新启一个线程</strong></li>
+<li>学生编号重复，因为没有主键</li>
+<li>联系方式既有邮箱和电话</li>
 </ul>
-<h3 id="newworkstealingpool">newWorkStealingPool</h3>
+<p>因此需要修改成如下形式：</p>
+<table>
+<thead>
+<tr>
+<th>学生编号(pk)</th>
+<th>学生姓名</th>
+<th>email</th>
+<th>联系电话</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>张三</td>
+<td>zs@gmail.com</td>
+<td>1359999999</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>李四</td>
+<td>ls@gmail.com</td>
+<td>13699999999</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>王五</td>
+<td>ww@163.net</td>
+<td>13488888888</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>采用的ForkJoin框架，可以将任务进行分割，同时线程之间会互相帮助</li>
-<li>阻塞队列采用的LinkedBlockingDeque，可以进行任务窃取</li>
+<li>每个行必须唯一，且存在主键</li>
+<li>列不能再分</li>
 </ul>
-<h2 id="五-使用线程池的好处">五、使用线程池的好处</h2>
+<h3 id="2-第二范式">2. 第二范式</h3>
+<p><code>要求所有非主键字段完全依赖主键，不能产生部分依赖</code></p>
+<table>
+<thead>
+<tr>
+<th>学生编号(PK)</th>
+<th>教师编号(PK)</th>
+<th>学生姓名</th>
+<th style="text-align:center">教师姓名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>001</td>
+<td>张三</td>
+<td style="text-align:center">王老师</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>002</td>
+<td>李四</td>
+<td style="text-align:center">赵老师</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>001</td>
+<td>王五</td>
+<td style="text-align:center">王老师</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>002</td>
+<td>张三</td>
+<td style="text-align:center">赵老师</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>002</td>
+<td>爱迪生</td>
+<td style="text-align:center">赵老师</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li><strong>线程重用</strong>：线程的创建和销毁的开销是巨大的，而通过线程池的重用大大减少了这些不必要的开销，当然既然少了这么多消费内存的开销，其线程执行速度也是突飞猛进的提升。</li>
-<li><strong>控制线程池的并发数</strong>：线程不是并发的越多，性能越高，反而在线程并发太多时，线程的切换会消耗系统大量的资源，可以通过的设置线程池最大并发线程数目，维持系统高性能</li>
-<li><strong>线程池可以对线程进行管理</strong>：虽然线程提供了线程组操控线程，但是线程池拥有更多管理线程的API</li>
-<li><strong>可以储存需要执行的任务</strong>：当任务提交过多时，可以将任务储存起来，等待线程处理</li>
+<li>如果只是拿学生编号或者教师编号做主键，都不能确定唯一一行数据，所以采用联合主键</li>
+<li>学生姓名部分依赖了主键的一个字段学生编号，而没有依赖教师编号，而教师姓名部门依赖了主键<br>
+的一个字段教师编号，这就是第二范式部分依赖。</li>
 </ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【面试题】虚拟内存]]></title>
-        <id>https://xzzz2020.github.io/post/IAw823Nme/</id>
-        <link href="https://xzzz2020.github.io/post/IAw823Nme/">
-        </link>
-        <updated>2020-07-06T07:35:49.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>本文档为面试精华版，如果是初学者，建议从专栏学习：<a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+<p><strong>解决就是分表</strong>：</p>
+<ul>
+<li>学生信息表</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>学生编号（PK）</th>
+<th>学生姓名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>张三</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>李四</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>王五</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>教师信息表</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>教师编号（PK）</th>
+<th>教师姓名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>001</td>
+<td>王老师</td>
+</tr>
+<tr>
+<td>002</td>
+<td>赵老师</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>教师和学生的关系表</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>学生编号(PK)</th>
+<th>教师编号(PK)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>001</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>002</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>001</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>002</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-第三范式">3. 第三范式</h3>
+<p><code>非主键字段不能传递依赖于主键字段。</code></p>
+<table>
+<thead>
+<tr>
+<th>学生编号（PK）</th>
+<th>学生姓名</th>
+<th>班级编号</th>
+<th>班级名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>张三</td>
+<td>01</td>
+<td>一年一班</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>李四</td>
+<td>02</td>
+<td>一年二班</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>王五</td>
+<td>03</td>
+<td>一年三班</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>班级名称字段没有直接依赖于主键，班级名称字段依赖于班级编号，班级编号依赖于学生编号，那么这就是传递依赖</li>
+</ul>
+<p><strong>继续分表</strong></p>
+<ul>
+<li>学生信息表</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>学生编号（PK）</th>
+<th>学生姓名</th>
+<th>班级编号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1001</td>
+<td>张三</td>
+<td>01</td>
+</tr>
+<tr>
+<td>1002</td>
+<td>李四</td>
+<td>02</td>
+</tr>
+<tr>
+<td>1003</td>
+<td>王五</td>
+<td>03</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>班级信息表</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>班级编号</th>
+<th>班级名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>一年一班</td>
+</tr>
+<tr>
+<td>02</td>
+<td>一年二班</td>
+</tr>
+<tr>
+<td>03</td>
+<td>一年三班</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-总结">4. 总结</h3>
+<ul>
+<li>第一范式： 有主键，具有原子性，字段不可分割</li>
+<li>第二范式：完全依赖， 没有部分依赖</li>
+<li>第三范式： 没有传递依赖</li>
+</ul>
+<p>数据库设计尽量遵循三范式，但是还是根据实际情况进行取舍，有时可能会拿冗余换速度，最终用目的要满足客户需求</p>
+<h2 id="四-事务的简介">四、事务的简介</h2>
+<ul>
+<li>当执行 DML 语句是其实就是开启一个事务</li>
+<li>关于事务的回滚需要注意：只能回滚 insert、 delete 和 update 语句，不能回滚 select（回滚 select 没有任何意义），对于 create、 drop、 alter 这些无法回滚.事务只对 DML 有效果。</li>
+<li>注意： rollback，或者 commit 后事务就结束了。</li>
+</ul>
+<h2 id="五-事务的特性">五、事务的特性</h2>
+<h3 id="1-原子性">1. 原子性</h3>
+<ul>
+<li>整个事务中的所有操作，必须作为一个单元全部完成（或全部取消）。</li>
+</ul>
+<p>undo log 名为回滚日志，是实现原子性的关键，当事务回滚时能够撤销所有已经成功执行的 sql 语句，他需要记录你要回滚的相应日志信息。</p>
+<p>undo log 记录了这些回滚需要的信息，当事务执行失败或调用了 rollback，导致事务需要回滚，便可以利用 undolog 中的信息将数据回滚到修改之前的样子。</p>
+<h3 id="2-一致性">2. 一致性</h3>
+<ul>
+<li>关注数据的可见性，中间状态的数据对外部不可见，只有最初状态和最终状态的数据对外可见</li>
+</ul>
+<p>数据库无法保证，需要从应用层角度考虑，用业务来实现。从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据</p>
+<h3 id="3-隔离性">3. 隔离性</h3>
+<p>并发访问数据库时，一个用户的事务不被其他事务所干扰，各并发事务之间数据库是独立的</p>
+<p>事务的隔离性是利用的是锁和 MVCC 机制。</p>
+<p>至于 MVCC,即多版本并发控制(Multi Version Concurrency Control),一个行记录数据有多个版本对快照数据，这些快照数据在 undo log 中。</p>
+<p>如果一个事务读取的行正在做 DELELE 或者 UPDATE 操作，读取操作不会等行上的锁释放，而是读取该行的快照版本。</p>
+<h3 id="4-持久性">4. 持久性</h3>
+<p>在事务完成以后，该事务对数据库所作的更改将持久地保存在数据库之中，并不会被回滚。</p>
+<p>事务的持久性是利用 Innodb 的redo log</p>
+<h2 id="六-并发事务出现的问题">六、并发事务出现的问题</h2>
+<ul>
+<li><strong>脏读（Dirty read）:</strong> 当一个事务正在访问数据并且对数据进行了修改，而这种修改还没有提交到数据库中，这时另外一个事务也访问了这个数据，然后使用了这个数据。因为这个数据是还没有提交的数据，那么另外一个事务读到的这个数据是“脏数据”，依据“脏数据”所做的操作可能是不正确的。</li>
+<li><strong>丢失修改（Lost to modify）:</strong>  指在一个事务读取一个数据时，另外一个事务也访问了该数据，那么在第一个事务中修改了这个数据后，第二个事务也修改了这个数据。这样第一个事务内的修改结果就被丢失，因此称为丢失修改。     例如：事务1读取某表中的数据A=20，事务2也读取A=20，事务1修改A=A-1，事务2也修改A=A-1，最终结果A=19，事务1的修改被丢失。</li>
+<li><strong>不可重复读（Unrepeatableread）:</strong> 指在一个事务内多次读同一数据。在这个事务还没有结束时，另一个事务也访问该数据。那么，在第一个事务中的两次读数据之间，由于第二个事务的修改导致第一个事务两次读取的数据可能不太一样。这就发生了在一个事务内两次读到的数据是不一样的情况，因此称为不可重复读。</li>
+<li><strong>幻读（Phantom read）:</strong> 幻读与不可重复读类似。它发生在一个事务（T1）读取了几行数据，接着另一个并发事务（T2）插入了一些数据时。在随后的查询中，第一个事务（T1）就会发现多了一些原本不存在的记录，就好像发生了幻觉一样，所以称为幻读。</li>
+</ul>
+<p><strong>不可重复读和幻读区别：</strong></p>
+<p>不可重复读的重点是修改比如多次读取一条记录发现其中某些列的值被修改，幻读的重点在于新增或者删除比如多次读取一条记录发现记录增多或减少了。</p>
+<h2 id="七-事务隔离级别">七、事务隔离级别</h2>
+<h3 id="1-四个隔离级别">1. 四个隔离级别</h3>
+<ul>
+<li><strong>读未提交</strong>：允许一个事务可以看到其他事务未提交的修改，可能会导致脏读、幻读或不可重复读。</li>
+<li><strong>读已提交</strong>：允许一个事务只能看到其他事务已经提交的修改，可以阻止脏读，但是幻读或不可重复读仍有可能发生。</li>
+<li><strong>可重复读</strong>：确保如果在一个事务中执行两次相同的 SELECT 语句，都能得到相同的结果，不管其他事务是否提交这些修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</li>
+<li><strong>串行化</strong>：将一个事务与其他事务完全地隔离，相当于加锁，该级别可以防止脏读、不可重复读以及幻读。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻影读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>READ-UNCOMMITTED</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>READ-COMMITTED</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>REPEATABLE-READ</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+</tr>
+<tr>
+<td>SERIALIZABLE</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+</tbody>
+</table>
+<p>MySQL InnoDB 存储引擎的默认支持的隔离级别是 <strong>REPEATABLE-READ（可重读）</strong>。</p>
+<blockquote>
+<p>InnoDB 存储引擎<strong>REPEATABLE-READ（可重读）</strong>  事务隔离级别下使用的是Next-Key Lock 锁算法，因此可以避免幻读的产生，这与其他数据库系统(如 SQL Server) 是不同的。所以说InnoDB 存储引擎的默认支持的隔离级别是 <strong>REPEATABLE-READ（可重读）</strong> 已经可以完全保证事务的隔离性要求，即达到了 SQL标准的 <strong>SERIALIZABLE(可串行化)</strong> 隔离级别。</p>
 </blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
+<h2 id="八-数据库锁和并发策略">八、数据库锁和并发策略</h2>
+<h3 id="1-常见的锁">1. 常见的锁</h3>
 <ul>
-<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98virtual-memory">1. 什么是虚拟内存(Virtual Memory)?</a></li>
-<li><a href="#2-%E5%B1%80%E9%83%A8%E6%80%A7%E5%8E%9F%E7%90%86">2. 局部性原理</a></li>
-<li><a href="#3-%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8">3. 虚拟存储器</a></li>
-<li><a href="#4-%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%9A%84%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0">4. 虚拟内存的技术实现</a></li>
-<li><a href="#5-%E8%AF%B7%E6%B1%82%E5%88%86%E9%A1%B5%E4%B8%8E%E5%88%86%E9%A1%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E7%9A%84%E4%B8%8D%E5%90%8C">5. 请求分页与分页存储管理的不同？</a></li>
-<li><a href="#6-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B">6. 常见的页面置换算法有哪些？</a></li>
+<li><strong>MyIsam 实现了表锁</strong>。表锁可以针对数据库表加锁，在锁的灵活性上不如行锁。表锁分为两种锁：读锁与写锁。</li>
+<li><strong>InnoDB 存储引擎实现了行锁与表锁（意向锁）</strong>。行锁可以以行为单位对数据集进行锁定。行锁也分为两种锁：<br>
+共享锁与排他锁。 InnoDB 对于 Update、 Delete、 insert 语句会自动给涉及的数据集隐式的加上排他锁。对于 select语句 InnoDB 不会加任何锁
+<ul>
+<li><strong>共享锁</strong>：允许一个事务读取一行，阻止其他事务获得相同数据集的排他锁。但允许其他事务获取共享锁。<br>
+显示加锁 select * from table where ... lock in share mode</li>
+<li><strong>排他锁</strong>：允许获得排他锁的事务更新数据，阻止其他事务取得相同数据集的共享与排他锁。但是可以对获取了排他锁的数据集进行单纯的查询访问。<br>
+显示加锁 sql select * from table where ... for update</li>
 </ul>
 </li>
+<li><strong>innoDB 的行锁的实现方式是基于索引项的</strong>。这意味着即使你尝试获取不同行的排他锁，若使用了相同的索引键，也可能会造成锁冲突。</li>
 </ul>
-</p>
-<h2 id="1-什么是虚拟内存virtual-memory">1. 什么是虚拟内存(Virtual Memory)?</h2>
-<p>这个在我们平时使用电脑特别是Windows 系统的时候太常见了。很多时候我们使用点开了很多占内存的软件，这些软件占用的内存可能已经远远超出了我们电脑本身具有的物理内存。为什么可以这样呢?正是因为虚拟内存的存在，<strong>通过虚拟内存可以让程序可以拥有超过系统物理内存大小的可用内存空间。</strong></p>
-<p>另外，<strong>虚拟内存为每个进程提供了一个一致的、私有的地址空间，它让每个进程产生了一种自己在独享主存的错觉(每个进程拥有一片连续完整的内存空间)。 这样会更加有效地管理内存并减少出错。</strong></p>
-<p><strong>总结而言就是</strong>：</p>
+<p><strong>表级锁和行级锁对比：</strong></p>
 <ul>
-<li>可以将内存扩展到外部磁盘存储器上，使得程序可以拥有超过物理内存的的空间大小</li>
-<li>让程序有一种错觉，认为自己获得了连续的可⽤的内存，而实际上这些内存分散在物理内存上甚至存放在外部磁盘上</li>
+<li>
+<p><strong>表级锁：</strong> MySQL中锁定 <strong>粒度最大</strong> 的一种锁，对当前操作的整张表加锁，实现简单，资源消耗也比较少，加锁快，不会出现死锁。其锁定粒度最大，触发锁冲突的概率最高，并发度最低，MyISAM和 InnoDB引擎都支持表级锁。</p>
+</li>
+<li>
+<p><strong>行级锁：</strong> MySQL中锁定 <strong>粒度最小</strong> 的一种锁，只针对当前操作的行进行加锁。 行级锁能大大减少数据库操作的冲突。其加锁粒度最小，并发度高，但加锁的开销也最大，加锁慢，会出现死锁。</p>
+</li>
+<li>
+<p>事务更新大表中的大部分数据直接使用表级锁效率更高；事务比较复杂，使用行级索很可能引起死锁导致回滚。</p>
+</li>
 </ul>
-<h2 id="2-局部性原理">2. 局部性原理</h2>
-<p>局部性原理是虚拟内存技术的基础，正是因为程序运⾏具有局部性原理，才可以只装⼊部分程序到内存就开始运行。</p>
-<p><strong>局部性原理表现在以下两个方面</strong>：</p>
+<h3 id="2-页级锁">2. 页级锁</h3>
+<p>页级锁是 MySQL 中锁定粒度介于行级锁和表级锁中间的一种锁。表级锁速度快，但冲突多，行级冲突少，但速度慢。所以取了折衷的页级，一次锁定相邻的一组记录。 BDB 支持页级锁</p>
+<h3 id="3-乐观锁">3. 乐观锁</h3>
+<p>乐观锁认为一个用户读数据的时候，别人不会去写自己所读的数据</p>
+<p><strong>实现</strong>：</p>
+<p>时间戳就是在数据库表中单独加一列时间戳，比如“TimeStamp”，每次读出来的时候，把该字段也读出来，当写回去的时候，把该字段加 1，提交之前 ，跟数据库的该字段比较一次，如果比数 据库的值大的话，就允许保存，否则不允许保存，这种处理方法虽然不使用数据库系统提供的锁 机制，但是这种方法可以大大提高数据库处理的并发量</p>
+<pre><code class="language-sql"># 每一个记录都有version，会有冗余，可以一个表一个version
+Select data,version from biao where id = #{id};
+Update biao set data=#{data},version=vsersion+1 where id=#{id} and version = #{version};
+
+# 一个表一个修改
+begin;
+Select version from version_biao where table_name = #{table_name};
+Update biao set data=#{data} where id=#{id};
+Update version_biao set version=vsersion+1 from  where version = #{version};
+commit;
+</code></pre>
+<h3 id="4-悲观锁">4. 悲观锁</h3>
+<p>悲观锁就是在读取数据的时候，为了不让别人修改自己读取的数据，就会先对自己读取的数据加 锁，只有自<br>
+己把数据读完了，才允许别人修改那部分数据，或者反过来说，就是自己修改某条数 据的时候，不允许别人读取<br>
+该数据，只有等自己的整个事务提交了，才释放自己加上的锁，才允许其他用户访问那部分数据。</p>
+<p><strong>实现</strong>：</p>
+<p>sql 语句后边加上 for update</p>
+<pre><code class="language-sql">select id,nam from biao for update ;
+</code></pre>
+<h3 id="5-innodb锁算法">5. InnoDB锁算法</h3>
+<ul>
+<li>
+<p><strong>间隙锁</strong>：锁定一个一个区间记录中的间隙，不包括记录本身</p>
+</li>
+<li>
+<p><strong>行锁</strong>：单个行记录上的锁</p>
+</li>
+<li>
+<p><strong>临键锁</strong>：锁定一个一个区间记录中的间隙以及记录本身</p>
+</li>
+</ul>
+<h2 id="九-给定业务场景说明设计数据库的思路">九、给定业务场景说明设计数据库的思路</h2>
 <ol>
-<li><strong>时间局部性</strong> ：如果程序中的某条指令⼀旦执⾏，不久以后该指令可能再次执⾏；如果某数据被访问过，不久以后该数据可能再次被访问。产⽣时间局部性的典型原因，是由于在程序中存在着⼤量的循环操作。</li>
-<li><strong>空间局部性</strong> ：⼀旦程序访问了某个存储单元，在不久之后，其附近的存储单元也将被访问，即程序在⼀段时间内所访问的地址，可能集中在⼀定的范围之内，这是因为指令通常是顺序存放、顺序执⾏的，数据也⼀般是以向量、数组、表等形式簇聚存储的。</li>
+<li>分析场景选择存储引擎，比如业务是读多还是写多？需不需要支持事务？</li>
+<li>数据库设计的原则，遵循三大范式，但是可以做一些适当的反三大范式</li>
+<li>字段的设计，选择类型</li>
 </ol>
-<p>时间局部性是通过将近来使⽤的指令和数据保存到⾼速缓存存储器中，并使⽤⾼速缓存的层次结构实现。空间局部性通常是使⽤较⼤的⾼速缓存，并将预取机制集成到⾼速缓存控制逻辑中实现。虚拟内存技术实际上就是建⽴了 “内存⼀外存”的两级存储器的结构，</p>
-<h2 id="3-虚拟存储器">3. 虚拟存储器</h2>
-<p>基于局部性原理，在程序装入时，可以将程序的一部分装入内存，而将其他部分留在外存，就可以启动程序执行。由于外存往往比内存大很多，所以我们运行的软件的内存大小实际上是可以比计算机系统实际的内存大小大的。在程序执行过程中，当所访问的信息不在内存时，由操作系统将所需要的部分调入内存，然后继续执行程序。另一方面，操作系统将内存中暂时不使用的内容换到外存上，从而腾出空间存放将要调入内存的信息。这样，<strong>计算机好像为用户提供了一个比实际内存大的多的存储器一虚拟存储器。</strong></p>
-<p>实际上，我觉得虚拟内存同样<strong>是一种时间换空间的策略</strong>，你用CPU 的计算时间，页的调入调出花费的时间，换来了一个虚拟的更大的空间来支持程序的运行。</p>
-<h2 id="4-虚拟内存的技术实现">4. 虚拟内存的技术实现</h2>
-<p><strong>虚拟内存的实现需要建立在离散分配的内存管理方式的基础上，虚拟内存的实现有以下三种方式</strong>:</p>
-<ol>
-<li><strong>请求分页存储管理</strong>:建立在分页管理之上，<code>为了支持虚拟存储器功能而增加了请求调页功能和页面置换功能。</code>请求分页是目前最常用的一种实现虚拟存储器的方法。请求分页存储管理系统中，在作业开始运行之前，仅装入当前要执行的部分段即可运行。假如在作业运行的过程中发现要访问的页面不在内存，则由处理器通知操作系统按照对应的页面置换算法将相应的页面调入到主存，同时操作系统也可以将暂时不用的页面置换到外存中。</li>
-<li><strong>请求分段存储管理</strong>:建立在分段存储管理之.上，<code>增加了请求调段功能、分段置换功能。</code>请求分段储存管理方式就如同请求分页储存管理方式一样，在作业开始运行之前，仅装入当前要执行的部分段即可运行;在执行过程中，可使用请求调入中断动态装入要访问但又不在内存的程序段;当内存空间已满，而又需要装入新的段时，根据置换功能适当调出某个段，以便腾出空间而装入新的段。</li>
-<li><strong>请求段页式存储管理</strong></li>
-</ol>
-<h2 id="5-请求分页与分页存储管理的不同">5. 请求分页与分页存储管理的不同？</h2>
-<p>根本区别在于，是否要求将程序所需全部的地址空间都装入内存，分页存储是这样要求的，所以无法提供虚拟内存</p>
-<h2 id="6-常见的页面置换算法有哪些">6. 常见的页面置换算法有哪些？</h2>
-<p>在程序运行过程中，如果要访问的页面不在内存中，就发生缺页中断从而将该页调入内存中。此时如果内存已无空闲空间，系统必须从内存中调出一个页面到磁盘对换区中来腾出空间。</p>
-<p>页面置换算法和缓存淘汰策略类似，可以将内存看成磁盘的缓存。在缓存系统中，缓存的大小有限，当有新的缓存到达时，需要淘汰一部分已经存在的缓存，这样才有空间存放新的缓存数据。</p>
-<p>页面置换算法的主要目标是使页面置换频率最低（也可以说缺页率最低）。</p>
+<h2 id="十-说一下什么是池化设计">十、说一下什么是池化设计</h2>
+<ul>
+<li>我们常见的如java线程池、jdbc连接池、redis连接池等就是这类设计的代表实现。这种设计会初始预设资源，解决的问题就是抵消每次获取资源的消耗，如创建线程的开销，获取远程连接的开销等。</li>
+<li>池化设计会配置一些参数，比如初始线程数，最大线程数等等，还会有一个阻塞队列，当一些请求过多时，会采用一些拒绝的策略</li>
+<li>在连接池中，创建连接后，将其放置在池中，并再次使用它，因此不必建立新的连接。如果使用了所有连接，则会建立一个新连接并将其添加到池中。 连接池还减少了用户必须等待建立与数据库的连接的时间。</li>
+</ul>
+<h2 id="十一-一条sql语句执行慢的原因">十一、一条SQL语句执行慢的原因？</h2>
+<h3 id="1-分类讨论">1. 分类讨论</h3>
 <ul>
 <li>
-<p><strong>最佳置换算法（OPT）</strong>：理论上最好的算法，每次置换选择的将是最久不会被访问的页面</p>
+<p>大多数情况是正常的，只是偶尔会出现很慢的情况。</p>
 </li>
 <li>
-<p><strong>最近最久未使用（LRU）</strong>:  记录的是页面上次的访问时间，实现方式有栈或者寄存器两种，对于栈每次置换栈顶元素，每次访问都会将页面置于栈底；寄存器保存的是访问时间，每次置换掉访问时间离现在最晚的的</p>
-</li>
-<li>
-<p><strong>最少使用（LFU）</strong>：该置换算法选择在之前时期使⽤最少的⻚⾯作为淘汰页，记录的是一段时间内的使用频率。</p>
-</li>
-<li>
-<p><strong>先进先出（FIFO）</strong>：每次置换的将是最先进来的页面</p>
-</li>
-<li>
-<p><strong>第二次机会算法</strong> ：由于先进先出可能会将经常使用的页面置换出去，所以增加了一个访问位，当页面被访问时，将该位置成1，当发生缺页中断时，会将该位置成0，会给该页面一次机会。</p>
-</li>
-<li>
-<p><strong>最近未使用（NRU）</strong>：每个页面都有两个状态位：R 与 M，当页面被访问时设置页面的 R=1，当页面被修改时设置 M=1。其中 R 位会定时被清零。当发生缺页中断时，最先置换00，最后置换11的页面，至于中间的两个分类，NRU 优先换出已经被修改的脏页面（R=0，M=1），而不是被频繁使用的干净页面（R=1，M=0）</p>
+<p>在数据量不变的情况下，这条SQL语句一直以来都执行的很慢。</p>
 </li>
 </ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【面试题】操作系统内存管理]]></title>
-        <id>https://xzzz2020.github.io/post/NnnE8vgmP/</id>
-        <link href="https://xzzz2020.github.io/post/NnnE8vgmP/">
-        </link>
-        <updated>2020-07-06T07:33:30.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>本文档为面试精华版，如果是初学者，建议从专栏学习：<a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+<h3 id="2-针对偶尔很慢的情况">2. 针对偶尔很慢的情况</h3>
+<p>一条 SQL 大多数情况正常，偶尔才能出现很慢的情况，针对这种情况，我觉得这条SQL语句的书写本身是没什么问题的，而是其他原因导致的，那会是什么原因呢？</p>
+<h4 id="a-数据库在刷新脏页flush">a. 数据库在刷新脏页（flush）</h4>
+<p>当我们要往数据库插入一条数据、或者要更新一条数据的时候，我们知道数据库会在<strong>内存</strong>中把对应字段的数据更新了，但是更新之后，这些更新的字段并不会马上同步持久化到<strong>磁盘</strong>中去，而是把这些更新的记录写入到 redo log 日记中去，等到空闲的时候，在通过 redo log 里的日记把最新的数据同步到<strong>磁盘</strong>中去。</p>
+<blockquote>
+<p>当内存数据页跟磁盘数据页内容不一致的时候，我们称这个内存页为“脏页”。内存数据写入到磁盘后，内存和磁盘上的数据页的内容就一致了，称为“干净页”。</p>
 </blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
+<p><strong>刷脏页有两种场景会影响性能</strong></p>
 <ul>
-<li><a href="#1-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E4%B8%BB%E8%A6%81%E6%98%AF%E5%81%9A%E4%BB%80%E4%B9%88">1. 操作系统的内存管理主要是做什么？</a></li>
-<li><a href="#2-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6%E4%BA%86%E8%A7%A3%E5%90%97%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F">2. 操作系统的内存管理机制了解吗？内存管理有哪几种方式?</a></li>
-<li><a href="#3-%E5%BF%AB%E8%A1%A8%E5%92%8C%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8">3. 快表和多级页表</a>
+<li>**redolog写满了：**redo log 里的容量是有限的，如果数据库一直很忙，更新又很频繁，这个时候 redo log 很快就会被写满了，这个时候就没办法等到空闲的时候再把数据同步到磁盘的，只能暂停其他操作，全身心来把数据同步到磁盘中去的，而这个时候，<strong>就会导致我们平时正常的SQL语句突然执行的很慢</strong>，所以说，数据库在在同步数据到磁盘的时候，就有可能导致我们的SQL语句执行的很慢了。</li>
+<li>**内存不够用了：**如果一次查询较多的数据，恰好碰到所查数据页不在内存中时，需要申请内存，而此时恰好内存不足的时候就需要淘汰一部分内存数据页，如果是干净页，就直接释放，如果恰好是脏页就需要刷脏页。</li>
+</ul>
+<h4 id="b-拿不到锁我能怎么办">b. 拿不到锁我能怎么办</h4>
+<p>这个就比较容易想到了，我们要执行的这条语句，刚好这条语句涉及到的表，别人在用，并且加锁了，我们拿不到锁，只能慢慢等待别人释放锁了。或者，表没有加锁，但要使用到的某个一行被加锁了，这个时候，我也没办法啊。</p>
+<h3 id="3-针对一直都这么慢的情况">3. 针对一直都这么慢的情况</h3>
+<p>先通过EXPLAN去分析SQL语句是否用到索引，主要关注type，possible_key，keys这几个字段</p>
+<h4 id="a-没用到索引">a. 没用到索引</h4>
 <ul>
-<li><a href="#%E5%BF%AB%E8%A1%A8">快表</a></li>
-<li><a href="#%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8">多级页表</a></li>
-<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+<li>如果该字段没有加索引，那么自然没有用到索引</li>
+<li>字段有索引，但却没有用索引，那说明出现了索引失效，比如说like 查询以%开头，或者不满足索引的最左原则，或者使用了Or关键字，或者索引字段的值有NULL值，或者使用了函数</li>
 </ul>
-</li>
-<li><a href="#4-%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6%E5%92%8C%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6%E6%9C%89%E5%93%AA%E4%BA%9B%E5%85%B1%E5%90%8C%E7%82%B9%E5%92%8C%E5%8C%BA%E5%88%AB%E5%91%A2">4. 分页机制和分段机制有哪些共同点和区别呢?</a></li>
-<li><a href="#5-%E8%A7%A3%E9%87%8A%E4%B8%80%E4%B8%8B%E9%80%BB%E8%BE%91%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E5%92%8C%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80">5. 解释一下逻辑(虚拟)地址和物理地址</a></li>
-<li><a href="#6-cpu%E5%AF%BB%E5%9D%80%E4%BA%86%E8%A7%A3%E5%90%97%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4">6. CPU寻址了解吗?为什么需要虚拟地址空间?</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="1-操作系统的内存管理主要是做什么">1. 操作系统的内存管理主要是做什么？</h2>
-<p>操作系统的内存管理主要负责内存的分配与回收（malloc 函数：申请内存， free 函数：释放内存），另外地址转换也就是将逻辑地址转换成相应的物理地址等功能也是操作系统内存管理做的事情。</p>
-<h2 id="2-操作系统的内存管理机制了解吗内存管理有哪几种方式">2. 操作系统的内存管理机制了解吗？内存管理有哪几种方式?</h2>
-<p>**简单分为连续分配管理⽅式和⾮连续分配管理⽅式这两种。**连续分配管理⽅式是指为⼀个⽤户程序分配⼀个连续的内存空间，常⻅的如块式管理 。同样地，⾮连续分配管理⽅式允许⼀个程序使⽤的内存分布在离散或者说不相邻的内存中，常⻅的如⻚式管理 和 段式管理：</p>
-<ol>
-<li><strong>块式管理</strong> ： 远古时代的计算机操系统的内存管理⽅式。将内存分为⼏个固定⼤⼩的块，每个块中只包含⼀个进程。如果程序运⾏需要内存的话，操作系统就分配给它⼀块，如果程序运⾏只需要很⼩的空间话，分配的这块内存很⼤⼀部分⼏乎被浪费了。这些在每个块中未被利⽤的空间，我们称之为碎⽚。</li>
-<li><strong>页式管理</strong> ：把主存分为⼤⼩相等且固定的⼀⻚⼀⻚的形式，⻚较⼩，相对相⽐于块式管理的划分⼒度更⼤，提⾼了内存利⽤率，减少了碎⽚。⻚式管理通过⻚表对应逻辑地址和物理地址。</li>
-<li><strong>段式管理</strong> ： ⻚式管理虽然提⾼了内存利⽤率，但是⻚式管理其中的⻚实际并⽆任何实际意义。段式管理把主存分为⼀段段的，每⼀段的空间⼜要⽐⼀⻚的空间⼩很多 。但是，最重要的是段是有实际意义的，每个段定义了⼀组逻辑信息，例如,有主程序段 MAIN、⼦程序段 X、数据段 D及栈段 S 等。 段式管理通过段表对应逻辑地址和物理地址。</li>
-</ol>
-<p><strong>最后还有一个很重要的段页式管理</strong>：段⻚式管理机制结合了段式管理和⻚式管理的优点。简单来说段⻚式管理机制就是把主存先分成若⼲段，每个段⼜分成若⼲⻚，也就是说 段⻚式管理机制 中段与段之间以及段的内部的都是离散的。</p>
-<h2 id="3-快表和多级页表">3. 快表和多级页表</h2>
-<h3 id="快表">快表</h3>
-<p>**为了解决虚拟地址到物理地址的转换速度，操作系统在页表方案基础之上引入了快表来加速虚拟地址到物理地址的转换。**我们可以把快表理解为一种特殊的高速缓冲存储器(Cache) ，其中的内容是页表的一部分或者全部内容。作为页表的Cache， 它的作用与页表相似，但是提高了访问速率。由于采用页表做地址转换，读写内存数据时CPU要访问两次主存。有了快表，有时只要访问一次高速缓冲存储器，一次主存,这样可加速查找并提高指令执行速度。</p>
-<p><strong>使用快表之后的地址转换流程是这样的</strong>:</p>
-<ol>
-<li>根据虚拟地址中的页号查快表;</li>
-<li>如果该页在快表中，直接从快表中读取相应的物理地址;</li>
-<li>如果该页不在快表中，就访问内存中的页表，再从页表中得到物理地址，同时将页表中的该映射表项添加到快表中;</li>
-<li>当快表填满后， 又要登记新页时，就按照一-定的淘汰策略淘汰掉快表中的一个页。</li>
-</ol>
-<p>看完了之后你会发现快表和我们平时经常在我们开发的系统使用的缓存(比如Redis) 很像，的确是这样的，操作系统中的很多思想、很多经典的算法，你都可以在我们日常开发使用的各种工具或者框架中找到它们的影子。</p>
-<h3 id="多级页表">多级页表</h3>
-<p>引入多级页表的主要目的是为了避免把全部页表一直放在内存中占用过多空间，特别是那些根本就不需<br>
-要的页表就不需要保留在内存中，多级页表属于时间换空间的典型场景。</p>
-<h3 id="总结">总结</h3>
-<p>为了提高内存的空间性能，提出了多级页表的概念;但是提到空间性能是以浪费时间性能为基础的，因<br>
-此为了补充损失的时间性能，提出了快表(即TLB) 的概念。不论是快表还是多级页表实际上都利用到了程序的局部性原理。</p>
-<h2 id="4-分页机制和分段机制有哪些共同点和区别呢">4. 分页机制和分段机制有哪些共同点和区别呢?</h2>
-<ol>
-<li><strong>共同点</strong>:
+<h4 id="b-用到了索引但是系统误判了">b. 用到了索引，但是系统误判了</h4>
 <ul>
-<li>分页机制和分段机制都是为了提高内存利用率，较少内存碎片。</li>
-<li>页和段都是离散存储的，所以两者都是离散分配内存的方式。但是，每个页和段中的内存是连续的。</li>
-</ul>
-</li>
-<li><strong>区别</strong>:
-<ul>
-<li>页的大小是固定的，由操作系统决定;而段的大小不固定，取决于我们当前运行的程序。</li>
-<li>分页仅仅是为了满足操作系统内存管理的需求，而段是逻辑信息的单位，在程序中可以体现为代码段，数据段，能够更好满足用户的需要。</li>
-<li>分页是一维地址空间，分段是二维的。</li>
-</ul>
-</li>
-</ol>
-<h2 id="5-解释一下逻辑虚拟地址和物理地址">5. 解释一下逻辑(虚拟)地址和物理地址</h2>
-<p>我们编程一般只有 可能和逻辑地址打交道， 比如在C语言中， 指针里面存储的数值就可以理解成为内存里的一个地址，这个地址也就是我们说的逻辑地址，逻辑地址由操作系统决定。物理地址指的是真实物理内存中地址，更具体一点来说就是内存地址寄存器中的地址。物理地址是内存单元真正的地址。</p>
-<h2 id="6-cpu寻址了解吗为什么需要虚拟地址空间">6. CPU寻址了解吗?为什么需要虚拟地址空间?</h2>
-<p>现代处理器使用的是- -种称为虚拟寻址(Virtual Addressing) 的寻址方式。使用虚拟寻址，CPU 需要<br>
-将虚拟地址翻译成物理地址，这样才能访问到真实的物理内存。实际 上完成虚拟地址转换为物理地址<br>
-转换的硬件是CPU中含有一个被称为内存管理单元(Memory Management Unit, MMU) 的硬件。</p>
-<p><strong>为什么要有虚拟地址空间呢？</strong></p>
-<ul>
-<li>没有虚拟地址空间的时候， 程序都是直接访问和操作的都是物理内存 。</li>
-<li>如果直接把物理地址暴露出来的话会带来严重问题，⽐如可能对操作系统造成伤害以及给同时运⾏多个程序造成困难。</li>
-</ul>
-<p><strong>通过虚拟地址访问内存有以下优势</strong>：</p>
-<ul>
-<li>程序可以使用一系列相邻的虚拟地址来访问物理内存中不相邻的大内存缓冲区。</li>
-<li>程序可以使用一系列虚拟地址来访问大于可用物理内存的内存缓冲区。当物理内存的供应量变小时，内存管理器会将物理内存页(通常大小为4 KB) 保存到磁盘文件。数据或代码页会根据需要在物理内存与磁盘之间移动。</li>
-<li>不同进程使用的虚拟地址彼此隔离。一个进程中的代码无法更改正在由另一进程或操作系统使用的物理内存。</li>
+<li>非主键索引存储的是主键索引的值，如果SQL语句走的非主键索引，那么还需要到主键索引去寻找对应的data</li>
+<li>当一个SQL语句范围比较大，比如where  x&gt;0  and  x &lt; 20000或者没有where条件，那么可能命中的数据非常多，甚至命中全表，而全表扫描顶多就是O(n)，此时再走索引，还会有两次索引寻找的时间消耗，即使索引查找非常快</li>
+<li>此时分析器就要判断是否走索引，采用的方式是抽样检测，来预测SQL语句范围中出现相同值的概率，比如在0-20000范围中，数字3可能出现了10次，也可能只出现1次，显然如果重复数字越少，走索引的性能越好</li>
 </ul>
 ]]></content>
     </entry>

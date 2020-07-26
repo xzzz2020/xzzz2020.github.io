@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】数据库优化策略 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/5NPno0The/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595760717952" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】数据库优化策略</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-26</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">5069字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">18 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1592439162128-37cfea7d2a9d.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E4%BC%98%E5%8C%96">一、数据结构的优化</a></li>
+<li><a href="#%E4%BA%8C-%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BC%98%E5%8C%96">二、服务器优化</a></li>
+<li><a href="#%E4%B8%89-%E7%BA%BF%E4%B8%8A%E5%AE%9A%E4%BD%8D">三、线上定位</a></li>
+<li><a href="#%E5%9B%9B-%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96">四、查询语句的优化</a>
+<ul>
+<li><a href="#1-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%97%B6%E9%97%B4%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF">1. sql 语句的时间花在哪儿?</a></li>
+<li><a href="#2-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4%E5%8F%88%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF%E4%BA%86">2. sql 语句的执行时间,又花在哪儿了?</a></li>
+<li><a href="#3-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF">3. sql 语句的优化思路？</a></li>
+<li><a href="#4-%E5%A6%82%E4%BD%95%E5%AE%9A%E9%87%8F%E5%88%86%E6%9E%90%E6%9F%A5%E7%9A%84%E5%A4%9A%E5%B0%91%E8%A1%8C%E5%92%8C%E6%98%AF%E5%90%A6%E6%B2%BF%E7%9D%80%E7%B4%A2%E5%BC%95%E6%9F%A5">4. 如何定量分析查的多少行,和是否沿着索引查?</a></li>
+<li><a href="#5-%E5%B8%B8%E8%A7%81%E7%9A%84%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">5. 常见的查询优化</a></li>
+<li><a href="#6-%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96">6. 缓存优化</a></li>
+<li><a href="#7-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">7. 读写分离</a></li>
+<li><a href="#8-mysql-%E7%9A%84%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8">8. mysql 的分库分表</a></li>
+<li><a href="#9-explain%E4%BD%BF%E7%94%A8">9. EXPLAIN使用</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E7%B4%A2%E5%BC%95%E5%8F%8A%E4%BC%98%E5%8C%96">五、索引及优化</a>
+<ul>
+<li><a href="#1-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%9C%E7%94%A8">1. 索引的作用</a></li>
+<li><a href="#2-%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%86%E7%B1%BB">2. 索引的分类</a></li>
+<li><a href="#3-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BC%98%E7%82%B9%E6%9F%A5%E7%9A%84%E5%BF%AB">3. 索引的优点（查的快）</a></li>
+<li><a href="#4-%E7%B4%A2%E5%BC%95%E7%9A%84%E7%BC%BA%E7%82%B9%E5%A2%9E%E5%88%A0%E6%94%B9%E6%85%A2">4. 索引的缺点（增删改慢）</a></li>
+<li><a href="#5-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E6%88%96%E5%AD%97%E6%AE%B5%E9%80%82%E5%90%88%E5%8A%A0%E7%B4%A2%E5%BC%95">5. 哪些情况或字段适合加索引</a></li>
+<li><a href="#6-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8D%E9%80%82%E5%90%88%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">6. 哪些情况不适合创建索引</a></li>
+<li><a href="#7-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88">7. 哪些情况会造成索引失效</a></li>
+<li><a href="#8-%E7%B4%A2%E5%BC%95%E5%8E%9F%E7%90%86">8. 索引原理</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96">六、插入优化</a></li>
+<li><a href="#%E4%B8%83-%E5%A4%A7%E8%A1%A8%E4%BC%98%E5%8C%96">七、大表优化</a>
+<ul>
+<li><a href="#1-%E9%99%90%E5%AE%9A%E6%95%B0%E6%8D%AE%E7%9A%84%E8%8C%83%E5%9B%B4">1. 限定数据的范围</a></li>
+<li><a href="#2-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">2. 读/写分离</a></li>
+<li><a href="#3-%E5%9E%82%E7%9B%B4%E5%88%86%E5%8C%BA">3. 垂直分区</a></li>
+<li><a href="#4-%E6%B0%B4%E5%B9%B3%E5%88%86%E5%8C%BA">4. 水平分区</a></li>
+<li><a href="#5-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%88%86%E5%BA%93%E7%AD%96%E7%95%A5">5. 数据库分库策略</a></li>
+<li><a href="#6-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E4%B9%8B%E5%90%8Eid-%E4%B8%BB%E9%94%AE%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86">6. 分库分表之后,id 主键如何处理？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-数据结构的优化">一、数据结构的优化</h2>
+<p><strong>三大范式</strong>：</p>
+<ul>
+<li>数据库设计尽量遵循三范式</li>
+<li>根据实际情况进行取舍，有时可能会拿冗余换速度，减少表的关联查询，用空间换时间</li>
+<li>对于需要经常联合查询的表，可以建立中间表以提高查询效率</li>
+<li>对于字段较多的表，如果有些字段的使用频率很低，可以将这些字段分离出来形成新表</li>
+</ul>
+<p><strong>数据库命令规范</strong>：</p>
+<ul>
+<li>所有数据库对象名称必须使用小写字母并用下划线分割</li>
+<li>数据库对象的命名要能做到见名识意，并且最后不要超过 32 个字符</li>
+<li>所有存储相同数据的列名和列类型必须一致（一般作为关联列，如果查询时关联列类型不一致会自动进行数据类型隐式转换，会造成列上的索引失效，导致查询效率降低）</li>
+</ul>
+<p><strong>列的选择</strong>：</p>
+<ul>
+<li>字段类型优先级 整型 &gt; date,time &gt; char,varchar &gt; blob</li>
+<li>尽量不要有null，可以设置为不允许空，或者加一个默认值</li>
+<li>数据大小够用就行</li>
+<li>不要使用大数据字段，如TEXT，BLOB</li>
+<li>财务数据使用decimal，不会丢失精度</li>
+</ul>
+<p><strong>主键的选择</strong>：</p>
+<ul>
+<li>在 myisam 中,字符串索引会被压缩,用字符串做主键性能不如整型</li>
+<li>用递增的值,不要用离散的值,离散值会导致文件在磁盘的位置有间隔,浪费空间且不易连续读取</li>
+</ul>
+<h2 id="二-服务器优化">二、服务器优化</h2>
+<p><strong>优化服务器硬件</strong></p>
+<ul>
+<li>配置较大的内存</li>
+<li>配置高速磁盘，比如 SSD</li>
+<li>配置多核处理器， MySQL 是多线程的数据库，多处理器可以提高同时执行多个线程的能力</li>
+</ul>
+<p><strong>优化 MySQL 的参数</strong></p>
+<ul>
+<li>
+<p>修改my.conf 或者 my.ini 配置文件</p>
+</li>
+<li>
+<p><strong>key_buffer_size</strong>：表示索引缓冲区大小，缓存数据，只对MyISAM表起作用，不是越大越好，大小取决于内存</p>
+</li>
+<li>
+<p><strong>innodb_buffer_pool_size</strong>：表示InnoDB类型表和索引的最大缓存，值越大查询速度越快</p>
+</li>
+<li>
+<p><strong>query_cache_size</strong>：表示查询缓冲区大小，MySQL8以上已经移除</p>
+</li>
+<li>
+<p><strong>max_connections</strong>：表示数据库的最大连接数，也不是越多越好，过多连接可能会导致僵死</p>
+</li>
+</ul>
+<h2 id="三-线上定位">三、线上定位</h2>
+<p><strong>发现系统运行缓慢，如何定位和分析查询慢的 sql 语句 ？</strong></p>
+<ol>
+<li>开启 mysql 慢日志查询 定位查询较慢的 sql 语句 （200ms 500ms ）</li>
+<li>使用 EXPLAIN 关键字可以让你知道 MySQL 是如何处理你的 SQL 语句的。这可以帮你分析你的查询语句或是表结构的性能瓶颈。 EXPLAIN 的查询结果还会告诉你你的索引主键被如何利用的，你的数据表是如何被搜索和排序的……等等，等等</li>
+<li>代码中可以使用 AOP 的操作 对每个持久层的 service 方法 打印执行时间，将所有执行时间较长的 sql 语句进行预警</li>
+<li>查看sql语句是否出现了临时表，临时表可能会通过IO落地到磁盘上，要尽可能避免</li>
+</ol>
+<h2 id="四-查询语句的优化">四、查询语句的优化</h2>
+<h3 id="1-sql-语句的时间花在哪儿">1. sql 语句的时间花在哪儿?</h3>
+<ul>
+<li>等待数据的等待时间，以及执行SQL语句时间.</li>
+<li>这两个时间并非孤立的, 如果单条语句执行的快了,对其他语句的锁定的也就少了</li>
+</ul>
+<h3 id="2-sql-语句的执行时间又花在哪儿了">2. sql 语句的执行时间,又花在哪儿了?</h3>
+<ul>
+<li>查 ----&gt; 沿着索引查,甚至全表扫描</li>
+<li>取 ----&gt; 查到行后,把数据取出来(sending data)</li>
+</ul>
+<h3 id="3-sql-语句的优化思路">3. sql 语句的优化思路？</h3>
+<ul>
+<li>不查, 通过业务逻辑来计算,比如论坛的注册会员数,我们可以根据前 3 个月统计的每天注册数, 用程序来估算</li>
+<li>少查, 尽量精准数据,少取行. 我们观察新闻网站,评论内容等,一般一次性取列表 10-30 条左右</li>
+<li>必须要查,尽量走在索引上查询行</li>
+<li>取时, 取尽量少的列</li>
+</ul>
+<h3 id="4-如何定量分析查的多少行和是否沿着索引查">4. 如何定量分析查的多少行,和是否沿着索引查?</h3>
+<ul>
+<li>用 explain 来分析</li>
+</ul>
+<h3 id="5-常见的查询优化">5. 常见的查询优化</h3>
+<ul>
+<li>SELECT 语句务必指明字段名称（避免直接使用 select * ），使用*时，分析器，会要分析出都有什么列，会消耗很多时间，同时执行的时候，会返回很多没有必要的列</li>
+<li>SQL 语句要避免造成索引失效的写法</li>
+<li>当只需要一条数据的时候，使用 limit 1，这样就通过sql语句过滤，而避免了执行时的过滤</li>
+<li>如果排序字段没有用到索引，就尽量少排序</li>
+<li>如果限制条件中其他字段没有索引，尽量少用 or</li>
+<li>避免在 where 子句中对字段进行 null 值判断</li>
+<li>不建议使用%前缀模糊查询</li>
+<li>避免在 where 子句中对字段进行表达式操作</li>
+<li>Join 优化 能用 inner join 就不用 left join right join，如必须使用 一定要已小表为驱动</li>
+<li>可以使用连接查询（JOIN）代替子查询，连接查询时不需要建立临时表，其速度比子查询快</li>
+</ul>
+<h3 id="6-缓存优化">6. 缓存优化</h3>
+<ul>
+<li>为了提高查询速度，我们可以通过不同的方式去缓存我们的结果从而提高响应效，可以去打开查询缓存或者使用Redis</li>
+</ul>
+<h3 id="7-读写分离">7. 读写分离</h3>
+<ul>
+<li>如果数据库的使用场景读的操作比较的时候，为了避免写的操作所造成的性能影响 可以采用读写分离的架构，读写分离，解决的是，数据库的写入，影响了查询的效率。读写分离的基本原理是让主数据库处理事务性增、改、删操作（INSERT、 UPDATE、 DELETE），而从数据库处理 SELECT 查询操作</li>
+</ul>
+<h3 id="8-mysql-的分库分表">8. mysql 的分库分表</h3>
+<ul>
+<li>
+<p>数据量越来越大时，单体数据库无法满足要求，可以考虑分库分表</p>
+</li>
+<li>
+<p>两种拆分方案：</p>
+<ul>
+<li>垂直拆分：（分库）业务表太多？ 将业务细化 不同的小业务专门用一个库来维护</li>
+<li>水平拆分：（分表）单个表存的数据太多，装不下了？ 将该表查分成多个</li>
+</ul>
+</li>
+<li>
+<p>分库分表常用工具： MyCat</p>
+</li>
+</ul>
+<h3 id="9-explain使用">9. EXPLAIN使用</h3>
+<p><strong>select_type，表示 SELECT 语句的类型，取值如下</strong></p>
+<ul>
+<li><strong>SIMPLE</strong>：表示简单查询，其中不包含连接查询和子查询</li>
+<li><strong>PRIMARY</strong>：主键查血</li>
+<li><strong>UNION</strong>：表示连接查询</li>
+<li><strong>UNION RESULT</strong> ：连接查询的结果</li>
+<li><strong>SUBQUERY</strong>：子查询</li>
+</ul>
+<p><strong>type ，表示表的连接类型 ，取值如下</strong>：</p>
+<ul>
+<li><strong>system</strong>：表仅有一行，这是 const 类型的特列，平时不会出现，这个也可以忽略不计</li>
+<li><strong>const</strong>：数据表最多只有一个匹配行，因为只匹配一行数据，所以很快，常用于 PRIMARY KEY 或者 UNIQUE 索引的查询，<code>可理解为 const 是最优化的</code></li>
+<li><strong>eq_ref</strong> ：读取本表中和关联表表中的每行组合成的一行，索引是主键或唯一非 NULL 索引</li>
+<li><strong>ref</strong>：查询条件索引既不是 UNIQUE 也不是 PRIMARY KEY 的情况</li>
+<li><strong>ref_or_null</strong>：该联接类型如同 ref，但是添加了 MySQL 可以专门搜索包含 NULL 值的行。在解决子查询中经常使用该联接类型的优化。</li>
+</ul>
+<p>上面这五种情况都是很理想的索引使用情况。</p>
+<ul>
+<li><strong>index_merge</strong>：该联接类型表示使用了索引合并优化方法。在这种情况下， key 列包含了使用的索引的清单</li>
+<li><strong>unique_subquery</strong>：是一个索引查找函数,可以完全替换子查询,效率更高。</li>
+<li><strong>index_subquery</strong>：只检索给定范围的行,使用一个索引来选择行</li>
+<li><strong>range</strong>：只检索给定范围的行,使用一个索引来选择行</li>
+<li><strong>index</strong>：该联接类型与 ALL 相同,除了只有索引树被扫描。</li>
+<li><strong>ALL</strong>：对于每个来自于先前的表的行组合,进行完整的表扫描，性能最差</li>
+</ul>
+<p>**possible_keys，可能用到的索引  **</p>
+<p>**key，最终用的索引 ，如果没有选择索引,键是 NULL  **</p>
+<h2 id="五-索引及优化">五、索引及优化</h2>
+<blockquote>
+<p>注意避免冗余索引，比如说(name)和(name,price)，(name)就是冗余索引</p>
+</blockquote>
+<h3 id="1-索引的作用">1. 索引的作用</h3>
+<p>当表中的数据量越来越大时，索引对于性能的影响愈发重要。索引优化应该是对查询性能优化最有效的手段了。</p>
+<p>索引能够轻易将查询性能提高好几个数量级。有了索引相当于我们给数据库的数据加了目录一样，可以快速的找到数据，如果不适用索引则需要一点一点去查找数据。 简单来说提高数据查询的效率。</p>
+<h3 id="2-索引的分类">2. 索引的分类</h3>
+<ul>
+<li>普通索引 index :加速查找</li>
+<li>唯一索引
+<ul>
+<li>主键索引： primary key ：加速查找+约束（不为空且唯一）</li>
+<li>唯一索引： unique：加速查找+约束 （唯一）</li>
+</ul>
+</li>
+<li>联合索引（组合索引）</li>
+</ul>
+<h3 id="3-索引的优点查的快">3. 索引的优点（查的快）</h3>
+<ol>
+<li>可以通过建立唯一索引或者主键索引,保证数据库表中每一行数据的唯一性.</li>
+<li>建立索引可以大大提高检索的数据,以及减少表的检索行数</li>
+<li>在表连接的连接条件 可以加速表与表直接的相连</li>
+<li>在分组和排序字句进行数据检索,可以减少查询时间中 分组 和 排序时所消耗的时间(数据库的记录会重新排序)</li>
+<li>建立索引,在查询中使用索引 可以提高性能</li>
+</ol>
+<h3 id="4-索引的缺点增删改慢">4. 索引的缺点（增删改慢）</h3>
+<ol>
+<li>在创建索引和维护索引 会耗费时间,随着数据量的增加而增加</li>
+<li>索引文件会占用物理空间,除了数据表需要占用物理空间之外,每一个索引还会占用一定的物理空间</li>
+<li>当对表的数据进行 INSERT,UPDATE,DELETE 的时候,索引也要动态的维护,这样就会降低数据的维护速度,(建立索引会占用磁盘空间的索引文件。一般情况这个问题不太严重，但如果你在一个大表上创建了多种组合索引，索引文件的会膨胀很快)</li>
+</ol>
+<h3 id="5-哪些情况或字段适合加索引">5. 哪些情况或字段适合加索引</h3>
+<ol>
+<li>在经常需要搜索的列上,可以加快索引的速度</li>
+<li>主键列上可以确保列的唯一性</li>
+<li>在表与表的而连接条件上加上索引,可以加快连接查询的速度</li>
+<li>在经常需要排序(order by),分组(group by)和的 distinct 列上加索引 可以加快排序查询的时间</li>
+</ol>
+<h3 id="6-哪些情况不适合创建索引">6. 哪些情况不适合创建索引</h3>
+<ol>
+<li>查询中很少使用到的列 不应该创建索引,如果建立了索引然而还会降低 mysql 的性能和增大了空间需求.</li>
+<li>很少数据的列也不应该建立索引,比如 一个性别字段 0或者1,在查询中,结果集的数据占了表中数据行的比例比较大,mysql 需要扫描的行数很多,增加索引,并不能提高效率</li>
+<li>定义为 text 和 image 和 bit 数据类型的列不应该增加索引,</li>
+<li>当表的修改(UPDATE,INSERT,DELETE)操作远远大于检索(SELECT)操作时不应该创建索引,这两个操作是互斥的关系</li>
+</ol>
+<h3 id="7-哪些情况会造成索引失效">7. 哪些情况会造成索引失效</h3>
+<ol>
+<li>如果条件中有 or，即使其中有条件带索引也不会使用(这也是为什么尽量少用 or 的原因)</li>
+<li>索引字段的值不能有 null 值，有 null 值会使该列索引失效</li>
+<li>对于多列索引，不是使用的第一部分，则不会使用索引（最左原则）</li>
+<li>like 查询以%开头</li>
+<li>如果列类型是字符串，那一定要在条件中将数据使用单引号引用起来,否则不使用索引</li>
+<li>在索引的列上使用表达式或者函数会使索引失效</li>
+</ol>
+<h3 id="8-索引原理">8. 索引原理</h3>
+<ul>
+<li>
+<p>MySQL 的基本存储结构是页(记录都存在页里边)：</p>
+</li>
+<li>
+<p>各个数据页可以组成一个双向链表</p>
+</li>
+<li>
+<p>每个数据页中的记录又可以组成一个单向链表</p>
+<ul>
+<li>每个数据页都会为存储在它里边儿的记录生成一个页目录，在通过主键查找某条记录的时候可以在页目录中使用二分法快速定位到对应的槽，然后再遍历该槽对应分组中的记录即可快速找到指定的记录</li>
+<li>以其他列(非主键)作为搜索条件：只能从最小记录开始依次遍历单链表中的每条记录。</li>
+</ul>
+</li>
+</ul>
+<p>所以说，如果我们写 select * from user where indexname = 'xxx'这样没有进行任何优化的 sql 语句，默认会这样做：</p>
+<ol>
+<li>定位到记录所在的页：需要遍历双向链表，找到所在的页</li>
+<li>从所在的页内中查找相应的记录：由于不是根据主键查询，只能遍历所在页的单链表了<br>
+很明显，在数据量很大的情况下这样查找会很慢！这样的时间复杂度为 O（n）</li>
+</ol>
+<p><strong>使用索引之后</strong></p>
+<ul>
+<li>其实就是将无序的数据变成有序(相对)：</li>
+<li>很明显的是：没有用索引我们是需要遍历双向链表来定位对应的页，现在通过 “目录” 就可以很快地定位到对应的页上了！（二分查找，时间复杂度近似为 O(logn)）</li>
+<li>其实底层结构就是 B+树， B+树作为树的一种实现，能够让我们很快地查找出对应的记录</li>
+</ul>
+<p><strong>面试题</strong></p>
+<p>有商品表, 有主键,goods_id, 栏目列 cat_id, 价格 price说:在价格列上已经加了索引,但按价格查询还是很慢,<br>
+问可能是什么原因,怎么解决?</p>
+<p>答: 在实际场景中,一个电商网站的商品分类很多,直接在所有商品中,按价格查商品,是极少的,一般客户都来到分类下,然后再查.</p>
+<p>改正: 去掉单独的 Price 列的索引, 加 (cat_id,price)复合索引再查询</p>
+<p><strong>索引优化策略</strong></p>
+<ol>
+<li>选择唯一性索引</li>
+<li>唯一性索引的值是唯一的，可以更快速的通过该索引来确定某条记录。</li>
+<li>为经常需要排序、分组和联合操作的字段建立索引：</li>
+<li>为常作为查询条件的字段建立索引。</li>
+<li>限制索引的数目： 越多的索引，会使更新表变得很浪费时间。</li>
+<li>尽量使用数据量少的索引</li>
+<li>如果索引的值很长，那么查询的速度会受到影响。</li>
+<li>尽量使用前缀来索引</li>
+<li>如果索引字段的值很长，最好使用值的前缀来索引。</li>
+<li>删除不再使用或者很少使用的索引</li>
+<li>最左前缀匹配原则，非常重要的原则。</li>
+<li>尽量选择区分度高的列作为索引</li>
+<li>区分度的公式是表示字段不重复的比例</li>
+<li>索引列不能参与计算，保持列“干净”：带函数的查询不参与索引。</li>
+<li>尽量的扩展索引，不要新建索引。</li>
+</ol>
+<h2 id="六-插入优化">六、插入优化</h2>
+<p><strong>InnoDB</strong>：</p>
+<ol>
+<li>
+<p>禁用唯一性检查，唯一性校验会降低插入记录的速度，可以在插入记录之前禁用唯一性检查，插入数据完成后再开启</p>
+</li>
+<li>
+<p>禁用外键检查，插入数据之前执行禁止事务的自动提交</p>
+</li>
+<li>
+<p>禁止自动提交，插入数据之前执行禁止事务的自动提交</p>
+</li>
+<li>
+<p>批量插入数据，可以使用一条 INSERT 语句插入一条数据</p>
+</li>
+</ol>
+<h2 id="七-大表优化">七、大表优化</h2>
+<p>当MySQL单表记录数过大时，数据库的CRUD性能会明显下降，一些常见的优化措施如下：</p>
+<h3 id="1-限定数据的范围">1. 限定数据的范围</h3>
+<p>务必禁止不带任何限制数据范围条件的查询语句。比如：我们当用户在查询订单历史的时候，我们可以控制在一个月的范围内；</p>
+<h3 id="2-读写分离">2. 读/写分离</h3>
+<p>经典的数据库拆分方案，主库负责写，从库负责读；</p>
+<h3 id="3-垂直分区">3. 垂直分区</h3>
+<p><strong>根据数据库里面数据表的相关性进行拆分。</strong> 例如，用户表中既有用户的登录信息又有用户的基本信息，可以将用户表拆分成两个单独的表，甚至放到单独的库做分库。</p>
+<p><strong>简单来说垂直拆分是指数据表列的拆分，把一张列比较多的表拆分为多张表。</strong> 如下图所示，这样来说大家应该就更容易理解了</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTU0ODA2MDU2LnBuZw?x-oss-process=image/format,png" alt="image-20200717154806056" loading="lazy"></figure>
+<h3 id="4-水平分区">4. 水平分区</h3>
+<p><strong>保持数据表结构不变，通过某种策略存储数据分片。这样每一片数据分散到不同的表或者库中，达到了分布式的目的。 水平拆分可以支撑非常大的数据量。</strong></p>
+<p>水平拆分是指数据表行的拆分，表的行数超过200万行时，就会变慢，这时可以把一张的表的数据拆成多张表来存放。举个例子：我们可以将用户信息表拆分成多个用户信息表，这样就可以避免单一表数据量过大对性能造成影响。</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTU0OTEwMjc3LnBuZw?x-oss-process=image/format,png" alt="image-20200717154910277" loading="lazy"></figure>
+<p>分表仅仅是解决了单一表数据过大的问题，但由于表的数据还是在同一台机器上，其实对于提升MySQL并发能力没有什么意义，所以 <strong>水平拆分最好分库</strong> 。</p>
+<h3 id="5-数据库分库策略">5. 数据库分库策略</h3>
+<ul>
+<li><strong>客户端代理：</strong>  <strong>分片逻辑在应用端，封装在jar包中，通过修改或者封装JDBC层来实现。</strong> 当当网的 <strong>Sharding-JDBC</strong> 、阿里的TDDL是两种比较常用的实现。</li>
+<li><strong>中间件代理：</strong> <strong>在应用和数据中间加了一个代理层。分片逻辑统一维护在中间件服务中。</strong> 我们现在谈的 <strong>Mycat</strong> 、360的Atlas、网易的DDB等等都是这种架构的实现。</li>
+</ul>
+<h3 id="6-分库分表之后id-主键如何处理">6. 分库分表之后,id 主键如何处理？</h3>
+<p>因为要是分成多个表之后，每个表都是从 1 开始累加，这样是不对的，我们需要一个全局唯一的 id 来支持。</p>
+<p>生成全局 id 有下面这几种方式：</p>
+<ul>
+<li><strong>UUID</strong>：不适合作为主键，因为太长了，并且无序不可读，查询效率低。比较适合用于生成唯一的名字的标示比如文件的名字。</li>
+<li><strong>数据库自增 id</strong> : : 两台数据库分别设置不同步长，生成不重复ID的策略来实现高可用。这种方式生成的 id 有序，但是需要独立部署数据库实例，成本高，还会有性能瓶颈。</li>
+<li><strong>利用 redis 生成 id :</strong> 性能比较好，灵活方便，不依赖于数据库。但是，引入了新的组件造成系统更加复杂，可用性降低，编码更加复杂，增加了系统成本。</li>
+<li><strong>Twitter的snowflake算法 、美团的Leaf分布式ID生成系统</strong></li>
+</ul>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E4%BC%98%E5%8C%96">一、数据结构的优化</a></li>
+<li><a href="#%E4%BA%8C-%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BC%98%E5%8C%96">二、服务器优化</a></li>
+<li><a href="#%E4%B8%89-%E7%BA%BF%E4%B8%8A%E5%AE%9A%E4%BD%8D">三、线上定位</a></li>
+<li><a href="#%E5%9B%9B-%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96">四、查询语句的优化</a>
+<ul>
+<li><a href="#1-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%97%B6%E9%97%B4%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF">1. sql 语句的时间花在哪儿?</a></li>
+<li><a href="#2-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4%E5%8F%88%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF%E4%BA%86">2. sql 语句的执行时间,又花在哪儿了?</a></li>
+<li><a href="#3-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF">3. sql 语句的优化思路？</a></li>
+<li><a href="#4-%E5%A6%82%E4%BD%95%E5%AE%9A%E9%87%8F%E5%88%86%E6%9E%90%E6%9F%A5%E7%9A%84%E5%A4%9A%E5%B0%91%E8%A1%8C%E5%92%8C%E6%98%AF%E5%90%A6%E6%B2%BF%E7%9D%80%E7%B4%A2%E5%BC%95%E6%9F%A5">4. 如何定量分析查的多少行,和是否沿着索引查?</a></li>
+<li><a href="#5-%E5%B8%B8%E8%A7%81%E7%9A%84%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">5. 常见的查询优化</a></li>
+<li><a href="#6-%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96">6. 缓存优化</a></li>
+<li><a href="#7-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">7. 读写分离</a></li>
+<li><a href="#8-mysql-%E7%9A%84%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8">8. mysql 的分库分表</a></li>
+<li><a href="#9-explain%E4%BD%BF%E7%94%A8">9. EXPLAIN使用</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E7%B4%A2%E5%BC%95%E5%8F%8A%E4%BC%98%E5%8C%96">五、索引及优化</a>
+<ul>
+<li><a href="#1-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%9C%E7%94%A8">1. 索引的作用</a></li>
+<li><a href="#2-%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%86%E7%B1%BB">2. 索引的分类</a></li>
+<li><a href="#3-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BC%98%E7%82%B9%E6%9F%A5%E7%9A%84%E5%BF%AB">3. 索引的优点（查的快）</a></li>
+<li><a href="#4-%E7%B4%A2%E5%BC%95%E7%9A%84%E7%BC%BA%E7%82%B9%E5%A2%9E%E5%88%A0%E6%94%B9%E6%85%A2">4. 索引的缺点（增删改慢）</a></li>
+<li><a href="#5-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E6%88%96%E5%AD%97%E6%AE%B5%E9%80%82%E5%90%88%E5%8A%A0%E7%B4%A2%E5%BC%95">5. 哪些情况或字段适合加索引</a></li>
+<li><a href="#6-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8D%E9%80%82%E5%90%88%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">6. 哪些情况不适合创建索引</a></li>
+<li><a href="#7-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88">7. 哪些情况会造成索引失效</a></li>
+<li><a href="#8-%E7%B4%A2%E5%BC%95%E5%8E%9F%E7%90%86">8. 索引原理</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96">六、插入优化</a></li>
+<li><a href="#%E4%B8%83-%E5%A4%A7%E8%A1%A8%E4%BC%98%E5%8C%96">七、大表优化</a>
+<ul>
+<li><a href="#1-%E9%99%90%E5%AE%9A%E6%95%B0%E6%8D%AE%E7%9A%84%E8%8C%83%E5%9B%B4">1. 限定数据的范围</a></li>
+<li><a href="#2-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">2. 读/写分离</a></li>
+<li><a href="#3-%E5%9E%82%E7%9B%B4%E5%88%86%E5%8C%BA">3. 垂直分区</a></li>
+<li><a href="#4-%E6%B0%B4%E5%B9%B3%E5%88%86%E5%8C%BA">4. 水平分区</a></li>
+<li><a href="#5-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%88%86%E5%BA%93%E7%AD%96%E7%95%A5">5. 数据库分库策略</a></li>
+<li><a href="#6-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E4%B9%8B%E5%90%8Eid-%E4%B8%BB%E9%94%AE%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86">6. 分库分表之后,id 主键如何处理？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-26 18:39:35";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-26 18:39:35";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>41</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

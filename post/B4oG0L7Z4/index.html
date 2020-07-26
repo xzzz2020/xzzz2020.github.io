@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】SQL语句 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/B4oG0L7Z4/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595760717952" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】SQL语句</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-26</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1404字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">6 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1595713039412-73e0254e1e01.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0">一、常用数据处理函数</a>
+<ul>
+<li><a href="#1-substr">1. substr</a></li>
+<li><a href="#2-trim">2. trim</a></li>
+<li><a href="#3-ifnull">3. ifnull</a></li>
+<li><a href="#4-case-when-then-else-end">4. case … when … then … else ... end</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%B8%B8%E7%94%A8%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0">二、常用聚合函数</a></li>
+<li><a href="#%E4%B8%89-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2">三、分组查询</a>
+<ul>
+<li><a href="#1-group-by">1. group by</a></li>
+<li><a href="#2-having">2. having</a></li>
+<li><a href="#3-select-%E8%AF%AD%E5%8F%A5%E9%A1%BA%E5%BA%8F%E6%80%BB%E7%BB%93">3. select 语句顺序总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E9%87%8D%E7%82%B9">四、连接查询（重点）</a>
+<ul>
+<li><a href="#%E5%86%85%E8%BF%9E%E6%8E%A5%E5%A4%96%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%8C%BA%E5%88%AB">内连接外连接的区别？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E8%A7%86%E5%9B%BE%E7%9A%84%E4%BD%9C%E7%94%A8">五、视图的作用</a></li>
+<li><a href="#%E5%85%AD-%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95">六、如何创建删除索引？</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-常用数据处理函数">一、常用数据处理函数</h2>
+<table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>substr</td>
+<td>取子串（substr(被截取的字符串,起始下标,截取的长度)）</td>
+</tr>
+<tr>
+<td>trim</td>
+<td>去空</td>
+</tr>
+<tr>
+<td>Ifnull</td>
+<td>可以将 null 转换成一个具体值</td>
+</tr>
+<tr>
+<td>case … when … then … else ... end</td>
+<td>多个条件判断</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-substr">1. substr</h3>
+<p>查询姓名以 M 开头所有的员工</p>
+<pre><code class="language-sql">select * from emp where substr(ename, 1, 1)=upper('m');
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NTQxNjgwLnBuZw?x-oss-process=image/format,png" alt="image-20200714105541680" loading="lazy"></figure>
+<h3 id="2-trim">2. trim</h3>
+<p><code>会去首尾空格，不会去除中间的空格</code></p>
+<p>取得工作岗位为 manager 的所有员工</p>
+<pre><code class="language-sql">select * from emp where job=trim(upper('manager '));
+</code></pre>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NTMzNDc1LnBuZw?x-oss-process=image/format,png" alt="image-20200714105533475" loading="lazy"></figure>
+<h3 id="3-ifnull">3. ifnull</h3>
+<pre><code class="language-sql">select ifnull(comm,0) from emp; 
+</code></pre>
+<p>如果 comm 为 null 就替换为 0 在 SQL 语句当中若有 NULL 值参与数学运算，计算结果一定是 NULL 为了防止计算结果出现 NULL，建议先使用 ifnull 空值处理函数预先处理。 以下 SQL 是计算年薪的：</p>
+<pre><code class="language-sql">select empno,ename,sal,(sal+ifnull(comm,0))*12 as yearsal from emp;  
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTEwMDExOTE4LnBuZw?x-oss-process=image/format,png" alt="image-20200714110011918" loading="lazy"></figure>
+<h3 id="4-case-when-then-else-end">4. case … when … then … else ... end</h3>
+<p>如果 job 为 MANAGERG 薪水上涨 10%,如果 job 为 SALESMAN 工资上涨 50%</p>
+<pre><code class="language-sql">select empno, ename, job, sal, case job when 'MANAGER' then sal*1.1 when 'SALESMAN' then sal*1.5 end as newsal from emp;
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NzA5NzUxLnBuZw?x-oss-process=image/format,png" alt="image-20200714105709751" loading="lazy"></figure>
+<p>其他的工资不动，需要加else</p>
+<pre><code class="language-sql">select e.*,sal ,case job when 'salesman' then sal*1.1 when 'clerk' then sal*1.2 else sal end as new_sal from emp e;
+</code></pre>
+<h2 id="二-常用聚合函数">二、常用聚合函数</h2>
+<table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>count</td>
+<td>取得记录数</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>取平均</td>
+</tr>
+<tr>
+<td>max</td>
+<td>取最大的数</td>
+</tr>
+<tr>
+<td>min</td>
+<td>取最小的数</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>分组函数自动忽略空值，不需要手动的加 where 条件排除空值。</li>
+<li>select count(*) from emp where xxx; 符合条件的所有记录总数。</li>
+<li>select count(comm) from emp; comm 这个字段中不为空的元素总数。</li>
+<li>聚合函数不能直接使用在 where 关键字后面。</li>
+</ul>
+<h2 id="三-分组查询">三、分组查询</h2>
+<h3 id="1-group-by">1. group by</h3>
+<p>取得每个工作岗位的工资合计，要求显示岗位名称和工资合计</p>
+<pre><code class="language-sql">select job, sum(sal) from emp group by job;
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTEwOTE0MjE4LnBuZw?x-oss-process=image/format,png" alt="image-20200714110914218" loading="lazy"></figure>
+<p><strong>注意</strong>：在 SQL 语句中若有 group by 语句，那么在 select 语句后面只能跟聚合函数+参与分组的字段。</p>
+<p><strong>错误示范</strong>：<code>select empno,deptno,avg(sal) from emp group by deptno;</code></p>
+<h3 id="2-having">2. having</h3>
+<p>如果想对分组数据再进行过滤需要使用 having 子句</p>
+<p>取得每个岗位的平均工资大于 2000</p>
+<pre><code class="language-sql">select job, avg(sal) from emp group by job having avg(sal) &gt;2000;
+</code></pre>
+<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTExMTI0OTQxLnBuZw?x-oss-process=image/format,png" alt="image-20200714111124941" loading="lazy"></figure>
+<h3 id="3-select-语句顺序总结">3. select 语句顺序总结</h3>
+<pre><code class="language-sql">select 字段
+from 表名
+where …….
+group by ……..
+having …….(就是为了过滤分组后的数据而存在的—不可以单独的出现)
+order by ……..
+</code></pre>
+<p><strong>语句的执行顺序</strong>：</p>
+<ol>
+<li>
+<p>首先执行 where 语句过滤原始数据</p>
+</li>
+<li>
+<p>执行 group by 进行分组</p>
+</li>
+<li>
+<p>执行 having 对分组数据进行操作</p>
+</li>
+<li>
+<p>执行 select 选出数据</p>
+</li>
+<li>
+<p>执行 order by 排序</p>
+</li>
+</ol>
+<p><strong>原则</strong>：能在 where 中过滤的数据，尽量在 where 中过滤，效率较高。 having 的过滤是专门对分组之后的数据进行过滤的。</p>
+<h2 id="四-连接查询重点">四、连接查询（重点）</h2>
+<p><code>也可以叫跨表查询， 需要关联多个表进行查询</code></p>
+<blockquote>
+<p>SQL99语法相比92语法，将连接条件和where分离</p>
+</blockquote>
+<h3 id="内连接外连接的区别">内连接外连接的区别？</h3>
+<ul>
+<li><strong>内连接</strong>：只有两张表相匹配的行才能出现在结果集</li>
+<li><strong>外连接</strong>：左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示</li>
+</ul>
+<p><strong>内连接</strong></p>
+<ul>
+<li>表 1 inner join 表 2 on 关联条件</li>
+<li>做连接查询的时候一定要写上关联条件</li>
+<li>inner 可以省略</li>
+</ul>
+<p><strong>外连接</strong></p>
+<ul>
+<li>
+<p>左外连接</p>
+<ul>
+<li>
+<p>表 1 left outer join 表 2 on 关联条件</p>
+</li>
+<li>
+<p>做连接查询的时候一定要写上关联条件</p>
+</li>
+<li>
+<p>outer 可以省略</p>
+</li>
+</ul>
+</li>
+<li>
+<p>右外连接</p>
+<ul>
+<li>
+<p>表 1 right outer join 表 2 on 关联条件</p>
+</li>
+<li>
+<p>做连接查询的时候一定要写上关联条件</p>
+</li>
+<li>
+<p>outer 可以省略</p>
+<ul>
+<li>左外连接（左连接）和右外连接（右连接）的区别：</li>
+<li>左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>左外连接（左连接）和右外连接（右连接）的区别</strong>：</p>
+<ul>
+<li>左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示,不符合条件的不显示</li>
+<li>右连接恰恰相反，以上左连接和右连接也可以加入 outer 关键字，但一般不建议这种写法</li>
+</ul>
+<h2 id="五-视图的作用">五、视图的作用</h2>
+<ul>
+<li>
+<p>某些频繁使用的查询语句(如级联查询)，可能很复杂，可以利用视图<code>简化查询</code>，重用sql</p>
+</li>
+<li>
+<p><code>保护数据</code>，只授予特定权限，如查询权限</p>
+</li>
+<li>
+<p>视图本身不包含数据，<code>只是对sql语句的一个封装</code>，如果需要封装复杂的sql需要先测试性能</p>
+</li>
+<li>
+<p>用于数据检索，不能更新数据</p>
+</li>
+</ul>
+<h2 id="六-如何创建删除索引">六、如何创建删除索引？</h2>
+<blockquote>
+<p>修改索引需要先删除在添加</p>
+</blockquote>
+<ol>
+<li>添加PRIMARY KEY（主键索引）</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD PRIMARY KEY ( `column` ) 
+</code></pre>
+<ol start="2">
+<li>添加UNIQUE(唯一索引)</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD UNIQUE ( `column` ) 
+</code></pre>
+<ol start="3">
+<li>添加INDEX(普通索引)</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD INDEX index_name ( `column` )
+</code></pre>
+<ol start="4">
+<li>添加FULLTEXT(全文索引)</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD FULLTEXT ( `column`) 
+</code></pre>
+<ol start="5">
+<li>添加多列索引</li>
+</ol>
+<pre><code>ALTER TABLE `table_name` ADD INDEX index_name ( `column1`, `column2`, `column3` )
+</code></pre>
+<ol start="6">
+<li>删除索引</li>
+</ol>
+<pre><code class="language-sql">DROP INDEX login_name_index ON user;
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0">一、常用数据处理函数</a>
+<ul>
+<li><a href="#1-substr">1. substr</a></li>
+<li><a href="#2-trim">2. trim</a></li>
+<li><a href="#3-ifnull">3. ifnull</a></li>
+<li><a href="#4-case-when-then-else-end">4. case … when … then … else ... end</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%B8%B8%E7%94%A8%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0">二、常用聚合函数</a></li>
+<li><a href="#%E4%B8%89-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2">三、分组查询</a>
+<ul>
+<li><a href="#1-group-by">1. group by</a></li>
+<li><a href="#2-having">2. having</a></li>
+<li><a href="#3-select-%E8%AF%AD%E5%8F%A5%E9%A1%BA%E5%BA%8F%E6%80%BB%E7%BB%93">3. select 语句顺序总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E9%87%8D%E7%82%B9">四、连接查询（重点）</a>
+<ul>
+<li><a href="#%E5%86%85%E8%BF%9E%E6%8E%A5%E5%A4%96%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%8C%BA%E5%88%AB">内连接外连接的区别？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E8%A7%86%E5%9B%BE%E7%9A%84%E4%BD%9C%E7%94%A8">五、视图的作用</a></li>
+<li><a href="#%E5%85%AD-%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95">六、如何创建删除索引？</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-26 18:45:24";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-26 18:45:24";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>41</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

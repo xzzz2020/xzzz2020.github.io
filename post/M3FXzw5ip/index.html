@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】InnoDB存储引擎 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/M3FXzw5ip/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595760717952" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】InnoDB存储引擎</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-26</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1749字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">7 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1595741759643-427c44aa4f21.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-innodb%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F">一、InnoDB存储引擎工作方式</a></li>
+<li><a href="#%E4%BA%8C-%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7">二、关键特性</a>
+<ul>
+<li><a href="#1-%E6%8F%92%E5%85%A5%E7%BC%93%E5%AD%98">1. 插入缓存</a></li>
+<li><a href="#2-%E4%B8%A4%E6%AC%A1%E5%86%99">2. 两次写</a></li>
+<li><a href="#3-%E8%87%AA%E9%80%82%E5%BA%94%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">3. 自适应哈希索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-redo-log-binlog%E5%92%8Cundo-log">三、redo log、binlog和undo log</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AFredo-log">1. 什么是redo log？</a></li>
+<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AFbinlog">2. 什么是binlog？</a></li>
+<li><a href="#3-redo-log%E5%92%8Cbinlog%E5%8C%BA%E5%88%AB">3. redo log和binlog区别</a></li>
+<li><a href="#4-%E5%9B%9E%E6%BB%9A%E6%97%A5%E5%BF%97undo-log">4. 回滚日志（undo log）</a></li>
+<li><a href="#5-redo-log%E5%92%8Cundo-log%E7%9A%84%E5%8C%BA%E5%88%AB">5. redo log和undo log的区别</a></li>
+<li><a href="#6-%E4%B8%80%E6%9D%A1%E6%9B%B4%E6%96%B0%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E9%A1%BA%E5%BA%8F">6. 一条更新语句执行的顺序</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-innodb存储引擎工作方式">一、InnoDB存储引擎工作方式</h2>
+<ul>
+<li>将数据库文件按页（每页16k）读取到缓冲池，然后按照最近最少使用的算法（LRU）保留缓存数据。</li>
+<li>如果数据发生更改，总是<code>先修改缓存池的页</code>（脏页），然后再保存在磁盘中</li>
+</ul>
+<h2 id="二-关键特性">二、关键特性</h2>
+<h3 id="1-插入缓存">1. 插入缓存</h3>
+<ul>
+<li>因为主键是表唯一标识，所以插入顺序按照主键递增（自增主键）的顺序插入。</li>
+<li>因此，插入的聚集索引一般是顺序的，不需要对磁盘随机读取，所以速度很快。</li>
+<li>但是一个表不止有聚集索引，索引的插入不再是顺序的</li>
+<li>插入索引对于非聚集索引，不是一次性插入到索引页，先判断索引页是否在缓存池。如果在，直接插入；如果不在，先放入插入缓存，<code>将多个插入合并在一个中</code>(因为都是在一个索引页中)，在根据磁盘IO情况更新到磁盘中。</li>
+<li><code>索引必须是辅助索引，索引不是唯一的</code></li>
+<li>默认最多占一半缓存池空间</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>由于并没有及时把索引更新到磁盘中，如果数据库宕机，则<code>需要很多的时间恢复数据</code></li>
+</ul>
+<h3 id="2-两次写">2. 两次写</h3>
+<ul>
+<li>当数据库宕机时，数据库可能正在写一个页面，而这个页面只写了一部分，则称之为部分写失效，从而导致数据丢失</li>
+<li>如果此时直接使用Undo日志，由于页出现了损坏，所以此时是无意义的</li>
+<li><code>在执行Undo日志之前，先需要一个页副本用来恢复的没有写之前的状态，再进行重做。</code></li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwNDA5MTgzNjAwOTI2LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<ul>
+<li>doublewrite由两部分组成：内存中的doublewrite buffer，物理磁盘共享表中的两个区</li>
+<li><code>在缓冲池脏页刷新时，先将数据拷贝到内存中的doublewrite buffer，然后在写入物理磁盘共享表中的两个区，然后在更新磁盘数据</code></li>
+<li>由于doublewrite是连续的，所以对其的IO操作时顺序写的，开销不大</li>
+</ul>
+<h3 id="3-自适应哈希索引">3. 自适应哈希索引</h3>
+<ul>
+<li>哈希是一种查找办法，常用于join连接操作</li>
+<li>会监控表上索引的查找，如果建立哈希索引可以提供速度，则建立哈希索引。</li>
+<li>哈希索引通过缓存池中的B+数构造而来，因此建立速度很快</li>
+<li>并不是整个表都需要建立哈希索引，InnoDB会根据访问的频率为某些页单独建立哈希索引</li>
+</ul>
+<h2 id="三-redo-log-binlog和undo-log">三、redo log、binlog和undo log</h2>
+<h3 id="1-什么是redo-log">1. 什么是redo log？</h3>
+<ul>
+<li>
+<p>redo  log是InnoDB存储引擎层的日志，又称重做日志文件，<strong>用于记录事务操作的变化，记录的是数据修改之后的值，不管事务是否提交都会记录下来。在实例和介质失败（media failure）时，redo log文件就能派上用场，如数据库掉电，InnoDB存储引擎会使用redo  log恢复到掉电前的时刻，以此来保证数据的完整性。</strong></p>
+</li>
+<li>
+<p><strong>在一条更新语句进行执行的时候，InnoDB引擎会把更新记录写到redo log日志中，然后更新内存</strong>，此时算是语句执行完了，然后<strong>在空闲的时候或者是按照设定的更新策略将redo log中的内容更新到磁盘中</strong>，这里涉及到<code>WAL</code>即<code>Write Ahead logging</code>技术，<strong>他的关键点是先写日志，再写磁盘。</strong></p>
+</li>
+<li>
+<p>有了redo log日志，那么在数据库进行异常重启的时候，可以根据redo log日志进行恢复，也就达到了<code>crash-safe</code>。</p>
+</li>
+<li>
+<p><strong>redo log日志的大小是固定的，即记录满了以后就从头循环写，并且会暂停当前的所有数据更改操作，先将redo log日志同步到磁盘中。</strong></p>
+</li>
+</ul>
+<h3 id="2-什么是binlog">2. 什么是binlog？</h3>
+<ul>
+<li>可以作为数据恢复，在MySQL层面保证数据一致性的</li>
+<li>属于逻辑日志，是以二进制的形式记录的是这个语句的原始逻辑</li>
+<li>也可以用于主从之间保证数据一致性</li>
+</ul>
+<h3 id="3-redo-log和binlog区别">3. redo log和binlog区别</h3>
+<ul>
+<li>
+<p>redo log是属于innoDB层面，binlog属于MySQL Server层面的，这样在数据库用别的存储引擎时可以达到一致性的要求。</p>
+</li>
+<li>
+<p>redo log是物理日志，记录该数据页更新的内容；binlog是逻辑日志，记录的是这个更新语句的原始逻辑</p>
+</li>
+<li>
+<p>redo log是循环写，日志空间大小固定；binlog是追加写，是指一份写到一定大小的时候会更换下一个文件，不会覆盖。</p>
+</li>
+<li>
+<p>binlog可以作为恢复数据使用，也可以用于主从复制搭建，redo log作为异常宕机或者介质故障后的数据恢复使用。</p>
+</li>
+</ul>
+<h3 id="4-回滚日志undo-log">4. 回滚日志（undo log）</h3>
+<ul>
+<li>
+<p>属于InnoDB层面保证事务的原子性</p>
+</li>
+<li>
+<p>保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读</p>
+</li>
+</ul>
+<h3 id="5-redo-log和undo-log的区别">5. redo log和undo log的区别</h3>
+<ul>
+<li>redo log是保证事务持久性的，undo log是保证事务原子性的</li>
+<li>undo log用于备份一个事务开始前的数据，不会影响原本的数据，都是先在备份中更改，最后写入磁盘</li>
+<li>redo log用于记录每一个数据更新的内容，用于在二次写中恢复破损的数据</li>
+</ul>
+<h3 id="6-一条更新语句执行的顺序">6. 一条更新语句执行的顺序</h3>
+<p>update T set c=c+1 where ID=2;</p>
+<ul>
+<li>执行器先找引擎取 ID=2 这一行。ID 是主键，引擎直接用树搜索找到这一行。如果 ID=2 这一行所在的数据页本来就在内存中，就直接返回给执行器；否则，需要先从磁盘读入内存，然后再返回。</li>
+<li>执行器拿到引擎给的行数据，把这个值加上 1，比如原来是 N，现在就是 N+1，得到新的一行数据，再调用引擎接口写入这行新数据。</li>
+<li>引擎将这行新数据更新到内存中，同时将这个更新操作记录到 redo log 里面，此时 redo log 处于 prepare 状态。然后告知执行器执行完成了，随时可以提交事务。</li>
+<li>执行器生成这个操作的 binlog，并把 binlog 写入磁盘。</li>
+<li>执行器调用引擎的提交事务接口，引擎把刚刚写入的 redo log 改成提交（commit）状态，更新完成。</li>
+</ul>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-innodb%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F">一、InnoDB存储引擎工作方式</a></li>
+<li><a href="#%E4%BA%8C-%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7">二、关键特性</a>
+<ul>
+<li><a href="#1-%E6%8F%92%E5%85%A5%E7%BC%93%E5%AD%98">1. 插入缓存</a></li>
+<li><a href="#2-%E4%B8%A4%E6%AC%A1%E5%86%99">2. 两次写</a></li>
+<li><a href="#3-%E8%87%AA%E9%80%82%E5%BA%94%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">3. 自适应哈希索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-redo-log-binlog%E5%92%8Cundo-log">三、redo log、binlog和undo log</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AFredo-log">1. 什么是redo log？</a></li>
+<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AFbinlog">2. 什么是binlog？</a></li>
+<li><a href="#3-redo-log%E5%92%8Cbinlog%E5%8C%BA%E5%88%AB">3. redo log和binlog区别</a></li>
+<li><a href="#4-%E5%9B%9E%E6%BB%9A%E6%97%A5%E5%BF%97undo-log">4. 回滚日志（undo log）</a></li>
+<li><a href="#5-redo-log%E5%92%8Cundo-log%E7%9A%84%E5%8C%BA%E5%88%AB">5. redo log和undo log的区别</a></li>
+<li><a href="#6-%E4%B8%80%E6%9D%A1%E6%9B%B4%E6%96%B0%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E9%A1%BA%E5%BA%8F">6. 一条更新语句执行的顺序</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-26 18:41:10";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-26 18:41:10";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>41</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

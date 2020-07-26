@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】MySQL索引总结 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/EM2P_CVYa/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595760717952" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】MySQL索引总结</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-26</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">3913字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">14 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1595713789385-2a78086b025b.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E5%B9%BA%E8%A6%81%E7%94%A8%E7%B4%A2%E5%BC%95">一、为什幺要用索引？</a></li>
+<li><a href="#%E4%BA%8C-%E7%B4%A2%E5%BC%95%E8%BF%99%E4%B9%88%E5%A4%9A%E4%BC%98%E7%82%B9%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AF%B9%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%88%97%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%B4%A2%E5%BC%95%E5%91%A2">二、索引这么多优点，为什么不对表中的每一个列创建一个索引呢？</a></li>
+<li><a href="#%E4%B8%89-%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">三、使用索引的注意事项？</a></li>
+<li><a href="#%E5%9B%9B-%E7%B4%A2%E5%BC%95%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E5%A4%B1%E6%95%88">四、索引什么时候会失效？</a></li>
+<li><a href="#%E4%BA%94-%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E5%8E%9F%E5%88%99%E6%98%AF%E4%BB%80%E4%B9%88">五、最左前缀原则是什么？</a></li>
+<li><a href="#%E5%85%AD-mysql%E7%B4%A2%E5%BC%95%E7%9A%84%E4%B8%BB%E8%A6%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">六、MySQL索引的主要数据结构</a>
+<ul>
+<li><a href="#1-%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">1. 哈希索引</a></li>
+<li><a href="#2-b%E6%A0%91%E7%B4%A2%E5%BC%95">2. B+树索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%83-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B4%A2%E5%BC%95%E8%83%BD%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6">七、为什么索引能提高查询速度？</a></li>
+<li><a href="#%E5%85%AB-%E7%B4%A2%E5%BC%95%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%9E%8B">八、索引都有哪些类型？</a>
+<ul>
+<li><a href="#1-%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95primary-key">1. 主键索引(Primary Key)</a></li>
+<li><a href="#2-%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95">2. 二级索引(辅助索引)</a></li>
+<li><a href="#3-%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">3. 聚集索引</a></li>
+<li><a href="#4-%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">4. 非聚集索引</a></li>
+<li><a href="#5-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95">5. 覆盖索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B9%9D-%E7%B4%A2%E5%BC%95%E5%88%9B%E5%BB%BA%E7%9A%84%E5%8E%9F%E5%88%99">九、索引创建的原则</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-为什幺要用索引">一、为什幺要用索引？</h2>
+<ol>
+<li>通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性。</li>
+<li>可以大大加快数据的检索速度（大大减少的检索的数据量）,  这也是创建索引的最主要的原因。</li>
+<li>帮助服务器避免排序和临时表。</li>
+<li>将随机IO变为顺序IO</li>
+<li>可以加速表和表之间的连接，特别是在实现数据的参考完整性方面特别有意义。</li>
+</ol>
+<h2 id="二-索引这么多优点为什么不对表中的每一个列创建一个索引呢">二、索引这么多优点，为什么不对表中的每一个列创建一个索引呢？</h2>
+<ol>
+<li>当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，这样就降低了数据的维护速度。</li>
+<li>索引需要占物理空间，除了数据表占数据空间之外，每一个索引还要占一定的物理空间，如果要建立聚簇索引，那么需要的空间就会更大。</li>
+<li>创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增加。</li>
+</ol>
+<h2 id="三-使用索引的注意事项">三、使用索引的注意事项？</h2>
+<ul>
+<li>
+<p>在经常需要搜索的列上，可以加快搜索的速度；</p>
+</li>
+<li>
+<p>在经常使用在WHERE子句中的列上面创建索引，加快条件的判断速度。</p>
+</li>
+<li>
+<p>在经常需要排序的列上创建索引，因为索引已经排序，这样查询可以利用索引的排序，加快排序查询时间</p>
+</li>
+<li>
+<p>在使用InnoDB时使用与业务无关的自增主键作为主键</p>
+</li>
+<li>
+<p>避免索引失效</p>
+</li>
+</ul>
+<h2 id="四-索引什么时候会失效">四、索引什么时候会失效？</h2>
+<ul>
+<li>
+<p>有or关键字必须所有字段全有索引;</p>
+</li>
+<li>
+<p>复合索引未用左列字段;</p>
+</li>
+<li>
+<p>like以%开头</p>
+</li>
+<li>
+<p>where中索引列有运算</p>
+</li>
+<li>
+<p>where中索引列使用了函数</p>
+</li>
+<li>
+<p>如果mysql觉得全表扫描更快时（数据少）</p>
+</li>
+</ul>
+<h2 id="五-最左前缀原则是什么">五、最左前缀原则是什么？</h2>
+<p>主要针对的聚合索引是否生效，假如有一个聚合索引ABC：</p>
+<ul>
+<li>最左边的列必须要用到，比如这个A列</li>
+<li>中间是不能断的，如只查询了A和C列，只会用到C的索引</li>
+<li>遇到范围后，终止，比如where条件是这样的，where  A = x and B &gt;y  and C = z，这个时候只会用到AB索引，无法使用C索引</li>
+</ul>
+<h2 id="六-mysql索引的主要数据结构">六、MySQL索引的主要数据结构</h2>
+<h3 id="1-哈希索引">1. 哈希索引</h3>
+<p>​	对于哈希索引来说，底层的数据结构就是哈希表，因此在绝大多数需求为单条记录查询的时候，可以选择哈希索引，查询性能最快；其余大部分场景，建议选择BTree索引</p>
+<ul>
+<li>因为Hash索引比较的是经过Hash计算的值，所以只能进行等式比较，不能用于范围查询</li>
+<li>当哈希值大量重复且数据量非常大时，其检索效率并没有Btree索引高的</li>
+<li>哈希值映射的真正数据在哈希表中就不一定按照顺序排列，所以无法利用Hash索引来加速任何排序操作</li>
+</ul>
+<h3 id="2-b树索引">2. B+树索引</h3>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTc1NDMyNDA1LnBuZw?x-oss-process=image/format,png" alt="image-20200717175432405" loading="lazy"></figure>
+<ul>
+<li>
+<p>为磁盘或其他直接存取的辅助设备而设计的平衡二叉树</p>
+</li>
+<li>
+<p>所有的记录节点都是按照键值的大小<code>顺序存放</code>在同一层的叶节点</p>
+</li>
+<li>
+<p>同时最后一层叶字节点之间存在指针，这样可以保证其是连续的数据排列</p>
+</li>
+</ul>
+<p>​</p>
+<p><strong>B+树相对于B树的区别？</strong></p>
+<ul>
+<li>单一节点存储的元素更多，使得查询的IO次数更少，所以也就使得它更适合做为数据库MySQL的底层数据结构了</li>
+<li>所有的查询都要查找到叶子节点，查询性能是稳定的，而B树，每个节点都可以查找到数据，所以不稳定。</li>
+<li>所有的叶子节点形成了一个有序链表，更加便于查找。</li>
+</ul>
+<p><strong>B+树与红黑树的比较？</strong></p>
+<ul>
+<li><strong>更少的查找次数</strong>：平衡树查找操作的时间复杂度和树高 h 相关，O(h)=O(logdN)，其中 d 为每个节点的出度。红黑树的出度为 2，而 B+ Tree 的出度一般都非常大，所以红黑树的树高 h 很明显比 B+ Tree 大非常多，查找的次数也就更多。</li>
+<li><strong>利用磁盘预读特性</strong>：为了减少磁盘 I/O 操作，磁盘往往不是严格按需读取，而是每次都会预读。预读过程中，磁盘进行顺序读取，顺序读取不需要进行磁盘寻道，并且只需要很短的磁盘旋转时间，速度会非常快。数据库系统将索引的一个节点的大小设置为页的大小，使得一次 I/O 就能完全载入一个节点。并且可以利用预读特性，相邻的节点也能够被预先载入</li>
+</ul>
+<p><strong>B+数树和B-树的区别？</strong></p>
+<ul>
+<li>
+<p>B+树相当于B-树的变种，主要差异在于B+树数据都保存在叶子节点，同时叶子节点之间形成了链表</p>
+</li>
+<li>
+<p>B+树查询时间复杂度固定是logn，B-树查询复杂度最好是 O(1)</p>
+</li>
+<li>
+<p>B+树相邻接点的指针可以大大增加区间访问性，可使用在范围查询等，而B-树每个节点 key 和 data 在一起，则无法区间查找</p>
+</li>
+</ul>
+<p><strong>MyISAM和InnoDB实现BTree索引方式的区别？</strong></p>
+<ul>
+<li>
+<p><strong>MyISAM</strong>：B+Tree叶节点的data域存放的是数据记录的地址。在索引检索的时候，首先按照B+Tree搜索算法搜索索引，如果指定的Key存在，则取出其 data 域的值，然后以 data 域的值为地址读取相应的数据记录。这被称为“非聚簇索引”。</p>
+</li>
+<li>
+<p><strong>InnoDB</strong>：其数据文件本身就是索引文件。相比MyISAM，索引文件和数据文件是分离的，其表数据文件本身就是按B+Tree组织的一个索引结构，树的叶节点data域保存了完整的数据记录。这个索引的key是数据表的主键，因此InnoDB表数据文件本身就是主索引。这被称为“聚簇索引（或聚集索引）”，而其余的索引都作为辅助索引，辅助索引的data域存储相应记录主键的值而不是地址，这也是和MyISAM不同的地方。在根据主索引搜索时，直接找到key所在的节点即可取出数据；在根据辅助索引查找时，则需要先取出主键的值，在走一遍主索引。</p>
+</li>
+</ul>
+<h2 id="七-为什么索引能提高查询速度">七、为什么索引能提高查询速度？</h2>
+<p>MySQL底层每16k的数据为一页，一页中有多个记录值。</p>
+<p>如果我们写select * from user where indexname = 'xxx'这样没有进行任何优化的sql语句，默认会这样做：</p>
+<ol>
+<li><strong>定位到记录所在的页：需要遍历双向链表，找到所在的页</strong></li>
+<li><strong>从所在的页内中查找相应的记录：由于不是根据主键查询，只能遍历所在页的单链表了</strong></li>
+</ol>
+<p>很明显，在数据量很大的情况下这样查找会很慢！这样的时间复杂度为O（n）。</p>
+<p>使用了索引其实就是将无序的数据变成相对有序，其实底层结构就是B+树，B+树作为树的一种实现，时间复杂度近似为O(logn)，能够让我们很快地查找出对应的记录。</p>
+<h2 id="八-索引都有哪些类型">八、索引都有哪些类型？</h2>
+<h3 id="1-主键索引primary-key">1. 主键索引(Primary Key)</h3>
+<ul>
+<li>
+<p>数据表的主键列使用的就是主键索引。</p>
+</li>
+<li>
+<p>一张数据表有只能有一个主键，并且主键不能为null，不能重复。</p>
+</li>
+<li>
+<p>在mysql的InnoDB的表中，当没有显示的指定表的主键时，InnoDB会自动先检查表中是否有唯一索引的字段，如果有，则选择该字段为默认的主键，否则InnoDB将会自动创建一个6Byte的自增主键。</p>
+</li>
+</ul>
+<h3 id="2-二级索引辅助索引">2. 二级索引(辅助索引)</h3>
+<p>二级索引又称为辅助索引，是因为二级索引的叶子节点在InnoDB中存储的数据是主键。也就是说，通过二级索引，可以定位主键的位置；在MyISAM中存储的数据是地址。</p>
+<ol>
+<li><strong>唯一索引(Unique Key)</strong> ：唯一索引也是一种约束。**唯一索引的属性列不能出现重复的数据，但是允许数据为NULL，一张表允许创建多个唯一索引。**建立唯一索引的目的大部分时候都是为了该属性列的数据的唯一性，而不是为了查询效率。</li>
+<li><strong>普通索引(Index)</strong> ：<strong>普通索引的唯一作用就是为了快速查询数据，一张表允许创建多个普通索引，并允许数据重复和NULL。</strong></li>
+<li><strong>前缀索引(Prefix)</strong> ：前缀索引只适用于字符串类型的数据。前缀索引是对文本的前几个字符创建索引，相比普通索引建立的数据更小， 因为只取前几个字符。</li>
+<li><strong>全文索引(Full Text)</strong> ：全文索引主要是为了检索大文本数据中的关键字的信息，是目前搜索引擎数据库使用的一种技术。Mysql5.6之前只有MYISAM引擎支持全文索引，5.6之后InnoDB也支持了全文索引。</li>
+</ol>
+<h3 id="3-聚集索引">3. 聚集索引</h3>
+<p>聚集索引即索引结构和数据一起存放的索引。InnoDB存储引擎中主键索引属于聚集索引，B+树的每个非叶子节点存储索引，叶子节点存储索引和索引对应的数据。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>聚集索引的查询速度非常的快，因为整个B+树本身就是一颗多叉平衡树，叶子节点也都是有序的，定位到索引的节点，就相当于定位到了数据。</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li><strong>依赖于有序的数据</strong> ：因为B+树是多路平衡树，如果索引的数据不是有序的，那么就需要在插入时排序，如果数据是整型还好，否则类似于字符串或UUID这种又长又难比较的数据，插入或查找的速度肯定比较慢。</li>
+<li><strong>更新代价大</strong>：如果对索引列的数据被修改时，那么对应的索引也将会被修改，可能涉及自旋操作维护平衡， 而且况聚集索引的叶子节点还存放着数据，修改代价肯定是较大的， 所以对于主键索引来说，主键一般都是不可被修改的。</li>
+</ul>
+<h3 id="4-非聚集索引">4. 非聚集索引</h3>
+<p>非聚集索引即索引结构和数据分开存放的索引，比如说MyISAM中的索引保存的指向数据文件的指针。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li><strong>更新代价比聚集索引要小</strong>：非聚集索引的更新代价就没有聚集索引那么大了，非聚集索引的叶子节点是不存放数据的</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li><strong>可能会二次查询(回表)</strong> :这应该是非聚集索引最大的缺点了。 当查到索引对应的指针或主键后，可能还需要根据指针或主键再到数据文件或表中查询。</li>
+</ul>
+<p><strong>非聚集索引一定回表查询吗(覆盖索引)?</strong></p>
+<ul>
+<li>不一定。</li>
+<li>虽然MYISAM的主键索引确实需要回表， 因为它的主键索引的叶子节点存放的是指针。但是如果SQL查的就是主键呢?</li>
+<li>或者想要查询的字段刚好建立了索引，查到对应的字段直接返回就行了，无需回表查询</li>
+</ul>
+<h3 id="5-覆盖索引">5. 覆盖索引</h3>
+<ul>
+<li>如果一个索引包含（或者说覆盖）所有需要查询的字段的值，我们就称之为“覆盖索引”。我们知道InnoDB存储引擎中，如果不是主键索引，叶子节点存储的是主键+列值。最终还是要“回表”，也就是先定位主键值，再定位行记录，它的性能较扫一遍索引树更低，这样就会比较慢。覆盖索引就是把要查询出的列和索引是对应的，不做回表操作</li>
+<li>假如索引是AB列，想要查询出来的列是AB+主键列，则此时是覆盖索引；而想要查询出来的列是ABC列，C的数据不在索引中，就需要回表。所以切忌使用Select *</li>
+</ul>
+<p><strong>总结：覆盖索引的优化及限制</strong></p>
+<p><strong>优点</strong>：</p>
+<p>1、索引项通常比记录要小，所以MySQL访问更少的数据。</p>
+<p>2、索引都按值得大小存储，相对于随机访问记录，需要更少的I/O。</p>
+<p>3、数据引擎能更好的缓存索引，比如MyISAM只缓存索引。</p>
+<p>4、覆盖索引对InnoDB尤其有用，因为InnoDB使用聚集索引组织数据，如果二级索引包含查询所需的数据，就不再需要在聚集索引中查找了。</p>
+<p><strong>限制：</strong></p>
+<p>1、覆盖索引也并不适用于任意的索引类型，索引必须存储列的值。</p>
+<p>2、Hash和full-text索引不存储值，因此MySQL只能使用BTree。</p>
+<p>3、不同的存储引擎实现覆盖索引都是不同的，并不是所有的存储引擎都支持覆盖索引。</p>
+<p>4、如果要使用覆盖索引，一定要注意SELECT列表值取出需要的列，不可以SELECT * ，因为如果将所有字段一起做索引会导致索引文件过大，查询性能下降。</p>
+<h2 id="九-索引创建的原则">九、索引创建的原则</h2>
+<p><strong>最左前缀原则</strong>：</p>
+<ul>
+<li>虽然我目前的Mysql版本较高，好像不遵守最左前缀原则，索引也会生效。 但是我们仍应遵守最左前缀原则，以免版本更迭带来的麻烦。</li>
+</ul>
+<p><strong>选择合适的字段</strong></p>
+<ol>
+<li>索引字段的数据应该尽量不为NULL，因为对于数据为NULL的字段，数据库较难优化。如果字段频繁被查询，但又避免不了为NULL，建议使用默认值。</li>
+<li>我们创建索引的字段应该是查询操作非常频繁的字段，而不是增删改比较多的。</li>
+<li>被作为WHERE条件查询的字段，应该被考虑建立索引。</li>
+<li>经常用于连接的字段可能是一些外键列，对于外键列并不一定要建立外键，只是说该列涉及到表与表的关系。对于频繁被连接查询的字段，可以考虑建立索引，提高多表连接查询的效率。</li>
+</ol>
+<p><strong>需要注意的地方</strong></p>
+<ul>
+<li>注意避免冗余索引</li>
+<li>考虑在字符串类型的字段上使用前缀索引代替普通索引，前缀索引仅限于字符串类型，较普通索引会占用更小的空间，所以可以考虑使用前缀索引带替普通索引。</li>
+</ul>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E5%B9%BA%E8%A6%81%E7%94%A8%E7%B4%A2%E5%BC%95">一、为什幺要用索引？</a></li>
+<li><a href="#%E4%BA%8C-%E7%B4%A2%E5%BC%95%E8%BF%99%E4%B9%88%E5%A4%9A%E4%BC%98%E7%82%B9%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AF%B9%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%88%97%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%B4%A2%E5%BC%95%E5%91%A2">二、索引这么多优点，为什么不对表中的每一个列创建一个索引呢？</a></li>
+<li><a href="#%E4%B8%89-%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">三、使用索引的注意事项？</a></li>
+<li><a href="#%E5%9B%9B-%E7%B4%A2%E5%BC%95%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E5%A4%B1%E6%95%88">四、索引什么时候会失效？</a></li>
+<li><a href="#%E4%BA%94-%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E5%8E%9F%E5%88%99%E6%98%AF%E4%BB%80%E4%B9%88">五、最左前缀原则是什么？</a></li>
+<li><a href="#%E5%85%AD-mysql%E7%B4%A2%E5%BC%95%E7%9A%84%E4%B8%BB%E8%A6%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">六、MySQL索引的主要数据结构</a>
+<ul>
+<li><a href="#1-%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">1. 哈希索引</a></li>
+<li><a href="#2-b%E6%A0%91%E7%B4%A2%E5%BC%95">2. B+树索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%83-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B4%A2%E5%BC%95%E8%83%BD%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6">七、为什么索引能提高查询速度？</a></li>
+<li><a href="#%E5%85%AB-%E7%B4%A2%E5%BC%95%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%9E%8B">八、索引都有哪些类型？</a>
+<ul>
+<li><a href="#1-%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95primary-key">1. 主键索引(Primary Key)</a></li>
+<li><a href="#2-%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95">2. 二级索引(辅助索引)</a></li>
+<li><a href="#3-%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">3. 聚集索引</a></li>
+<li><a href="#4-%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">4. 非聚集索引</a></li>
+<li><a href="#5-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95">5. 覆盖索引</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B9%9D-%E7%B4%A2%E5%BC%95%E5%88%9B%E5%BB%BA%E7%9A%84%E5%8E%9F%E5%88%99">九、索引创建的原则</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-26 18:44:21";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-26，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-26 18:44:21";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>41</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>
