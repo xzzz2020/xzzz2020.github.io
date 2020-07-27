@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】Redis哨兵 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/XQ2Qib6Xc/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595847222760" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】Redis哨兵</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-27</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2397字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">9 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1595751866710-a6cb010fa20b.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%93%A8%E5%85%B5%E7%9A%84%E4%BB%8B%E7%BB%8D">一、哨兵的介绍</a></li>
+<li><a href="#%E4%BA%8C-%E5%93%A8%E5%85%B5%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86">二、 哨兵的核心知识</a></li>
+<li><a href="#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E5%8F%AA%E6%9C%892%E4%B8%AA%E8%8A%82%E7%82%B9%E6%97%A0%E6%B3%95%E6%AD%A3%E5%B8%B8%E5%B7%A5%E4%BD%9C">三、为什么redis哨兵集群只有2个节点无法正常工作？</a></li>
+<li><a href="#%E5%9B%9B-%E7%BB%8F%E5%85%B8%E7%9A%843%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4">四、经典的3节点哨兵集群</a></li>
+<li><a href="#%E4%BA%94-%E4%B8%A4%E7%A7%8D%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1%E7%9A%84%E6%83%85%E5%86%B5">五、两种数据丢失的情况</a>
+<ul>
+<li><a href="#1-%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 异步复制导致的数据丢失</a></li>
+<li><a href="#2-%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">2. 脑裂导致的数据丢失</a></li>
+<li><a href="#3-%E8%A7%A3%E5%86%B3">3. 解决</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-sdown%E5%92%8Codown%E8%BD%AC%E6%8D%A2%E6%9C%BA%E5%88%B6">六、sdown和odown转换机制</a></li>
+<li><a href="#%E4%B8%83-%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E6%9C%BA%E5%88%B6">七、哨兵集群的自动发现机制</a></li>
+<li><a href="#%E5%85%AB-slave%E9%85%8D%E7%BD%AE%E7%9A%84%E8%87%AA%E5%8A%A8%E7%BA%A0%E6%AD%A3">八、slave配置的自动纠正</a></li>
+<li><a href="#%E4%B9%9D-slave-master%E9%80%89%E4%B8%BE%E7%AE%97%E6%B3%95">九、slave-&gt;master选举算法</a></li>
+<li><a href="#%E5%8D%81-quorum%E5%92%8Cmajority">十、quorum和majority</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-configuration-epoch">十一、configuration epoch</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-configuraiton%E4%BC%A0%E6%92%AD">十二、configuraiton传播</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-哨兵的介绍">一、哨兵的介绍</h2>
+<p>sentinal，中文名是哨兵，是启动Redis后一个额外的进程，哨兵是redis集群架构中非常重要的一个组件，主要功能如下：</p>
+<ul>
+<li><strong>集群监控</strong>，负责监控redis master和slave进程是否正常工作</li>
+<li><strong>消息通知</strong>，如果某个redis实例有故障，那么哨兵负责发送消息作为报警通知给管理员</li>
+<li><strong>故障转移</strong>，如果master node挂掉了，会自动转移到slave node上</li>
+<li><strong>配置中心</strong>，如果故障转移发生了，通知client客户端新的master地址</li>
+</ul>
+<p><strong>哨兵本身也是分布式的，作为一个哨兵集群去运行，互相协同工作</strong>：</p>
+<ul>
+<li>故障转移时，判断一个master node是宕机了，需要大部分的哨兵都同意才行，涉及到了分布式选举的问题</li>
+<li>即使部分哨兵节点挂掉了，哨兵集群还是能正常工作的，因为如果一个作为高可用机制重要组成部分的故障转移系统本身是单点的，那就很坑爹了</li>
+</ul>
+<p>目前采用的是sentinal 2版本，sentinal 2相对于sentinal 1来说，重写了很多代码，主要是让故障转移的机制和算法变得更加健壮和简单</p>
+<h2 id="二-哨兵的核心知识">二、 哨兵的核心知识</h2>
+<ul>
+<li>哨兵至少需要3个实例，来保证自己的健壮性</li>
+<li>哨兵 + redis主从的部署架构，是不会保证数据零丢失的，只能保证redis集群的高可用性</li>
+<li>对于哨兵 + redis主从这种复杂的部署架构，尽量在测试环境和生产环境，都进行充足的测试和演练</li>
+</ul>
+<h2 id="三-为什么redis哨兵集群只有2个节点无法正常工作">三、为什么redis哨兵集群只有2个节点无法正常工作？</h2>
+<p>哨兵集群必须部署2个以上节点</p>
+<p>如果哨兵集群仅仅部署了个2个哨兵实例，quorum=1</p>
+<pre><code>+----+         +----+
+| M1 |---------| R1 |
+| S1 |         | S2 |
++----+         +----+
+</code></pre>
+<p>Configuration: quorum = 1</p>
+<p>master宕机，s1和s2中只要有1个哨兵认为master宕机就可以还行切换，同时s1和s2中会选举出一个哨兵来执行故障转移</p>
+<p>同时这个时候，需要majority，也就是大多数哨兵都是运行的，2个哨兵的majority就是2（2的majority=2，3的majority=2，5的majority=3，4的majority=2），2个哨兵都运行着，就可以允许执行故障转移</p>
+<p>但是如果整个M1和S1运行的机器宕机了，那么哨兵只有1个了，此时就没有majority来允许执行故障转移，虽然另外一台机器还有一个R1，但是故障转移不会执行</p>
+<h2 id="四-经典的3节点哨兵集群">四、经典的3节点哨兵集群</h2>
+<pre><code>       +----+
+       | M1 |
+       | S1 |
+       +----+
+          |
++----+    |    +----+
+| R2 |----+----| R3 |
+| S2 |         | S3 |
++----+         +----+
+</code></pre>
+<p>Configuration: quorum = 2，majority</p>
+<p>如果M1所在机器宕机了，那么三个哨兵还剩下2个，S2和S3可以一致认为master宕机，然后选举出一个来执行故障转移</p>
+<p>同时3个哨兵的majority是2，所以还剩下的2个哨兵运行着，就可以允许执行故障转移</p>
+<h2 id="五-两种数据丢失的情况">五、两种数据丢失的情况</h2>
+<blockquote>
+<p>主备切换的过程，可能会导致数据丢失</p>
+</blockquote>
+<h3 id="1-异步复制导致的数据丢失">1. 异步复制导致的数据丢失</h3>
+<p>因为master -&gt; slave的复制是异步的，所以可能有部分数据还没复制到slave，master就宕机了，此时这些部分数据就丢失了</p>
+<h3 id="2-脑裂导致的数据丢失">2. 脑裂导致的数据丢失</h3>
+<ul>
+<li>脑裂，也就是说，某个master所在机器突然脱离了正常的网络，跟其他slave机器不能连接，但是实际上master还运行着</li>
+</ul>
+<p>此时哨兵可能就会认为master宕机了，然后开启选举，将其他slave切换成了master</p>
+<p>这个时候，集群里就会有两个master，也就是所谓的脑裂</p>
+<p>此时虽然某个slave被切换成了master，但是可能client还没来得及切换到新的master，还继续写向旧master的数据可能也丢失了</p>
+<p><strong>因此旧master再次恢复的时候，会被作为一个slave挂到新的master上去，自己的数据会清空，重新从新的master复制数据，网络分区写入的数据就会丢失</strong></p>
+<h3 id="3-解决">3. 解决</h3>
+<ol>
+<li>
+<p>配置Redis的主节点，要求只少有n台机器同步时间小于m秒，如果不满足情况，Redis会拒绝写入，这样最多丢失m秒的数据</p>
+</li>
+<li>
+<p>客户端通过降级和限流，控制请求，同时可以把数据写入本地磁盘或者消息队列，等待Redis重启</p>
+</li>
+</ol>
+<h2 id="六-sdown和odown转换机制">六、sdown和odown转换机制</h2>
+<p><strong>sdown和odown两种失败状态</strong>：</p>
+<ul>
+<li>
+<p><strong>sdown是主观宕机</strong>，就一个哨兵如果自己觉得一个master宕机了，那么就是主观宕机</p>
+</li>
+<li>
+<p><strong>odown是客观宕机</strong>，如果quorum数量的哨兵都觉得一个master宕机了，那么就是客观宕机</p>
+</li>
+</ul>
+<p>sdown达成的条件很简单，如果一个哨兵ping一个master，超过了is-master-down-after-milliseconds指定的毫秒数之后，就主观认为master宕机</p>
+<p>sdown到odown转换的条件很简单，<strong>如果一个哨兵在指定时间内，收到了quorum指定数量的其他哨兵也认为那个master是sdown了，那么就认为是odown了，客观认为master宕机</strong></p>
+<h2 id="七-哨兵集群的自动发现机制">七、哨兵集群的自动发现机制</h2>
+<p>哨兵互相之间的发现，是通过redis的pub/sub系统实现的，每个哨兵都会往_<em>sentinel</em>_:hello这个channel里发送一个消息，这时候所有其他哨兵都可以消费到这个消息，并感知到其他的哨兵的存在</p>
+<p>每隔两秒钟，每个哨兵都会往自己监控的某个master+slaves对应的_<em>sentinel</em>_:hello channel里发送一个消息，内容是自己的host、ip和runid还有对这个master的监控配置</p>
+<p>每个哨兵也会去监听自己监控的每个master+slaves对应的_<em>sentinel</em>_:hello channel，然后去感知到同样在监听这个master+slaves的其他哨兵的存在</p>
+<p>每个哨兵还会跟其他哨兵交换对master的监控配置，互相进行监控配置的同步</p>
+<h2 id="八-slave配置的自动纠正">八、slave配置的自动纠正</h2>
+<ul>
+<li>
+<p>哨兵会负责自动纠正slave的一些配置，比如slave如果要成为潜在的master候选人，哨兵会确保slave复制新master的数据;</p>
+</li>
+<li>
+<p>如果slave连接到了一个错误的master上，比如故障转移之后，那么哨兵会确保它们连接到正确的master上</p>
+</li>
+</ul>
+<h2 id="九-slave-master选举算法">九、slave-&gt;master选举算法</h2>
+<p>如果一个master被认为odown了，而且majority哨兵都允许了主备切换，那么某个哨兵就会执行主备切换操作，此时首先要选举一个新master来</p>
+<p><strong>会考虑slave的一些信息</strong>：</p>
+<ol>
+<li>跟master断开连接的时长</li>
+<li>slave优先级</li>
+<li>复制offset</li>
+<li>run id</li>
+</ol>
+<p><strong>如果一个slave跟master断开连接已经超过了down-after-milliseconds的10倍，外加master宕机的时长，那么slave就被认为不适合选举为master</strong></p>
+<p>(down-after-milliseconds * 10) + milliseconds_since_master_is_in_SDOWN_state</p>
+<p><strong>接下来会对slave进行排序</strong>：</p>
+<ol>
+<li>按照slave优先级进行排序，slave priority越低，优先级就越高</li>
+<li>如果slave priority相同，那么看replica offset，哪个slave复制了越多的数据，offset越靠后，优先级就越高</li>
+<li>如果上面两个条件都相同，那么选择一个run id比较小的那个slave</li>
+</ol>
+<h2 id="十-quorum和majority">十、quorum和majority</h2>
+<pre><code class="language-properties">majority取值如下:
+n= 2，majority=2
+n= 3，majority=2
+n= 4，majority=2
+n= 5，majority=3
+</code></pre>
+<p>每次一个哨兵要做主备切换，首先需要quorum数量的哨兵认为odown，然后选举出一个哨兵来做切换，这个哨兵还得得到majority哨兵的授权，才能正式执行切换</p>
+<p>如果quorum &lt; majority，比如5个哨兵，majority就是3，quorum设置为2，那么就3个哨兵授权就可以执行切换</p>
+<p>但是如果quorum &gt;= majority，那么必须quorum数量的哨兵都授权，比如5个哨兵，quorum是5，那么必须5个哨兵都同意授权，才能执行切换</p>
+<h2 id="十一-configuration-epoch">十一、configuration epoch</h2>
+<p>哨兵会对一套redis master+slave进行监控，有相应的监控的配置</p>
+<p>执行切换的那个哨兵，会从要切换到的新master（salve-&gt;master）那里得到一个configuration epoch，这就是一个version号，每次切换的version号都必须是唯一的</p>
+<p>如果第一个选举出的哨兵切换失败了，那么其他哨兵，会等待failover-timeout时间，然后接替继续执行切换，此时会重新获取一个新的configuration epoch，作为新的version号</p>
+<h2 id="十二-configuraiton传播">十二、configuraiton传播</h2>
+<p>哨兵完成切换之后，会在自己本地更新生成最新的master配置，然后同步给其他的哨兵，就是通过之前说的pub/sub消息机制</p>
+<p>这里之前的version号就很重要了，因为各种消息都是通过一个channel去发布和监听的，所以一个哨兵完成一次新的切换之后，新的master配置是跟着新的version号的</p>
+<p>其他的哨兵都是根据版本号的大小来更新自己的master配置的</p>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%93%A8%E5%85%B5%E7%9A%84%E4%BB%8B%E7%BB%8D">一、哨兵的介绍</a></li>
+<li><a href="#%E4%BA%8C-%E5%93%A8%E5%85%B5%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86">二、 哨兵的核心知识</a></li>
+<li><a href="#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E5%8F%AA%E6%9C%892%E4%B8%AA%E8%8A%82%E7%82%B9%E6%97%A0%E6%B3%95%E6%AD%A3%E5%B8%B8%E5%B7%A5%E4%BD%9C">三、为什么redis哨兵集群只有2个节点无法正常工作？</a></li>
+<li><a href="#%E5%9B%9B-%E7%BB%8F%E5%85%B8%E7%9A%843%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4">四、经典的3节点哨兵集群</a></li>
+<li><a href="#%E4%BA%94-%E4%B8%A4%E7%A7%8D%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1%E7%9A%84%E6%83%85%E5%86%B5">五、两种数据丢失的情况</a>
+<ul>
+<li><a href="#1-%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 异步复制导致的数据丢失</a></li>
+<li><a href="#2-%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">2. 脑裂导致的数据丢失</a></li>
+<li><a href="#3-%E8%A7%A3%E5%86%B3">3. 解决</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-sdown%E5%92%8Codown%E8%BD%AC%E6%8D%A2%E6%9C%BA%E5%88%B6">六、sdown和odown转换机制</a></li>
+<li><a href="#%E4%B8%83-%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E6%9C%BA%E5%88%B6">七、哨兵集群的自动发现机制</a></li>
+<li><a href="#%E5%85%AB-slave%E9%85%8D%E7%BD%AE%E7%9A%84%E8%87%AA%E5%8A%A8%E7%BA%A0%E6%AD%A3">八、slave配置的自动纠正</a></li>
+<li><a href="#%E4%B9%9D-slave-master%E9%80%89%E4%B8%BE%E7%AE%97%E6%B3%95">九、slave-&gt;master选举算法</a></li>
+<li><a href="#%E5%8D%81-quorum%E5%92%8Cmajority">十、quorum和majority</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-configuration-epoch">十一、configuration epoch</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-configuraiton%E4%BC%A0%E6%92%AD">十二、configuraiton传播</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-27 18:44:06";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-27 18:44:06";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>50</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

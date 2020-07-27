@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】RocketMq高级特性 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/czb-YfH6n/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595847222760" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】RocketMq高级特性</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-27</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">3796字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">14 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1595704277873-94de82f4645d.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%B6%88%E6%81%AF%E5%AD%98%E5%82%A8">一、消息存储</a>
+<ul>
+<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%98%E5%82%A8%E5%88%B0%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%80%A7%E8%83%BD">1. 为什么要存储到文件系统？如何保证性能？</a></li>
+<li><a href="#2-%E5%8A%A0%E5%85%A5%E6%8C%81%E4%B9%85%E5%8C%96%E5%90%8Erocketmq%E7%9A%84%E6%9E%B6%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">2. 加入持久化后RocketMq的架构是什么样的？</a></li>
+<li><a href="#3-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">3. 存储结构是什么样的？</a></li>
+<li><a href="#4-%E5%88%B7%E7%9B%98%E6%9C%BA%E5%88%B6%E6%9C%89%E5%93%AA%E4%BA%9B">4. 刷盘机制有哪些？</a></li>
+<li><a href="#5-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1">5. 如何保证消息不丢失？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9C%BA%E5%88%B6">二、高可用机制</a>
+<ul>
+<li><a href="#1-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E">1. 消息消费的高可用（主从）</a></li>
+<li><a href="#2-%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E4%B8%BB%E8%8A%82%E7%82%B9">2. 消息发送高可用（配置多个主节点）</a></li>
+<li><a href="#3-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">3. 主从复制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">三、负载均衡</a>
+<ul>
+<li><a href="#1-producer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">1. Producer负载均衡</a></li>
+<li><a href="#2-consumer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">2. Consumer负载均衡</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E6%B6%88%E6%81%AF%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6">四、消息重试机制</a>
+<ul>
+<li><a href="#1-%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">1. 顺序消息的重试</a></li>
+<li><a href="#2-%E6%97%A0%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">2. 无序消息的重试</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97">五、死信队列</a></li>
+<li><a href="#%E5%85%AD-%E6%B6%88%E8%B4%B9%E5%B9%82%E7%AD%89">六、消费幂等</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BA%A7%E7%94%9F%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF">1. 什么时候产生重复消息？</a></li>
+<li><a href="#2-%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F">2. 处理方式</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-消息存储">一、消息存储</h2>
+<blockquote>
+<p>分布式队列因为<strong>有高可靠性，保证消息不会丢失</strong>的要求，所以数据要进行持久化存储。.</p>
+</blockquote>
+<h3 id="1-为什么要存储到文件系统如何保证性能">1. 为什么要存储到文件系统？如何保证性能？</h3>
+<p>持久化方式可以分成两大类</p>
+<ul>
+<li><strong>关系型数据库</strong>：ActiveMQ默认采用的KahaDB做消息存储，由于，普通关系型数据库（如Mysql）在单表数据量达到千万级别的情况下，其IO读写性能往往会出现瓶颈。</li>
+<li><strong>文件系统</strong>：RocketMQ/Kafka/RabbitMQ）均采用的是消息刷盘至所部署虚拟机/物理机的文件系统来做持久化，刷盘一般可以分为异步刷盘和同步刷盘两种模式</li>
+</ul>
+<p><strong>一般来讲性能对比上：文件系统&gt;关系型数据库DB</strong></p>
+<p><strong>RocketMq的文件存储系统有两点优化以保证性能</strong>：</p>
+<ul>
+<li><strong>消息存储（顺序写）</strong>：RocketMQ的消息用<code>顺序写</code>,保证了消息存储的速度。目前的高性能磁盘，顺序写速度可以达到600MB/s， 超过了一般网卡的传输速度，但是磁盘随机写的速度只有大概100KB/s</li>
+<li><strong>消息发送（零拷贝）</strong>：将本机磁盘文件的内容发送到客户端需要进行多次复制，比如从磁盘复制数据到内核态内存；从内核态内存复制到用户态内存；从用户态内存复制到网络驱动，最后从网络驱动复制到网卡中。RocketMq采用Java中零拷贝的技术，让从内核态内存复制到用户态内存这一步省略，直接赋值到网络驱动中</li>
+</ul>
+<blockquote>
+<p>零拷贝技术有个限制是不能超过2G，所以RocketMQ默认设置单个CommitLog日志数据文件为1G</p>
+</blockquote>
+<h3 id="2-加入持久化后rocketmq的架构是什么样的">2. 加入持久化后RocketMq的架构是什么样的？</h3>
+<ol>
+<li>消息生成者发送消息</li>
+<li>MQ收到消息，将消息进行持久化，在存储中新增一条记录</li>
+<li>返回ACK给生产者</li>
+<li>MQ push 消息给对应的消费者，然后等待消费者返回ACK</li>
+<li>如果消息消费者在指定时间内成功返回ack，那么MQ认为消息消费成功，在存储中删除消息，即执行第6步；如果MQ在指定时间内没有收到ACK，则认为消息消费失败，会尝试重新push消息,重复执行4、5、6步骤</li>
+<li>MQ删除消息</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVCNiU4OCVFNiU4MSVBRiVFNSVBRCU5OCVFNSU4MiVBOCVFNiU5NiVCOSVFNSVCQyU4Ri5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<h3 id="3-存储结构是什么样的">3. 存储结构是什么样的？</h3>
+<p><strong>RocketMQ消息的存储是由ConsumeQueue和CommitLog配合完成的</strong></p>
+<ul>
+<li><code>CommitLog</code>：消息真正的<strong>物理存储文件</strong>是CommitLog，<strong>默认一个文件一个G</strong>，存储的是Topic，QueueId和Message，一个存储满了会自动创建一个新的。</li>
+<li><code>ConsumeQueue</code>：是消息的逻辑队列，<strong>类似数据库的索引文件</strong>，存储的是指向物理存储的地址，为了加快消息的读取速度。消费者消费某条消息时，先查询索引获取CommitLog的对应的物理地址。每个Topic下的每个Message Queue都有一个对应的ConsumeQueue文件，<strong>文件很小，通常会加载到内存中</strong>。如果该文件丢失或者损坏，可以通过CommitLog恢复</li>
+</ul>
+<ul>
+<li><code>IndexFile</code>：也是个索引文件，<strong>为了消息查询提供了一种通过key或时间区间来查询消息的方法</strong>，这种通过IndexFile来查找消息的方法不影响发送与消费消息的主流程</li>
+</ul>
+<h3 id="4-刷盘机制有哪些">4. 刷盘机制有哪些？</h3>
+<ul>
+<li><strong>同步刷盘</strong>（数据一定保存成功，但是速度慢）：在返回写成功状态时，消息已经被写入磁盘。具体流程是，消息写入内存的PAGECACHE后，立刻通知刷盘线程刷盘， 然后等待刷盘完成，刷盘线程执行完成后唤醒等待的线程，返回消息写 成功的状态。</li>
+<li><strong>异步刷盘</strong>（速度快，数据不一定保存成功）：在返回写成功状态时，消息可能只是被写入了内存的PAGECACHE，写操作的返回快，吞吐量大；当内存里的消息量积累到一定程度时，统一触发写磁盘动作，快速写入。</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNSU5MCU4QyVFNiVBRCVBNSVFNSU4OCVCNyVFNyU5QiU5OCVFNSU5MiU4QyVFNSVCQyU4MiVFNiVBRCVBNSVFNSU4OCVCNyVFNyU5QiU5OC5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<h3 id="5-如何保证消息不丢失">5. 如何保证消息不丢失？</h3>
+<ul>
+<li>RocketMq提供消息持久化机制，消息的刷盘策略分为同步刷盘和异步刷盘。同步刷盘即刷盘成功后再返回一个成功信息，能够保证数据一定保存成功，但是会降低系统吞吐量，异步刷盘与同步刷盘相反，我一般会采用同步刷盘的策略来保证消息不会丢失。</li>
+<li>RocketMq采用的文件系统存储而不是关系型数据库存储，因为在一般情况下文件系统的性能是比数据库性能高的</li>
+<li>而RocketMq为了提高文件系统的读写的高性能，做了两点优化。第一点是采用顺序写的方式，这样可以大大提高磁盘写的性能。第二点采用了零拷贝，原来的文件读取流程是：从磁盘复制数据到内核态内存；从内核态内存复制到用户态内存；从用户态内存复制到网络驱动，最后从网络驱动复制到网卡中发送，零拷贝则省去了从内核态内存复制到用户态内存的这一过程，提高了读取的性能，但是零拷贝对文件大小有要求，所以RocketMq的持久化文件commitlog默认为1G。</li>
+<li>commitlog是存储了RocketMq的消息等核心信息，除此之外，还提供可一个ConsumeQueue作为持久化文件的索引，提高查询的效率，一般文件比较小，都是加载在内存中。除了ConsumeQueue之外，还会存储一个IndexFile文件，用来提供针对某一个key或者时间区间的查询。</li>
+</ul>
+<h2 id="二-高可用机制">二、高可用机制</h2>
+<blockquote>
+<p>RocketMq是天生支持分布式的，可以配置主从以及水平扩展</p>
+<p>Master角色的Broker支持读和写，Slave角色的Broker仅支持读，也就是 Producer只能和Master角色的Broker连接写入消息；Consumer可以连接 Master角色的Broker，也可以连接Slave角色的Broker来读取消息。</p>
+</blockquote>
+<h3 id="1-消息消费的高可用主从">1. 消息消费的高可用（主从）</h3>
+<ul>
+<li>在Consumer的配置文件中，并不需要设置是从Master读还是从Slave 读，当Master不可用或者繁忙的时候，Consumer会被自动切换到从Slave 读。有了自动切换Consumer这种机制，当一个Master角色的机器出现故障后，Consumer仍然可以从Slave读取消息，不影响Consumer程序。这就达到了消费端的高可用性。</li>
+<li><strong>RocketMQ目前还不支持把Slave自动转成Master</strong>，如果机器资源不足，需要把Slave转成Master，则要手动停止Slave角色的Broker，更改配置文件，用新的配置文件启动Broker。</li>
+</ul>
+<h3 id="2-消息发送高可用配置多个主节点">2. 消息发送高可用（配置多个主节点）</h3>
+<ul>
+<li>在创建Topic的时候，把Topic的多个Message Queue创建在多个Broker组上（相同Broker名称，不同 brokerId的机器组成一个Broker组），这样当一个Broker组的Master不可用后，其他组的Master仍然可用，Producer仍然可以发送消息。</li>
+</ul>
+<h3 id="3-主从复制">3. 主从复制</h3>
+<blockquote>
+<p>如果一个Broker组有Master和Slave，消息需要从Master复制到Slave 上，有同步和异步两种复制方式。</p>
+</blockquote>
+<ul>
+<li><strong>同步复制</strong>：同步复制方式是等Master和Slave均写成功后才反馈给客户端写成功状态。如果Master出故障， Slave上有全部的备份数据，容易恢复同步复制会增大数据写入延迟，降低系统吞吐量。</li>
+<li><strong>异步复制</strong>：异步复制方式是只要Master写成功 即可反馈给客户端写成功状态。在异步复制方式下，系统拥有较低的延迟和较高的吞吐量，但是如果Master出了故障，有些数据因为没有被写 入Slave，有可能会丢失</li>
+<li>通常情况下，<strong>应该把Master和Save配置成同步刷盘方式，主从之间配置成异步的复制方式</strong>，这样即使有一台机器出故障，仍然能保证数据不丢，是个不错的选择。</li>
+</ul>
+<h2 id="三-负载均衡">三、负载均衡</h2>
+<h3 id="1-producer负载均衡">1. Producer负载均衡</h3>
+<p>Producer端，每个实例在发消息的时候，默认会<strong>轮询</strong>所有的message queue发送，以达到让消息平均落在不同的queue上。而由于queue可以散落在不同的broker，所以消息就发送到不同的broker下，如下图：</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL3Byb2R1Y2VyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExLnBuZw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<h3 id="2-consumer负载均衡">2. Consumer负载均衡</h3>
+<blockquote>
+<p>如果consumer实例的数量比message queue的总数量还多的话，<strong>多出来的consumer实例将无法分到queue</strong>，也就无法消费到消息，也就无法起到分摊负载的作用了。所以需要控制让queue的总数量大于等于consumer的数量。</p>
+</blockquote>
+<ul>
+<li>
+<p>消费者的集群模式--启动多个消费者就可以保证消费者的负载均衡（均摊队列）</p>
+</li>
+<li>
+<p><strong>默认使用的是均摊队列</strong>：会按照queue的数量和实例的数量平均分配queue给每个实例，这样每个消费者可以均摊消费的队列，如下图所示6个队列和三个生产者。</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2NvbnN1bWVyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExLnBuZw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ul>
+<li>另外一种平均的算法<strong>环状轮流分queue</strong>的形式，每个消费者，均摊不同主节点的一个消息队列，如下图所示：</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2NvbnN1bWVyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExMi5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>对于广播模式并不是负载均衡的，要求一条消息需要投递到一个消费组下面所有的消费者实例，所以也就没有消息被分摊消费的说法。</p>
+</blockquote>
+<h2 id="四-消息重试机制">四、消息重试机制</h2>
+<h3 id="1-顺序消息的重试">1. 顺序消息的重试</h3>
+<ul>
+<li>
+<p>对于顺序消息，当消费者消费消息失败后，消息队列 RocketMQ 会自动不断进行消息重试（每次间隔时间为 1 秒），这时，应用会出现消息消费被阻塞的情况。</p>
+</li>
+<li>
+<p>因此，在使用顺序消息时，务必保证应用能够及时监控并处理消费失败的情况，<strong>避免阻塞</strong>现象的发生。</p>
+</li>
+</ul>
+<h3 id="2-无序消息的重试">2. 无序消息的重试</h3>
+<ul>
+<li>
+<p>对于无序消息（普通、定时、延时、事务消息），当消费者消费消息失败时，您可以通过设置返回状态达到消息重试的结果。</p>
+</li>
+<li>
+<p>无序消息的重试只针对集群消费方式生效；广播方式不提供失败重试特性，即消费失败后，失败消息不再重试，继续消费新的消息。</p>
+</li>
+<li>
+<p>消息队列 RocketMQ 默认允许每条消息<code>最多重试 16 次</code>，<strong>将会在接下来的 4 小时 46 分钟之内进行 16 次重试</strong>，如果依然失败就会进入死信队列。</p>
+</li>
+<li>
+<p>一条消息无论重试多少次，这些重试消息的 Message ID 不会改变。</p>
+</li>
+<li>
+<p>也可以通过配置，让其不再重试，但是不建议这样</p>
+</li>
+</ul>
+<pre><code class="language-java">public class MessageListenerImpl implements MessageListener {
+    @Override
+    public Action consume(Message message, ConsumeContext context) {
+        try {
+            doConsumeMessage(message);
+        } catch (Throwable e) {
+            //捕获消费逻辑中的所有异常，并返回 Action.CommitMessage;
+            return Action.CommitMessage;
+        }
+        //消息处理正常，直接返回 Action.CommitMessage;
+        return Action.CommitMessage;
+    }
+}
+</code></pre>
+<h2 id="五-死信队列">五、死信队列</h2>
+<p><strong>死信消息具有以下特性:</strong></p>
+<ul>
+<li>不会再被消费者正常消费。</li>
+<li>有效期与正常消息相同，均为 3 天，3 天后会被自动删除。因此，请在死信消息产生后的 3 天内及时处理。</li>
+</ul>
+<p><strong>死信队列具有以下特性：</strong></p>
+<ul>
+<li>一个死信队列对应一个 Group ID， 而不是对应单个消费者实例。</li>
+<li>如果一个 Group ID 未产生死信消息，消息队列 RocketMQ 不会为其创建相应的死信队列。</li>
+<li>一个死信队列包含了对应 Group ID 产生的所有死信消息，不论该消息属于哪个 Topic。</li>
+</ul>
+<p><strong>查看死信队列</strong></p>
+<ol>
+<li>在控制台查询出现死信队列的主题信息</li>
+</ol>
+<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVBRCVCQiVFNCVCRiVBMSVFOSU5OCU5RiVFNSU4OCU5NyVFNCVCOCVCQiVFOSVBMiU5OC5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ol start="2">
+<li>在消息界面根据主题查询死信消息</li>
+</ol>
+<figure data-type="image" tabindex="7"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVBRCVCQiVFNCVCRiVBMSVFOSU5OCU5RiVFNSU4OCU5NyVFNCVCOCVCQiVFOSVBMiU5ODIucG5n?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ol start="3">
+<li>选择重新发送消息</li>
+</ol>
+<p>一条消息进入死信队列，<strong>意味着某些因素导致消费者无法正常消费该消息</strong>，因此，通常需要您对其进行特殊处理。排查可疑因素并解决问题后，可以在消息队列 RocketMQ 控制台重新发送该消息，让消费者重新消费一次。</p>
+<h2 id="六-消费幂等">六、消费幂等</h2>
+<p>消息队列 RocketMQ 消费者在接收到消息以后，<strong>有必要根据业务上的唯一 Key 对消息做幂等处理的必要性。</strong></p>
+<h3 id="1-什么时候产生重复消息">1. 什么时候产生重复消息？</h3>
+<p>在互联网应用中，尤其在<strong>网络不稳定</strong>的情况下，消息队列 RocketMQ 的消息有可能会出现重复，这个重复简单可以概括为以下情况：</p>
+<ul>
+<li>
+<p><strong>发送时消息重复</strong></p>
+<p>当一条消息已被成功发送到服务端并完成持久化，此时出现了网络闪断或者客户端宕机，导致服务端对客户端应答失败。 如果此时生产者意识到消息发送失败并尝试再次发送消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
+</li>
+<li>
+<p><strong>消费时消息重复</strong></p>
+<p>消息消费的场景下，消息已投递到消费者并完成业务处理，当客户端给服务端反馈应答的时候网络闪断。 为了保证消息至少被消费一次，消息队列 RocketMQ 的服务端将在网络恢复后再次尝试投递之前已被处理过的消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
+</li>
+<li>
+<p><strong>负载均衡时消息重复</strong>（包括但不限于网络抖动、Broker 重启以及订阅方应用重启）</p>
+<p>当消息队列 RocketMQ 的 Broker 或客户端重启、扩容或缩容时，会触发 Rebalance，此时消费者可能会收到重复消息。</p>
+</li>
+</ul>
+<h3 id="2-处理方式">2. 处理方式</h3>
+<p>因为 Message ID 有可能出现冲突（重复）的情况，所以真正安全的幂等处理，不建议以 Message ID 作为处理依据。 最好的方式是<strong>以业务唯一标识作为幂等处理的关键依据</strong>，而业务的唯一标识可以通过消息 Key 进行设置：</p>
+<pre><code class="language-java">Message message = new Message();
+message.setKey(&quot;ORDERID_100&quot;);
+SendResult sendResult = producer.send(message);
+</code></pre>
+<p>订阅方收到消息时可以根据消息的 Key 进行幂等处理：</p>
+<pre><code class="language-java">consumer.subscribe(&quot;ons_test&quot;, &quot;*&quot;, new MessageListener() {
+    public Action consume(Message message, ConsumeContext context) {
+        String key = message.getKey()
+        // 根据业务唯一标识的 key 做幂等处理
+    }
+});
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%B6%88%E6%81%AF%E5%AD%98%E5%82%A8">一、消息存储</a>
+<ul>
+<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%98%E5%82%A8%E5%88%B0%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%80%A7%E8%83%BD">1. 为什么要存储到文件系统？如何保证性能？</a></li>
+<li><a href="#2-%E5%8A%A0%E5%85%A5%E6%8C%81%E4%B9%85%E5%8C%96%E5%90%8Erocketmq%E7%9A%84%E6%9E%B6%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">2. 加入持久化后RocketMq的架构是什么样的？</a></li>
+<li><a href="#3-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">3. 存储结构是什么样的？</a></li>
+<li><a href="#4-%E5%88%B7%E7%9B%98%E6%9C%BA%E5%88%B6%E6%9C%89%E5%93%AA%E4%BA%9B">4. 刷盘机制有哪些？</a></li>
+<li><a href="#5-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1">5. 如何保证消息不丢失？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9C%BA%E5%88%B6">二、高可用机制</a>
+<ul>
+<li><a href="#1-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E">1. 消息消费的高可用（主从）</a></li>
+<li><a href="#2-%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E4%B8%BB%E8%8A%82%E7%82%B9">2. 消息发送高可用（配置多个主节点）</a></li>
+<li><a href="#3-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">3. 主从复制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">三、负载均衡</a>
+<ul>
+<li><a href="#1-producer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">1. Producer负载均衡</a></li>
+<li><a href="#2-consumer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">2. Consumer负载均衡</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E6%B6%88%E6%81%AF%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6">四、消息重试机制</a>
+<ul>
+<li><a href="#1-%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">1. 顺序消息的重试</a></li>
+<li><a href="#2-%E6%97%A0%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">2. 无序消息的重试</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97">五、死信队列</a></li>
+<li><a href="#%E5%85%AD-%E6%B6%88%E8%B4%B9%E5%B9%82%E7%AD%89">六、消费幂等</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BA%A7%E7%94%9F%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF">1. 什么时候产生重复消息？</a></li>
+<li><a href="#2-%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F">2. 处理方式</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-27 18:52:39";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-27 18:52:39";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>50</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

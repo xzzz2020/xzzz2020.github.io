@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-07-26T10:53:56.585Z</updated>
+    <updated>2020-07-27T10:54:03.778Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -10,6 +10,1964 @@
     <logo>https://xzzz2020.github.io/images/avatar.png</logo>
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
+    <entry>
+        <title type="html"><![CDATA[【总结】RocketMq高级特性]]></title>
+        <id>https://xzzz2020.github.io/post/czb-YfH6n/</id>
+        <link href="https://xzzz2020.github.io/post/czb-YfH6n/">
+        </link>
+        <updated>2020-07-27T10:52:39.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%B6%88%E6%81%AF%E5%AD%98%E5%82%A8">一、消息存储</a>
+<ul>
+<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%98%E5%82%A8%E5%88%B0%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%80%A7%E8%83%BD">1. 为什么要存储到文件系统？如何保证性能？</a></li>
+<li><a href="#2-%E5%8A%A0%E5%85%A5%E6%8C%81%E4%B9%85%E5%8C%96%E5%90%8Erocketmq%E7%9A%84%E6%9E%B6%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">2. 加入持久化后RocketMq的架构是什么样的？</a></li>
+<li><a href="#3-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">3. 存储结构是什么样的？</a></li>
+<li><a href="#4-%E5%88%B7%E7%9B%98%E6%9C%BA%E5%88%B6%E6%9C%89%E5%93%AA%E4%BA%9B">4. 刷盘机制有哪些？</a></li>
+<li><a href="#5-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1">5. 如何保证消息不丢失？</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9C%BA%E5%88%B6">二、高可用机制</a>
+<ul>
+<li><a href="#1-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E">1. 消息消费的高可用（主从）</a></li>
+<li><a href="#2-%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E4%B8%BB%E8%8A%82%E7%82%B9">2. 消息发送高可用（配置多个主节点）</a></li>
+<li><a href="#3-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">3. 主从复制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">三、负载均衡</a>
+<ul>
+<li><a href="#1-producer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">1. Producer负载均衡</a></li>
+<li><a href="#2-consumer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">2. Consumer负载均衡</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E6%B6%88%E6%81%AF%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6">四、消息重试机制</a>
+<ul>
+<li><a href="#1-%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">1. 顺序消息的重试</a></li>
+<li><a href="#2-%E6%97%A0%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">2. 无序消息的重试</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97">五、死信队列</a></li>
+<li><a href="#%E5%85%AD-%E6%B6%88%E8%B4%B9%E5%B9%82%E7%AD%89">六、消费幂等</a>
+<ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BA%A7%E7%94%9F%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF">1. 什么时候产生重复消息？</a></li>
+<li><a href="#2-%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F">2. 处理方式</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-消息存储">一、消息存储</h2>
+<blockquote>
+<p>分布式队列因为<strong>有高可靠性，保证消息不会丢失</strong>的要求，所以数据要进行持久化存储。.</p>
+</blockquote>
+<h3 id="1-为什么要存储到文件系统如何保证性能">1. 为什么要存储到文件系统？如何保证性能？</h3>
+<p>持久化方式可以分成两大类</p>
+<ul>
+<li><strong>关系型数据库</strong>：ActiveMQ默认采用的KahaDB做消息存储，由于，普通关系型数据库（如Mysql）在单表数据量达到千万级别的情况下，其IO读写性能往往会出现瓶颈。</li>
+<li><strong>文件系统</strong>：RocketMQ/Kafka/RabbitMQ）均采用的是消息刷盘至所部署虚拟机/物理机的文件系统来做持久化，刷盘一般可以分为异步刷盘和同步刷盘两种模式</li>
+</ul>
+<p><strong>一般来讲性能对比上：文件系统&gt;关系型数据库DB</strong></p>
+<p><strong>RocketMq的文件存储系统有两点优化以保证性能</strong>：</p>
+<ul>
+<li><strong>消息存储（顺序写）</strong>：RocketMQ的消息用<code>顺序写</code>,保证了消息存储的速度。目前的高性能磁盘，顺序写速度可以达到600MB/s， 超过了一般网卡的传输速度，但是磁盘随机写的速度只有大概100KB/s</li>
+<li><strong>消息发送（零拷贝）</strong>：将本机磁盘文件的内容发送到客户端需要进行多次复制，比如从磁盘复制数据到内核态内存；从内核态内存复制到用户态内存；从用户态内存复制到网络驱动，最后从网络驱动复制到网卡中。RocketMq采用Java中零拷贝的技术，让从内核态内存复制到用户态内存这一步省略，直接赋值到网络驱动中</li>
+</ul>
+<blockquote>
+<p>零拷贝技术有个限制是不能超过2G，所以RocketMQ默认设置单个CommitLog日志数据文件为1G</p>
+</blockquote>
+<h3 id="2-加入持久化后rocketmq的架构是什么样的">2. 加入持久化后RocketMq的架构是什么样的？</h3>
+<ol>
+<li>消息生成者发送消息</li>
+<li>MQ收到消息，将消息进行持久化，在存储中新增一条记录</li>
+<li>返回ACK给生产者</li>
+<li>MQ push 消息给对应的消费者，然后等待消费者返回ACK</li>
+<li>如果消息消费者在指定时间内成功返回ack，那么MQ认为消息消费成功，在存储中删除消息，即执行第6步；如果MQ在指定时间内没有收到ACK，则认为消息消费失败，会尝试重新push消息,重复执行4、5、6步骤</li>
+<li>MQ删除消息</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVCNiU4OCVFNiU4MSVBRiVFNSVBRCU5OCVFNSU4MiVBOCVFNiU5NiVCOSVFNSVCQyU4Ri5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<h3 id="3-存储结构是什么样的">3. 存储结构是什么样的？</h3>
+<p><strong>RocketMQ消息的存储是由ConsumeQueue和CommitLog配合完成的</strong></p>
+<ul>
+<li><code>CommitLog</code>：消息真正的<strong>物理存储文件</strong>是CommitLog，<strong>默认一个文件一个G</strong>，存储的是Topic，QueueId和Message，一个存储满了会自动创建一个新的。</li>
+<li><code>ConsumeQueue</code>：是消息的逻辑队列，<strong>类似数据库的索引文件</strong>，存储的是指向物理存储的地址，为了加快消息的读取速度。消费者消费某条消息时，先查询索引获取CommitLog的对应的物理地址。每个Topic下的每个Message Queue都有一个对应的ConsumeQueue文件，<strong>文件很小，通常会加载到内存中</strong>。如果该文件丢失或者损坏，可以通过CommitLog恢复</li>
+</ul>
+<ul>
+<li><code>IndexFile</code>：也是个索引文件，<strong>为了消息查询提供了一种通过key或时间区间来查询消息的方法</strong>，这种通过IndexFile来查找消息的方法不影响发送与消费消息的主流程</li>
+</ul>
+<h3 id="4-刷盘机制有哪些">4. 刷盘机制有哪些？</h3>
+<ul>
+<li><strong>同步刷盘</strong>（数据一定保存成功，但是速度慢）：在返回写成功状态时，消息已经被写入磁盘。具体流程是，消息写入内存的PAGECACHE后，立刻通知刷盘线程刷盘， 然后等待刷盘完成，刷盘线程执行完成后唤醒等待的线程，返回消息写 成功的状态。</li>
+<li><strong>异步刷盘</strong>（速度快，数据不一定保存成功）：在返回写成功状态时，消息可能只是被写入了内存的PAGECACHE，写操作的返回快，吞吐量大；当内存里的消息量积累到一定程度时，统一触发写磁盘动作，快速写入。</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNSU5MCU4QyVFNiVBRCVBNSVFNSU4OCVCNyVFNyU5QiU5OCVFNSU5MiU4QyVFNSVCQyU4MiVFNiVBRCVBNSVFNSU4OCVCNyVFNyU5QiU5OC5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<h3 id="5-如何保证消息不丢失">5. 如何保证消息不丢失？</h3>
+<ul>
+<li>RocketMq提供消息持久化机制，消息的刷盘策略分为同步刷盘和异步刷盘。同步刷盘即刷盘成功后再返回一个成功信息，能够保证数据一定保存成功，但是会降低系统吞吐量，异步刷盘与同步刷盘相反，我一般会采用同步刷盘的策略来保证消息不会丢失。</li>
+<li>RocketMq采用的文件系统存储而不是关系型数据库存储，因为在一般情况下文件系统的性能是比数据库性能高的</li>
+<li>而RocketMq为了提高文件系统的读写的高性能，做了两点优化。第一点是采用顺序写的方式，这样可以大大提高磁盘写的性能。第二点采用了零拷贝，原来的文件读取流程是：从磁盘复制数据到内核态内存；从内核态内存复制到用户态内存；从用户态内存复制到网络驱动，最后从网络驱动复制到网卡中发送，零拷贝则省去了从内核态内存复制到用户态内存的这一过程，提高了读取的性能，但是零拷贝对文件大小有要求，所以RocketMq的持久化文件commitlog默认为1G。</li>
+<li>commitlog是存储了RocketMq的消息等核心信息，除此之外，还提供可一个ConsumeQueue作为持久化文件的索引，提高查询的效率，一般文件比较小，都是加载在内存中。除了ConsumeQueue之外，还会存储一个IndexFile文件，用来提供针对某一个key或者时间区间的查询。</li>
+</ul>
+<h2 id="二-高可用机制">二、高可用机制</h2>
+<blockquote>
+<p>RocketMq是天生支持分布式的，可以配置主从以及水平扩展</p>
+<p>Master角色的Broker支持读和写，Slave角色的Broker仅支持读，也就是 Producer只能和Master角色的Broker连接写入消息；Consumer可以连接 Master角色的Broker，也可以连接Slave角色的Broker来读取消息。</p>
+</blockquote>
+<h3 id="1-消息消费的高可用主从">1. 消息消费的高可用（主从）</h3>
+<ul>
+<li>在Consumer的配置文件中，并不需要设置是从Master读还是从Slave 读，当Master不可用或者繁忙的时候，Consumer会被自动切换到从Slave 读。有了自动切换Consumer这种机制，当一个Master角色的机器出现故障后，Consumer仍然可以从Slave读取消息，不影响Consumer程序。这就达到了消费端的高可用性。</li>
+<li><strong>RocketMQ目前还不支持把Slave自动转成Master</strong>，如果机器资源不足，需要把Slave转成Master，则要手动停止Slave角色的Broker，更改配置文件，用新的配置文件启动Broker。</li>
+</ul>
+<h3 id="2-消息发送高可用配置多个主节点">2. 消息发送高可用（配置多个主节点）</h3>
+<ul>
+<li>在创建Topic的时候，把Topic的多个Message Queue创建在多个Broker组上（相同Broker名称，不同 brokerId的机器组成一个Broker组），这样当一个Broker组的Master不可用后，其他组的Master仍然可用，Producer仍然可以发送消息。</li>
+</ul>
+<h3 id="3-主从复制">3. 主从复制</h3>
+<blockquote>
+<p>如果一个Broker组有Master和Slave，消息需要从Master复制到Slave 上，有同步和异步两种复制方式。</p>
+</blockquote>
+<ul>
+<li><strong>同步复制</strong>：同步复制方式是等Master和Slave均写成功后才反馈给客户端写成功状态。如果Master出故障， Slave上有全部的备份数据，容易恢复同步复制会增大数据写入延迟，降低系统吞吐量。</li>
+<li><strong>异步复制</strong>：异步复制方式是只要Master写成功 即可反馈给客户端写成功状态。在异步复制方式下，系统拥有较低的延迟和较高的吞吐量，但是如果Master出了故障，有些数据因为没有被写 入Slave，有可能会丢失</li>
+<li>通常情况下，<strong>应该把Master和Save配置成同步刷盘方式，主从之间配置成异步的复制方式</strong>，这样即使有一台机器出故障，仍然能保证数据不丢，是个不错的选择。</li>
+</ul>
+<h2 id="三-负载均衡">三、负载均衡</h2>
+<h3 id="1-producer负载均衡">1. Producer负载均衡</h3>
+<p>Producer端，每个实例在发消息的时候，默认会<strong>轮询</strong>所有的message queue发送，以达到让消息平均落在不同的queue上。而由于queue可以散落在不同的broker，所以消息就发送到不同的broker下，如下图：</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL3Byb2R1Y2VyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExLnBuZw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<h3 id="2-consumer负载均衡">2. Consumer负载均衡</h3>
+<blockquote>
+<p>如果consumer实例的数量比message queue的总数量还多的话，<strong>多出来的consumer实例将无法分到queue</strong>，也就无法消费到消息，也就无法起到分摊负载的作用了。所以需要控制让queue的总数量大于等于consumer的数量。</p>
+</blockquote>
+<ul>
+<li>
+<p>消费者的集群模式--启动多个消费者就可以保证消费者的负载均衡（均摊队列）</p>
+</li>
+<li>
+<p><strong>默认使用的是均摊队列</strong>：会按照queue的数量和实例的数量平均分配queue给每个实例，这样每个消费者可以均摊消费的队列，如下图所示6个队列和三个生产者。</p>
+</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2NvbnN1bWVyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExLnBuZw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ul>
+<li>另外一种平均的算法<strong>环状轮流分queue</strong>的形式，每个消费者，均摊不同主节点的一个消息队列，如下图所示：</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2NvbnN1bWVyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExMi5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>对于广播模式并不是负载均衡的，要求一条消息需要投递到一个消费组下面所有的消费者实例，所以也就没有消息被分摊消费的说法。</p>
+</blockquote>
+<h2 id="四-消息重试机制">四、消息重试机制</h2>
+<h3 id="1-顺序消息的重试">1. 顺序消息的重试</h3>
+<ul>
+<li>
+<p>对于顺序消息，当消费者消费消息失败后，消息队列 RocketMQ 会自动不断进行消息重试（每次间隔时间为 1 秒），这时，应用会出现消息消费被阻塞的情况。</p>
+</li>
+<li>
+<p>因此，在使用顺序消息时，务必保证应用能够及时监控并处理消费失败的情况，<strong>避免阻塞</strong>现象的发生。</p>
+</li>
+</ul>
+<h3 id="2-无序消息的重试">2. 无序消息的重试</h3>
+<ul>
+<li>
+<p>对于无序消息（普通、定时、延时、事务消息），当消费者消费消息失败时，您可以通过设置返回状态达到消息重试的结果。</p>
+</li>
+<li>
+<p>无序消息的重试只针对集群消费方式生效；广播方式不提供失败重试特性，即消费失败后，失败消息不再重试，继续消费新的消息。</p>
+</li>
+<li>
+<p>消息队列 RocketMQ 默认允许每条消息<code>最多重试 16 次</code>，<strong>将会在接下来的 4 小时 46 分钟之内进行 16 次重试</strong>，如果依然失败就会进入死信队列。</p>
+</li>
+<li>
+<p>一条消息无论重试多少次，这些重试消息的 Message ID 不会改变。</p>
+</li>
+<li>
+<p>也可以通过配置，让其不再重试，但是不建议这样</p>
+</li>
+</ul>
+<pre><code class="language-java">public class MessageListenerImpl implements MessageListener {
+    @Override
+    public Action consume(Message message, ConsumeContext context) {
+        try {
+            doConsumeMessage(message);
+        } catch (Throwable e) {
+            //捕获消费逻辑中的所有异常，并返回 Action.CommitMessage;
+            return Action.CommitMessage;
+        }
+        //消息处理正常，直接返回 Action.CommitMessage;
+        return Action.CommitMessage;
+    }
+}
+</code></pre>
+<h2 id="五-死信队列">五、死信队列</h2>
+<p><strong>死信消息具有以下特性:</strong></p>
+<ul>
+<li>不会再被消费者正常消费。</li>
+<li>有效期与正常消息相同，均为 3 天，3 天后会被自动删除。因此，请在死信消息产生后的 3 天内及时处理。</li>
+</ul>
+<p><strong>死信队列具有以下特性：</strong></p>
+<ul>
+<li>一个死信队列对应一个 Group ID， 而不是对应单个消费者实例。</li>
+<li>如果一个 Group ID 未产生死信消息，消息队列 RocketMQ 不会为其创建相应的死信队列。</li>
+<li>一个死信队列包含了对应 Group ID 产生的所有死信消息，不论该消息属于哪个 Topic。</li>
+</ul>
+<p><strong>查看死信队列</strong></p>
+<ol>
+<li>在控制台查询出现死信队列的主题信息</li>
+</ol>
+<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVBRCVCQiVFNCVCRiVBMSVFOSU5OCU5RiVFNSU4OCU5NyVFNCVCOCVCQiVFOSVBMiU5OC5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ol start="2">
+<li>在消息界面根据主题查询死信消息</li>
+</ol>
+<figure data-type="image" tabindex="7"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVBRCVCQiVFNCVCRiVBMSVFOSU5OCU5RiVFNSU4OCU5NyVFNCVCOCVCQiVFOSVBMiU5ODIucG5n?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
+<ol start="3">
+<li>选择重新发送消息</li>
+</ol>
+<p>一条消息进入死信队列，<strong>意味着某些因素导致消费者无法正常消费该消息</strong>，因此，通常需要您对其进行特殊处理。排查可疑因素并解决问题后，可以在消息队列 RocketMQ 控制台重新发送该消息，让消费者重新消费一次。</p>
+<h2 id="六-消费幂等">六、消费幂等</h2>
+<p>消息队列 RocketMQ 消费者在接收到消息以后，<strong>有必要根据业务上的唯一 Key 对消息做幂等处理的必要性。</strong></p>
+<h3 id="1-什么时候产生重复消息">1. 什么时候产生重复消息？</h3>
+<p>在互联网应用中，尤其在<strong>网络不稳定</strong>的情况下，消息队列 RocketMQ 的消息有可能会出现重复，这个重复简单可以概括为以下情况：</p>
+<ul>
+<li>
+<p><strong>发送时消息重复</strong></p>
+<p>当一条消息已被成功发送到服务端并完成持久化，此时出现了网络闪断或者客户端宕机，导致服务端对客户端应答失败。 如果此时生产者意识到消息发送失败并尝试再次发送消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
+</li>
+<li>
+<p><strong>消费时消息重复</strong></p>
+<p>消息消费的场景下，消息已投递到消费者并完成业务处理，当客户端给服务端反馈应答的时候网络闪断。 为了保证消息至少被消费一次，消息队列 RocketMQ 的服务端将在网络恢复后再次尝试投递之前已被处理过的消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
+</li>
+<li>
+<p><strong>负载均衡时消息重复</strong>（包括但不限于网络抖动、Broker 重启以及订阅方应用重启）</p>
+<p>当消息队列 RocketMQ 的 Broker 或客户端重启、扩容或缩容时，会触发 Rebalance，此时消费者可能会收到重复消息。</p>
+</li>
+</ul>
+<h3 id="2-处理方式">2. 处理方式</h3>
+<p>因为 Message ID 有可能出现冲突（重复）的情况，所以真正安全的幂等处理，不建议以 Message ID 作为处理依据。 最好的方式是<strong>以业务唯一标识作为幂等处理的关键依据</strong>，而业务的唯一标识可以通过消息 Key 进行设置：</p>
+<pre><code class="language-java">Message message = new Message();
+message.setKey(&quot;ORDERID_100&quot;);
+SendResult sendResult = producer.send(message);
+</code></pre>
+<p>订阅方收到消息时可以根据消息的 Key 进行幂等处理：</p>
+<pre><code class="language-java">consumer.subscribe(&quot;ons_test&quot;, &quot;*&quot;, new MessageListener() {
+    public Action consume(Message message, ConsumeContext context) {
+        String key = message.getKey()
+        // 根据业务唯一标识的 key 做幂等处理
+    }
+});
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】JVM内存机制]]></title>
+        <id>https://xzzz2020.github.io/post/YkvbP7GKA/</id>
+        <link href="https://xzzz2020.github.io/post/YkvbP7GKA/">
+        </link>
+        <updated>2020-07-27T10:51:20.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a></li>
+<li><a href="#%E4%BA%8C-%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8">二、程序计数器</a></li>
+<li><a href="#%E4%B8%89-%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88">三、虚拟机栈</a>
+<ul>
+<li><a href="#%E9%97%AE%E9%A2%98%E8%BE%A8%E6%9E%90">问题辨析</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88">四、本地方法栈</a></li>
+<li><a href="#%E4%BA%94-%E5%A0%86">五、堆</a></li>
+<li><a href="#%E5%85%AD-%E6%96%B9%E6%B3%95%E5%8C%BA">六、方法区</a></li>
+<li><a href="#%E4%B8%83-%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0">七、运行时常量池</a></li>
+<li><a href="#%E5%85%AB-%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98">八、直接内存</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-简介">一、简介</h2>
+<p>Java 虚拟机在执⾏ Java 程序的过程中会把它管理的内存划分成若⼲个不同的数据区域。 JDK. 1.8 和<br>
+之前的版本略有不同</p>
+<p><strong>jdk1.8之前</strong>：</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTcwMjQxMTI1LnBuZw?x-oss-process=image/format,png" alt="image-20200715170241125" loading="lazy"></figure>
+<p><strong>jdk1.8之后</strong>：</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTcyNjIyNDUwLnBuZw?x-oss-process=image/format,png" alt="image-20200715172622450" loading="lazy"></figure>
+<p><strong>线程私有的：</strong></p>
+<ul>
+<li>程序计数器</li>
+<li>虚拟机栈</li>
+<li>本地方法栈</li>
+</ul>
+<p><strong>线程共享的：</strong></p>
+<ul>
+<li>堆</li>
+<li>方法区</li>
+<li>直接内存 (非运行时数据区的一部分)</li>
+</ul>
+<h2 id="二-程序计数器">二、程序计数器</h2>
+<blockquote>
+<p>用来记住下一条指令的执行的地址，可以依次读取指令或者在多线程的时候，记录线程执行的位置，线程切换后，继续执行</p>
+<p>是线程私有的，且不会出现内存溢出</p>
+</blockquote>
+<p>程序计数器是一块较小的内存空间，可以看作是当前线程所执行的字节码的行号指示器。<strong>字节码解释器工作时通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等功能都需要依赖这个计数器来完成。</strong></p>
+<p>另外，<strong>为了线程切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器，各线程之间计数器互不影响，独立存储，我们称这类内存区域为“线程私有”的内存。</strong></p>
+<p><strong>从上面的介绍中我们知道程序计数器主要有两个作用：</strong></p>
+<ol>
+<li>字节码解释器通过改变程序计数器来依次读取指令，从而实现代码的流程控制，如：顺序执行、选择、循环、异常处理。</li>
+<li>在多线程的情况下，程序计数器用于记录当前线程执行的位置，从而当线程被切换回来的时候能够知道该线程上次运行到哪儿了。</li>
+</ol>
+<p><strong>注意：程序计数器是唯一一个不会出现 <code>OutOfMemoryError</code> 的内存区域，它的生命周期随着线程的创建而创建，随着线程的结束而死亡。</strong></p>
+<h2 id="三-虚拟机栈">三、虚拟机栈</h2>
+<blockquote>
+<p>与程序计数器一样，Java 虚拟机栈也是线程私有的</p>
+<p>描述的是 Java 方法执行的内存模型，每次方法调用的数据都是通过栈传递的</p>
+<p>每个虚拟栈中存放的是栈帧，每个栈帧对应着一次方法的调用，即每个方法需要的内存</p>
+<p>方法执行时会入栈，所以栈顶的栈帧是正在执行的方法，方法执行结束或出现异常时，会出栈</p>
+<p>当方法出现递归的时候，可能会造成栈帧过多，导致栈溢出</p>
+</blockquote>
+<p><strong>与程序计数器一样，Java 虚拟机栈也是线程私有的，它的生命周期和线程相同，描述的是 Java 方法执行的内存模型，每次方法调用的数据都是通过栈传递的。</strong></p>
+<p><strong>Java 内存可以粗糙的区分为堆内存（Heap）和栈内存 (Stack),其中栈就是现在说的虚拟机栈，或者说是虚拟机栈中局部变量表部分。</strong> （实际上，Java 虚拟机栈是由一个个栈帧组成，而每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。）</p>
+<p><strong>局部变量表主要存放了编译期可知的各种数据类型</strong>（boolean、byte、char、short、int、float、long、double）、<strong>对象引用</strong>（reference 类型，它不同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置）。</p>
+<p><strong>Java 虚拟机栈会出现两种错误：<code>StackOverFlowError</code> 和 <code>OutOfMemoryError</code>。</strong></p>
+<ul>
+<li><strong><code>StackOverFlowError</code>：</strong> 若 Java 虚拟机栈的内存大小不允许动态扩展，那么当线程请求栈的深度超过当前 Java 虚拟机栈的最大深度的时候，就抛出 StackOverFlowError 错误。</li>
+<li><strong><code>OutOfMemoryError</code>：</strong> 若 Java 虚拟机堆中没有空闲内存，并且垃圾回收器也无法提供更多内存的话。就会抛出 OutOfMemoryError 错误。</li>
+</ul>
+<p>Java 虚拟机栈也是线程私有的，每个线程都有各自的 Java 虚拟机栈，而且随着线程的创建而创建，随着线程的死亡而死亡。</p>
+<p><strong>扩展：那么方法/函数如何调用？</strong></p>
+<p>Java 栈可用类比数据结构中栈，Java 栈中保存的主要内容是栈帧，每一次函数调用都会有一个对应的栈帧被压入 Java 栈，每一个函数调用结束后，都会有一个栈帧被弹出。</p>
+<p>Java 方法有两种返回方式：</p>
+<ol>
+<li>return 语句。</li>
+<li>抛出异常。</li>
+</ol>
+<p>不管哪种返回方式都会导致栈帧被弹出。</p>
+<h3 id="问题辨析">问题辨析</h3>
+<ol>
+<li>垃圾回收是否涉及栈内存？</li>
+</ol>
+<blockquote>
+<p>不需要<br>
+每个方法执行后，都会被弹出栈，自动回收掉</p>
+</blockquote>
+<ol start="2">
+<li>栈内存分配越大越好吗？</li>
+</ol>
+<blockquote>
+<p>不是<br>
+分配的越大，因为物理内存一定，会导致线程变少<br>
+分配的更多，只是帮助更多次的递归调用</p>
+</blockquote>
+<ol start="3">
+<li>方法内的局部变量是否线程安全？（<strong>看这个线程对变量是私有还是共享的</strong>）</li>
+</ol>
+<blockquote>
+<p>如果方法内局部变量没有逃离方法的作用访问，它是线程安全的<br>
+如果是局部变量引用了对象，并逃离方法的作用范围，需要考虑线程安全<br>
+如果变量变成static类型，需要考虑线程安全</p>
+</blockquote>
+<h2 id="四-本地方法栈">四、本地方法栈</h2>
+<blockquote>
+<p>和虚拟机栈类似，只是用来存储native方法的栈帧</p>
+</blockquote>
+<p>和虚拟机栈所发挥的作用非常相似，区别是： <strong>虚拟机栈为虚拟机执行 Java 方法 （也就是字节码）服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。</strong> 在 HotSpot 虚拟机中和 Java 虚拟机栈合二为一。</p>
+<p>本地方法被执行的时候，在本地方法栈也会创建一个栈帧，用于存放该本地方法的局部变量表、操作数栈、动态链接、出口信息。</p>
+<p>方法执行完毕后相应的栈帧也会出栈并释放内存空间，也会出现 StackOverFlowError 和 OutOfMemoryError 两种错误。</p>
+<h2 id="五-堆">五、堆</h2>
+<blockquote>
+<p>是线程共享的，唯一目的就是存放对象实例，几乎所有的对象实例以及数组都在这里分配内存</p>
+<p>从jdk 1.7开始已经默认开启逃逸分析，如果某些方法中的对象引用没有被返回或者未被外面使用（也就是未逃逸出去），那么对象可以直接在栈上分配内存。</p>
+<p>由于现在收集器基本都采用分代垃圾收集算法，所以 Java 堆还可以细分为：新生代和老年代：再细致一点有：Eden 空间、From Survivor、To Survivor 空间等</p>
+<p>这个是垃圾回收器主要负责回收的区域，当对象过大或者堆存储的对象过多时，就会进行垃圾回收，如果回收失败，最终户出现堆溢出</p>
+<p>一个线程出现堆溢出，这个线程就会关闭，并且回收该线程创建的对象，此时JVM还没有关闭；如果其他线程在创建对象时，关闭线程并没有释放掉大量的堆空间，会导致其他线程也出现堆溢出，最终导致JVM关闭</p>
+</blockquote>
+<p>Java 虚拟机所管理的内存中最大的一块，Java 堆是所有线程共享的一块内存区域，在虚拟机启动时创建。<strong>此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例以及数组都在这里分配内存。</strong></p>
+<p><strong>Java世界中“几乎”所有的对象都在堆中分配，但是，随着JIT编译期的发展与逃逸分析技术逐渐成熟，栈上分配、标量替换优化技术将会导致一些微妙的变化，所有的对象都分配到堆上也渐渐变得不那么“绝对”了。从jdk 1.7开始已经默认开启逃逸分析，如果某些方法中的对象引用没有被返回或者未被外面使用（也就是未逃逸出去），那么对象可以直接在栈上分配内存。</strong></p>
+<p>Java 堆是垃圾收集器管理的主要区域，因此也被称作<strong>GC 堆（Garbage Collected Heap）</strong>.从垃圾回收的角度，由于现在收集器基本都采用分代垃圾收集算法，所以 Java 堆还可以细分为：新生代和老年代：再细致一点有：Eden 空间、From Survivor、To Survivor 空间等。<strong>进一步划分的目的是更好地回收内存，或者更快地分配内存。</strong></p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTc0NzQ1NjcwLnBuZw?x-oss-process=image/format,png" alt="image-20200715174745670" loading="lazy"></figure>
+<h2 id="六-方法区">六、方法区</h2>
+<p>⽅法区与 Java 堆⼀样，是各个线程共享的内存区域，它⽤于存储已被虚拟机加载的类信息、常量、静<br>
+态变量、即时编译器编译后的代码等数据。</p>
+<h2 id="七-运行时常量池">七、运行时常量池</h2>
+<p>运⾏时常量池是⽅法区的⼀部分。 Class ⽂件中除了有类的版本、字段、⽅法、接口等描述信息外，还<br>
+有常量池信息（⽤于存放编译期⽣成的各种字⾯量和符号引⽤）</p>
+<p>既然运行时常量池时方法区的⼀部分，自然受到⽅法区内存的限制，当常量池无法再申请到内存时会抛<br>
+出 OutOfMemoryError 异常。</p>
+<blockquote>
+<ol>
+<li><strong>JDK1.7之前运行时常量池逻辑包含字符串常量池存放在方法区, 此时hotspot虚拟机对方法区的实现为永久代</strong></li>
+<li><strong>JDK1.7 字符串常量池被从方法区拿到了堆中, 这里没有提到运行时常量池,也就是说字符串常量池被单独拿到堆,运行时常量池剩下的东西还在方法区, 也就是hotspot中的永久代</strong> 。</li>
+<li><strong>JDK1.8 hotspot移除了永久代用元空间(Metaspace)取而代之, 这时候字符串常量池还在堆, 运行时常量池还在方法区, 只不过方法区的实现从永久代变成了元空间(Metaspace)</strong></li>
+</ol>
+</blockquote>
+<h2 id="八-直接内存">八、直接内存</h2>
+<p><strong>直接内存并不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域，但是这部分内存也被频繁地使用。而且也可能导致 OutOfMemoryError 错误出现。</strong></p>
+<p>JDK1.4 中新加入的 <strong>NIO(New Input/Output) 类</strong>，引入了一种基于<strong>通道（Channel）</strong> 与<strong>缓存区（Buffer）</strong> 的 I/O 方式，它可以直接使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样就能在一些场景中显著提高性能，因为<strong>避免了在 Java 堆和 Native 堆之间来回复制数据</strong>。</p>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwMzIwMTgyODI4NDg3LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwMzIwMTgzMTM2NDc5LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<p>本机直接内存的分配不会受到 Java 堆的限制，但是，既然是内存就会受到本机总内存大小以及处理器寻址空间的限制。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】JVM垃圾回收]]></title>
+        <id>https://xzzz2020.github.io/post/Yuwv7VFrF/</id>
+        <link href="https://xzzz2020.github.io/post/Yuwv7VFrF/">
+        </link>
+        <updated>2020-07-27T10:50:25.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%AF%B9%E8%B1%A1%E6%98%AF%E5%90%A6%E6%AD%BB%E4%BA%A1">一、如何判断对象是否死亡？</a>
+<ul>
+<li><a href="#1-%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95">1. 引用计数法</a></li>
+<li><a href="#2-%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95">2. 可达性分析算法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8">二、四种引用</a></li>
+<li><a href="#%E4%B8%89-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95">三、垃圾回收算法</a>
+<ul>
+<li><a href="#1-%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95">1. 标记清除算法</a></li>
+<li><a href="#2-%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95">2. 复制算法</a></li>
+<li><a href="#3%E6%A0%87%E8%AE%B0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95">3.标记压缩算法</a></li>
+<li><a href="#4-%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95">4. 分代收集算法</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E6%9C%89%E9%82%A3%E4%BA%9B">四、常见的垃圾回收器有那些?</a>
+<ul>
+<li><a href="#1-serial-%E6%94%B6%E9%9B%86%E5%99%A8">1. Serial 收集器</a></li>
+<li><a href="#2-parnew-%E6%94%B6%E9%9B%86%E5%99%A8">2. ParNew 收集器</a></li>
+<li><a href="#3-parallel-scavenge-%E6%94%B6%E9%9B%86%E5%99%A8">3. Parallel Scavenge 收集器</a></li>
+<li><a href="#4-serial-old-%E6%94%B6%E9%9B%86%E5%99%A8">4. Serial Old 收集器</a></li>
+<li><a href="#5-parallel-old-%E6%94%B6%E9%9B%86%E5%99%A8">5. Parallel Old 收集器</a></li>
+<li><a href="#6-cms-%E6%94%B6%E9%9B%86%E5%99%A8">6. CMS 收集器</a></li>
+<li><a href="#7-g1-%E6%94%B6%E9%9B%86%E5%99%A8">7. G1 收集器</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E5%85%B6%E4%BB%96">五、其他</a>
+<ul>
+<li><a href="#1-%E6%96%B9%E6%B3%95%E5%8C%BA%E5%8F%AF%E4%BB%A5gc%E5%90%97">1. 方法区可以GC吗？</a></li>
+<li><a href="#2-%E5%93%AA%E4%BA%9B%E5%85%83%E7%B4%A0%E5%8F%AF%E4%BB%A5%E5%81%9Agc-root">2. 哪些元素可以做GC root？</a></li>
+<li><a href="#3-minor-gc-major-gc%E5%92%8Cfull-gc%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB">3. Minor GC、Major GC和Full GC之间的区别？</a>
+<ul>
+<li><a href="#minor-gc">Minor GC</a></li>
+<li><a href="#major-gc">Major GC</a></li>
+<li><a href="#full-gc">Full GC</a></li>
+</ul>
+</li>
+<li><a href="#4-%E5%B8%B8%E7%94%A8jvm%E5%8F%82%E6%95%B0">4. 常用JVM参数</a></li>
+<li><a href="#5-%E9%A2%91%E7%B9%81fullgc%E7%9A%84%E5%8E%9F%E5%9B%A0">5. 频繁fullGC的原因？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-如何判断对象是否死亡">一、如何判断对象是否死亡？</h2>
+<h3 id="1-引用计数法">1. 引用计数法</h3>
+<p>给对象中添加一个引用计数器，每当有一个地方引用它，计数器就加 1；当引用失效，计数器就减 1；任何时候计数器为 0 的对象就是不可能再被使用的。</p>
+<p><strong>这个方法实现简单，效率高，但是目前主流的虚拟机中并没有选择这个算法来管理内存，其最主要的原因是它很难解决对象之间相互循环引用的问题。</strong></p>
+<h3 id="2-可达性分析算法">2. 可达性分析算法</h3>
+<p>这个算法的基本思想就是通过一系列的称为 <strong>“GC Roots”</strong> 的对象作为起点，从这些节点开始向下搜索，节点所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连的话，则证明此对象是不可用的。</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwNDEzMTg1MzMxNTY5LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<p><strong>不可达的对象并非“非死不可”</strong></p>
+<ul>
+<li>即使在可达性分析法中不可达的对象，也并非是“非死不可”的，这时候它们暂时处于“缓刑阶段”，要真正宣告一个对象死亡，至少要经历两次标记过程</li>
+<li>被判定为需要执行的对象将会被放在一个队列中进行第二次标记，除非这个对象与引用链上的任何一个对象建立关联，否则就会被真的回收。</li>
+</ul>
+<p><strong>如何判断一个常量是废弃常量？</strong></p>
+<ul>
+<li>
+<p>运行时常量池主要回收的是废弃的常量。</p>
+</li>
+<li>
+<p>假如在常量池中存在字符串 &quot;abc&quot;，如果当前没有任何 String 对象引用该字符串常量的话，就说明常量 &quot;abc&quot; 就是废弃常量，如果这时发生内存回收的话而且有必要的话，&quot;abc&quot; 就会被系统清理出常量池。</p>
+</li>
+</ul>
+<p><strong>如何判断一个类是无用的类?</strong></p>
+<p>方法区主要回收的是无用的类，那么如何判断一个类是无用的类的呢？</p>
+<p>判定一个常量是否是“废弃常量”比较简单，而要判定一个类是否是“无用的类”的条件则相对苛刻许多。类需要同时满足下面 3 个条件才能算是 <strong>“无用的类”</strong> ：</p>
+<ul>
+<li>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</li>
+<li>加载该类的 ClassLoader 已经被回收。</li>
+<li>该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ul>
+<p>虚拟机可以对满足上述 3 个条件的无用类进行回收，这里说的仅仅是“可以”，而并不是和对象一样不使用了就会必然被回收。</p>
+<h2 id="二-四种引用">二、四种引用</h2>
+<blockquote>
+<p>无论是通过引用计数法判断对象引用数量，还是通过可达性分析法判断对象的引用链是否可达，判定对象的存活都与“引用”有关。</p>
+</blockquote>
+<p><strong>1．强引用（StrongReference）</strong></p>
+<p>以前我们使用的大部分引用实际上都是强引用，垃圾回收器绝不会回收它。当内存空间不足，Java 虚拟机宁愿抛出 OutOfMemoryError 错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足问题。</p>
+<p><strong>2．软引用（SoftReference）</strong></p>
+<p>如果内存空间足够，垃圾回收器就不会回收它，如果内存空间不足了，就会回收这些对象的内存。只要垃圾回收器没有回收它，该对象就可以被程序使用。软引用可用来实现内存敏感的高速缓存。</p>
+<p>软引用可以和一个引用队列（ReferenceQueue）联合使用，如果软引用所引用的对象被垃圾回收，JAVA 虚拟机就会把这个软引用加入到与之关联的引用队列中。</p>
+<p><strong>3．弱引用（WeakReference）</strong></p>
+<p>弱引用与软引用的区别在于：只具有弱引用的对象拥有更短暂的生命周期。在垃圾回收器线程扫描它所管辖的内存区域的过程中，一旦发现了只具有弱引用的对象，不管当前内存空间足够与否，都会回收它的内存。不过，由于垃圾回收器是一个优先级很低的线程， 因此不一定会很快发现那些只具有弱引用的对象。</p>
+<p>弱引用可以和一个引用队列（ReferenceQueue）联合使用，如果弱引用所引用的对象被垃圾回收，Java 虚拟机就会把这个弱引用加入到与之关联的引用队列中。</p>
+<p><strong>4．虚引用（PhantomReference）</strong></p>
+<p>&quot;虚引用&quot;顾名思义，就是形同虚设，与其他几种引用都不同，虚引用并不会决定对象的生命周期。如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收。</p>
+<p><strong>虚引用主要用来跟踪对象被垃圾回收的活动</strong>。</p>
+<p><strong>虚引用与软引用和弱引用的一个区别在于：</strong>  虚引用必须和引用队列（ReferenceQueue）联合使用。当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象的内存之前，把这个虚引用加入到与之关联的引用队列中。程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否将要被垃圾回收。程序如果发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动。</p>
+<p>特别注意，在程序设计中一般很少使用弱引用与虚引用，使用软引用的情况较多，这是因为<strong>软引用可以加速 JVM 对垃圾内存的回收速度，可以维护系统的运行安全，防止内存溢出（OutOfMemory）等问题的产生</strong>。.</p>
+<h2 id="三-垃圾回收算法">三、垃圾回收算法</h2>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTg1MjQ5MTE1LnBuZw?x-oss-process=image/format,png" alt="image-20200715185249115" loading="lazy"></figure>
+<h3 id="1-标记清除算法">1. 标记清除算法</h3>
+<p>该算法分为“标记”和“清除”阶段：首先比较出所有需要回收的对象，在标记完成后统一回收掉所有被标记的对象。它是最基础的收集算法，后续的算法都是对其不足进行改进得到。这种垃圾收集算法会带来两个明显的问题：</p>
+<ol>
+<li><strong>效率问题，需要STW，会影响性能</strong></li>
+<li><strong>空间问题（标记清除后会产生大量不连续的碎片）</strong></li>
+</ol>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200715183224647.png" alt="image-20200715183224647" style="zoom:67%;" />
+<p><strong>为什么不能边运行，边标记？</strong></p>
+<ul>
+<li>因为标记和清理的过程是遍历全部对象</li>
+<li>如果代码没有停止运行，就无法梳理所有的对象关系，此时的标记和清除是不准的，所以必须<code>停止应用程序</code></li>
+</ul>
+<h3 id="2-复制算法">2. 复制算法</h3>
+<p>复制算法的核心就是，将原有的内存空间一分为二，每次只用其中的一块，在垃圾回收时，将正在使用的对象复制到另一个内存空间中，然后将该内存空间清空，交换两个内存的角色，完成垃圾的回收。</p>
+<p>如果内存中的垃圾对象较多，需要复制的对象就较少，这种情况下适合使用该方式并且效率比较高，反之，则不适合。</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200715183550748.png" alt="image-20200715183550748" style="zoom:67%;" />
+<h3 id="3标记压缩算法">3.标记压缩算法</h3>
+<p>根据老年代的特点提出的一种标记算法，标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象回收，而是让所有存活的对象向一端移动，然后直接清理掉端边界以外的内存，<strong>从而解决了<code>碎片化</code>的问题</strong>。</p>
+<p>不过，标记压缩算法多了一步，对象移动内存位置的步骤，其<strong>效率</strong>也有有一定的影响</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTg0MjMwNDU3LnBuZw?x-oss-process=image/format,png" alt="image-20200715184230457" loading="lazy"></figure>
+<h3 id="4-分代收集算法">4. 分代收集算法</h3>
+<blockquote>
+<p>这样分区主要为了提高GC的效率，根据不同点分区选择不同的GC算法</p>
+</blockquote>
+<p>当前虚拟机的垃圾收集都采用分代收集算法，这种算法没有什么新的思想，只是根据对象存活周期的不同将内存分为几块。一般将 java 堆分为新生代和老年代，这样我们就可以根据各个年代的特点选择合适的垃圾收集算法。</p>
+<p><strong>比如在新生代中，每次收集都会有大量对象死去，所以可以选择复制算法，只需要付出少量对象的复制成本就可以完成每次垃圾收集。而老年代的对象存活几率是比较高的，而且没有额外的空间对它进行分配担保，所以我们必须选择“标记-清除”或“标记-整理”算法进行垃圾收集。</strong></p>
+<h2 id="四-常见的垃圾回收器有那些">四、常见的垃圾回收器有那些?</h2>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTg1NTQxOTM1LnBuZw?x-oss-process=image/format,png" alt="image-20200715185541935" loading="lazy"></figure>
+<h3 id="1-serial-收集器">1. Serial 收集器</h3>
+<p>Serial（串行）收集器收集器是最基本、历史最悠久的垃圾收集器了。大家看名字就知道这个收集器是一个单线程收集器了。它的 <strong>“单线程”</strong> 的意义不仅仅意味着它只会使用一条垃圾收集线程去完成垃圾收集工作，更重要的是它在进行垃圾收集工作的时候必须暂停其他所有的工作线程（ <strong>&quot;Stop The World&quot;</strong> ），直到它收集结束。</p>
+<p><strong>新生代采用复制算法，老年代采用标记-整理算法</strong></p>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAxOTIzMjE1LnBuZw?x-oss-process=image/format,png" alt="image-20200716101923215" loading="lazy"></figure>
+<p>但是 Serial 收集器有没有优于其他垃圾收集器的地方呢？当然有，它<strong>简单而高效（与其他收集器的单线程相比）</strong>。Serial 收集器由于没有线程交互的开销，自然可以获得很高的单线程收集效率。Serial 收集器对于运行在 Client 模式下的虚拟机来说是个不错的选择。</p>
+<h3 id="2-parnew-收集器">2. ParNew 收集器</h3>
+<p><strong>ParNew 收集器其实就是 Serial 收集器的多线程版本，除了使用多线程进行垃圾收集外，其余行为（控制参数、收集算法、回收策略等等）和 Serial 收集器完全一样。</strong></p>
+<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAyMDIxNTU5LnBuZw?x-oss-process=image/format,png" alt="image-20200716102021559" loading="lazy"></figure>
+<p><strong>新生代采用复制算法，老年代采用标记-整理算法。</strong></p>
+<p>它是许多运行在 Server 模式下的虚拟机的首要选择，除了 Serial 收集器外，只有它能与 CMS 收集器（真正意义上的并发收集器，后面会介绍到）配合工作</p>
+<h3 id="3-parallel-scavenge-收集器">3. Parallel Scavenge 收集器</h3>
+<p><strong>Parallel Scavenge 收集器关注点是吞吐量（高效率的利用 CPU）。CMS 等垃圾收集器的关注点更多的是用户线程的停顿时间（提高用户体验）。所谓吞吐量就是 CPU 中用于运行用户代码的时间与 CPU 总消耗时间的比值。</strong> Parallel Scavenge 收集器提供了很多参数供用户找到最合适的停顿时间或最大吞吐量，如果对于收集器运作不太了解的话，手工优化存在困难的话可以选择把内存管理优化交给虚拟机去完成也是一个不错的选择。</p>
+<figure data-type="image" tabindex="7"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAyMTQ3NzY4LnBuZw?x-oss-process=image/format,png" alt="image-20200716102147768" loading="lazy"></figure>
+<p><strong>新生代采用复制算法，老年代采用标记-整理算法。</strong></p>
+<p><strong>有两个很重要的参数</strong>：</p>
+<ul>
+<li>控制吞吐量大小</li>
+<li>控制最大垃圾收集停顿时间的</li>
+</ul>
+<h3 id="4-serial-old-收集器">4. Serial Old 收集器</h3>
+<p><strong>Serial 收集器的老年代版本</strong>，它同样是一个单线程收集器。它主要有两大用途：一种用途是在 JDK1.5 以及以前的版本中与 Parallel Scavenge 收集器搭配使用，另一种用途是作为 CMS 收集器的后备方案。</p>
+<h3 id="5-parallel-old-收集器">5. Parallel Old 收集器</h3>
+<p><strong>Parallel Scavenge 收集器的老年代版本</strong>。使用多线程和“标记-整理”算法。在注重吞吐量以及 CPU 资源的场合，都可以优先考虑 Parallel Scavenge 收集器和 Parallel Old 收集器。</p>
+<h3 id="6-cms-收集器">6. CMS 收集器</h3>
+<p><strong>CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。它非常符合在注重用户体验的应用上使用。</strong></p>
+<p><strong>CMS（Concurrent Mark Sweep）收集器是 HotSpot 虚拟机第一款真正意义上的并发收集器，它第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</strong></p>
+<p>从名字中的<strong>Mark Sweep</strong>这两个词可以看出，CMS 收集器是一种 <strong>“标记-清除”算法</strong>实现的，它的运作过程相比于前面几种垃圾收集器来说更加复杂一些。整个过程分为四个步骤：</p>
+<ul>
+<li><strong>初始标记（STW）：</strong> 暂停所有的其他线程，并记录下直接与 root 相连的对象，速度很快 ；</li>
+<li><strong>并发标记：</strong> 同时开启 GC 和用户线程，用一个闭包结构去记录可达对象。但在这个阶段结束，这个闭包结构并不能保证包含当前所有的可达对象。因为用户线程可能会不断的更新引用域，所以 GC 线程无法保证可达性分析的实时性。所以这个算法里会跟踪记录这些发生引用更新的地方。</li>
+<li><strong>重新标记（STW）：</strong> 重新标记阶段就是为了修正并发标记期间因为用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，这个阶段的停顿时间一般会比初始标记阶段的时间稍长，远远比并发标记阶段时间短</li>
+<li><strong>并发清除：</strong> 开启用户线程，同时 GC 线程开始对未标记的区域做清扫。</li>
+</ul>
+<figure data-type="image" tabindex="8"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAyMzE5MjcxLnBuZw?x-oss-process=image/format,png" alt="image-20200716102319271" loading="lazy"></figure>
+<p>从它的名字就可以看出它是一款优秀的垃圾收集器，主要优点：<strong>并发收集、低停顿</strong>。但是它有下面三个明显的缺点：</p>
+<ul>
+<li><strong>对 CPU 资源敏感；</strong></li>
+<li><strong>无法处理浮动垃圾，并发清理阶段用户线程还在运行，这段时间就可能产生新的垃圾，新的垃圾在此次GC无法清除，只能等到下次清理。；</strong></li>
+<li><strong>它使用的回收算法-“标记-清除”算法会导致收集结束时会有大量空间碎片产生。</strong></li>
+</ul>
+<h3 id="7-g1-收集器">7. G1 收集器</h3>
+<p><strong>G1 (Garbage-First) 是一款面向服务器的垃圾收集器,主要针对配备多颗处理器及大容量内存的机器. 以极高概率满足 GC 停顿时间要求的同时,还具备高吞吐量性能特征.</strong></p>
+<p>被视为 JDK1.7 中 HotSpot 虚拟机的一个重要进化特征。它具备一下特点：</p>
+<ul>
+<li><strong>并行与并发</strong>：G1 能充分利用 CPU、多核环境下的硬件优势，使用多个 CPU（CPU 或者 CPU 核心）来缩短 Stop-The-World  停顿时间。部分其他收集器原本需要停顿 Java 线程执行的 GC 动作，G1 收集器仍然可以通过并发的方式让 java 程序继续执行。</li>
+<li><strong>分代收集</strong>：虽然 G1 可以不需要其他收集器配合就能独立管理整个 GC 堆，但是还是保留了分代的概念。</li>
+<li><strong>空间整合</strong>：与 CMS 的“标记--清除”算法不同，G1 从整体来看是基于“标记整理”算法实现的收集器；从局部上来看是基于“复制”算法实现的。</li>
+<li><strong>可预测的停顿</strong>：这是 G1 相对于 CMS 的另一个大优势，降低停顿时间是 G1 和 CMS 共同的关注点，但 G1 除了追求低停顿外，还能建立可预测的停顿时间模型，能让使用者明确指定在一个长度为 M 毫秒的时间片段内。</li>
+</ul>
+<p>G1 收集器的运作大致分为以下几个步骤：</p>
+<ul>
+<li><strong>初始标记</strong>：只标记GCRoots能直接关联到的对象</li>
+<li><strong>并发标记</strong>：进行GC Roots Tracing的过程</li>
+<li><strong>最终标记</strong>：修正并发标记期间，因程序运行导致标记发生变化的那一部分对象</li>
+<li><strong>筛选回收</strong>：根据时间来进行价值最大化的回收</li>
+</ul>
+<figure data-type="image" tabindex="9"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMTkxMTA5MjM0ODI1MTc0LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<p><strong>G1 收集器在后台维护了一个优先列表，每次根据允许的收集时间，优先选择回收价值最大的 Region(这也就是它的名字 Garbage-First 的由来)</strong>。这种使用 Region 划分内存空间以及有优先级的区域回收方式，保证了 G1 收集器在有限时间内可以尽可能高的收集效率（把内存化整为零）。</p>
+<h2 id="五-其他">五、其他</h2>
+<h3 id="1-方法区可以gc吗">1. 方法区可以GC吗？</h3>
+<p>方法区和堆一样，都是线程共享的内存区域，被用于存储已被虚拟机加载的类信息（字段等）、即时编译后的代码（方法字节码）、静态变量和常量等数据。</p>
+<p>根据Java虚拟机规范的规定，方法区无法满足内存分配需求时，也会抛出OutOfMemoryError异常，虽然规范规定虚拟机可以不实现垃圾收集，因为和堆的垃圾回收效率相比，方法区的回收效率实在太低，但是此部分内存区域也是可以被回收的。</p>
+<p>方法区的垃圾回收主要有两种，分别是<strong>对废弃常量的回收（常量池的回收）和对无用类的回收（类的卸载）。</strong></p>
+<p><strong>当一个常量对象不再任何地方被引用的时候，则被标记为废弃常量，这个常量可以被回收。</strong></p>
+<p><strong>方法区中的类需要同时满足以下三个条件才能被标记为无用的类</strong>：</p>
+<ol>
+<li>
+<p>Java堆中不存在该类的任何实例对象；</p>
+</li>
+<li>
+<p>加载该类的类加载器已经被回收；</p>
+</li>
+<li>
+<p>该类对应的java.lang.Class对象不在任何地方被引用，且无法在任何地方通过反射访问该类的方法。</p>
+</li>
+</ol>
+<p>当满足上述三个条件的类才可以被回收，但是并不是一定会被回收，需要参数进行控制，例如HotSpot虚拟机提供了-Xnoclassgc参数进行控制是否回收。</p>
+<h3 id="2-哪些元素可以做gc-root">2. 哪些元素可以做GC root？</h3>
+<ul>
+<li>虚拟机栈中的引用对象。</li>
+<li>方法区中的类静态变量引用的对象。</li>
+<li>方法区中常量引用对象。</li>
+<li>本地方法栈中JNI引用对象。</li>
+</ul>
+<h3 id="3-minor-gc-major-gc和full-gc之间的区别">3. Minor GC、Major GC和Full GC之间的区别？</h3>
+<h4 id="minor-gc">Minor GC</h4>
+<ul>
+<li>清理java堆中的年轻代，一般使用复制算法</li>
+</ul>
+<p><strong>触发条件</strong>:</p>
+<ul>
+<li>新生代空间不足时</li>
+</ul>
+<h4 id="major-gc">Major GC</h4>
+<ul>
+<li>一般使用标记-清除法，清理老年代</li>
+</ul>
+<p><strong>触发条件</strong>：</p>
+<ul>
+<li>当老年代不足时，会触发Major GC</li>
+</ul>
+<p><strong>什么时候老年代需要申请空间</strong></p>
+<ul>
+<li>新生代清理后依然出现空间不足，新生代复制到老年代</li>
+<li>年龄大于15，会复制到老年代</li>
+<li>新建一个大对象</li>
+</ul>
+<h4 id="full-gc">Full GC</h4>
+<ul>
+<li>
+<p>Full GC 是清理整个堆空间—包括年轻代和老久代</p>
+</li>
+<li>
+<p>只要发生fullGC，JAVA程序就会STW</p>
+</li>
+</ul>
+<p><strong>触发条件</strong>：</p>
+<ul>
+<li>
+<p>老年代空间不足</p>
+</li>
+<li>
+<p>方法区空间不足</p>
+</li>
+<li>
+<p>调用System.gc时，系统建议执行Full GC，但是不必然执行</p>
+</li>
+<li>
+<p>通过Minor GC后进入老年代的平均大小大于老年代的可用内存</p>
+</li>
+</ul>
+<p><strong>SafePoint</strong></p>
+<ul>
+<li>
+<p>分析过程中对象引用关系不会发生变化的点</p>
+</li>
+<li>
+<p>产生 Safepoint 的地方：方法调用、循环跳转、异常跳转等</p>
+</li>
+</ul>
+<h3 id="4-常用jvm参数">4. 常用JVM参数</h3>
+<ul>
+<li><strong>-Xmx</strong>：堆内存最大值，默认是机器物理内存的 1/4。 这个值决定了最多可用的 Java 堆内存。分配过少就会在应用中需要大量内存作缓存或者临时对象时出现 OOM（ Out Of Memory） 的问题 。如果分配过大，那么就会因PermSize 过小而引起的另外一种 Out Of Memory。</li>
+<li><strong>-Xms</strong>：设置 Java 堆初始化时的大小， 默认情况是机器物理内存的 1/64。这个主要是根据应用启动时消耗的资源决定，分配少了申请起来会降低运行速度，分配多了也浪费。</li>
+<li><strong>-XX:PermSize</strong>：初始化永久内存区域大小。</li>
+<li><strong>-Xmn</strong>：直接设置青年代大小。 整个 JVM 可用内存大小=青年代大小 + 老年代大小 + 持久代大小 。Sun 官方推荐配置为整个堆的3/8。</li>
+<li><strong>-XX:NewRatio</strong>：控制默认的 Young 代的大小，例如，设置-XX:NewRatio=3 意味着 Young 代和老年代的比率是 1:3。换句话说，Eden 和 Survivor 空间总和是整个堆大小的 1/4。</li>
+<li><strong>-XX:SurvivorRatio</strong>：设置年轻代中 Eden 区与 Survivor 区的大小比值。设置为 4，则两个 Survivor 区与一个 Eden 区的比值为 2:4，一个 Survivor 区占整个年轻代的 1/6。</li>
+<li><strong>-Xss</strong>：设置每个线程的堆栈大小， 根据应用的线程所需内存大小进行调整， 在相同物理内存下，减小这个值能生成更多的线程。</li>
+</ul>
+<h3 id="5-频繁fullgc的原因">5. 频繁fullGC的原因？</h3>
+<ul>
+<li>可能堆空间设置的太小了</li>
+<li>可能有对象长时间得不到释放</li>
+<li>内存碎片导致</li>
+</ul>
+<p><strong>所以建议先用jstack 保存当前堆栈信息，然后重启系统，保证系统的高可用</strong></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】类加载器]]></title>
+        <id>https://xzzz2020.github.io/post/jTbAiVT5N/</id>
+        <link href="https://xzzz2020.github.io/post/jTbAiVT5N/">
+        </link>
+        <updated>2020-07-27T10:49:27.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a></li>
+<li><a href="#%E4%BA%8C-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A0%E8%BD%BD%E5%99%A8">二、自定义加载器</a></li>
+<li><a href="#%E4%B8%89-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B">三、双亲委派模型</a>
+<ul>
+<li><a href="#1-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%A5%BD%E5%A4%84">1. 双亲委派模型的好处</a></li>
+<li><a href="#2-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90">2. 双亲委派模型实现源码分析</a></li>
+<li><a href="#3-%E5%A6%82%E6%9E%9C%E6%88%91%E4%BB%AC%E4%B8%8D%E6%83%B3%E7%94%A8%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E6%80%8E%E4%B9%88%E5%8A%9E">3. 如果我们不想用双亲委派模型怎么办？</a></li>
+<li><a href="#4-classloaderloadclass-%E5%92%8C-classforname-%E7%9A%84%E5%8C%BA%E5%88%AB">4. ClassLoader.loadClass 和 Class.forName 的区别</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-简介">一、简介</h2>
+<p>JVM 中内置了三个重要的 ClassLoader，除了 BootstrapClassLoader 其他类加载器均由 Java 实现且全部继承自<code>java.lang.ClassLoader</code>：</p>
+<ol>
+<li><strong>BootstrapClassLoader(启动类加载器)</strong> ：最顶层的加载类，由C++实现，负责加载 <code>%JAVA_HOME%/lib</code>目录下的jar包和类或者或被 <code>-Xbootclasspath</code>参数指定的路径中的所有类。</li>
+<li><strong>ExtensionClassLoader(扩展类加载器)</strong> ：主要负责加载目录 <code>%JRE_HOME%/lib/ext</code> 目录下的jar包和类，或被 <code>java.ext.dirs</code> 系统变量所指定的路径下的jar包。</li>
+<li><strong>AppClassLoader(应用程序类加载器)</strong> :面向我们用户的加载器，负责加载当前应用classpath下的所有jar包和类。</li>
+</ol>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200721152759192.png" alt="image-20200721152759192" style="zoom:67%;" />
+<ul>
+<li>
+<p>一个非数组类的加载阶段（加载阶段获取类的二进制字节流的动作）是可控性最强的阶段，这一步我们可以去完成还可以自定义类加载器去控制字节流的获取方式（重写一个类加载器的 <code>loadClass()</code> 方法）。数组类型不通过类加载器创建，它由 Java 虚拟机直接创建。</p>
+</li>
+<li>
+<p>所有的类都由类加载器加载，加载的作用就是将 .class文件加载到内存。</p>
+</li>
+</ul>
+<h2 id="二-自定义加载器">二、自定义加载器</h2>
+<p>除了 <code>BootstrapClassLoader</code> 其他类加载器均由 Java 实现且全部继承自<code>java.lang.ClassLoader</code>。如果我们要自定义自己的类加载器，很明显需要继承 <code>ClassLoader</code>。</p>
+<p><strong>主要的就是下面三个方法</strong>：</p>
+<ol>
+<li><strong>findClass</strong>（让JVM寻找class文件）</li>
+<li><strong>loadClass</strong>（加载class文件变成二进制数组）</li>
+<li><strong>defineClass</strong>（将二进制数组变成最终的class）</li>
+</ol>
+<p><strong>可以加载一些加密的Class文件</strong></p>
+<ul>
+<li>比如说股票软件，别人写的模型，不要让别人看到，可以通过加密文件</li>
+<li>但是加密的class文件，JVM的提供的类加载器无法识别，需要一个自定义的加载器</li>
+</ul>
+<h2 id="三-双亲委派模型">三、双亲委派模型</h2>
+<p>当一个类收到了类加载请求，他首先不会尝试自己去加载这个类，而是把这个请求委派给父类去完成，每一个层次类加载器都是如此，因此所有的加载请求都应该传送到启动类加载其中， 只有当父类加载器反馈自己无法完成这个请求的时候(在它的加载路径下没有找到所需加载的 class），子类加载器才会尝试自己去加载。</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIxMTYzNjQ3MTE4LnBuZw?x-oss-process=image/format,png" alt="image-20200721163647118" loading="lazy"></figure>
+<p><strong>每个类加载都有一个父类加载器，我们通过下面的程序来验证。</strong></p>
+<pre><code class="language-java">public class ClassLoaderDemo {
+    public static void main(String[] args) {
+        System.out.println(&quot;ClassLodarDemo's ClassLoader is &quot; + ClassLoaderDemo.class.getClassLoader());
+        System.out.println(&quot;The Parent of ClassLodarDemo's ClassLoader is &quot; + ClassLoaderDemo.class.getClassLoader().getParent());
+        System.out.println(&quot;The GrandParent of ClassLodarDemo's ClassLoader is &quot; + ClassLoaderDemo.class.getClassLoader().getParent().getParent());
+    }
+}
+</code></pre>
+<p>Output</p>
+<pre><code>ClassLodarDemo's ClassLoader is sun.misc.Launcher$AppClassLoader@18b4aac2
+The Parent of ClassLodarDemo's ClassLoader is sun.misc.Launcher$ExtClassLoader@1b6d3586
+The GrandParent of ClassLodarDemo's ClassLoader is null
+</code></pre>
+<p><code>AppClassLoader</code>的父类加载器为<code>ExtClassLoader</code> <code>ExtClassLoader</code>的父类加载器为null，<strong>null并不代表<code>ExtClassLoader</code>没有父类加载器，而是 <code>BootstrapClassLoader</code></strong> 。</p>
+<h3 id="1-双亲委派模型的好处">1. 双亲委派模型的好处</h3>
+<p>双亲委派模型保证了Java程序的稳定运行，可以避免类的重复加载（JVM  区分不同类的方式不仅仅根据类名，相同的类文件被不同的类加载器加载产生的是两个不同的类），也保证了 Java 的核心 API  不被篡改。如果没有使用双亲委派模型，而是每个类加载器加载自己的话就会出现一些问题，比如我们编写一个称为 <code>java.lang.Object</code> 类的话，那么程序运行的时候，系统就会出现多个不同的 <code>Object</code> 类。</p>
+<h3 id="2-双亲委派模型实现源码分析">2. 双亲委派模型实现源码分析</h3>
+<p>双亲委派模型的实现代码非常简单，逻辑非常清晰，都集中在 <code>java.lang.ClassLoader</code> 的 <code>loadClass()</code> 中，相关代码如下所示。</p>
+<pre><code class="language-java">private final ClassLoader parent; 
+protected Class&lt;?&gt; loadClass(String name, boolean resolve)
+        throws ClassNotFoundException
+    {
+        synchronized (getClassLoadingLock(name)) {
+            // 首先，检查请求的类是否已经被加载过，这是个native方法
+            Class&lt;?&gt; c = findLoadedClass(name);
+            if (c == null) {
+                long t0 = System.nanoTime();
+                try {
+                    if (parent != null) {//父加载器不为空，调用父加载器loadClass()方法处理
+                        c = parent.loadClass(name, false);
+                    } else {//父加载器为空，使用启动类加载器 BootstrapClassLoader 加载
+                        c = findBootstrapClassOrNull(name);
+                    }
+                } catch (ClassNotFoundException e) {
+                   //抛出异常说明父类加载器无法完成加载请求
+                }
+
+                if (c == null) {
+                    long t1 = System.nanoTime();
+                    //自己尝试加载
+                    c = findClass(name);
+
+                    // this is the defining class loader; record the stats
+                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);
+                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);
+                    sun.misc.PerfCounter.getFindClasses().increment();
+                }
+            }
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
+        }
+    }
+</code></pre>
+<h3 id="3-如果我们不想用双亲委派模型怎么办">3. 如果我们不想用双亲委派模型怎么办？</h3>
+<p>为了避免双亲委托机制，我们可以自己定义一个类加载器，然后重写 <code>loadClass()</code> 即可。</p>
+<h3 id="4-classloaderloadclass-和-classforname-的区别">4. ClassLoader.loadClass 和 Class.forName 的区别</h3>
+<ul>
+<li>
+<p>ClassLoader就是遵循<strong>双亲委派模型</strong>最终调用启动类加载器的类加载器，实现的功能是“通过一个类的全限定名来获取描述此类的二进制字节流”，获取到二进制流后放到JVM中。</p>
+</li>
+<li>
+<p>Class.forName()方法实际上也是调用的CLassLoader来实现的。</p>
+</li>
+<li>
+<p>Class.forName加载类时将类进了初始化，而ClassLoader的loadClass并没有对类进行初始化，只是把类加载到了虚拟机中。</p>
+</li>
+<li>
+<p>在我们熟悉的Spring框架中的IOC的实现就是使用的ClassLoader。而在我们使用JDBC时通常是使用Class.forName()方法来加载数据库连接驱动。如果用ClassLoader.loadClass(&quot;&quot;)将不会执行静态代码块，当然也不能注册驱动了。</p>
+</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】类加载过程]]></title>
+        <id>https://xzzz2020.github.io/post/FOuttAozI/</id>
+        <link href="https://xzzz2020.github.io/post/FOuttAozI/">
+        </link>
+        <updated>2020-07-27T10:48:26.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B">一、类的加载过程</a></li>
+<li><a href="#%E4%BA%8C-%E5%8A%A0%E8%BD%BD">二、加载</a></li>
+<li><a href="#%E4%B8%89-%E9%AA%8C%E8%AF%81">三、验证</a></li>
+<li><a href="#%E5%9B%9B-%E5%87%86%E5%A4%87">四、准备</a></li>
+<li><a href="#%E4%BA%94-%E8%A7%A3%E6%9E%90">五、解析</a></li>
+<li><a href="#%E5%85%AD-%E5%88%9D%E5%A7%8B%E5%8C%96">六、初始化</a></li>
+<li><a href="#%E4%B8%83-%E5%8D%B8%E8%BD%BD">七、卸载</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-类的加载过程">一、类的加载过程</h2>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIxMTUyMTM3Nzk5LnBuZw?x-oss-process=image/format,png" alt="image-20200721152137799" loading="lazy"></figure>
+<p><strong>分为三大阶段</strong></p>
+<ul>
+<li>
+<p><strong>加载</strong>:查找并且加载类的二进制数据</p>
+</li>
+<li>
+<p><strong>链接</strong>：</p>
+<ul>
+<li>
+<p><strong>验证</strong>:确保被加载类的正确性</p>
+</li>
+<li>
+<p><strong>准备</strong>:为类的静态变量分配内存，并将其初始化为默认值</p>
+</li>
+<li>
+<p><strong>解析</strong>:把类中的符号引用转换为直接引用</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>初始化</strong>:执行构造方法</p>
+</li>
+</ul>
+<h2 id="二-加载">二、加载</h2>
+<p><strong>类加载过程的第一步，主要完成下面3件事情</strong>：</p>
+<ol>
+<li>通过全类名获取定义此类的二进制字节流</li>
+<li>将字节流所代表的静态存储结构转换为方法区的运行时数据结构</li>
+<li>在内存中生成一个代表该类的 Class 对象,作为方法区这些数据的访问入口</li>
+</ol>
+<p><strong>一个非数组类的加载阶段（加载阶段获取类的二进制字节流的动作）是可控性最强的阶段，这一步我们可以去完成还可以自定义类加载器去控制字节流的获取方式（重写一个类加载器的 <code>loadClass()</code> 方法）。数组类型不通过类加载器创建，它由 Java 虚拟机直接创建。</strong></p>
+<h2 id="三-验证">三、验证</h2>
+<p><strong>主要目的</strong>：检查输入的字节流。为了确保当前加载的Class字节流符合虚拟机的要求，不会危害到虚拟机</p>
+<p><strong>检验动作</strong></p>
+<ul>
+<li>文件格式验证。判断当前字节流是否符合Class文件格式要求。</li>
+<li>原数据验证。语义分析，判断数据类型是否符合Java语言规范</li>
+<li>字节码验证。判断方法是否符合Java语言规范</li>
+<li>符号引用验证。判断能否找到所引用的类</li>
+</ul>
+<h2 id="四-准备">四、准备</h2>
+<p><strong>目的</strong>：<code>给类中静态变量赋予初值，其他的变量随着类的初始化，跟类存放在堆中</code></p>
+<h2 id="五-解析">五、解析</h2>
+<p>目的：<code>将常量池中的符号引用变成直接引用</code></p>
+<h2 id="六-初始化">六、初始化</h2>
+<p>目的：<code>初始化是类加载的最后一步，初始化阶段是执行类构造器 &lt;clinit&gt; ()方法的过程</code></p>
+<h2 id="七-卸载">七、卸载</h2>
+<p>卸载类即该类的Class对象被GC。</p>
+<p>卸载类需要满足3个要求:</p>
+<ol>
+<li>该类的所有的实例对象都已被GC，也就是说堆不存在该类的实例对象。</li>
+<li>该类没有在其他任何地方被引用</li>
+<li>该类的类加载器的实例已被GC</li>
+</ol>
+<p>所以，在JVM生命周期类，由jvm自带的类加载器加载的类是不会被卸载的。但是由我们自定义的类加载器加载的类是可能被卸载的。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】Redis主从复制]]></title>
+        <id>https://xzzz2020.github.io/post/y9Xr-Nu8H/</id>
+        <link href="https://xzzz2020.github.io/post/y9Xr-Nu8H/">
+        </link>
+        <updated>2020-07-27T10:45:20.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-%E5%A4%8D%E5%88%B6%E7%9A%84%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B">1. 复制的完整流程</a></li>
+<li><a href="#2-%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E7%9B%B8%E5%85%B3%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6">2. 数据同步相关的核心机制</a></li>
+<li><a href="#3-%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6">3. 全量复制</a></li>
+<li><a href="#4-%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6">4. 增量复制</a></li>
+<li><a href="#5-heartbeat">5. heartbeat</a></li>
+<li><a href="#6-%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6">6. 异步复制</a></li>
+<li><a href="#7-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%B5%81%E7%A8%8B">7. 主从复制流程</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="1-复制的完整流程">1. 复制的完整流程</h2>
+<ol>
+<li>slave node启动，仅仅保存master node的信息，包括master node的host和ip，但是复制流程没开始master host和ip是在redis.conf里面的slaveof配置的</li>
+<li><strong>slave node内部有个定时任务，每秒检查是否有新的master node要连接和复制，如果发现，就跟master node建立socket网络连接</strong></li>
+<li>slave node发送ping命令给master node</li>
+<li>口令认证，如果master设置了requirepass，那么salve node必须发送masterauth的口令过去进行认证</li>
+<li>master node<strong>第一次执行全量复制</strong>，将所有数据发给slave node</li>
+<li>master node<strong>后续持续将写命令，异步复制给slave node</strong></li>
+</ol>
+<h2 id="2-数据同步相关的核心机制">2. 数据同步相关的核心机制</h2>
+<p>指的就是第一次slave连接msater的时候，执行的全量复制，那个过程里面你的一些细节的机制</p>
+<p><strong>（1）master和slave都会维护一个offset</strong></p>
+<p>master会在自身不断累加offset，slave也会在自身不断累加offset<br>
+slave每秒都会上报自己的offset给master，同时master也会保存每个slave的offset</p>
+<p>这个倒不是说特定就用在全量复制的，主要是master和slave都要知道各自的数据的offset，才能知道互相之间的数据不一致的情况</p>
+<p><strong>（2）backlog</strong></p>
+<p>master node有一个backlog，默认是1MB大小</p>
+<p>master node给slave node复制数据时，也会将数据在backlog中同步写一份</p>
+<p>backlog主要是用来做全量复制中断后的增量复制的</p>
+<p><strong>（3）master run id</strong></p>
+<p>info server，可以看到master run id</p>
+<p>如果根据host+ip定位master node，是不靠谱的，如果master node重启或者数据出现了变化，那么slave node应该根据不同的run id区分，run id不同就做全量复制</p>
+<p>如果需要不更改run id重启redis，可以使用redis-cli debug reload命令</p>
+<p><strong>（4）psync</strong></p>
+<p>从节点使用psync从master node进行复制，psync runid offset</p>
+<p>master node会根据自身的情况返回响应信息，可能是FULLRESYNC runid offset触发全量复制，可能是CONTINUE触发增量复制</p>
+<h2 id="3-全量复制">3. 全量复制</h2>
+<ol>
+<li>master执行bgsave，在本地生成一份rdb快照文件</li>
+<li>master node将rdb快照文件发送给salve node，如果rdb复制时间超过60秒（repl-timeout），那么slave node就会认为复制失败，可以适当调节大这个参数</li>
+<li>对于千兆网卡的机器，一般每秒传输100MB，6G文件，很可能超过60s</li>
+<li>master node在生成rdb时，会将所有新的写命令缓存在内存中，在salve node保存了rdb之后，再将新的写命令复制给salve node</li>
+<li>client-output-buffer-limit slave 256MB 64MB 60，如果在复制期间，内存缓冲区持续消耗超过64MB，或者一次性超过256MB，那么停止复制，复制失败</li>
+<li>slave node接收到rdb之后，清空自己的旧数据，然后重新加载rdb到自己的内存中，同时基于旧的数据版本对外提供服务</li>
+<li>如果slave node开启了AOF，那么会立即执行BGREWRITEAOF，重写AOF</li>
+</ol>
+<p><strong>rdb生成、rdb通过网络拷贝、slave旧数据的清理、slave aof rewrite，很耗费时间</strong></p>
+<p><strong>如果复制的数据量在4G~6G之间，那么很可能全量复制时间消耗到1分半到2分钟</strong></p>
+<h2 id="4-增量复制">4. 增量复制</h2>
+<ol>
+<li>如果全量复制过程中，master-slave网络连接断掉，那么salve重新连接master时，会触发增量复制</li>
+<li>master直接从自己的backlog中获取部分丢失的数据，发送给slave node，默认backlog就是1MB</li>
+<li>msater就是根据slave发送的psync中的offset来从backlog中获取数据的</li>
+</ol>
+<h2 id="5-heartbeat">5. heartbeat</h2>
+<p>主从节点互相都会发送heartbeat信息</p>
+<p>master默认每隔10秒发送一次heartbeat，salve node每隔1秒发送一个heartbeat</p>
+<h2 id="6-异步复制">6. 异步复制</h2>
+<p>master每次接收到写命令之后，现在内部写入数据，然后异步发送给slave node</p>
+<h2 id="7-主从复制流程">7. 主从复制流程</h2>
+<ol>
+<li>主服务器创建快照文件，发送给从服务器，并在发送期间使用缓冲区记录执行的写命令。快照文件发送完毕之后，开始向从服务器发送存储在缓冲区中的写命令；</li>
+<li>从服务器丢弃所有旧数据，载入主服务器发来的快照文件，之后从服务器开始接受主服务器发来的写命令；</li>
+<li>主服务器每执行一次写命令，就向从服务器发送相同的写命令。</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】Redis哨兵]]></title>
+        <id>https://xzzz2020.github.io/post/XQ2Qib6Xc/</id>
+        <link href="https://xzzz2020.github.io/post/XQ2Qib6Xc/">
+        </link>
+        <updated>2020-07-27T10:44:06.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%93%A8%E5%85%B5%E7%9A%84%E4%BB%8B%E7%BB%8D">一、哨兵的介绍</a></li>
+<li><a href="#%E4%BA%8C-%E5%93%A8%E5%85%B5%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86">二、 哨兵的核心知识</a></li>
+<li><a href="#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E5%8F%AA%E6%9C%892%E4%B8%AA%E8%8A%82%E7%82%B9%E6%97%A0%E6%B3%95%E6%AD%A3%E5%B8%B8%E5%B7%A5%E4%BD%9C">三、为什么redis哨兵集群只有2个节点无法正常工作？</a></li>
+<li><a href="#%E5%9B%9B-%E7%BB%8F%E5%85%B8%E7%9A%843%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4">四、经典的3节点哨兵集群</a></li>
+<li><a href="#%E4%BA%94-%E4%B8%A4%E7%A7%8D%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1%E7%9A%84%E6%83%85%E5%86%B5">五、两种数据丢失的情况</a>
+<ul>
+<li><a href="#1-%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 异步复制导致的数据丢失</a></li>
+<li><a href="#2-%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">2. 脑裂导致的数据丢失</a></li>
+<li><a href="#3-%E8%A7%A3%E5%86%B3">3. 解决</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-sdown%E5%92%8Codown%E8%BD%AC%E6%8D%A2%E6%9C%BA%E5%88%B6">六、sdown和odown转换机制</a></li>
+<li><a href="#%E4%B8%83-%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E6%9C%BA%E5%88%B6">七、哨兵集群的自动发现机制</a></li>
+<li><a href="#%E5%85%AB-slave%E9%85%8D%E7%BD%AE%E7%9A%84%E8%87%AA%E5%8A%A8%E7%BA%A0%E6%AD%A3">八、slave配置的自动纠正</a></li>
+<li><a href="#%E4%B9%9D-slave-master%E9%80%89%E4%B8%BE%E7%AE%97%E6%B3%95">九、slave-&gt;master选举算法</a></li>
+<li><a href="#%E5%8D%81-quorum%E5%92%8Cmajority">十、quorum和majority</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-configuration-epoch">十一、configuration epoch</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-configuraiton%E4%BC%A0%E6%92%AD">十二、configuraiton传播</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-哨兵的介绍">一、哨兵的介绍</h2>
+<p>sentinal，中文名是哨兵，是启动Redis后一个额外的进程，哨兵是redis集群架构中非常重要的一个组件，主要功能如下：</p>
+<ul>
+<li><strong>集群监控</strong>，负责监控redis master和slave进程是否正常工作</li>
+<li><strong>消息通知</strong>，如果某个redis实例有故障，那么哨兵负责发送消息作为报警通知给管理员</li>
+<li><strong>故障转移</strong>，如果master node挂掉了，会自动转移到slave node上</li>
+<li><strong>配置中心</strong>，如果故障转移发生了，通知client客户端新的master地址</li>
+</ul>
+<p><strong>哨兵本身也是分布式的，作为一个哨兵集群去运行，互相协同工作</strong>：</p>
+<ul>
+<li>故障转移时，判断一个master node是宕机了，需要大部分的哨兵都同意才行，涉及到了分布式选举的问题</li>
+<li>即使部分哨兵节点挂掉了，哨兵集群还是能正常工作的，因为如果一个作为高可用机制重要组成部分的故障转移系统本身是单点的，那就很坑爹了</li>
+</ul>
+<p>目前采用的是sentinal 2版本，sentinal 2相对于sentinal 1来说，重写了很多代码，主要是让故障转移的机制和算法变得更加健壮和简单</p>
+<h2 id="二-哨兵的核心知识">二、 哨兵的核心知识</h2>
+<ul>
+<li>哨兵至少需要3个实例，来保证自己的健壮性</li>
+<li>哨兵 + redis主从的部署架构，是不会保证数据零丢失的，只能保证redis集群的高可用性</li>
+<li>对于哨兵 + redis主从这种复杂的部署架构，尽量在测试环境和生产环境，都进行充足的测试和演练</li>
+</ul>
+<h2 id="三-为什么redis哨兵集群只有2个节点无法正常工作">三、为什么redis哨兵集群只有2个节点无法正常工作？</h2>
+<p>哨兵集群必须部署2个以上节点</p>
+<p>如果哨兵集群仅仅部署了个2个哨兵实例，quorum=1</p>
+<pre><code>+----+         +----+
+| M1 |---------| R1 |
+| S1 |         | S2 |
++----+         +----+
+</code></pre>
+<p>Configuration: quorum = 1</p>
+<p>master宕机，s1和s2中只要有1个哨兵认为master宕机就可以还行切换，同时s1和s2中会选举出一个哨兵来执行故障转移</p>
+<p>同时这个时候，需要majority，也就是大多数哨兵都是运行的，2个哨兵的majority就是2（2的majority=2，3的majority=2，5的majority=3，4的majority=2），2个哨兵都运行着，就可以允许执行故障转移</p>
+<p>但是如果整个M1和S1运行的机器宕机了，那么哨兵只有1个了，此时就没有majority来允许执行故障转移，虽然另外一台机器还有一个R1，但是故障转移不会执行</p>
+<h2 id="四-经典的3节点哨兵集群">四、经典的3节点哨兵集群</h2>
+<pre><code>       +----+
+       | M1 |
+       | S1 |
+       +----+
+          |
++----+    |    +----+
+| R2 |----+----| R3 |
+| S2 |         | S3 |
++----+         +----+
+</code></pre>
+<p>Configuration: quorum = 2，majority</p>
+<p>如果M1所在机器宕机了，那么三个哨兵还剩下2个，S2和S3可以一致认为master宕机，然后选举出一个来执行故障转移</p>
+<p>同时3个哨兵的majority是2，所以还剩下的2个哨兵运行着，就可以允许执行故障转移</p>
+<h2 id="五-两种数据丢失的情况">五、两种数据丢失的情况</h2>
+<blockquote>
+<p>主备切换的过程，可能会导致数据丢失</p>
+</blockquote>
+<h3 id="1-异步复制导致的数据丢失">1. 异步复制导致的数据丢失</h3>
+<p>因为master -&gt; slave的复制是异步的，所以可能有部分数据还没复制到slave，master就宕机了，此时这些部分数据就丢失了</p>
+<h3 id="2-脑裂导致的数据丢失">2. 脑裂导致的数据丢失</h3>
+<ul>
+<li>脑裂，也就是说，某个master所在机器突然脱离了正常的网络，跟其他slave机器不能连接，但是实际上master还运行着</li>
+</ul>
+<p>此时哨兵可能就会认为master宕机了，然后开启选举，将其他slave切换成了master</p>
+<p>这个时候，集群里就会有两个master，也就是所谓的脑裂</p>
+<p>此时虽然某个slave被切换成了master，但是可能client还没来得及切换到新的master，还继续写向旧master的数据可能也丢失了</p>
+<p><strong>因此旧master再次恢复的时候，会被作为一个slave挂到新的master上去，自己的数据会清空，重新从新的master复制数据，网络分区写入的数据就会丢失</strong></p>
+<h3 id="3-解决">3. 解决</h3>
+<ol>
+<li>
+<p>配置Redis的主节点，要求只少有n台机器同步时间小于m秒，如果不满足情况，Redis会拒绝写入，这样最多丢失m秒的数据</p>
+</li>
+<li>
+<p>客户端通过降级和限流，控制请求，同时可以把数据写入本地磁盘或者消息队列，等待Redis重启</p>
+</li>
+</ol>
+<h2 id="六-sdown和odown转换机制">六、sdown和odown转换机制</h2>
+<p><strong>sdown和odown两种失败状态</strong>：</p>
+<ul>
+<li>
+<p><strong>sdown是主观宕机</strong>，就一个哨兵如果自己觉得一个master宕机了，那么就是主观宕机</p>
+</li>
+<li>
+<p><strong>odown是客观宕机</strong>，如果quorum数量的哨兵都觉得一个master宕机了，那么就是客观宕机</p>
+</li>
+</ul>
+<p>sdown达成的条件很简单，如果一个哨兵ping一个master，超过了is-master-down-after-milliseconds指定的毫秒数之后，就主观认为master宕机</p>
+<p>sdown到odown转换的条件很简单，<strong>如果一个哨兵在指定时间内，收到了quorum指定数量的其他哨兵也认为那个master是sdown了，那么就认为是odown了，客观认为master宕机</strong></p>
+<h2 id="七-哨兵集群的自动发现机制">七、哨兵集群的自动发现机制</h2>
+<p>哨兵互相之间的发现，是通过redis的pub/sub系统实现的，每个哨兵都会往_<em>sentinel</em>_:hello这个channel里发送一个消息，这时候所有其他哨兵都可以消费到这个消息，并感知到其他的哨兵的存在</p>
+<p>每隔两秒钟，每个哨兵都会往自己监控的某个master+slaves对应的_<em>sentinel</em>_:hello channel里发送一个消息，内容是自己的host、ip和runid还有对这个master的监控配置</p>
+<p>每个哨兵也会去监听自己监控的每个master+slaves对应的_<em>sentinel</em>_:hello channel，然后去感知到同样在监听这个master+slaves的其他哨兵的存在</p>
+<p>每个哨兵还会跟其他哨兵交换对master的监控配置，互相进行监控配置的同步</p>
+<h2 id="八-slave配置的自动纠正">八、slave配置的自动纠正</h2>
+<ul>
+<li>
+<p>哨兵会负责自动纠正slave的一些配置，比如slave如果要成为潜在的master候选人，哨兵会确保slave复制新master的数据;</p>
+</li>
+<li>
+<p>如果slave连接到了一个错误的master上，比如故障转移之后，那么哨兵会确保它们连接到正确的master上</p>
+</li>
+</ul>
+<h2 id="九-slave-master选举算法">九、slave-&gt;master选举算法</h2>
+<p>如果一个master被认为odown了，而且majority哨兵都允许了主备切换，那么某个哨兵就会执行主备切换操作，此时首先要选举一个新master来</p>
+<p><strong>会考虑slave的一些信息</strong>：</p>
+<ol>
+<li>跟master断开连接的时长</li>
+<li>slave优先级</li>
+<li>复制offset</li>
+<li>run id</li>
+</ol>
+<p><strong>如果一个slave跟master断开连接已经超过了down-after-milliseconds的10倍，外加master宕机的时长，那么slave就被认为不适合选举为master</strong></p>
+<p>(down-after-milliseconds * 10) + milliseconds_since_master_is_in_SDOWN_state</p>
+<p><strong>接下来会对slave进行排序</strong>：</p>
+<ol>
+<li>按照slave优先级进行排序，slave priority越低，优先级就越高</li>
+<li>如果slave priority相同，那么看replica offset，哪个slave复制了越多的数据，offset越靠后，优先级就越高</li>
+<li>如果上面两个条件都相同，那么选择一个run id比较小的那个slave</li>
+</ol>
+<h2 id="十-quorum和majority">十、quorum和majority</h2>
+<pre><code class="language-properties">majority取值如下:
+n= 2，majority=2
+n= 3，majority=2
+n= 4，majority=2
+n= 5，majority=3
+</code></pre>
+<p>每次一个哨兵要做主备切换，首先需要quorum数量的哨兵认为odown，然后选举出一个哨兵来做切换，这个哨兵还得得到majority哨兵的授权，才能正式执行切换</p>
+<p>如果quorum &lt; majority，比如5个哨兵，majority就是3，quorum设置为2，那么就3个哨兵授权就可以执行切换</p>
+<p>但是如果quorum &gt;= majority，那么必须quorum数量的哨兵都授权，比如5个哨兵，quorum是5，那么必须5个哨兵都同意授权，才能执行切换</p>
+<h2 id="十一-configuration-epoch">十一、configuration epoch</h2>
+<p>哨兵会对一套redis master+slave进行监控，有相应的监控的配置</p>
+<p>执行切换的那个哨兵，会从要切换到的新master（salve-&gt;master）那里得到一个configuration epoch，这就是一个version号，每次切换的version号都必须是唯一的</p>
+<p>如果第一个选举出的哨兵切换失败了，那么其他哨兵，会等待failover-timeout时间，然后接替继续执行切换，此时会重新获取一个新的configuration epoch，作为新的version号</p>
+<h2 id="十二-configuraiton传播">十二、configuraiton传播</h2>
+<p>哨兵完成切换之后，会在自己本地更新生成最新的master配置，然后同步给其他的哨兵，就是通过之前说的pub/sub消息机制</p>
+<p>这里之前的version号就很重要了，因为各种消息都是通过一个channel去发布和监听的，所以一个哨兵完成一次新的切换之后，新的master配置是跟着新的version号的</p>
+<p>其他的哨兵都是根据版本号的大小来更新自己的master配置的</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】Redis配置]]></title>
+        <id>https://xzzz2020.github.io/post/IAIpFCygR/</id>
+        <link href="https://xzzz2020.github.io/post/IAIpFCygR/">
+        </link>
+        <updated>2020-07-27T10:43:03.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%AE%B9%E7%81%BE%E7%AD%96%E7%95%A5">一、容灾策略</a>
+<ul>
+<li><a href="#1-%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AErdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6">1. 如何配置RDB持久化机制</a></li>
+<li><a href="#2-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">2. RDB持久化机制的工作流程</a></li>
+<li><a href="#3-aof%E6%8C%81%E4%B9%85%E5%8C%96%E7%9A%84%E9%85%8D%E7%BD%AE">3. AOF持久化的配置</a></li>
+<li><a href="#4-aof-rewrite">4. AOF rewrite</a></li>
+<li><a href="#5-aof%E7%A0%B4%E6%8D%9F%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%AE%E5%A4%8D">5. AOF破损文件的修复</a></li>
+<li><a href="#6-aof%E5%92%8Crdb%E5%90%8C%E6%97%B6%E5%B7%A5%E4%BD%9C">6. AOF和RDB同时工作</a></li>
+<li><a href="#7-%E4%BC%81%E4%B8%9A%E7%BA%A7%E7%9A%84%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5">7. 企业级的备份策略</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">二、读写分离</a>
+<ul>
+<li><a href="#1-redis-replication%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E8%BF%87%E7%A8%8B">1. redis replication主从复制过程</a></li>
+<li><a href="#2-%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA">2. 主从搭建</a>
+<ul>
+<li><a href="#%E4%BB%8E%E8%8A%82%E7%82%B9">从节点</a></li>
+<li><a href="#%E4%B8%BB%E8%8A%82%E7%82%B9">主节点</a></li>
+<li><a href="#%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84%E7%9A%84%E6%B5%8B%E8%AF%95">读写分离架构的测试</a></li>
+</ul>
+</li>
+<li><a href="#3-%E5%BF%AB%E9%80%9F%E5%8E%8B%E6%B5%8B">3. 快速压测</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%93%A8%E5%85%B5%E9%85%8D%E7%BD%AE">三、哨兵配置</a>
+<ul>
+<li><a href="#1-%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%92%8C%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 解决异步复制和脑裂导致的数据丢失</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE%E7%BB%8F%E5%85%B8%E4%B8%89%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5">2. 配置经典三节点哨兵</a></li>
+<li><a href="#3-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">3. 常用命令</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-redis-cluster%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE">四、Redis-cluster集群配置</a>
+<ul>
+<li><a href="#1-redis-cluster%E7%9A%84%E9%87%8D%E8%A6%81%E9%85%8D%E7%BD%AE">1. redis cluster的重要配置</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">2. 编写配置文件</a></li>
+<li><a href="#3-%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83">3. 准备环境</a></li>
+<li><a href="#4-%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4">4. 创建集群</a></li>
+<li><a href="#5-%E6%B7%BB%E5%8A%A0%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9">5. 添加删除节点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-容灾策略">一、容灾策略</h2>
+<h3 id="1-如何配置rdb持久化机制">1. 如何配置RDB持久化机制</h3>
+<p>redis.conf文件，也就是/etc/redis/6379.conf，去配置持久化</p>
+<pre><code class="language-go">save 900 1
+save 300 10
+save 60 10000
+</code></pre>
+<p>每隔60s，如果有超过1000个key发生了变更，那么就生成一个新的dump.rdb文件，就是当前redis内存中完整的数据快照，这个操作也被称之为snapshotting，快照</p>
+<p>也可以手动调用save或者bgsave命令，同步或异步执行rdb快照生成</p>
+<p>save可以设置多个，就是多个snapshotting检查点，每到一个检查点，就会去check一下，是否有指定的key数量发生了变更，如果有，就生成一个新的dump.rdb文件</p>
+<h3 id="2-rdb持久化机制的工作流程">2. RDB持久化机制的工作流程</h3>
+<p>（1）redis根据配置自己尝试去生成rdb快照文件</p>
+<p>（2）fork一个子进程出来</p>
+<p>（3）子进程尝试将数据dump到临时的rdb快照文件中</p>
+<p>（4）完成rdb快照文件的生成之后，就替换之前的旧的快照文件</p>
+<p>dump.rdb，每次生成一个新的快照，都会覆盖之前的老快照</p>
+<h3 id="3-aof持久化的配置">3. AOF持久化的配置</h3>
+<p>AOF持久化，默认是关闭的，默认是打开RDB持久化</p>
+<p><strong>appendonly yes</strong>，可以打开AOF持久化机制，在生产环境里面，一般来说AOF都是要打开的，除非你说随便丢个几分钟的数据也无所谓</p>
+<p>打开AOF持久化机制之后，redis每次接收到一条写命令，就会写入日志文件中，当然是先写入os cache的，然后每隔一定时间再fsync一下</p>
+<p>而且即使AOF和RDB都开启了，redis重启的时候，也是优先通过AOF进行数据恢复的，因为aof数据比较完整</p>
+<p>可以配置AOF的fsync策略，有三种策略可以选择，一种是每次写入一条数据就执行一次fsync; 一种是每隔一秒执行一次fsync; 一种是不主动执行fsync</p>
+<ul>
+<li>
+<p><strong>always</strong>: 每次写入一条数据，立即将这个数据对应的写日志fsync到磁盘上去，<strong>性能非常非常差，吞吐量很低; 确保说redis里的数据一条都不丢</strong>，那就只能这样了</p>
+</li>
+<li>
+<p><strong>everysec</strong>: 每秒将os cache中的数据fsync到磁盘，这个最常用的，生产环境一般都这么配置，性能很高，QPS还是可以上万的，但是可能会失去一秒的数据</p>
+</li>
+<li>
+<p><strong>no</strong>: 仅仅redis负责将数据写入os cache就撒手不管了，然后后面os自己会时不时有自己的策略将数据刷入磁盘，不可控了</p>
+</li>
+</ul>
+<pre><code class="language-java"># appendfsync always
+appendfsync everysec
+# appendfsync no
+</code></pre>
+<h3 id="4-aof-rewrite">4. AOF rewrite</h3>
+<p>redis中的数据其实有限的，很多数据可能会自动过期，可能会被用户删除，可能会被redis用缓存清除的算法清理掉。</p>
+<p>redis中的数据会不断淘汰掉旧的，就一部分常用的数据会被自动保留在redis内存中</p>
+<p>所以可能很多之前的已经被清理掉的数据，对应的写日志还停留在AOF中，AOF日志文件就一个，会不断的膨胀，到很大很大。</p>
+<p>所以AOF会自动在后台每隔一定时间做rewrite操作，比如日志里已经存放了针对100w数据的写日志了; redis内存只剩下10万; 基于内存中当前的10万数据构建一套最新的日志，到AOF中; 覆盖之前的老日志; 确保AOF日志文件不会过大，保持跟redis内存数据量一致</p>
+<pre><code>no-appendfsync-on-rewrite no
+</code></pre>
+<p>当进行rewrite操作时，涉及大量磁盘操作，这样就会造成主进程在写aof文件的时候出现阻塞的情形，设置成no意思就是接受阻塞，而设置成yes则相当于将appendfsync设置为no，将可能丢失30s的数据</p>
+<p>如果应用系统无法忍受延迟，而可以容忍少量的数据丢失，则设置为yes；如果应用系统无法忍受数据丢失，则设置为no。</p>
+<p>在redis.conf中，可以配置rewrite策略</p>
+<pre><code>auto-aof-rewrite-percentage 100  # 增长超过100%的比例
+
+auto-aof-rewrite-min-size 64mb   # 最小的重写大小
+</code></pre>
+<p>每一次rewrite之后会记住当前文件的大小，当文件大小超过一定比例时就会进行rewrite</p>
+<p>比如说上一次AOF rewrite之后，是128mb</p>
+<p>然后就会接着128mb继续写AOF的日志，如果发现增长的比例，超过了之前的100%，256mb，就可能会去触发一次rewrite</p>
+<p>但是此时还要去跟min-size，64mb去比较，256mb &gt; 64mb，才会去触发rewrite</p>
+<p><strong>重写的过程</strong>：</p>
+<ol>
+<li>
+<p>redis fork一个子进程</p>
+</li>
+<li>
+<p>子进程基于当前内存中的数据，构建日志，开始往一个新的临时的AOF文件中写入日志</p>
+</li>
+<li>
+<p>redis主进程，接收到client新的写操作之后，在内存中写入日志，同时新的日志也继续写入旧的AOF文件</p>
+</li>
+<li>
+<p>子进程写完新的日志文件之后，redis主进程将内存中的新日志再次追加到新的AOF文件中</p>
+</li>
+<li>
+<p>用新的日志文件替换掉旧的日志文件</p>
+</li>
+</ol>
+<h3 id="5-aof破损文件的修复">5. AOF破损文件的修复</h3>
+<p>如果redis在append数据到AOF文件时，机器宕机了，可能会导致AOF文件破损</p>
+<p><strong>用redis-check-aof --fix命令来修复破损的AOF文件，就是删除那些破损的命令</strong></p>
+<h3 id="6-aof和rdb同时工作">6. AOF和RDB同时工作</h3>
+<ol>
+<li><strong>RDB和AOF 重写同一时间只会执行一个</strong></li>
+<li>同时有RDB snapshot文件和AOF日志文件，<strong>那么redis重启的时候，会优先使用AOF进行数据恢复，因为其中的日志更完整</strong></li>
+</ol>
+<h3 id="7-企业级的备份策略">7. 企业级的备份策略</h3>
+<p>RDB中每隔一分钟更改的数据量为多少需要根据业务需求改变</p>
+<blockquote>
+<p>博主设置的为<code>save 60 1000</code></p>
+</blockquote>
+<p>AOF一定要打开，fsync磁盘刷新策略使用everysec，重写策略采用就是超过100%，最小大小设置为16mb</p>
+<pre><code>auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 16mb
+</code></pre>
+<p>然后设置定时任务每天和每个小时都做一个备份，然后每天都将备份上传到云服务器上</p>
+<p>备份也可以避免上线出现的BUG，比如12点上线了代码，发现代码有bug，导致代码生成的所有的缓存数据，写入redis，全部错了找到一份11点的rdb的冷备，然后按照上面的步骤，去恢复到11点的数据</p>
+<h2 id="二-读写分离">二、读写分离</h2>
+<p>单机Redis最高不超过10万QPS，一般情况下，大量的请求都是读请求</p>
+<h3 id="1-redis-replication主从复制过程">1. redis replication主从复制过程</h3>
+<blockquote>
+<p>千万不能关闭主节点的持久化，否则一旦重启主节点，数据将是空，然后将全部的从节点也变成空</p>
+</blockquote>
+<p>当启动一个slave node的时候，它会发送一个PSYNC命令给master node</p>
+<p>如果这是slave node重新连接master node，那么master node仅仅会复制给slave部分缺少的数据; 否则如果是slave node第一次连接master node，那么会触发一次全量复制</p>
+<p><strong>全量复制</strong></p>
+<ul>
+<li>master会启动一个后台线程，开始生成一份RDB快照文件，同时还会将从客户端收到的所有写命令缓存在内存中。RDB文件生成完毕之后，master会将这个RDB发送给slave，slave会先写入本地磁盘，然后再从本地磁盘加载到内存中。然后master会将内存中缓存的写命令发送给slave，slave也会同步这些数据。</li>
+<li>如果发现有多个slave node都来重新连接，仅仅会启动一个rdb save操作，用一份数据服务所有slave node。</li>
+</ul>
+<p><strong>异步同步</strong></p>
+<ul>
+<li>当给一个主节点写一条数据的时候，会直接返回给客户端写入成功，然后在异步的把这个命令同步给从节点</li>
+</ul>
+<p><strong>断点续传</strong></p>
+<ul>
+<li>如果主从复制过程中，网络连接断掉了，那么可以接着上次复制的地方，继续复制下去，而不是从头开始复制一份</li>
+</ul>
+<p><strong>无磁盘化同步</strong></p>
+<ul>
+<li>master在内存中直接创建rdb，然后发送给slave，不会在自己本地落地磁盘了</li>
+</ul>
+<pre><code>repl-diskless-sync yes      # 开启无磁盘化，默认是false
+repl-diskless-sync-delay 5  # 等待一定时长再开始复制，因为要等更多slave重新连接过来，默认等待5秒
+</code></pre>
+<p><strong>过期key处理</strong></p>
+<ul>
+<li>slave不会过期key，只会等待master过期key。如果master过期了一个key，或者通过LRU淘汰了一个key，那么会模拟一条del命令发送给slave。</li>
+</ul>
+<h3 id="2-主从搭建">2. 主从搭建</h3>
+<h4 id="从节点">从节点</h4>
+<p><strong>修改绑定的IP地址</strong></p>
+<pre><code class="language-properties">bind 0.0.0.0
+</code></pre>
+<p><strong>配置从节点</strong></p>
+<pre><code class="language-properties">slaveof  192.168.xxx.xxx 6379
+</code></pre>
+<p><strong>强制读写分离</strong></p>
+<pre><code class="language-properties">slave-read-only yes
+</code></pre>
+<ul>
+<li>开启了只读的redis slave node，会拒绝所有的写操作，这样可以强制搭建成读写分离的架构</li>
+</ul>
+<p><strong>集群安全认证</strong></p>
+<pre><code class="language-properties">masterauth redis-pass # master连接口令
+</code></pre>
+<h4 id="主节点">主节点</h4>
+<p><strong>修改绑定的IP地址</strong></p>
+<pre><code class="language-properties">bind 0.0.0.0
+</code></pre>
+<p><strong>集群安全认证</strong></p>
+<pre><code class="language-properties">requirepass redis-pass  # master上启用安全认证
+</code></pre>
+<h4 id="读写分离架构的测试">读写分离架构的测试</h4>
+<ul>
+<li>先启动主节点，eshop-cache01上的redis实例</li>
+<li>再启动从节点，eshop-cache02上的redis实例</li>
+</ul>
+<p><strong>使用命令查看各个节点状态</strong></p>
+<pre><code class="language-shell">redis-cli -a redis-pass
+info replication
+</code></pre>
+<h3 id="3-快速压测">3. 快速压测</h3>
+<pre><code class="language-shell">redis-3.2.8/src
+
+./redis-benchmark -h eshop-cache01
+
+-c &lt;clients&gt;       Number of parallel connections (default 50)
+-n &lt;requests&gt;      Total number of requests (default 100000)
+-d &lt;size&gt;          Data size of SET/GET value in bytes (default 2)
+
+根据你自己的高峰期的访问量，在高峰期，瞬时最大用户量会达到10万+，-c 100000，-n 10000000，-d 50
+</code></pre>
+<h2 id="三-哨兵配置">三、哨兵配置</h2>
+<h3 id="1-解决异步复制和脑裂导致的数据丢失">1. 解决异步复制和脑裂导致的数据丢失</h3>
+<pre><code class="language-properties">min-slaves-to-write 1 # 从服务器的数量少于1个，或者小于1个从服务器的延迟（lag）值都小于等于10秒时
+min-slaves-max-lag 10 # 允许丢失多长时间的数据量
+</code></pre>
+<ul>
+<li>
+<p><strong>要求至少有一个slave数据复制和同步的延迟不能超过10秒</strong></p>
+</li>
+<li>
+<p><strong>如果说一旦所有的slaves，数据复制和同步的延迟都超过了10秒钟，或者当前连接的slave数少于1，那么这个时候，master将会变成只读</strong></p>
+</li>
+</ul>
+<p>上面两个配置可以减少异步复制和脑裂导致的数据丢失</p>
+<p><strong>（1）减少异步复制的数据丢失</strong></p>
+<p>有了min-slaves-max-lag这个配置，就可以确保说，一旦slave复制数据和ack延时太长，就认为可能master宕机后损失的数据太多了，那么就拒绝写请求，这样可以把master宕机时由于部分数据未同步到slave导致的数据丢失降低的可控范围内</p>
+<p><strong>（2）减少脑裂的数据丢失</strong></p>
+<p>如果一个master出现了脑裂，跟其他slave丢了连接，那么上面两个配置可以确保说，如果不能继续给指定数量的slave发送数据，而且slave超过10秒没有给自己ack消息，那么就直接拒绝客户端的写请求</p>
+<p>这样脑裂后的旧master就不会接受client的新数据，也就避免了数据丢失</p>
+<p>上面的配置就确保了，如果跟所有的slave丢了连接，在10秒后发现没有slave给自己ack，那么就拒绝新的写请求</p>
+<p>因此在脑裂场景下，最多就丢失10秒的数据</p>
+<h3 id="2-配置经典三节点哨兵">2. 配置经典三节点哨兵</h3>
+<p>哨兵的配置文件在sentinel.conf</p>
+<ul>
+<li>
+<p>每一个哨兵都可以去监控多个maser-slaves的主从架构</p>
+</li>
+<li>
+<p>因为可能你的公司里，为不同的项目，部署了多个master-slaves的redis主从集群</p>
+</li>
+<li>
+<p>相同的一套哨兵集群，就可以去监控不同的多个redis主从集群</p>
+</li>
+<li>
+<p>你自己给每个redis主从集群分配一个逻辑的名称</p>
+</li>
+</ul>
+<p>类似这种配置，来指定对一个master的监控，给监控的master指定的一个名称，因为后面分布式集群架构里会讲解，可以配置多个master做数据拆分</p>
+<p><strong>核心配置</strong>：</p>
+<pre><code class="language-properties">sentinel down-after-milliseconds mymaster 60000 # 哨兵主管认为的宕机时间（60s）
+sentinel failover-timeout mymaster 180000 # 一台机器故障转移超时时间（180s）
+sentinel parallel-syncs mymaster 1 # 故障转移每次转移几台机器
+</code></pre>
+<p>上面的三个配置，都是针对某个监控的master配置的，给其指定上面分配的名称即可</p>
+<p>上面这段配置，就监控了两个master node</p>
+<p>这是最小的哨兵配置，如果发生了master-slave故障转移，或者新的哨兵进程加入哨兵集群，那么哨兵会自动更新自己的配置文件</p>
+<pre><code class="language-properties">sentinel monitor master-group-name hostname port quorum
+</code></pre>
+<p><strong>quorum的解释如下</strong>：</p>
+<ol>
+<li>至少多少个哨兵要一致同意，master进程挂掉了，或者slave进程挂掉了，或者要启动一个故障转移操作</li>
+<li>quorum是用来识别故障的，真正执行故障转移的时候，还是要在哨兵集群执行选举，选举一个哨兵进程出来执行故障转移操作</li>
+<li>假设有5个哨兵，quorum设置了2，那么如果5个哨兵中的2个都认为master挂掉了; 2个哨兵中的一个就会做一个选举，选举一个哨兵出来，执行故障转移; 如果5个哨兵中有3个哨兵都是运行的，那么故障转移就会被允许执行</li>
+</ol>
+<p><strong>down-after-milliseconds</strong></p>
+<ul>
+<li>超过多少毫秒跟一个redis实例断了连接，哨兵就可能认为这个redis实例挂了</li>
+</ul>
+<p><strong>parallel-syncs</strong></p>
+<ul>
+<li>
+<p>新的master别切换之后，同时有多少个slave被切换到去连接新master，重新做同步，数字越低，花费的时间越多</p>
+</li>
+<li>
+<p>假设你的redis是1个master，4个slave</p>
+</li>
+<li>
+<p>然后master宕机了，4个slave中有1个切换成了master，剩下3个slave就要挂到新的master上面去</p>
+</li>
+<li>
+<p>这个时候，如果parallel-syncs是1，那么3个slave，一个一个地挂接到新的master上面去，1个挂接完，而且从新的master sync完数据之后，再挂接下一个</p>
+</li>
+<li>
+<p>如果parallel-syncs是3，那么一次性就会把所有slave挂接到新的master上去</p>
+</li>
+</ul>
+<p><strong>failover-timeout</strong></p>
+<ul>
+<li>执行故障转移的timeout超时时长</li>
+</ul>
+<p><strong>配置sentinal</strong></p>
+<pre><code class="language-shell">mkdir /etc/sentinal
+mkdir -p /var/sentinal/5000
+mkdir -p /var/log/sentinal/5000
+cp /var/sentinal/5000/26379.log  /var/log/sentinal/5000/5000.log
+cp /usr/local/redis/redis-3.2.8/sentinel.conf /etc/sentinal/5000.conf
+vi /etc/sentinal/5000.conf
+</code></pre>
+<p><strong>详细配置</strong></p>
+<pre><code class="language-properties">port 5000
+bind 0.0.0.0
+dir /var/sentinal/5000
+sentinel monitor mymaster 192.168.31.187 6379 2
+sentinel down-after-milliseconds mymaster 30000
+sentinel failover-timeout mymaster 60000
+sentinel parallel-syncs mymaster 1
+daemonize yes  # 配置成后台进程
+logfile /var/log/sentinal/5000/5000.log
+sentinel auth-pass mymaster redis-pass # 配置主节点的密码
+</code></pre>
+<p><strong>启动哨兵</strong></p>
+<pre><code class="language-shell">redis-sentinel /etc/sentinal/5000.conf
+</code></pre>
+<p><strong>连接哨兵查看状态</strong></p>
+<pre><code class="language-shell">redis-cli -h 127.0.0.1 -p 5000 
+info sentinel # 展示基本信息
+</code></pre>
+<p>日志里会显示出来，每个哨兵都能去监控到对应的redis master，并能够自动发现对应的slave</p>
+<p>哨兵之间，互相会自动进行发现，用的就是之前说的pub/sub，消息发布和订阅channel消息系统和机制</p>
+<h3 id="3-常用命令">3. 常用命令</h3>
+<p><strong>增加sentinal，会自动发现</strong></p>
+<p><strong>删除sentinal的步骤</strong></p>
+<ul>
+<li>停止sentinal进程</li>
+</ul>
+<pre><code class="language-shell">SENTINEL RESET * # 在所有sentinal上执行，清理所有的master状态
+</code></pre>
+<p><strong>slave的永久下线</strong></p>
+<pre><code class="language-shell"> SENTINEL RESET mymaster # 让master摘除某个已经下线的slave
+</code></pre>
+<h2 id="四-redis-cluster集群配置">四、Redis-cluster集群配置</h2>
+<h3 id="1-redis-cluster的重要配置">1. redis cluster的重要配置</h3>
+<ul>
+<li>
+<p><strong>cluster-enabled &lt;yes/no&gt;</strong>：开启集群</p>
+</li>
+<li>
+<p><strong>cluster-config-file &lt;filename&gt;</strong>：这是指定一个文件，供cluster模式下的redis实例将集群状态保存在那里，包括集群中其他机器的信息，比如节点的上线和下限，故障转移，不是我们去维护的，给它指定一个文件，让redis自己去维护的</p>
+</li>
+<li>
+<p><strong>cluster-node-timeout &lt;milliseconds&gt;</strong>：节点存活超时时长，超过一定时长，认为节点宕机，master宕机的话就会触发主备切换，slave宕机就不会提供服务</p>
+</li>
+</ul>
+<h3 id="2-编写配置文件">2. 编写配置文件</h3>
+<pre><code class="language-properties">port 7001
+cluster-enabled yes
+cluster-config-file /etc/redis-cluster/node-7001.conf
+cluster-node-timeout 15000
+daemonize	yes							
+pidfile		/var/run/redis_7001.pid 						
+dir 		/var/redis/7001		
+logfile /var/log/redis/7001.log
+bind 192.168.31.187		
+appendonly yes
+</code></pre>
+<h3 id="3-准备环境">3. 准备环境</h3>
+<p>准备启动脚本并启动</p>
+<pre><code class="language-shell">mkdir -p /etc/redis-cluster
+mkdir -p /var/log/redis
+mkdir -p /var/redis/7001
+mkdir -p /var/redis/7002
+cd /etc/init.d
+cp redis_6379 7001_redis
+cp redis_6379 7002_redis
+vi 7001_redis
+vi 7002_redis
+
+./7002_redis start
+./7002_redis start
+</code></pre>
+<h3 id="4-创建集群">4. 创建集群</h3>
+<pre><code class="language-shell">wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
+tar -zxvf ruby-2.3.1.tar.gz
+./configure -prefix=/usr/local/ruby
+make &amp;&amp; make install
+cd /usr/local/ruby/ruby-2.3.1
+cp bin/ruby /usr/local/bin
+cp bin/gem /usr/local/bin
+
+wget http://rubygems.org/downloads/redis-3.3.0.gem
+gem install -l ./redis-3.3.0.gem
+gem list --check redis gem
+
+cp /usr/local/redis-3.2.8/src/redis-trib.rb /usr/local/bin
+
+redis-trib.rb create --replicas 1 192.168.31.187:7001 192.168.31.187:7002 192.168.31.19:7003 192.168.31.19:7004 192.168.31.227:7005 192.168.31.227:7006
+
+
+redis-trib.rb check 192.168.31.187:7001
+</code></pre>
+<h3 id="5-添加删除节点">5. 添加删除节点</h3>
+<p><strong>添加</strong></p>
+<pre><code>redis-trib.rb add-node 192.168.31.227:7007 192.168.31.187:7001
+redis-trib.rb reshard 192.168.31.187:7001
+
+# 迁移slot到一个node的id
+
+</code></pre>
+<p><strong>删除</strong></p>
+<pre><code>先用resharding将数据都移除到其他节点，确保node为空之后，才能执行remove操作
+
+redis-trib.rb del-node 192.168.31.187:7001 bd5a40a6ddccbd46a0f4a2208eb25d2453c2a8db
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】Redis基础]]></title>
+        <id>https://xzzz2020.github.io/post/xjKzNVypB/</id>
+        <link href="https://xzzz2020.github.io/post/xjKzNVypB/">
+        </link>
+        <updated>2020-07-27T10:41:03.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bredis">一、简单介绍一下Redis</a></li>
+<li><a href="#%E4%BA%8C-%E4%BA%94%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">二、五种数据结构</a>
+<ul>
+<li><a href="#1-%E5%AD%97%E7%AC%A6%E4%B8%B2-string">1. 字符串 string</a></li>
+<li><a href="#2-%E5%88%97%E8%A1%A8-list">2. 列表 list</a></li>
+<li><a href="#3-%E5%AD%97%E5%85%B8-hash">3. 字典 hash</a></li>
+<li><a href="#4-%E9%9B%86%E5%90%88-set">4. 集合 set</a></li>
+<li><a href="#5-%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8-zset">5. 有序列表 zset</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-redis%E5%92%8Cmemcached%E7%9A%84%E5%8C%BA%E5%88%AB">二、Redis和Memcached的区别？</a></li>
+<li><a href="#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E9%82%A3%E4%B9%88%E5%BF%AB">三、为什么Redis那么快？</a></li>
+<li><a href="#%E5%9B%9B-%E4%BB%8E%E6%B5%B7%E9%87%8Fkey%E9%87%8C%E6%9F%A5%E8%AF%A2%E5%87%BA%E6%9F%90%E4%B8%80%E5%9B%BA%E5%AE%9A%E5%89%8D%E7%BC%80%E7%9A%84key">四、从海量Key里查询出某一固定前缀的Key？</a></li>
+<li><a href="#%E4%BA%94-%E5%A6%82%E4%BD%95%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">五、如何用Redis实现异步消息队列</a></li>
+<li><a href="#%E5%85%AD-redis%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">六、Redis有哪些使用场景？</a></li>
+<li><a href="#%E4%B8%83-redis%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B">七、redis的删除策略有哪些</a></li>
+<li><a href="#%E5%85%AB-%E4%BB%80%E4%B9%88%E6%98%AF%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8">八、什么是布隆过滤器？</a>
+<ul>
+<li><a href="#1-%E5%8E%9F%E7%90%86">1. 原理</a></li>
+</ul>
+</li>
+<li><a href="#2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">2. 使用场景</a></li>
+<li><a href="#%E4%B9%9D-%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F">九、缓存穿透</a>
+<ul>
+<li><a href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95">有哪些解决办法？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81-%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">十、缓存雪崩</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-%E7%BC%93%E5%AD%98%E9%A2%84%E7%83%AD">十一、缓存预热</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-%E7%BC%93%E5%AD%98%E9%99%8D%E7%BA%A7">十二、缓存降级</a></li>
+<li><a href="#%E5%8D%81%E4%B8%89-%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5">十三、过期键的删除策略</a></li>
+<li><a href="#%E5%8D%81%E5%9B%9B-redis%E7%9A%84%E5%86%85%E5%AD%98%E7%94%A8%E5%AE%8C%E4%BA%86%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88">十四、Redis的内存用完了会发生什么？</a></li>
+<li><a href="#%E5%8D%81%E4%BA%94-redis%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3">十五、Redis事务相关</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-简单介绍一下redis">一、简单介绍一下Redis</h2>
+<ul>
+<li>一个 C 语言开发的数据库，是一个非关系型数据库，不过与传统数据库不同的是 Redis 的数据是存在内存中的，同时，所以读写速度非常快，因此 Redis 被广泛应用于缓存方向。</li>
+<li>除了做缓存之外，Redis 也经常用来做分布式锁</li>
+<li>Redis 提供了多种数据类型来支持不同的业务场景。Redis 还支持事务 、持久化、Lua 脚本、多种集群方案。</li>
+</ul>
+<h2 id="二-五种数据结构">二、五种数据结构</h2>
+<p><strong>Redis</strong> 有 5 种基础数据结构，它们分别是：<strong>string(字符串)</strong>、<strong>list(列表)</strong>、<strong>hash(字典)</strong>、<strong>set(集合)</strong> 和 <strong>zset(有序集合)</strong>。</p>
+<blockquote>
+<p>每种数据结构都有自己底层的内部编码实现，而且是多种实现，这样Redis会在合适的场景选择合适的内部编码。</p>
+<p>可以看到每种数据结构都有两种以上的内部编码实现，例如string数据结构就包含了raw、int和embstr三种内部编码。</p>
+<p>同时，有些内部编码可以作为多种外部数据结构的内部实现，例如ziplist就是hash、list和zset共有的内部编码。</p>
+</blockquote>
+<h3 id="1-字符串-string">1. 字符串 string</h3>
+<ul>
+<li>Redis 中的字符串是一种 <strong>动态字符串</strong>，这意味着使用者可以修改，它的底层实现有点类似于 Java 中的 <strong>ArrayList</strong>，有一个字符数组</li>
+</ul>
+<p><strong>为什么对于String这同样一组结构，Redis 使用泛型定义了好多次，而不直接使用int定义一组结构？</strong></p>
+<ul>
+<li>对于字符串的定义是SDS，结构里不直接使用 int 类型定义的原因是：当字符串比较短的时候，像长度len就可以用byte和short表示，为了对内存做极致的优化，不同长度的字符串使用不同的结构体来表示。</li>
+</ul>
+<pre><code class="language-c">struct __attribute__ ((__packed__)) sdshdr8 {
+    uint8_t len; /* used */
+    uint8_t alloc; /* excluding the header and null terminator */
+    unsigned char flags; /* 3 lsb of type, 5 unused bits */
+    char buf[];
+};
+</code></pre>
+<p><strong>SDS 与 C 字符串的区别？</strong></p>
+<ul>
+<li>因为 C 语言这种简单的字符串表示方式不符合 Redis 对字符串在安全性、效率以及功能方面的要求。</li>
+<li>例如C 语言使用了一个长度为 N+1 的字符数组来表示长度为 N 的字符串，并且字符数组最后一个元素总是 <code>'\0'</code></li>
+<li>这样简单的数据结构可能会造成一些问题，比如获取字符串长度为 O(N) 级别的操作，因为C 不保存数组的长度，每次都需要遍历一遍整个数组；不能很好的杜绝缓冲区溢出或者内存泄漏的问题，比如在做拼接字符串的时候，如果操作不当，就很容易出现问题；C 字符串只能保存文本数据，因为 C 语言中的字符串必须符合某种编码（比如 ASCII），例如中间出现的 <code>'\0'</code> 可能会被判定为提前结束的字符串而识别不了；</li>
+</ul>
+<blockquote>
+<p>Redis 规定了字符串的长度不得超过 512 MB</p>
+</blockquote>
+<p><strong>常用的操作有哪些？</strong></p>
+<ul>
+<li>通常使用 <code>SET</code> 和 <code>GET</code> 来设置和获取字符串值。</li>
+<li>还可以使用 <code>EXISTS</code> 和 <code>DEL</code> 关键字来查询是否存在和删除键值对</li>
+<li>还可以用<code>EXPIRE</code>设置过期时间</li>
+<li>可以进行原子的递增<code>INCR</code>或递减<code>DECR</code></li>
+<li><code>SET + EXPIRE + NX</code>实现分布式锁，SET key value [EX seconds]  NX  EX</li>
+</ul>
+<h3 id="2-列表-list">2. 列表 list</h3>
+<ul>
+<li>Redis 的列表相当于 Java 语言中的 <strong>LinkedList</strong>，注意它是链表而不是数组。这意味着 list 的插入和删除操作非常快，时间复杂度为 O(1)，但是索引定位很慢，时间复杂度为 O(n)。</li>
+</ul>
+<p><strong>底层定义一个头指针和尾指针实现双向链表，也就是可以实现队列和栈的功能</strong></p>
+<pre><code class="language-c">typedef struct list {
+    listNode *head;
+    listNode *tail;
+    void *(*dup)(void *ptr);
+    void (*free)(void *ptr);
+    int (*match)(void *ptr, void *key);
+    unsigned long len;
+} list;
+</code></pre>
+<p><strong>基本操作</strong></p>
+<ul>
+<li><code>LPUSH</code> 和 <code>RPUSH</code> 分别可以向 list 的左边（头部）和右边（尾部）添加一个新元素；</li>
+<li><code>LRANGE</code> 命令可以从 list 中取出一定范围的元素；</li>
+</ul>
+<h3 id="3-字典-hash">3. 字典 hash</h3>
+<ul>
+<li>Redis 中的字典相当于 Java 中的 <strong>HashMap</strong>，内部实现也差不多类似，都是通过 <strong>&quot;数组 + 链表&quot;</strong> 的链地址法来解决部分 <strong>哈希冲突</strong>，同时这样的结构也吸收了两种不同数据结构的优点。</li>
+</ul>
+<p><strong>内部定义就是哈希表，但是实际上定义了两个HashTable，而一般只使用其中一个，另一个用于渐进式Rehash</strong></p>
+<pre><code class="language-c">typedef struct dictht {
+    // 哈希表数组
+    dictEntry **table;
+    // 哈希表大小
+    unsigned long size;
+    // 哈希表大小掩码，用于计算索引值，总是等于 size - 1
+    unsigned long sizemask;
+    // 该哈希表已有节点的数量
+    unsigned long used;
+} dictht;
+
+typedef struct dict {
+    dictType *type;
+    void *privdata;
+    // 内部有两个 dictht 结构
+    dictht ht[2];
+    long rehashidx; /* rehashing not in progress if rehashidx == -1 */
+    unsigned long iterators; /* number of iterators currently running */
+} dict;
+</code></pre>
+<p><strong>渐进式ReHash</strong></p>
+<ul>
+<li>大字典的扩容是比较耗时间的，需要重新申请新的数组，然后将旧字典所有链表中的元素重新挂接到新的数组下面，这是一个 O(n) 级别的操作，作为单线程的 Redis 很难承受这样耗时的过程</li>
+<li>渐进式 rehash 会在 rehash 的同时，保留新旧两个 hash 结构，然后在后续的定时任务以及 hash 操作指令中，循序渐进的把旧字典的内容迁移到新字典中。当搬迁完成了，就会使用新的 hash 结构取而代之。</li>
+</ul>
+<p><strong>扩容和缩容</strong></p>
+<ul>
+<li>正常情况下，当 hash 表中 元素的个数等于第一维数组的长度时，就会开始扩容，扩容的新数组是原数组大小的 2 倍，不过如果 Redis 正在做 <code>bgsave(持久化命令)</code>，Redis 尽量不去扩容，但是如果 hash 表非常满了，达到了第一维数组长度的 5 倍了，这个时候就会 强制扩容。</li>
+<li>元素个数低于数组长度的 10%就会缩容，缩容不会考虑 Redis 是否在做持久化。</li>
+</ul>
+<p><strong>和String的取舍</strong></p>
+<ul>
+<li>Hash使用上相当于一个key 存储了多个String，但是底层更加复杂，占的空间更大</li>
+<li>一般用Hash存储对象，但是String也可以存储转换成JSON串的对象</li>
+</ul>
+<h3 id="4-集合-set">4. 集合 set</h3>
+<ul>
+<li>Redis 的集合相当于 Java 语言中的 <strong>HashSet</strong>，它内部的键值对是无序、唯一的。它的内部实现相当于一个特殊的字典，字典中所有的 value 都是一个值 NULL。</li>
+</ul>
+<h3 id="5-有序列表-zset">5. 有序列表 zset</h3>
+<ul>
+<li>类似于 Java 中 <strong>SortedSet</strong>，内部实现用的是一种叫做 <strong>「跳跃表」</strong> 的数据结构</li>
+</ul>
+<blockquote>
+<p>什么是跳跃表，可以看看这篇文章</p>
+</blockquote>
+<h2 id="二-redis和memcached的区别">二、Redis和Memcached的区别？</h2>
+<blockquote>
+<p>两者都是非关系型内存键值数据库</p>
+</blockquote>
+<ul>
+<li><strong>数据类型</strong>：Memcached 仅支持字符串类型，而 Redis 支持五种不同的数据类型，可以更灵活地解决问题。</li>
+<li><strong>数据持久化</strong>：Redis 支持两种持久化策略：RDB 快照和 AOF 日志，而 Memcached 不支持持久化。</li>
+<li><strong>分布式</strong>：Memcached 不支持分布式，只能通过在客户端使用一致性哈希来实现分布式存储，这种方式在存储和查询时都需要先在客户端计算一次数据所在的节点。Redis Cluster 实现了分布式的支持</li>
+<li><strong>主从</strong>：Memcached不支持主从，而Redis支持</li>
+<li><strong>内存管理机制</strong>：在 Redis 中，并不是所有数据都一直存储在内存中，可以将一些很久没用的 value 交换到磁盘，而Memcached 的数据则会一直在内存中。</li>
+</ul>
+<pre><code>vm-enabled yes    #开启虚拟内存功能
+vm-max-memory 268435456     #redis 使用的最大内存上限（256MB） ，超过上限后redis 开始交换 value 到磁盘 swap 文件中。建议设置为系统空闲内存的 60%-80%
+vm-swap-file /tmp/redis.swap    #交换出来 value 保存的文件路径/tmp/redis.swap
+</code></pre>
+<h2 id="三-为什么redis那么快">三、为什么Redis那么快？</h2>
+<ul>
+<li>完全基于内存，绝大部分请求是纯粹的内存操作，执行效率高</li>
+<li>数据结构简单，对数据操作也简单，主要都是key-value，类似于hashmap</li>
+<li>实用的单线程，在高并发的时候，避免了线程切换和锁的竞争</li>
+<li>使用多路I/O复用模型，非阻塞IO，通过多路复用函数，检测文件是否可读和可写的状态</li>
+</ul>
+<h2 id="四-从海量key里查询出某一固定前缀的key">四、从海量Key里查询出某一固定前缀的Key？</h2>
+<blockquote>
+<p><strong>在回答问题之前，需要注意一下</strong>:摸清数据规模，问清楚边界</p>
+</blockquote>
+<ul>
+<li>如果直接使用keys指令，但是这个这个指令是O(n)，会阻塞当前的redis</li>
+<li>可以使用scan指令，每次执行都只会返回少量元素，是一个基于游标的迭代器。这意味着命令每次被调用都需要使用上一次这个调用返回的游标作为该次调用的游标参数，以此来延续之前的迭代过程，可以使用给定一个count来控制返回的结果数，但是并不会严格的控制，<strong>但是这个可能会获取到重复的key，可以使用HashSet去重</strong></li>
+</ul>
+<h2 id="五-如何用redis实现异步消息队列">五、如何用Redis实现异步消息队列</h2>
+<p><strong>方案一</strong></p>
+<ul>
+<li>
+<p>可以使用list这个数据结构实现，使用rpush和lpop实现</p>
+</li>
+<li>
+<p>但是当队列中没有元素，可以在Java端加一个sleep去等待生产者产生新的元素</p>
+</li>
+<li>
+<p>也可以使用blpop + timeout 阻塞住，等待队列中有新的元素</p>
+</li>
+</ul>
+<p><strong>方案二</strong></p>
+<ul>
+<li>pub/sub :主题订阅者模式，发送者(pub)发送消息，订阅者(sub)接收消息，可以订阅多个频道</li>
+<li>解决了方案一只能让一个消费者消费的问题</li>
+<li>但是消息的发布是无状态的，无法保证消息是否可达</li>
+</ul>
+<h2 id="六-redis有哪些使用场景">六、Redis有哪些使用场景？</h2>
+<ul>
+<li><strong>计数器</strong>：可以对 String 进行自增自减运算，从而实现计数器功能。</li>
+<li><strong>缓存</strong>：将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。</li>
+<li><strong>消息队列</strong>：List 是一个双向链表，可以通过 lpush 和 rpop 写入和读取消息 ，不过最好使用RocketMq</li>
+<li><strong>分布式Session</strong>：可以使用 Redis 来统一存储多台应用服务器的会话信息</li>
+<li><strong>分布式锁实现</strong>：在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步，可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。</li>
+</ul>
+<h2 id="七-redis的删除策略有哪些">七、redis的删除策略有哪些</h2>
+<ul>
+<li>
+<p>主要分成两大类，一个是对设置缓存时间的淘汰以及对所有数据进行淘汰</p>
+</li>
+<li>
+<p>对于缓存策略都存在一个是LRU、一个是随机，在Redis4.0之后，引入了LFU。LRU是淘汰最近使用时间最久远的，LFU是淘汰最近使用频率最小的</p>
+</li>
+<li>
+<p>对于设置缓存时间的，还可以淘汰快要过期的</p>
+</li>
+<li>
+<p>最后一个策略是不允许淘汰</p>
+</li>
+</ul>
+<p><strong>Redis 具体有 6 种淘汰策略</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">策略</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">volatile-lru</td>
+<td style="text-align:center">从已设置过期时间的数据集中挑选最近最少使用的数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">volatile-ttl</td>
+<td style="text-align:center">从已设置过期时间的数据集中挑选将要过期的数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">volatile-random</td>
+<td style="text-align:center">从已设置过期时间的数据集中任意选择数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">allkeys-lru</td>
+<td style="text-align:center">从所有数据集中挑选最近最少使用的数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">allkeys-random</td>
+<td style="text-align:center">从所有数据集中任意选择数据进行淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">noeviction</td>
+<td style="text-align:center">禁止驱逐数据</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>作为内存数据库，出于对性能和内存消耗的考虑，Redis 的淘汰算法实际实现上并非针对所有 key，而是抽样一小部分并且从中选出被淘汰的 key</p>
+</li>
+<li>
+<p>使用 Redis 缓存数据时，为了提高缓存命中率，需要保证缓存数据都是热点数据。可以将内存最大使用量设置为热点数据占用的内存量，然后启用 allkeys-lru 淘汰策略，将最近最少使用的数据淘汰</p>
+</li>
+<li>
+<p>Redis 4.0 引入了 volatile-lfu 和 allkeys-lfu 淘汰策略，LFU 策略通过统计访问频率，将访问频率最少的键值对淘汰。</p>
+</li>
+</ul>
+<h2 id="八-什么是布隆过滤器">八、什么是布隆过滤器？</h2>
+<ul>
+<li>
+<p>可以把它 <strong>简单理解</strong> 为一个不怎么精确的 <strong>set</strong> 结构，当你使用它的 <code>contains</code> 方法判断某个对象是否存在时，它可能会误判。但是布隆过滤器也不是特别不精确，只要参数设置的合理，它的精确度可以控制的相对足够精确，只会有小小的误判概率。</p>
+</li>
+<li>
+<p>当布隆过滤器说某个值存在时，这个值 <strong>可能不存在</strong>；当它说不存在时，那么 <strong>一定不存在</strong>。</p>
+</li>
+</ul>
+<h3 id="1-原理">1. 原理</h3>
+<p>布隆过滤器 <strong>本质上</strong> 是由长度为 <code>m</code> 的位向量或位列表（仅包含 <code>0</code> 或 <code>1</code> 位值的列表）组成，最初所有的值均设置为 <code>0</code>，所以我们先来创建一个稍微长一些的位向量用作展示：</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL3Bhc3RlZC01LnBuZw?x-oss-process=image/format,png" alt="img" loading="lazy"></figure>
+<p>当我们向布隆过滤器中添加数据时，会使用 <strong>多个</strong> <code>hash</code> 函数对 <code>key</code> 进行运算，算得一个证书索引值，然后对位数组长度进行取模运算得到一个位置，每个 <code>hash</code> 函数都会算得一个不同的位置。再把位数组的这几个位置都置为 <code>1</code> 就完成了 <code>add</code> 操作，例如，我们添加一个 <code>wmyskxz</code>：</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL3Bhc3RlZC02LnBuZw?x-oss-process=image/format,png" alt="img" loading="lazy"></figure>
+<p>向布隆过滤器查查询 <code>key</code> 是否存在时，跟 <code>add</code> 操作一样，会把这个 <code>key</code> 通过相同的多个 <code>hash</code> 函数进行运算，查看 <strong>对应的位置</strong> 是否 <strong>都</strong> 为 <code>1</code>，<strong>只要有一个位为 <code>0</code></strong>，那么说明布隆过滤器中这个 <code>key</code> 不存在。如果这几个位置都是 <code>1</code>，并不能说明这个 <code>key</code> 一定存在，只能说极有可能存在，因为这些位置的 <code>1</code> 可能是因为其他的 <code>key</code> 存在导致的，因为Hash函数会存在哈希冲突的问题。</p>
+<blockquote>
+<p>注意：不要让实际元素数量远大于初始化数量</p>
+</blockquote>
+<h2 id="2-使用场景">2. 使用场景</h2>
+<ul>
+<li>
+<p><strong>大数据判断是否存在</strong>：这就可以实现出上述的去重功能，如果你的服务器内存足够大的话，那么使用 HashMap 可能是一个不错的解决方案，理论上时间复杂度可以达到 O(1)的级别，但是当数据量起来之后，还是只能考虑布隆过滤器。</p>
+</li>
+<li>
+<p><strong>解决缓存穿透</strong>：我们经常会把一些热点数据放在 Redis 中当作缓存，例如产品详情。 通常一个请求过来之后我们会先查询缓存，而不用直接读取数据库，这是提升性能最简单也是最普遍的做法，但是 <strong>如果一直请求一个不存在的缓存</strong>，那么此时一定不存在缓存，那就会有 <strong>大量请求直接打到数据库</strong> 上，造成 <strong>缓存穿透</strong>，布隆过滤器也可以用来解决此类问题。</p>
+</li>
+</ul>
+<h2 id="九-缓存穿透">九、缓存穿透</h2>
+<ul>
+<li>缓存穿透说简单点就是大量请求的 key 根本不存在于缓存中，导致请求直接到了数据库上，根本没有经过缓存这一层。举个例子：某个黑客故意制造我们缓存中不存在的 key 发起大量请求，导致大量请求落到数据库。</li>
+</ul>
+<h3 id="有哪些解决办法">有哪些解决办法？</h3>
+<p>最基本的就是首先做好参数校验，一些不合法的参数请求直接抛出异常信息返回给客户端。比如查询的数据库 id 不能小于 0、传入的邮箱格式不对的时候直接返回错误消息给客户端等等。</p>
+<p><strong>1）缓存无效 key</strong></p>
+<p>如果缓存和数据库都查不到某个 key 的数据就写一个到 Redis 中去并设置过期时间，具体命令如下：<code>SET key value EX 10086</code>。这种方式可以解决请求的 key 变化不频繁的情况，如果黑客恶意攻击，每次构建不同的请求 key，会导致 Redis 中缓存大量无效的 key  。很明显，这种方案并不能从根本上解决此问题。如果非要用这种方式来解决穿透问题的话，尽量将无效的 key 的过期时间设置短一点比如 1 分钟。</p>
+<p><strong>2）布隆过滤器</strong></p>
+<p>布隆过滤器是一个非常神奇的数据结构，通过它我们可以非常方便地判断一个给定数据是否存在于海量数据中。我们需要的就是判断 key 是否合法，有没有感觉布隆过滤器就是我们想要找的那个“人”。</p>
+<p>具体是这样做的：把所有可能存在的请求的值都存放在布隆过滤器中，当用户请求过来，先判断用户发来的请求的值是否存在于布隆过滤器中。不存在的话，直接返回请求参数错误信息给客户端，存在的话才会走下面的流程。</p>
+<p>加入布隆过滤器之后的缓存处理流程图如下。</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2UzODRjZWM1ODQzMTRiMDE5ZGU2ZTNhMzllZTU2NDI1LnBuZw?x-oss-process=image/format,png" alt="image" loading="lazy"></figure>
+<p>但是，需要注意的是布隆过滤器可能会存在误判的情况。总结来说就是： <strong>布隆过滤器说某个元素存在，小概率会误判。布隆过滤器说某个元素不在，那么这个元素一定不在。</strong></p>
+<p>我们先来看一下，<strong>当一个元素加入布隆过滤器中的时候，会进行哪些操作：</strong></p>
+<ol>
+<li>使用布隆过滤器中的哈希函数对元素值进行计算，得到哈希值（有几个哈希函数得到几个哈希值）。</li>
+<li>根据得到的哈希值，在位数组中把对应下标的值置为 1。</li>
+</ol>
+<p>我们再来看一下，<strong>当我们需要判断一个元素是否存在于布隆过滤器的时候，会进行哪些操作：</strong></p>
+<ol>
+<li>对给定元素再次进行相同的哈希计算；</li>
+<li>得到值之后判断位数组中的每个元素是否都为 1，如果值都为 1，那么说明这个值在布隆过滤器中，如果存在一个值不为 1，说明该元素不在布隆过滤器中。</li>
+</ol>
+<p>然后，一定会出现这样一种情况：<strong>不同的字符串可能哈希出来的位置相同。</strong></p>
+<h2 id="十-缓存雪崩">十、缓存雪崩</h2>
+<ul>
+<li>缓存在同一时间大面积的失效，后面的请求都直接落到了数据库上，造成数据库短时间内承受大量请求。</li>
+<li>可能因为系统的缓存模块出了问题比如宕机导致不可用。造成系统的所有访问，都要走数据库。</li>
+<li>也可能有一些被大量访问数据（热点缓存）在某一时刻大面积失效，导致对应的请求直接落到了数据库上。</li>
+</ul>
+<p><strong>Redis服务不可用</strong>：</p>
+<ol>
+<li>采用Redis集群，避免单机出现问题整个缓存服务都没办法使用。</li>
+<li>限流，避免同时处理大量的请求。</li>
+</ol>
+<p><strong>热点缓存失效</strong>：</p>
+<ol>
+<li>设置不同的失效时间比如随机设置缓存的失效时间。</li>
+<li>缓存永不失效。</li>
+</ol>
+<h2 id="十一-缓存预热">十一、缓存预热</h2>
+<p>缓存预热就是系统上线后，将相关的缓存数据直接加载到缓存系统。这样就可以避免在用户请求的时候，先查询数据库，然后再将数据缓存的问题！用户直接查询事先被预热的缓存数据！</p>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>
+<p>直接写个缓存刷新页面，上线时手工操作一下；</p>
+</li>
+<li>
+<p>数据量不大，可以在项目启动的时候自动进行加载；</p>
+</li>
+<li>
+<p>定时刷新缓存；</p>
+</li>
+</ul>
+<h2 id="十二-缓存降级">十二、缓存降级</h2>
+<p>当访问量剧增、服务出现问题（如响应时间慢或不响应）或非核心服务影响到核心流程的性能时，仍然需要保证服务还是可用的，即使是有损服务。系统可以根据一些关键数据进行自动降级，也可以配置开关实现人工降级。</p>
+<p><strong>缓存降级</strong>的最终目的是保证核心服务可用，即使是有损的。而且有些服务是无法降级的（如加入购物车、结算）。</p>
+<p>服务降级的目的，是为了防止Redis服务故障，导致数据库跟着一起发生雪崩问题。因此，对于不重要的缓存数据，可以采取服务降级策略，例如一个比较常见的做法就是，Redis出现问题，不去数据库查询，而是直接返回默认值给用户。</p>
+<h2 id="十三-过期键的删除策略">十三、过期键的删除策略</h2>
+<p><strong>过期策略通常有以下三种</strong>：</p>
+<ul>
+<li><strong>定时过期</strong>：每个设置过期时间的key都需要创建一个定时器，到过期时间就会立即清除。该策略可以立即清除过期的数据，对内存很友好；但是会占用大量的CPU资源去处理过期的数据，从而影响缓存的响应时间和吞吐量。</li>
+<li><strong>惰性过期</strong>：只有当访问一个key时，才会判断该key是否已过期，过期则清除。该策略可以最大化地节省CPU资源，却对内存非常不友好。极端情况可能出现大量的过期key没有再次被访问，从而不会被清除，占用大量内存。</li>
+<li><strong>定期过期</strong>：每隔一定的时间，会扫描一定数量的数据库的expires字典中一定数量的key，并清除其中已过期的key。该策略是前两者的一个折中方案。通过调整定时扫描的时间间隔和每次扫描的限定耗时，可以在不同情况下使得CPU和内存资源达到最优的平衡效果。</li>
+</ul>
+<p>(expires字典会保存所有设置了过期时间的key的过期时间数据，其中，key是指向键空间中的某个键的指针，value是该键的毫秒精度的UNIX时间戳表示的过期时间。键空间是指该Redis集群中保存的所有键。)</p>
+<h2 id="十四-redis的内存用完了会发生什么">十四、Redis的内存用完了会发生什么？</h2>
+<ul>
+<li>如果达到设置的上限，Redis的写命令会返回错误信息（但是读命令还可以正常返回。）或者你可以配置内存淘汰机制，当Redis达到内存上限时会冲刷掉旧的内容。</li>
+</ul>
+<h2 id="十五-redis事务相关">十五、Redis事务相关</h2>
+<ul>
+<li>Redis 事务的本质是通过一组命令的集合，去执行多个命令，一个事务中所有命令都会被序列化。</li>
+<li>redis 不支持回滚，“Redis 在事务失败时不进行回滚，而是继续执行余下的命令”， 所以 Redis 的内部可以保持简单且快速。</li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[【总结】Redis持久化]]></title>
         <id>https://xzzz2020.github.io/post/Y_OlIRTju/</id>
@@ -79,2344 +2037,6 @@
 <p>（1）不要仅仅使用RDB，因为那样会导致你丢失很多数据</p>
 <p>（2）也不要仅仅使用AOF，因为那样有两个问题，第一，你通过AOF做冷备，没有RDB做冷备，来的恢复速度更快; 第二，RDB每次简单粗暴生成数据快照，更加健壮，可以避免AOF这种复杂的备份和恢复机制的bug</p>
 <p>（3）综合使用AOF和RDB两种持久化机制，用AOF来保证数据不丢失，作为数据恢复的第一选择; 用RDB来做不同程度的冷备，在AOF文件都丢失或损坏不可用的时候，还可以使用RDB来进行快速的数据恢复</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】跳跃表]]></title>
-        <id>https://xzzz2020.github.io/post/MiE8tJSYr/</id>
-        <link href="https://xzzz2020.github.io/post/MiE8tJSYr/">
-        </link>
-        <updated>2020-07-26T10:49:55.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%B7%83%E8%A1%A8">一、为什么要使用跳跃表？</a></li>
-<li><a href="#%E4%BA%8C-%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%B3%E8%B7%83%E8%A1%A8">二、什么是跳跃表？</a></li>
-<li><a href="#%E4%B8%89-redis%E5%AE%9E%E7%8E%B0">三、Redis实现</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-为什么要使用跳跃表">一、为什么要使用跳跃表？</h2>
-<p>Zset要支持随机的插入和删除，所以它 <strong>不宜使用数组来实现</strong>，关于排序问题，我们也很容易就想到 <strong>红黑树/ 平衡树</strong> 这样的树形结构，为什么 Redis 不使用这样一些结构呢？</p>
-<ul>
-<li><strong>性能考虑：</strong> 在高并发的情况下，树形结构需要执行一些类似于 rebalance 这样的可能涉及整棵树的操作，相对来说跳跃表的变化只涉及局部</li>
-<li><strong>实现考虑：</strong> 在复杂度与红黑树相同的情况下，跳跃表实现起来更简单，看起来也更加直观；</li>
-<li><strong>大小考虑</strong>：平衡树结构更复杂，占的空间更多，而跳跃表相对简单</li>
-</ul>
-<h2 id="二-什么是跳跃表">二、什么是跳跃表？</h2>
-<p>对于一个普通链表，需要这个链表按照 score 值进行排序，这也就意味着，当我们需要添加新的元素时，我们需要定位到插入点，这样才可以继续保证链表是有序的，通常我们会使用 <strong>二分查找法</strong>，但二分查找是有序数组的，链表没办法进行位置定位，我们除了遍历整个找到第一个比给定数据大的节点为止 <em>（时间复杂度 O(n))</em> 似乎没有更好的办法。</p>
-<p><strong>假如我们每相邻两个节点之间就增加一个指针，让指针指向下下一个节点，如图所示</strong>：</p>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzc4OTY4OTAtOGNhZTJjMjYxYzk1MGIzMi5wbmc?x-oss-process=image/format,png" alt="img" loading="lazy"></figure>
-<ul>
-<li>这样所有新增的指针连成了一个新的链表，但它包含的数据却只有原来的一半</li>
-</ul>
-<p>现在假设我们想要查找数据时，可以根据这条新的链表查找，如果碰到比待查找数据大的节点时，再回到原来的链表中进行查找，比如，我们想要查找 7，查找的路径则是沿着下图中标注出的红色指针所指向的方向进行的：</p>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2JiZjUwYTNlLWYxM2UtNDlmZi04MmRmLTM0OGRiZjNiMTE2NS5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<ul>
-<li>通过新增加的指针查找，我们不再需要与链表上的每一个节点逐一进行比较，这样改进之后需要比较的节点数大概只有原来的一半</li>
-</ul>
-<p>利用同样的方式，我们可以在新产生的链表上，继续为每两个相邻的节点增加一个指针，从而产生第三层链表：</p>
-<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2EyM2NjZTQ5LTEyYjgtNDkwMC1hNjhhLTEwM2E3OTEzNGNhMi5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<ul>
-<li>在这个新的三层链表结构中，我们试着 <strong>查找 13</strong>，那么沿着最上层链表首先比较的是 11，发现 11 比 13 小，于是我们就知道只需要到 11 后面继续查找，<strong>从而一下子跳过了 11 前面的所有节点。</strong></li>
-</ul>
-<p>可以想象，当链表足够长，这样的多层链表结构可以帮助我们跳过很多下层节点，从而加快查找的效率，这样查找过程就非常类似于一个二分查找，使得查找的时间复杂度可以降低到 O(logn)。</p>
-<p>但是，这种方法在插入数据的时候有很大的问题。新插入一个节点之后，就会打乱上下相邻两层链表上节点个数严格的 2:1 的对应关系。如果要维持这种对应关系，就必须把新插入的节点后面的所有节点 （也包括新插入的节点） 重新进行调整，这会让时间复杂度重新蜕化成 O(n)。删除数据也有同样的问题。</p>
-<p>为了避免这一问题，不要求上下相邻两层链表之间的节点个数有严格的对应关系，而是 <strong>为每个节点随机出一个层数(level)</strong>。比如，一个节点随机出的层数是 3，那么就把它链入到第 1 层到第 3 层这三层链表中。</p>
-<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzdiODRlYTJiLWM1OGItNDZhMi1hYzA1LTUwMTRkZjdkMGM4MS5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<p>从上面的创建和插入的过程中可以看出，每一个节点的层数（level）是随机出来的，而且新插入一个节点并不会影响到其他节点的层数，因此，<strong>插入操作只需要修改节点前后的指针，而不需要对多个节点都进行调整</strong>，这就降低了插入操作的复杂度。</p>
-<p>现在我们假设从我们刚才创建的这个结构中查找 23 这个不存在的数，那么查找路径会如下图：</p>
-<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzVjYjM2YTY4LWE1ZTEtNDgzYi1hYzY5LWUwNWYzOTE0ZDA4NS5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<h2 id="三-redis实现">三、Redis实现</h2>
-<ul>
-<li><strong>随机层数</strong>：对于每一个新插入的节点，都需要调用一个随机算法给它分配一个合理的层数，Redis 跳跃表默认允许最大的层数是 32</li>
-<li><strong>插入节点实现</strong>：1.找到当前我需要插入的位置 ，其中包括相同 score 时的处理，如果值相同，则比较value值，是一个字符串的比较；2.创建新节点，调整前后的指针指向，完成插入</li>
-<li><strong>元素排名的实现</strong>：跳跃表本身是有序的，Redis 在 skiplist 的 forward 指针上进行了优化，给每一个 forward 指针都增加了 <code>span</code> 属性，用来表示从前一个节点沿着当前层的 forward 指针跳到当前这个节点中间会跳过多少个节点。</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】网络原理]]></title>
-        <id>https://xzzz2020.github.io/post/SfR2cO5PD/</id>
-        <link href="https://xzzz2020.github.io/post/SfR2cO5PD/">
-        </link>
-        <updated>2020-07-26T10:47:15.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bosi%E5%92%8Ctcpip%E7%BB%93%E6%9E%84%E5%92%8C%E5%8A%9F%E8%83%BD%E5%88%86%E5%88%AB%E7%94%A8%E5%88%B0%E5%93%AA%E4%BA%9B%E5%8D%8F%E8%AE%AE">一、简单介绍一下OSI和TCP/IP结构和功能，分别用到哪些协议？</a>
-<ul>
-<li><a href="#1-%E5%BA%94%E7%94%A8%E5%B1%82">1. 应用层</a></li>
-<li><a href="#2-%E8%BF%90%E8%BE%93%E5%B1%82">2. 运输层</a></li>
-<li><a href="#3-%E7%BD%91%E7%BB%9C%E5%B1%82">3. 网络层</a></li>
-<li><a href="#4-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82">4. 数据链路层</a></li>
-<li><a href="#5-%E7%89%A9%E7%90%86%E5%B1%82">5. 物理层</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%8C-tcp-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B">二、TCP 三次握手和四次挥手</a>
-<ul>
-<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B">1. 为什么要三次握手？</a></li>
-<li><a href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B">2. 为什么要四次挥手？</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%89-tcp%E5%92%8Cudp%E7%9A%84%E5%8C%BA%E5%88%AB">三、TCP和UDP的区别</a></li>
-<li><a href="#%E5%9B%9B-tcp-%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93">四、TCP 协议如何保证可靠传输</a>
-<ul>
-<li><a href="#41-%E8%BF%9E%E7%BB%ADarq%E5%8D%8F%E8%AE%AE">4.1 连续ARQ协议</a></li>
-<li><a href="#42-%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6">4.2  滑动窗口和流量控制</a></li>
-<li><a href="#43-%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6">4.3 拥塞控制</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%94-%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BE%93%E5%85%A5url%E5%9C%B0%E5%9D%80-%E6%98%BE%E7%A4%BA%E4%B8%BB%E9%A1%B5%E7%9A%84%E8%BF%87%E7%A8%8B">五、 在浏览器中输入url地址 -&gt;&gt; 显示主页的过程</a></li>
-<li><a href="#%E5%85%AD-%E7%8A%B6%E6%80%81%E7%A0%81">六、状态码</a></li>
-<li><a href="#%E4%B9%9D-%E5%90%84%E5%8D%8F%E8%AE%AE%E4%B8%8Ehttp%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%85%B3%E7%B3%BB">九、各协议与HTTP协议的关系</a></li>
-<li><a href="#%E5%8D%81-http%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%92%8C%E7%9F%AD%E8%BF%9E%E6%8E%A5">十、HTTP长连接和短连接</a></li>
-<li><a href="#%E5%8D%81%E4%B8%80-cookie%E7%9A%84%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%E5%92%8Csession%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB">十一、Cookie的作用是什么?和Session有什么区别？</a></li>
-<li><a href="#%E5%8D%81%E4%BA%8C-http-10%E5%92%8Chttp-11%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">十二、HTTP 1.0和HTTP 1.1的主要区别是什么?</a></li>
-<li><a href="#%E5%8D%81%E4%B8%89-uri%E5%92%8Curl%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">十三、URI和URL的区别是什么?</a></li>
-<li><a href="#%E5%8D%81%E5%9B%9B-http-%E5%92%8C-https-%E7%9A%84%E5%8C%BA%E5%88%AB">十四、HTTP 和 HTTPS 的区别？</a></li>
-<li><a href="#%E5%8D%81%E4%BA%94-http20">十五、HTTP/2.0</a>
-<ul>
-<li><a href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E5%B8%A7%E5%B1%82">二进制分帧层</a></li>
-<li><a href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%8E%A8%E9%80%81">服务端推送</a></li>
-<li><a href="#%E9%A6%96%E9%83%A8%E5%8E%8B%E7%BC%A9">首部压缩</a></li>
-</ul>
-</li>
-<li><a href="#%E5%8D%81%E5%85%AD-get%E5%92%8Cpost%E7%9A%84%E6%AF%94%E8%BE%83">十六、GET和POST的比较</a></li>
-<li><a href="#%E5%8D%81%E4%B8%83-socket%E7%AE%80%E4%BB%8B">十七、Socket简介</a>
-<ul>
-<li><a href="#1-socket%E7%9A%84%E9%80%9A%E8%AE%AF%E6%B5%81%E7%A8%8B">1. Socket的通讯流程</a></li>
-<li><a href="#2-%E5%88%A9%E7%94%A8java%E5%AE%9E%E7%8E%B0socket%E5%AE%9E%E7%8E%B0tcp%E5%92%8Cudp">2. 利用Java实现Socket实现TCP和UDP</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-简单介绍一下osi和tcpip结构和功能分别用到哪些协议">一、简单介绍一下OSI和TCP/IP结构和功能，分别用到哪些协议？</h2>
-<p>一般我们采用折中的思想，将计算系网络分为五层：</p>
-<ul>
-<li><strong>应用层</strong></li>
-<li><strong>运输层</strong></li>
-<li><strong>网络层</strong></li>
-<li><strong>数据链路层</strong></li>
-<li><strong>物理层</strong></li>
-</ul>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTMyMDQyOTk0LnBuZw?x-oss-process=image/format,png" alt="image-20200722132042994" loading="lazy"></figure>
-<h3 id="1-应用层">1. 应用层</h3>
-<ul>
-<li>**应用层(application-layer）的任务是通过应用进程间的交互来完成特定网络应用。**应用层协议定义的是应用进程（进程：主机中正在运行的程序）间的通信和交互的规则。</li>
-</ul>
-<p><strong>常用的协议有</strong>：</p>
-<ul>
-<li>域名系统DNS协议</li>
-<li>支持万维网应用的 <strong>HTTP协议</strong></li>
-<li>支持电子邮件的 <strong>SMTP协议</strong></li>
-</ul>
-<p><strong>简单介绍一下DNS协议</strong></p>
-<ul>
-<li>负责将IP地址和域名相互映射，这样人们不需要记住复杂的IP地址，而只需要记住方便记忆的域名即可</li>
-</ul>
-<p><strong>简单介绍一下Http协议</strong></p>
-<ul>
-<li>
-<p>所有的 WWW（万维网） 文件都必须遵守这个标准。设计 HTTP 最初的目的是为了提供一种发布和接收 HTML 页面的方法。</p>
-</li>
-<li>
-<p>支持客户/服务器模式，客户端可以发送请求，服务器会相应请求并返回数据</p>
-</li>
-</ul>
-<h3 id="2-运输层">2. 运输层</h3>
-<ul>
-<li><strong>运输层(transport layer)的主要任务就是负责向两台主机进程之间的通信提供通用的数据传输服务</strong>。</li>
-</ul>
-<p><strong>常用协议</strong>：</p>
-<ul>
-<li><strong>传输控制协议 TCP</strong>：面向连接的、可靠的</li>
-<li><strong>用户数据协议 UDP</strong>：面向无连接的、不可靠的</li>
-</ul>
-<h3 id="3-网络层">3. 网络层</h3>
-<ul>
-<li><strong>网络层的任务就是选择合适的网间路由和交换结点， 确保数据及时传送。</strong></li>
-</ul>
-<p><strong>常用协议</strong>：</p>
-<ul>
-<li><strong>IP协议</strong></li>
-</ul>
-<h3 id="4-数据链路层">4. 数据链路层</h3>
-<ul>
-<li><strong>两台主机之间的数据传输，总是在一段一段的链路上传送的，这就需要使用专门的链路层的协议。</strong></li>
-</ul>
-<h3 id="5-物理层">5. 物理层</h3>
-<ul>
-<li><strong>在物理层上所传送的数据单位是比特。 物理层(physical layer)的作用是实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异。</strong></li>
-</ul>
-<h2 id="二-tcp-三次握手和四次挥手">二、TCP 三次握手和四次挥手</h2>
-<h3 id="1-为什么要三次握手">1. 为什么要三次握手？</h3>
-<ul>
-<li>
-<p><strong>三次握手的目的是建立可靠的通信信道，说到通讯，简单来说就是数据的发送与接收，而三次握手最主要的目的就是双方确认自己与对方的发送与接收是正常的。</strong></p>
-</li>
-<li>
-<p>第一次握手:建立连接时，客户端发送SYN包(syn=j)到服务器，并进入SYN_ SEND状态,等待服务器确认;</p>
-</li>
-<li>
-<p>第二次握手:服务器收到SYN 包,必须确认客户的SYN(ack=j+1) ,同时自己也发送一个SYN包(syn=k) ,即<br>
-SYN+ACK包，此时服务器进入SYN_RECV状态:</p>
-</li>
-<li>
-<p>第三次握手:客户端收到服务器的SYN+ACK包,向服务器发送确认包ACK(ack=k+1),此包发送完毕,客户端和服务器进入ESTABLISHED状态,完成三次握手。</p>
-</li>
-</ul>
-<p><strong>目的是</strong>：为了初始化Sequence Number的初始值，同时保证建立可靠的连接</p>
-<blockquote>
-<p>SYN和ACK中的Sequence Number初始化使用了随机值，而每个包都有个序号，超时重传机制根据这个序号来判断确认收到了是哪个包。在三次握手的时候，告诉了对方初始化的序号是多少，这样就可以根据序号对应接下来哪些包收到了。</p>
-</blockquote>
-<p><strong>首次握手的隐患---SYN超时</strong></p>
-<ul>
-<li>Server收到Client的SYN ,回复SYN-ACK的时候未收到ACK确认</li>
-<li>Server不断重试直至超时, Linux默认等待63秒才断开连接</li>
-<li>可能会遭到SYN Flood攻击，即恶意用户发送一个SYN后，就下线，让服务端等到63秒，最后导致SYN等待队列被占满，无法和正常的用户建立连接</li>
-</ul>
-<p><strong>针对SYN Flood的防护措施</strong></p>
-<ul>
-<li>SYN队列满后,通过tcp_syncookies参数回发SYN Cookie</li>
-<li>若为正常连接则Client会回发SYN Cookie ,直接根据cookie建立连接，不会因为队列满而无法建立连接；如果是恶意用户，则不会发送Cookie</li>
-</ul>
-<p><strong>建立连接后, Client出现故障怎么办？</strong></p>
-<ul>
-<li><strong>保护机制</strong>：向对方发送保活探测报文,如果未收到响应则继续发送，尝试次数达到保活探测数仍未收到响应则中断连接</li>
-</ul>
-<p><strong>下面是三次握手的含义</strong>：</p>
-<ul>
-<li>
-<p>第一次握手：Client 什么都不能确认；Server 确认了对方发送正常，自己接收正常</p>
-</li>
-<li>
-<p>第二次握手：Client 确认了：自己发送、接收正常，对方发送、接收正常；Server 确认了：对方发送正常，自己接收正常</p>
-</li>
-<li>
-<p>第三次握手：Client 确认了：自己发送、接收正常，对方发送、接收正常；Server 确认了：自己发送、接收正常，对方发送、接收正常</p>
-</li>
-</ul>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTMzNjQ1NDg3LnBuZw?x-oss-process=image/format,png" alt="image-20200722133645487" loading="lazy"></figure>
-<blockquote>
-<p>SYN 是 TCP/IP 建立连接时使用的握手信号。在客户机和服务器之间建立正常的 TCP 网络连接时，客户机首先发出一个 SYN 消息，服务器使用 SYN-ACK  应答表示接收到了这个消息，最后客户机再以 ACK(Acknowledgement）消息响应。这样在客户机和服务器之间才能建立起可靠的 TCP  连接，数据才可以在客户机和服务器之间传递。</p>
-</blockquote>
-<h3 id="2-为什么要四次挥手">2. 为什么要四次挥手？</h3>
-<ul>
-<li>客户端-发送一个 FIN，用来关闭客户端到服务器的数据传送</li>
-<li>服务器-收到这个 FIN，它发回一 个 ACK，确认序号为收到的序号加1 。和 SYN 一样，一个 FIN 将占用一个序号</li>
-<li>服务器-关闭与客户端的连接，发送一个FIN给客户端</li>
-<li>客户端-发回 ACK 报文确认，并将确认序号设置为收到序号加1</li>
-</ul>
-<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTMzODU3OTMzLnBuZw?x-oss-process=image/format,png" alt="image-20200722133857933" loading="lazy"></figure>
-<blockquote>
-<p>举个例子：A 和 B 打电话，通话即将结束后，A 说“我没啥要说的了”，B回答“我知道了”，但是 B 可能还会有要说的话，A 不能要求 B  跟着自己的节奏结束通话，于是 B 可能又巴拉巴拉说了一通，最后 B 说“我说完了”，A 回答“知道了”，这样通话才算结束</p>
-</blockquote>
-<p><strong>服务器出现大量CLOSE_WAIT状态的原因？</strong></p>
-<ul>
-<li>可能浏览器发送关闭请求后，服务器在忙于读写</li>
-<li>也可能代码出现了问题，特别是释放资源的代码忘记释放了资源</li>
-</ul>
-<h2 id="三-tcp和udp的区别">三、TCP和UDP的区别</h2>
-<ul>
-<li>TCP是面向连接，需要通过三次握手建立可靠连接，而UDP是面向无连接的</li>
-<li><strong>可靠性</strong>：TCP有ARQ协议、超时重传等，可以保证其可靠性，而UDP没有这些东西，只是尽最大努力交付,不保证可靠交付</li>
-<li><strong>有序性</strong>：TCP利用序列号可以保证其有序性，到达可能无序，最后会进行排序，而UDP无法保证有序性</li>
-<li><strong>速度</strong>：TCP比较复杂所以比减慢，UDP比较快</li>
-<li><strong>量级</strong>：TCP报文是20个字节，UDP报文是8个字节</li>
-</ul>
-<p>UDP 在传送数据之前不需要先建立连接，远地主机在收到 UDP 报文后，不需要给出任何确认。虽然 UDP 不提供可靠交付，但在某些情况下 UDP 确是一种最有效的工作方式（一般用于即时通信），比如： QQ 语音、 QQ 视频 、直播等等</p>
-<p>TCP 提供面向连接的服务。在传送数据之前必须先建立连接，数据传送结束后要释放连接。TCP 一般用于文件传输、发送和接收邮件、远程登录等场景。</p>
-<h2 id="四-tcp-协议如何保证可靠传输">四、TCP 协议如何保证可靠传输</h2>
-<ol>
-<li>应用数据被分割成 TCP 认为最适合发送的数据块。</li>
-<li>TCP 给发送的每一个包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。</li>
-<li><strong>校验和：</strong> TCP 将保持它首部和数据的检验和。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。如果收到段的检验和有差错，TCP 将丢弃这个报文段和不确认收到此报文段。</li>
-<li>TCP 的接收端会丢弃重复的数据。</li>
-<li><strong>流量控制：</strong> TCP  连接的每一方都有固定大小的缓冲空间，TCP的接收端只允许发送端发送接收端缓冲区能接纳的数据。当接收方来不及处理发送方的数据，能提示发送方降低发送的速率，防止包丢失。TCP 使用的流量控制协议是可变大小的滑动窗口协议。 （TCP 利用滑动窗口实现流量控制）</li>
-<li><strong>拥塞控制：</strong> 当网络拥塞时，减少数据的发送。</li>
-<li><strong>ARQ协议：</strong> 也是为了实现可靠传输的，它的基本原理就是每发完一个分组就停止发送，等待对方确认。在收到确认后再发下一个分组。</li>
-<li><strong>超时重传：</strong> 当 TCP 发出一个段后，它启动一个定时器，等待目的端确认收到这个报文段。如果不能及时收到一个确认，将重发这个报文段。</li>
-</ol>
-<h3 id="41-连续arq协议">4.1 连续ARQ协议</h3>
-<p>对于ARQ协议，如果每个数据报都发送确认收到，将十分消耗网络资源，在此问题上，提出了连续ARQ协议：</p>
-<ul>
-<li>连续 ARQ 协议可提高信道利用率。发送方维持一个发送窗口，凡位于发送窗口内的分组可以连续发送出去，而不需要等待对方确认。接收方一般采用累计确认，对按序到达的最后一个分组发送确认，表明到这个分组为止的所有分组都已经正确收到了。</li>
-</ul>
-<h3 id="42-滑动窗口和流量控制">4.2  滑动窗口和流量控制</h3>
-<ul>
-<li>
-<p><strong>RTT</strong>：发送一个数据包到收到对应的ACK ,所花费的时间</p>
-</li>
-<li>
-<p><strong>RTO</strong>：重传时间间隔，将根据RTT进行改变</p>
-</li>
-</ul>
-<p><strong>滑动窗口的作用</strong>：</p>
-<ul>
-<li>
-<p><strong>保证TCP的可靠性</strong>：采用ARQ协议和超时重传机制保证可靠性</p>
-</li>
-<li>
-<p><strong>实现流量控制</strong>：TCP 利用滑动窗口实现流量控制。流量控制是为了控制发送方发送速率，保证接收方来得及接收。 接收方发送的确认报文中的窗口字段可以用来控制发送方窗口大小，从而影响发送方的发送速率。将窗口字段设置为 0，则发送方不能发送数据。</p>
-</li>
-</ul>
-<h3 id="43-拥塞控制">4.3 拥塞控制</h3>
-<ul>
-<li>
-<p>当网络比较拥堵时，会控制发送数据的速度，防止发送较大的文件导致网络瘫痪</p>
-</li>
-<li>
-<p>为了进行拥塞控制，TCP 发送方要维持一个 <strong>拥塞窗口(cwnd)</strong> 的状态变量。拥塞控制窗口的大小取决于网络的拥塞程度，并且动态变化。发送方让自己的发送窗口取为拥塞窗口和接收方的接受窗口中较小的一个。</p>
-</li>
-</ul>
-<p><strong>有四种算法</strong>：</p>
-<ul>
-<li><strong>慢开始：</strong>  慢开始算法的思路是当主机开始发送数据时，如果立即把大量数据字节注入到网络，那么可能会引起网络阻塞，因为现在还不知道网络的符合情况。经验表明，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是由小到大逐渐增大拥塞窗口数值。cwnd初始值为1，每经过一个传播轮次，cwnd加倍。</li>
-<li><strong>拥塞避免：</strong> 拥塞避免算法的思路是让拥塞窗口cwnd缓慢增大，即每经过一个往返时间RTT就把发送放的cwnd加1.</li>
-<li><strong>快重传与快恢复：</strong> 在 TCP/IP 中，快速重传和恢复（fast retransmit and  recovery，FRR）是一种拥塞控制算法，它能快速恢复丢失的数据包。没有 FRR，如果数据包丢失了，TCP  将会使用定时器来要求传输暂停。在暂停的这段时间内，没有新的或复制的数据包被发送。有了  FRR，如果接收机接收到一个不按顺序的数据段，它会立即给发送机发送一个重复确认。如果发送机接收到三个重复确认，它会假定确认件指出的数据段丢失了，并立即重传这些丢失的数据段。有了 FRR，就不会因为重传时要求的暂停被耽误。  当有单独的数据包丢失时，快速重传和恢复（FRR）能最有效地工作。当有多个数据信息包在某一段很短的时间内丢失时，它则不能很有效地工作。</li>
-</ul>
-<h2 id="五-在浏览器中输入url地址-显示主页的过程">五、 在浏览器中输入url地址 -&gt;&gt; 显示主页的过程</h2>
-<p><strong>总体来说分为以下几个过程</strong>:</p>
-<ol>
-<li>浏览器解析域名查找IP地址，使用的协议是DNS协议，DNS过程为：浏览器缓存、路由器缓存、DNS缓存</li>
-<li>与服务器三次握手建立TCP连接（在建立TCP协议时，需要发送数据，需要使用IP协议、IP数据包在路由器之间传输，路由器的选择使用的OSPF协议、路由器和服务器通信时，需要将IP地址转换成MAC地址，需要用到ARP协议）</li>
-<li>向服务器发送HTTP请求</li>
-<li>服务器处理请求并返回HTTP响应</li>
-<li>可能会释放TCP连接，这取决于HTTP版本</li>
-<li>浏览器解析渲染页面</li>
-<li>连接结束</li>
-</ol>
-<h2 id="六-状态码">六、状态码</h2>
-<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTM1NTI2NzY3LnBuZw?x-oss-process=image/format,png" alt="image-20200722135526767" loading="lazy"></figure>
-<p><strong>1XX 信息</strong>：</p>
-<ul>
-<li>100 Continue ：表明到目前为止都很正常，客户端可以继续发送请求或者忽略这个响应</li>
-</ul>
-<p><strong>2XX 成功</strong>“：</p>
-<ul>
-<li><strong>200 OK</strong></li>
-<li>204 No Content ：请求已经成功处理，但是返回的响应报文不包含实体的主体部分。一般在只需要从客户端往服务器发送信息，而不需要返回数据时使用。</li>
-<li>206 Partial Content ：表示客户端进行了范围请求，响应报文包含由 Content-Range 指定范围的实体内容。</li>
-</ul>
-<p><strong>3XX 重定向</strong>：</p>
-<ul>
-<li>301 Moved Permanently ：永久性重定向</li>
-<li>302 Found ：临时性重定向</li>
-<li>303 See Other ：和 302 有着相同的功能，但是 303 明确要求客户端应该采用 GET 方法获取资源。<br>
-注：虽然 HTTP 协议规定 301、302 状态下重定向时不允许把 POST 方法改成 GET 方法，但是大多数浏览器都会在 301、302 和 303 状态下的重定向把 POST 方法改成 GET 方法。</li>
-<li><strong>304 Not Modified</strong> ：如果请求报文首部包含一些条件，例如：If-Match，If-Modified-Since，If-NoneMatch，If-Range，If-Unmodified-Since，如果不满足条件，则服务器会返回 304 状态码。</li>
-<li>307 Temporary Redirect ：临时重定向，与 302 的含义类似，但是 307 要求浏览器不会把重定向请求的<br>
-POST 方法改成 GET 方法。</li>
-</ul>
-<p><strong>4XX 客户端错误</strong>：</p>
-<ul>
-<li>**400 Bad Request ：**请求报文中存在语法错误。</li>
-<li>**401 Unauthorized ：**该状态码表示发送的请求需要有认证信息（BASIC 认证、DIGEST 认证）。如果之前已进行过一次请求，则表示用户认证失败。</li>
-<li><strong>403 Forbidden</strong> ：请求被拒绝，比如说IP被禁止</li>
-<li><strong>404 Not Found</strong>：可能输入错误了URL</li>
-</ul>
-<p><strong>5XX 服务器错误</strong>：</p>
-<ul>
-<li>**500 Internal Server Error ：**服务器正在执行请求时发生错误。</li>
-<li>**503 Service Unavailable ：**服务器暂时处于超负载或正在进行停机维护，现在无法处理请求，可能连接池满了或者服务器宕机</li>
-</ul>
-<h2 id="九-各协议与http协议的关系">九、各协议与HTTP协议的关系</h2>
-<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTM1NjE2MDA1LnBuZw?x-oss-process=image/format,png" alt="image-20200722135616005" loading="lazy"></figure>
-<h2 id="十-http长连接和短连接">十、HTTP长连接和短连接</h2>
-<p>在HTTP/1.0中默认使用短连接。也就是说，客户端和服务器每进行一次HTTP操作，就建立一次连接，任务结束就中断连接。当客户端浏览器访问的某个HTML或其他类型的Web页中包含有其他的Web资源（如JavaScript文件、图像文件、CSS文件等），每遇到这样一个Web资源，浏览器就会重新建立一个HTTP会话。</p>
-<p>而从HTTP/1.1起，默认使用长连接，用以保持连接特性。使用长连接的HTTP协议，会在响应头加入这行代码：</p>
-<pre><code>Connection:keep-alive
-</code></pre>
-<p>在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</p>
-<h2 id="十一-cookie的作用是什么和session有什么区别">十一、Cookie的作用是什么?和Session有什么区别？</h2>
-<p>Cookie 和 Session都是用来跟踪浏览器用户身份的会话方式，但是两者的应用场景不太一样。</p>
-<p><strong>Cookie 一般用来保存用户信息</strong> 比如①我们在 Cookie  中保存已经登录过得用户信息，下次访问网站的时候页面可以自动帮你登录的一些基本信息给填了；②一般的网站都会有保持登录也就是说下次你再访问网站的时候就不需要重新登录了，这是因为用户登录的时候我们可以存放了一个 Token 在 Cookie 中，下次登录的时候只需要根据 Token 值来查找用户即可(为了安全考虑，重新登录一般要将 Token  重写)；③登录一次网站后访问网站其他页面不需要重新登录。<strong>Session 的主要作用就是通过服务端记录用户的状态。</strong> 典型的场景是购物车，当你要添加商品到购物车的时候，系统不知道是哪个用户操作的，因为 HTTP 协议是无状态的。服务端给特定的用户创建特定的 Session 之后就可以标识这个用户并且跟踪这个用户了。</p>
-<p>Cookie 数据保存在客户端(浏览器端)，Session 数据保存在服务器端。</p>
-<p>Cookie 存储在客户端中，而Session存储在服务器上，相对来说 Session 安全性更高。如果要在 Cookie 中存储一些敏感信息，不要直接写入 Cookie 中，最好能将 Cookie 信息加密然后使用到的时候再去服务器端解密。</p>
-<h2 id="十二-http-10和http-11的主要区别是什么">十二、HTTP 1.0和HTTP 1.1的主要区别是什么?</h2>
-<ol>
-<li><strong>长连接</strong> : <strong>在HTTP/1.0中，默认使用的是短连接</strong>，也就是说每次请求都要重新建立一次连接。HTTP 是基于TCP/IP协议的,每一次建立或者断开连接都需要三次握手四次挥手的开销，如果每次请求都要这样的话，开销会比较大。因此最好能维持一个长连接，可以用个长连接来发多个请求。<strong>HTTP 1.1起，默认使用长连接</strong> ,默认开启Connection： keep-alive。 <strong>HTTP/1.1的持续连接有非流水线方式和流水线方式</strong> 。流水线方式是客户在收到HTTP的响应报文之前就能接着发送新的请求报文。与之相对应的非流水线方式是客户在收到前一个响应后才能发送下一个请求。</li>
-<li><strong>错误状态响应码</strong> :在HTTP1.1中新增了24个错误状态响应码，如409（Conflict）表示请求的资源与资源的当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除。</li>
-<li><strong>缓存处理</strong>  :在HTTP1.0中主要使用header里的If-Modified-Since,Expires来做为缓存判断的标准，HTTP1.1则引入了更多的缓存控制策略例如Entity tag，If-Unmodified-Since, If-Match, If-None-Match等更多可供选择的缓存头来控制缓存策略。</li>
-<li><strong>带宽优化及网络连接的使用</strong>  :HTTP1.0中，存在一些浪费带宽的现象，例如客户端只是需要某个对象的一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能，HTTP1.1则在请求头引入了range头域，它允许只请求资源的某个部分，即返回码是206（Partial Content），这样就方便了开发者自由的选择以便于充分利用带宽和连接。</li>
-</ol>
-<h2 id="十三-uri和url的区别是什么">十三、URI和URL的区别是什么?</h2>
-<ul>
-<li>URI(Uniform Resource Identifier) 是统一资源标志符，可以唯一标识一个资源。</li>
-<li>URL(Uniform Resource Location) 是统一资源定位符，可以提供该资源的路径。它是一种具体的 URI，即 URL 可以用来标识一个资源，而且还指明了如何 locate 这个资源。</li>
-</ul>
-<h2 id="十四-http-和-https-的区别">十四、HTTP 和 HTTPS 的区别？</h2>
-<blockquote>
-<p>如果有恶意的软件劫持了用户发送的请求，最后模仿服务器向浏览器发送响应，浏览器是无法识别的，这就是劫持。</p>
-</blockquote>
-<ol>
-<li>
-<p><strong>端口</strong> ：HTTP的URL由“http://”起始且默认使用端口80，而HTTPS的URL由“https://”起始且默认使用端口443。</p>
-</li>
-<li>
-<p>HTTPS需要到CA申请证书，HTTP不需要</p>
-</li>
-<li>
-<p><strong>安全性和资源消耗</strong>：</p>
-<p>HTTP协议运行在TCP之上，所有传输的内容都是明文，客户端和服务器端都无法验证对方的身份。HTTPS是运行在SSL/TLS之上的HTTP协议，SSL/TLS 运行在TCP之上。所有传输的内容都经过加密，加密采用对称加密，但对称加密的密钥用服务器方的证书进行了非对称加密。所以说，HTTP 安全性没有  HTTPS高，但是 HTTPS 比HTTP耗费更多服务器资源。</p>
-<ul>
-<li>对称加密：密钥只有一个，加密解密为同一个密码，且加解密速度快，典型的对称加密算法有DES、AES等；</li>
-<li>非对称加密：密钥成对出现（且根据公钥无法推知私钥，根据私钥也无法推知公钥），加密解密使用不同密钥（公钥加密需要私钥解密，私钥加密需要公钥解密），相对对称加密速度较慢，典型的非对称加密算法有RSA、DSA等。</li>
-<li>哈希算法:将任意长度的信息转换为固定长度的值,算法不可逆，比如说MD5算法</li>
-</ul>
-</li>
-</ol>
-<blockquote>
-<p>SSL(Security Sockets Layer ,安全套接层)</p>
-<ul>
-<li>
-<p>为网络通信提供安全及数据完整性的一-种安全协议</p>
-</li>
-<li>
-<p>是操作系统对外的API , SSL3.0后更名为TLS</p>
-</li>
-<li>
-<p>采用身份验证和数据加密保证网络通信的安全和数据的完整性</p>
-</li>
-</ul>
-</blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200722173112251.png" alt="image-20200722173112251" style="zoom:50%;" />
-<p><strong>HTTPS真的很安全吗?</strong></p>
-<ul>
-<li>浏览器默认填充http:// ，请求到服务器后需要进行https的跳转，在建立起HTTPS连接之前存在一次明文的HTTP请求和重定向，有被劫持的风险</li>
-<li>可以使用HSTS ( HTTP Strict Transport Security )优化</li>
-</ul>
-<blockquote>
-<p>HSTS的作用是强制客户端（如浏览器）使用HTTPS与服务器创建连接。 HSTS最为核心的是一个HTTP响应头（HTTP Response Header），正是它可以让浏览器得知，在接下来的一段时间内，当前域名只能通过HTTPS进行访问，并且在浏览器发现当前连接不安全的情况下，强制拒绝用户的后续访问要求。</p>
-<p>比如设置在第一次HTTP连接中，得知要在接下来1年内在个对于当前域名及其子域名的后续通信应该强制性的只使用HTTPS，直到超过有效期为止。</p>
-<p>同时，第一次的HTTP连接也可能会被劫持，所以浏览器中可以内置一个列表，放入那些必须使用https的域名，保证安全性</p>
-</blockquote>
-<h2 id="十五-http20">十五、HTTP/2.0</h2>
-<p><strong>HTTP/1.x 缺陷，HTTP/1.x 实现简单是以牺牲性能为代价的</strong></p>
-<ul>
-<li>客户端需要使用多个连接才能实现并发和缩短延迟；</li>
-<li>不会压缩请求和响应首部，从而导致不必要的网络流量；</li>
-<li>不支持有效的资源优先级，致使底层 TCP 连接的利用率低下。</li>
-</ul>
-<h3 id="二进制分帧层">二进制分帧层</h3>
-<ul>
-<li>HTTP/2.0 将报文分成 HEADERS 帧和 DATA 帧，它们都是二进制格式的。</li>
-</ul>
-<h3 id="服务端推送">服务端推送</h3>
-<ul>
-<li>HTTP/2.0 在客户端请求一个资源时，会把相关的资源一起发送给客户端，客户端就不需要再次发起请求了。例如客户端请求 page.html 页面，服务端就把 script.js 和 style.css 等与之相关的资源一起发给客户端。</li>
-</ul>
-<h3 id="首部压缩">首部压缩</h3>
-<ul>
-<li>HTTP/1.1 的首部带有大量信息，而且每次都要重复发送。</li>
-<li>HTTP/2.0 要求客户端和服务器同时维护和更新一个包含之前见过的首部字段表，从而避免了重复传输。<br>
-不仅如此，HTTP/2.0 也使用 Huffman 编码对首部字段进行压缩。</li>
-</ul>
-<h2 id="十六-get和post的比较">十六、GET和POST的比较</h2>
-<ul>
-<li><strong>作用不同</strong>：GET 用于获取资源，而 POST 用于传输实体主体。</li>
-<li><strong>参数不同</strong>：GET 和 POST 的请求都能使用额外的参数，但是 GET 的参数是以查询字符串出现在 URL 中，URL长度可能会受到浏览器的限制，而 POST 的参数存储在实体主体中，长度没有限制。不能因为 POST 参数存储在实体主体中就认为它的安全性更高，因为照样可以通过一些抓包工具（Fiddler）查看。</li>
-<li><strong>安全和幂等性</strong>：安全的 HTTP 方法不会改变服务器状态，也就是说它只是可读的，而幂等性指同样的请求被执行一次与连续执行多次的效果是一样的  。GET 方法是安全的也是幂等的，而 POST 却不是，因为 POST 的目的是传送实体主体内容，这个内容可能是用户上传的表单数据，上传成功之后，服务器可能把这个数据存储到数据库中，因此状态也就发生了改变。</li>
-<li><strong>缓存</strong>：GET请求可以被缓存、被存储，保存在浏览器上，而POST是非幂等的，所以必须交由服务器处理</li>
-</ul>
-<h2 id="十七-socket简介">十七、Socket简介</h2>
-<ul>
-<li>Socket是对TCP/IP协议的抽象，是操作系统对外开放的接口</li>
-</ul>
-<h3 id="1-socket的通讯流程">1. Socket的通讯流程</h3>
-<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzIyMTc1MTU5OTQ0LnBuZw?x-oss-process=image/format,png" alt="image-20200722175159944" loading="lazy"></figure>
-<h3 id="2-利用java实现socket实现tcp和udp">2. 利用Java实现Socket实现TCP和UDP</h3>
-<p><strong>TCPServer</strong></p>
-<pre><code class="language-java">public class TCPServer {
-    public static void main(String[] args) throws IOException {
-        //创建socket,并将socket绑定到65000端口
-        ServerSocket ss = new ServerSocket(65000);
-        //死循环，使得socket一直等待并处理客户端发送过来的请求
-        while (true) {
-            //监听65000端口，直到客户端返回连接信息后才返回
-            Socket socket = ss.accept();
-            //获取客户端的请求信息后，执行相关业务逻辑
-            new LengthCalculator(socket).start();
-        }
-    }
-}
-</code></pre>
-<p><strong>LengthCalculator</strong></p>
-<pre><code class="language-java">public class LengthCalculator extends Thread {
-    private Socket socket;
-
-    public LengthCalculator(Socket socket) {
-        this.socket = socket;
-    }
-
-    @Override
-    public void run() {
-        try {
-            //获取socket的输出流
-            OutputStream os = socket.getOutputStream();
-            //获取socket的输入流
-            InputStream is = socket.getInputStream();
-            int ch;
-            byte[] buff = new byte[1024];
-            //buff主要用来读取输入的内容，存成byte数组，ch主要用来获取读取数组的长度
-            ch = is.read(buff);
-            //将接收流的byte数组转换成字符串，这里获取的内容是客户端发送过来的字符串
-            String content = new String(buff, 0, ch);
-            System.out.println(content);
-            //往输出流里写入获得的字符串的长度，回发给客户端
-            os.write(String.valueOf(content.length()).getBytes());
-            //不要忘记关闭输入输出流以及socket
-            is.close();
-            os.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
-</code></pre>
-<p><strong>TCPClient</strong></p>
-<pre><code class="language-java">public class TCPClient {
-    public static void main(String[] args) throws IOException {
-        //创建socket，并指定连接的是本机的端口号为65000的服务器socket
-        Socket socket = new Socket(&quot;127.0.0.1&quot;, 65000);
-        //获取输出流
-        OutputStream os = socket.getOutputStream();
-        //获取输入流
-        InputStream is = socket.getInputStream();
-        //将要传递给server的字符串参数转换成byte数组，并数组写入到输出流中
-        os.write(&quot;hello world&quot;.getBytes());
-        int ch;
-        byte[] buff = new byte[1024];
-        //buff主要用来读取输入的内容，存成byte数组，ch主要用来获取读取数组的长度
-        ch = is.read(buff);
-        //将接收流的byte数组转换成字符串，这里是从服务端回发回来的字符串参数的长度
-        String content = new String(buff, 0, ch);
-        System.out.println(content);
-        //不要忘记关闭输入输出流以及socket
-        is.close();
-        os.close();
-        socket.close();
-    }
-}
-</code></pre>
-<p><strong>UDPServer</strong></p>
-<pre><code class="language-java">public class UDPServer {
-    public static void main(String[] args) throws IOException {
-        //服务端接受客户端发送的数据报
-        DatagramSocket socket = new DatagramSocket(65001); //监听的端口号
-        byte[] buff = new byte[100]; //存储从客户端接受到的内容
-        DatagramPacket packet = new DatagramPacket(buff, buff.length);
-        //接受客户端发送过来的内容，并将内容封装进DatagramPacket对象中
-        socket.receive(packet);
-        byte[] data = packet.getData(); //从DatagramPacket对象 中获取到真正存储的数据
-        //将数据从二进制转换成字符串形式
-        String content = new String(data, 0, packet.getLength());
-        System.out.println(content);
-        //将要发送给客户端的数据转换成二进制
-        byte[] sendedContent = String.valueOf(content.length()).getBytes();
-        //服务端给客户端发送数据报
-        //从DatagramPacket对象中获取到数据的来源地址与端口号
-        DatagramPacket packetToClient = new DatagramPacket(sendedContent,
-                sendedContent.length, packet.getAddress(), packet.getPort());
-        socket.send(packetToClient); //发送数据给客户端
-    }
-}
-</code></pre>
-<p><strong>UDPClient</strong></p>
-<pre><code class="language-java">public class UDPClient {
-    public static void main(String[] args) throws IOException {
-        //客户端发数据报给服务端
-        DatagramSocket socket = new DatagramSocket();
-        //要发送给服务端的数据
-        byte[] buf = &quot;Hello World&quot;.getBytes();
-        //将IP地址封装成InetAddress对象
-        InetAddress address = InetAddress.getByName(&quot;127.0.0.1&quot;);
-        //将要发送给服务端的数据封装成DatagramPacket对象需要填写上ip地址与端口号
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, address,
-                65001);
-        //发送数据给服务端
-        socket.send(packet);
-        //客户端接受服务端发送过来的数据报
-        byte[] data = new byte[100];
-        //创建DtagramPacket对 象用来存储服务端发送过来的数据
-        DatagramPacket receivedPacket = new DatagramPacket(data, data.length);
-        //将接受到的数据存储到DatagramPacket对象中
-        socket.receive(receivedPacket);
-        //将服务器端发送过来的数据取出来并打印到控制台
-        String content = new String(receivedPacket.getData(), 0,
-                receivedPacket.getLength());
-        System.out.println(content);
-    }
-}
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】SQL语句]]></title>
-        <id>https://xzzz2020.github.io/post/B4oG0L7Z4/</id>
-        <link href="https://xzzz2020.github.io/post/B4oG0L7Z4/">
-        </link>
-        <updated>2020-07-26T10:45:24.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0">一、常用数据处理函数</a>
-<ul>
-<li><a href="#1-substr">1. substr</a></li>
-<li><a href="#2-trim">2. trim</a></li>
-<li><a href="#3-ifnull">3. ifnull</a></li>
-<li><a href="#4-case-when-then-else-end">4. case … when … then … else ... end</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%8C-%E5%B8%B8%E7%94%A8%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0">二、常用聚合函数</a></li>
-<li><a href="#%E4%B8%89-%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2">三、分组查询</a>
-<ul>
-<li><a href="#1-group-by">1. group by</a></li>
-<li><a href="#2-having">2. having</a></li>
-<li><a href="#3-select-%E8%AF%AD%E5%8F%A5%E9%A1%BA%E5%BA%8F%E6%80%BB%E7%BB%93">3. select 语句顺序总结</a></li>
-</ul>
-</li>
-<li><a href="#%E5%9B%9B-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%E9%87%8D%E7%82%B9">四、连接查询（重点）</a>
-<ul>
-<li><a href="#%E5%86%85%E8%BF%9E%E6%8E%A5%E5%A4%96%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%8C%BA%E5%88%AB">内连接外连接的区别？</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%94-%E8%A7%86%E5%9B%BE%E7%9A%84%E4%BD%9C%E7%94%A8">五、视图的作用</a></li>
-<li><a href="#%E5%85%AD-%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95">六、如何创建删除索引？</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-常用数据处理函数">一、常用数据处理函数</h2>
-<table>
-<thead>
-<tr>
-<th>函数名</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>substr</td>
-<td>取子串（substr(被截取的字符串,起始下标,截取的长度)）</td>
-</tr>
-<tr>
-<td>trim</td>
-<td>去空</td>
-</tr>
-<tr>
-<td>Ifnull</td>
-<td>可以将 null 转换成一个具体值</td>
-</tr>
-<tr>
-<td>case … when … then … else ... end</td>
-<td>多个条件判断</td>
-</tr>
-</tbody>
-</table>
-<h3 id="1-substr">1. substr</h3>
-<p>查询姓名以 M 开头所有的员工</p>
-<pre><code class="language-sql">select * from emp where substr(ename, 1, 1)=upper('m');
-</code></pre>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NTQxNjgwLnBuZw?x-oss-process=image/format,png" alt="image-20200714105541680" loading="lazy"></figure>
-<h3 id="2-trim">2. trim</h3>
-<p><code>会去首尾空格，不会去除中间的空格</code></p>
-<p>取得工作岗位为 manager 的所有员工</p>
-<pre><code class="language-sql">select * from emp where job=trim(upper('manager '));
-</code></pre>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NTMzNDc1LnBuZw?x-oss-process=image/format,png" alt="image-20200714105533475" loading="lazy"></figure>
-<h3 id="3-ifnull">3. ifnull</h3>
-<pre><code class="language-sql">select ifnull(comm,0) from emp; 
-</code></pre>
-<p>如果 comm 为 null 就替换为 0 在 SQL 语句当中若有 NULL 值参与数学运算，计算结果一定是 NULL 为了防止计算结果出现 NULL，建议先使用 ifnull 空值处理函数预先处理。 以下 SQL 是计算年薪的：</p>
-<pre><code class="language-sql">select empno,ename,sal,(sal+ifnull(comm,0))*12 as yearsal from emp;  
-</code></pre>
-<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTEwMDExOTE4LnBuZw?x-oss-process=image/format,png" alt="image-20200714110011918" loading="lazy"></figure>
-<h3 id="4-case-when-then-else-end">4. case … when … then … else ... end</h3>
-<p>如果 job 为 MANAGERG 薪水上涨 10%,如果 job 为 SALESMAN 工资上涨 50%</p>
-<pre><code class="language-sql">select empno, ename, job, sal, case job when 'MANAGER' then sal*1.1 when 'SALESMAN' then sal*1.5 end as newsal from emp;
-</code></pre>
-<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTA1NzA5NzUxLnBuZw?x-oss-process=image/format,png" alt="image-20200714105709751" loading="lazy"></figure>
-<p>其他的工资不动，需要加else</p>
-<pre><code class="language-sql">select e.*,sal ,case job when 'salesman' then sal*1.1 when 'clerk' then sal*1.2 else sal end as new_sal from emp e;
-</code></pre>
-<h2 id="二-常用聚合函数">二、常用聚合函数</h2>
-<table>
-<thead>
-<tr>
-<th>函数名</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>count</td>
-<td>取得记录数</td>
-</tr>
-<tr>
-<td>sum</td>
-<td>求和</td>
-</tr>
-<tr>
-<td>avg</td>
-<td>取平均</td>
-</tr>
-<tr>
-<td>max</td>
-<td>取最大的数</td>
-</tr>
-<tr>
-<td>min</td>
-<td>取最小的数</td>
-</tr>
-</tbody>
-</table>
-<p><strong>注意</strong>：</p>
-<ul>
-<li>分组函数自动忽略空值，不需要手动的加 where 条件排除空值。</li>
-<li>select count(*) from emp where xxx; 符合条件的所有记录总数。</li>
-<li>select count(comm) from emp; comm 这个字段中不为空的元素总数。</li>
-<li>聚合函数不能直接使用在 where 关键字后面。</li>
-</ul>
-<h2 id="三-分组查询">三、分组查询</h2>
-<h3 id="1-group-by">1. group by</h3>
-<p>取得每个工作岗位的工资合计，要求显示岗位名称和工资合计</p>
-<pre><code class="language-sql">select job, sum(sal) from emp group by job;
-</code></pre>
-<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTEwOTE0MjE4LnBuZw?x-oss-process=image/format,png" alt="image-20200714110914218" loading="lazy"></figure>
-<p><strong>注意</strong>：在 SQL 语句中若有 group by 语句，那么在 select 语句后面只能跟聚合函数+参与分组的字段。</p>
-<p><strong>错误示范</strong>：<code>select empno,deptno,avg(sal) from emp group by deptno;</code></p>
-<h3 id="2-having">2. having</h3>
-<p>如果想对分组数据再进行过滤需要使用 having 子句</p>
-<p>取得每个岗位的平均工资大于 2000</p>
-<pre><code class="language-sql">select job, avg(sal) from emp group by job having avg(sal) &gt;2000;
-</code></pre>
-<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE0MTExMTI0OTQxLnBuZw?x-oss-process=image/format,png" alt="image-20200714111124941" loading="lazy"></figure>
-<h3 id="3-select-语句顺序总结">3. select 语句顺序总结</h3>
-<pre><code class="language-sql">select 字段
-from 表名
-where …….
-group by ……..
-having …….(就是为了过滤分组后的数据而存在的—不可以单独的出现)
-order by ……..
-</code></pre>
-<p><strong>语句的执行顺序</strong>：</p>
-<ol>
-<li>
-<p>首先执行 where 语句过滤原始数据</p>
-</li>
-<li>
-<p>执行 group by 进行分组</p>
-</li>
-<li>
-<p>执行 having 对分组数据进行操作</p>
-</li>
-<li>
-<p>执行 select 选出数据</p>
-</li>
-<li>
-<p>执行 order by 排序</p>
-</li>
-</ol>
-<p><strong>原则</strong>：能在 where 中过滤的数据，尽量在 where 中过滤，效率较高。 having 的过滤是专门对分组之后的数据进行过滤的。</p>
-<h2 id="四-连接查询重点">四、连接查询（重点）</h2>
-<p><code>也可以叫跨表查询， 需要关联多个表进行查询</code></p>
-<blockquote>
-<p>SQL99语法相比92语法，将连接条件和where分离</p>
-</blockquote>
-<h3 id="内连接外连接的区别">内连接外连接的区别？</h3>
-<ul>
-<li><strong>内连接</strong>：只有两张表相匹配的行才能出现在结果集</li>
-<li><strong>外连接</strong>：左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示</li>
-</ul>
-<p><strong>内连接</strong></p>
-<ul>
-<li>表 1 inner join 表 2 on 关联条件</li>
-<li>做连接查询的时候一定要写上关联条件</li>
-<li>inner 可以省略</li>
-</ul>
-<p><strong>外连接</strong></p>
-<ul>
-<li>
-<p>左外连接</p>
-<ul>
-<li>
-<p>表 1 left outer join 表 2 on 关联条件</p>
-</li>
-<li>
-<p>做连接查询的时候一定要写上关联条件</p>
-</li>
-<li>
-<p>outer 可以省略</p>
-</li>
-</ul>
-</li>
-<li>
-<p>右外连接</p>
-<ul>
-<li>
-<p>表 1 right outer join 表 2 on 关联条件</p>
-</li>
-<li>
-<p>做连接查询的时候一定要写上关联条件</p>
-</li>
-<li>
-<p>outer 可以省略</p>
-<ul>
-<li>左外连接（左连接）和右外连接（右连接）的区别：</li>
-<li>左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><strong>左外连接（左连接）和右外连接（右连接）的区别</strong>：</p>
-<ul>
-<li>左连接以左面的表为准和右边的表比较，和左表相等的不相等都会显示出来，右表符合条件的显示,不符合条件的不显示</li>
-<li>右连接恰恰相反，以上左连接和右连接也可以加入 outer 关键字，但一般不建议这种写法</li>
-</ul>
-<h2 id="五-视图的作用">五、视图的作用</h2>
-<ul>
-<li>
-<p>某些频繁使用的查询语句(如级联查询)，可能很复杂，可以利用视图<code>简化查询</code>，重用sql</p>
-</li>
-<li>
-<p><code>保护数据</code>，只授予特定权限，如查询权限</p>
-</li>
-<li>
-<p>视图本身不包含数据，<code>只是对sql语句的一个封装</code>，如果需要封装复杂的sql需要先测试性能</p>
-</li>
-<li>
-<p>用于数据检索，不能更新数据</p>
-</li>
-</ul>
-<h2 id="六-如何创建删除索引">六、如何创建删除索引？</h2>
-<blockquote>
-<p>修改索引需要先删除在添加</p>
-</blockquote>
-<ol>
-<li>添加PRIMARY KEY（主键索引）</li>
-</ol>
-<pre><code>ALTER TABLE `table_name` ADD PRIMARY KEY ( `column` ) 
-</code></pre>
-<ol start="2">
-<li>添加UNIQUE(唯一索引)</li>
-</ol>
-<pre><code>ALTER TABLE `table_name` ADD UNIQUE ( `column` ) 
-</code></pre>
-<ol start="3">
-<li>添加INDEX(普通索引)</li>
-</ol>
-<pre><code>ALTER TABLE `table_name` ADD INDEX index_name ( `column` )
-</code></pre>
-<ol start="4">
-<li>添加FULLTEXT(全文索引)</li>
-</ol>
-<pre><code>ALTER TABLE `table_name` ADD FULLTEXT ( `column`) 
-</code></pre>
-<ol start="5">
-<li>添加多列索引</li>
-</ol>
-<pre><code>ALTER TABLE `table_name` ADD INDEX index_name ( `column1`, `column2`, `column3` )
-</code></pre>
-<ol start="6">
-<li>删除索引</li>
-</ol>
-<pre><code class="language-sql">DROP INDEX login_name_index ON user;
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】MySQL索引总结]]></title>
-        <id>https://xzzz2020.github.io/post/EM2P_CVYa/</id>
-        <link href="https://xzzz2020.github.io/post/EM2P_CVYa/">
-        </link>
-        <updated>2020-07-26T10:44:21.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E5%B9%BA%E8%A6%81%E7%94%A8%E7%B4%A2%E5%BC%95">一、为什幺要用索引？</a></li>
-<li><a href="#%E4%BA%8C-%E7%B4%A2%E5%BC%95%E8%BF%99%E4%B9%88%E5%A4%9A%E4%BC%98%E7%82%B9%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AF%B9%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%88%97%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%B4%A2%E5%BC%95%E5%91%A2">二、索引这么多优点，为什么不对表中的每一个列创建一个索引呢？</a></li>
-<li><a href="#%E4%B8%89-%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">三、使用索引的注意事项？</a></li>
-<li><a href="#%E5%9B%9B-%E7%B4%A2%E5%BC%95%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BC%9A%E5%A4%B1%E6%95%88">四、索引什么时候会失效？</a></li>
-<li><a href="#%E4%BA%94-%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E5%8E%9F%E5%88%99%E6%98%AF%E4%BB%80%E4%B9%88">五、最左前缀原则是什么？</a></li>
-<li><a href="#%E5%85%AD-mysql%E7%B4%A2%E5%BC%95%E7%9A%84%E4%B8%BB%E8%A6%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">六、MySQL索引的主要数据结构</a>
-<ul>
-<li><a href="#1-%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">1. 哈希索引</a></li>
-<li><a href="#2-b%E6%A0%91%E7%B4%A2%E5%BC%95">2. B+树索引</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%83-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%B4%A2%E5%BC%95%E8%83%BD%E6%8F%90%E9%AB%98%E6%9F%A5%E8%AF%A2%E9%80%9F%E5%BA%A6">七、为什么索引能提高查询速度？</a></li>
-<li><a href="#%E5%85%AB-%E7%B4%A2%E5%BC%95%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E7%B1%BB%E5%9E%8B">八、索引都有哪些类型？</a>
-<ul>
-<li><a href="#1-%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95primary-key">1. 主键索引(Primary Key)</a></li>
-<li><a href="#2-%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95">2. 二级索引(辅助索引)</a></li>
-<li><a href="#3-%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">3. 聚集索引</a></li>
-<li><a href="#4-%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95">4. 非聚集索引</a></li>
-<li><a href="#5-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95">5. 覆盖索引</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B9%9D-%E7%B4%A2%E5%BC%95%E5%88%9B%E5%BB%BA%E7%9A%84%E5%8E%9F%E5%88%99">九、索引创建的原则</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-为什幺要用索引">一、为什幺要用索引？</h2>
-<ol>
-<li>通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性。</li>
-<li>可以大大加快数据的检索速度（大大减少的检索的数据量）,  这也是创建索引的最主要的原因。</li>
-<li>帮助服务器避免排序和临时表。</li>
-<li>将随机IO变为顺序IO</li>
-<li>可以加速表和表之间的连接，特别是在实现数据的参考完整性方面特别有意义。</li>
-</ol>
-<h2 id="二-索引这么多优点为什么不对表中的每一个列创建一个索引呢">二、索引这么多优点，为什么不对表中的每一个列创建一个索引呢？</h2>
-<ol>
-<li>当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，这样就降低了数据的维护速度。</li>
-<li>索引需要占物理空间，除了数据表占数据空间之外，每一个索引还要占一定的物理空间，如果要建立聚簇索引，那么需要的空间就会更大。</li>
-<li>创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增加。</li>
-</ol>
-<h2 id="三-使用索引的注意事项">三、使用索引的注意事项？</h2>
-<ul>
-<li>
-<p>在经常需要搜索的列上，可以加快搜索的速度；</p>
-</li>
-<li>
-<p>在经常使用在WHERE子句中的列上面创建索引，加快条件的判断速度。</p>
-</li>
-<li>
-<p>在经常需要排序的列上创建索引，因为索引已经排序，这样查询可以利用索引的排序，加快排序查询时间</p>
-</li>
-<li>
-<p>在使用InnoDB时使用与业务无关的自增主键作为主键</p>
-</li>
-<li>
-<p>避免索引失效</p>
-</li>
-</ul>
-<h2 id="四-索引什么时候会失效">四、索引什么时候会失效？</h2>
-<ul>
-<li>
-<p>有or关键字必须所有字段全有索引;</p>
-</li>
-<li>
-<p>复合索引未用左列字段;</p>
-</li>
-<li>
-<p>like以%开头</p>
-</li>
-<li>
-<p>where中索引列有运算</p>
-</li>
-<li>
-<p>where中索引列使用了函数</p>
-</li>
-<li>
-<p>如果mysql觉得全表扫描更快时（数据少）</p>
-</li>
-</ul>
-<h2 id="五-最左前缀原则是什么">五、最左前缀原则是什么？</h2>
-<p>主要针对的聚合索引是否生效，假如有一个聚合索引ABC：</p>
-<ul>
-<li>最左边的列必须要用到，比如这个A列</li>
-<li>中间是不能断的，如只查询了A和C列，只会用到C的索引</li>
-<li>遇到范围后，终止，比如where条件是这样的，where  A = x and B &gt;y  and C = z，这个时候只会用到AB索引，无法使用C索引</li>
-</ul>
-<h2 id="六-mysql索引的主要数据结构">六、MySQL索引的主要数据结构</h2>
-<h3 id="1-哈希索引">1. 哈希索引</h3>
-<p>​	对于哈希索引来说，底层的数据结构就是哈希表，因此在绝大多数需求为单条记录查询的时候，可以选择哈希索引，查询性能最快；其余大部分场景，建议选择BTree索引</p>
-<ul>
-<li>因为Hash索引比较的是经过Hash计算的值，所以只能进行等式比较，不能用于范围查询</li>
-<li>当哈希值大量重复且数据量非常大时，其检索效率并没有Btree索引高的</li>
-<li>哈希值映射的真正数据在哈希表中就不一定按照顺序排列，所以无法利用Hash索引来加速任何排序操作</li>
-</ul>
-<h3 id="2-b树索引">2. B+树索引</h3>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTc1NDMyNDA1LnBuZw?x-oss-process=image/format,png" alt="image-20200717175432405" loading="lazy"></figure>
-<ul>
-<li>
-<p>为磁盘或其他直接存取的辅助设备而设计的平衡二叉树</p>
-</li>
-<li>
-<p>所有的记录节点都是按照键值的大小<code>顺序存放</code>在同一层的叶节点</p>
-</li>
-<li>
-<p>同时最后一层叶字节点之间存在指针，这样可以保证其是连续的数据排列</p>
-</li>
-</ul>
-<p>​</p>
-<p><strong>B+树相对于B树的区别？</strong></p>
-<ul>
-<li>单一节点存储的元素更多，使得查询的IO次数更少，所以也就使得它更适合做为数据库MySQL的底层数据结构了</li>
-<li>所有的查询都要查找到叶子节点，查询性能是稳定的，而B树，每个节点都可以查找到数据，所以不稳定。</li>
-<li>所有的叶子节点形成了一个有序链表，更加便于查找。</li>
-</ul>
-<p><strong>B+树与红黑树的比较？</strong></p>
-<ul>
-<li><strong>更少的查找次数</strong>：平衡树查找操作的时间复杂度和树高 h 相关，O(h)=O(logdN)，其中 d 为每个节点的出度。红黑树的出度为 2，而 B+ Tree 的出度一般都非常大，所以红黑树的树高 h 很明显比 B+ Tree 大非常多，查找的次数也就更多。</li>
-<li><strong>利用磁盘预读特性</strong>：为了减少磁盘 I/O 操作，磁盘往往不是严格按需读取，而是每次都会预读。预读过程中，磁盘进行顺序读取，顺序读取不需要进行磁盘寻道，并且只需要很短的磁盘旋转时间，速度会非常快。数据库系统将索引的一个节点的大小设置为页的大小，使得一次 I/O 就能完全载入一个节点。并且可以利用预读特性，相邻的节点也能够被预先载入</li>
-</ul>
-<p><strong>B+数树和B-树的区别？</strong></p>
-<ul>
-<li>
-<p>B+树相当于B-树的变种，主要差异在于B+树数据都保存在叶子节点，同时叶子节点之间形成了链表</p>
-</li>
-<li>
-<p>B+树查询时间复杂度固定是logn，B-树查询复杂度最好是 O(1)</p>
-</li>
-<li>
-<p>B+树相邻接点的指针可以大大增加区间访问性，可使用在范围查询等，而B-树每个节点 key 和 data 在一起，则无法区间查找</p>
-</li>
-</ul>
-<p><strong>MyISAM和InnoDB实现BTree索引方式的区别？</strong></p>
-<ul>
-<li>
-<p><strong>MyISAM</strong>：B+Tree叶节点的data域存放的是数据记录的地址。在索引检索的时候，首先按照B+Tree搜索算法搜索索引，如果指定的Key存在，则取出其 data 域的值，然后以 data 域的值为地址读取相应的数据记录。这被称为“非聚簇索引”。</p>
-</li>
-<li>
-<p><strong>InnoDB</strong>：其数据文件本身就是索引文件。相比MyISAM，索引文件和数据文件是分离的，其表数据文件本身就是按B+Tree组织的一个索引结构，树的叶节点data域保存了完整的数据记录。这个索引的key是数据表的主键，因此InnoDB表数据文件本身就是主索引。这被称为“聚簇索引（或聚集索引）”，而其余的索引都作为辅助索引，辅助索引的data域存储相应记录主键的值而不是地址，这也是和MyISAM不同的地方。在根据主索引搜索时，直接找到key所在的节点即可取出数据；在根据辅助索引查找时，则需要先取出主键的值，在走一遍主索引。</p>
-</li>
-</ul>
-<h2 id="七-为什么索引能提高查询速度">七、为什么索引能提高查询速度？</h2>
-<p>MySQL底层每16k的数据为一页，一页中有多个记录值。</p>
-<p>如果我们写select * from user where indexname = 'xxx'这样没有进行任何优化的sql语句，默认会这样做：</p>
-<ol>
-<li><strong>定位到记录所在的页：需要遍历双向链表，找到所在的页</strong></li>
-<li><strong>从所在的页内中查找相应的记录：由于不是根据主键查询，只能遍历所在页的单链表了</strong></li>
-</ol>
-<p>很明显，在数据量很大的情况下这样查找会很慢！这样的时间复杂度为O（n）。</p>
-<p>使用了索引其实就是将无序的数据变成相对有序，其实底层结构就是B+树，B+树作为树的一种实现，时间复杂度近似为O(logn)，能够让我们很快地查找出对应的记录。</p>
-<h2 id="八-索引都有哪些类型">八、索引都有哪些类型？</h2>
-<h3 id="1-主键索引primary-key">1. 主键索引(Primary Key)</h3>
-<ul>
-<li>
-<p>数据表的主键列使用的就是主键索引。</p>
-</li>
-<li>
-<p>一张数据表有只能有一个主键，并且主键不能为null，不能重复。</p>
-</li>
-<li>
-<p>在mysql的InnoDB的表中，当没有显示的指定表的主键时，InnoDB会自动先检查表中是否有唯一索引的字段，如果有，则选择该字段为默认的主键，否则InnoDB将会自动创建一个6Byte的自增主键。</p>
-</li>
-</ul>
-<h3 id="2-二级索引辅助索引">2. 二级索引(辅助索引)</h3>
-<p>二级索引又称为辅助索引，是因为二级索引的叶子节点在InnoDB中存储的数据是主键。也就是说，通过二级索引，可以定位主键的位置；在MyISAM中存储的数据是地址。</p>
-<ol>
-<li><strong>唯一索引(Unique Key)</strong> ：唯一索引也是一种约束。**唯一索引的属性列不能出现重复的数据，但是允许数据为NULL，一张表允许创建多个唯一索引。**建立唯一索引的目的大部分时候都是为了该属性列的数据的唯一性，而不是为了查询效率。</li>
-<li><strong>普通索引(Index)</strong> ：<strong>普通索引的唯一作用就是为了快速查询数据，一张表允许创建多个普通索引，并允许数据重复和NULL。</strong></li>
-<li><strong>前缀索引(Prefix)</strong> ：前缀索引只适用于字符串类型的数据。前缀索引是对文本的前几个字符创建索引，相比普通索引建立的数据更小， 因为只取前几个字符。</li>
-<li><strong>全文索引(Full Text)</strong> ：全文索引主要是为了检索大文本数据中的关键字的信息，是目前搜索引擎数据库使用的一种技术。Mysql5.6之前只有MYISAM引擎支持全文索引，5.6之后InnoDB也支持了全文索引。</li>
-</ol>
-<h3 id="3-聚集索引">3. 聚集索引</h3>
-<p>聚集索引即索引结构和数据一起存放的索引。InnoDB存储引擎中主键索引属于聚集索引，B+树的每个非叶子节点存储索引，叶子节点存储索引和索引对应的数据。</p>
-<p><strong>优点</strong>：</p>
-<ul>
-<li>聚集索引的查询速度非常的快，因为整个B+树本身就是一颗多叉平衡树，叶子节点也都是有序的，定位到索引的节点，就相当于定位到了数据。</li>
-</ul>
-<p><strong>缺点</strong>：</p>
-<ul>
-<li><strong>依赖于有序的数据</strong> ：因为B+树是多路平衡树，如果索引的数据不是有序的，那么就需要在插入时排序，如果数据是整型还好，否则类似于字符串或UUID这种又长又难比较的数据，插入或查找的速度肯定比较慢。</li>
-<li><strong>更新代价大</strong>：如果对索引列的数据被修改时，那么对应的索引也将会被修改，可能涉及自旋操作维护平衡， 而且况聚集索引的叶子节点还存放着数据，修改代价肯定是较大的， 所以对于主键索引来说，主键一般都是不可被修改的。</li>
-</ul>
-<h3 id="4-非聚集索引">4. 非聚集索引</h3>
-<p>非聚集索引即索引结构和数据分开存放的索引，比如说MyISAM中的索引保存的指向数据文件的指针。</p>
-<p><strong>优点</strong>：</p>
-<ul>
-<li><strong>更新代价比聚集索引要小</strong>：非聚集索引的更新代价就没有聚集索引那么大了，非聚集索引的叶子节点是不存放数据的</li>
-</ul>
-<p><strong>缺点</strong>：</p>
-<ul>
-<li><strong>可能会二次查询(回表)</strong> :这应该是非聚集索引最大的缺点了。 当查到索引对应的指针或主键后，可能还需要根据指针或主键再到数据文件或表中查询。</li>
-</ul>
-<p><strong>非聚集索引一定回表查询吗(覆盖索引)?</strong></p>
-<ul>
-<li>不一定。</li>
-<li>虽然MYISAM的主键索引确实需要回表， 因为它的主键索引的叶子节点存放的是指针。但是如果SQL查的就是主键呢?</li>
-<li>或者想要查询的字段刚好建立了索引，查到对应的字段直接返回就行了，无需回表查询</li>
-</ul>
-<h3 id="5-覆盖索引">5. 覆盖索引</h3>
-<ul>
-<li>如果一个索引包含（或者说覆盖）所有需要查询的字段的值，我们就称之为“覆盖索引”。我们知道InnoDB存储引擎中，如果不是主键索引，叶子节点存储的是主键+列值。最终还是要“回表”，也就是先定位主键值，再定位行记录，它的性能较扫一遍索引树更低，这样就会比较慢。覆盖索引就是把要查询出的列和索引是对应的，不做回表操作</li>
-<li>假如索引是AB列，想要查询出来的列是AB+主键列，则此时是覆盖索引；而想要查询出来的列是ABC列，C的数据不在索引中，就需要回表。所以切忌使用Select *</li>
-</ul>
-<p><strong>总结：覆盖索引的优化及限制</strong></p>
-<p><strong>优点</strong>：</p>
-<p>1、索引项通常比记录要小，所以MySQL访问更少的数据。</p>
-<p>2、索引都按值得大小存储，相对于随机访问记录，需要更少的I/O。</p>
-<p>3、数据引擎能更好的缓存索引，比如MyISAM只缓存索引。</p>
-<p>4、覆盖索引对InnoDB尤其有用，因为InnoDB使用聚集索引组织数据，如果二级索引包含查询所需的数据，就不再需要在聚集索引中查找了。</p>
-<p><strong>限制：</strong></p>
-<p>1、覆盖索引也并不适用于任意的索引类型，索引必须存储列的值。</p>
-<p>2、Hash和full-text索引不存储值，因此MySQL只能使用BTree。</p>
-<p>3、不同的存储引擎实现覆盖索引都是不同的，并不是所有的存储引擎都支持覆盖索引。</p>
-<p>4、如果要使用覆盖索引，一定要注意SELECT列表值取出需要的列，不可以SELECT * ，因为如果将所有字段一起做索引会导致索引文件过大，查询性能下降。</p>
-<h2 id="九-索引创建的原则">九、索引创建的原则</h2>
-<p><strong>最左前缀原则</strong>：</p>
-<ul>
-<li>虽然我目前的Mysql版本较高，好像不遵守最左前缀原则，索引也会生效。 但是我们仍应遵守最左前缀原则，以免版本更迭带来的麻烦。</li>
-</ul>
-<p><strong>选择合适的字段</strong></p>
-<ol>
-<li>索引字段的数据应该尽量不为NULL，因为对于数据为NULL的字段，数据库较难优化。如果字段频繁被查询，但又避免不了为NULL，建议使用默认值。</li>
-<li>我们创建索引的字段应该是查询操作非常频繁的字段，而不是增删改比较多的。</li>
-<li>被作为WHERE条件查询的字段，应该被考虑建立索引。</li>
-<li>经常用于连接的字段可能是一些外键列，对于外键列并不一定要建立外键，只是说该列涉及到表与表的关系。对于频繁被连接查询的字段，可以考虑建立索引，提高多表连接查询的效率。</li>
-</ol>
-<p><strong>需要注意的地方</strong></p>
-<ul>
-<li>注意避免冗余索引</li>
-<li>考虑在字符串类型的字段上使用前缀索引代替普通索引，前缀索引仅限于字符串类型，较普通索引会占用更小的空间，所以可以考虑使用前缀索引带替普通索引。</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】MySql架构]]></title>
-        <id>https://xzzz2020.github.io/post/aY-DgheCd/</id>
-        <link href="https://xzzz2020.github.io/post/aY-DgheCd/">
-        </link>
-        <updated>2020-07-26T10:43:07.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-mysql-%E7%9A%84%E6%9E%B6%E6%9E%84%E5%9B%BE">一、Mysql 的架构图</a></li>
-<li><a href="#%E4%BA%8C-server-%E5%B1%82">二、Server 层</a>
-<ul>
-<li><a href="#1-%E8%BF%9E%E6%8E%A5%E5%99%A8">1. 连接器</a></li>
-<li><a href="#2-%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98">2. 查询缓存</a></li>
-<li><a href="#3-%E5%88%86%E6%9E%90%E5%99%A8">3. 分析器</a></li>
-<li><a href="#4%E4%BC%98%E5%8C%96%E5%99%A8">4.优化器</a></li>
-<li><a href="#5-%E6%89%A7%E8%A1%8C%E5%99%A8">5. 执行器</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%89-%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B">三、执行流程</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-mysql-的架构图">一、Mysql 的架构图</h2>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200714160802785.png" alt="image-20200714160802785" style="zoom: 80%;" />
-<ul>
-<li><strong>客户端</strong>：比如window和linux的黑窗口、SQLlyog、java的JDBC标准等等</li>
-<li><strong>Server 层</strong>：主要包括连接器、查询缓存、分析器、优化器、执行器等，所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图，函数等，还有一个通用的日志模块 binglog 日志模块。</li>
-<li><strong>存储引擎</strong>：主要负责数据的存储和读取，采用可以替换的插件式架构，支持 InnoDB、 MyISAM、 Memory 等多个存储引擎，其中 InnoDB 引擎有自有的日志模块 redolog 模块。 现在最常用的存储引擎是 InnoDB，它从MySQL 5.5.5 版本开始就被当做默认存储引擎了。</li>
-<li><strong>数据</strong>：都是二进制文件</li>
-</ul>
-<h2 id="二-server-层">二、Server 层</h2>
-<h3 id="1-连接器">1. 连接器</h3>
-<ul>
-<li>
-<p>连接器主要和身份认证和权限相关的功能相关</p>
-</li>
-<li>
-<p>客户端通过连接器连接到MySql</p>
-</li>
-<li>
-<p>客户端连接连接器是需要网络时间，所以建议使用数据库连接池，可以复用连接</p>
-</li>
-</ul>
-<h3 id="2-查询缓存">2. 查询缓存</h3>
-<ul>
-<li>查询缓存主要用来缓存我们所执行的 SELECT 语句以及该语句的结果集。</li>
-<li>连接建立后，执行查询语句的时候，会先查询缓存， MySQL 会先校验这个 sql 是否执行过，以 Key-Value 的形式缓存在内存中</li>
-<li>如果缓存 key 被命中，就会直接返回给客户端，如果没有命中，就会执行后续的操作，完成后也会把<br>
-结果缓存起来，方便下一次调用</li>
-<li>MySQL 查询不建议使用缓存，因为查询缓存失效在实际业务场景中可能会非常频繁，假如你对一个表更新的话，这个表上的所有的查询缓存都会被清空，MySQL 8.0 版本后删除了缓存的功能</li>
-<li>缓存虽然能够提升数据库的查询性能，但是缓存同时也带来了额外的开销，每次查询后都要做一次缓存操作，失效后还要销毁。</li>
-</ul>
-<p><strong>存在的问题</strong></p>
-<ul>
-<li>
-<p>查询缓存的内存分配问题，不可避免地产生一些内存碎片；</p>
-</li>
-<li>
-<p>查询缓存对是否是一样的查询语句，要求非常苛刻，而且还不智能</p>
-</li>
-<li>
-<p>查询缓存中涉及的表，每一个表对象都有一个属于自己的全局性质的锁，表对象的DML操作，必须优先判断是否需要清理相关查询缓存的记录信息，将不可避免地出现锁等待事件</p>
-</li>
-<li>
-<p>表若是做DDL等类似操作，触发相关表的查询缓存信息清空</p>
-</li>
-</ul>
-<h3 id="3-分析器">3. 分析器</h3>
-<p>没有命中缓存的话， SQL 语句就会经过分析器，分析器说白了就是要先看你的 SQL 语句要干嘛，再检查你的<br>
-SQL 语句语法是否正确。 分析器也会分为几步：</p>
-<ul>
-<li>
-<p><strong>第一步，词法分析</strong>，一条 SQL 语句有多个字符串组成，首先要提取关键字，比如 select，提出查询的表，提出字段名，提出查询条件等等。做完这些操作后，就会进入第二步。</p>
-</li>
-<li>
-<p><strong>第二步，语法分析</strong>，主要就是判断你输入的 sql 是否正确，是否符合 MySQL 的语法。</p>
-</li>
-</ul>
-<p>完成这 2 步之后， MySQL 就准备开始执行了，但是如何执行，怎么执行是最好的结果呢？这个时候就需要优化器上场了</p>
-<h3 id="4优化器">4.优化器</h3>
-<p>优化器的作用就是它认为的最优的执行方案去执行（有时候可能也不是最优），比如多个索引的时候该如何选<br>
-择索引，多表查询的时候如何选择关联顺序等。可以说，经过了优化器之后可以说这个语句具体该如何执行就已经<br>
-定下来。</p>
-<h3 id="5-执行器">5. 执行器</h3>
-<ul>
-<li>当选择了执行方案后， MySQL 就准备开始执行了，首先执行前会校验该用户有没有权限，如果没有权限，就会返回错误信息，如果有权限，就会去调用引擎的接口， 从存储引擎返回执行的结果。</li>
-</ul>
-<h2 id="三-执行流程">三、执行流程</h2>
-<ol>
-<li>客户端连接连接器</li>
-<li>分析器处理客户端的SQL语句，进行词法分析和语法分析，检查SQL语法是否正确</li>
-<li>优化器优化分析器处理的语句，选择一个它认为的最优的执行方案去执行，比如多个索引的时候该如何选<br>
-择索引，多表查询的时候如何选择关联顺序等</li>
-<li>最后执行器执行优化器确定的方案，但是由于不了解数据是怎么存储的，需要调用存储引擎的接口，从存储引擎返回执行的结果</li>
-<li>存储引擎决定怎么存储数据，常见的有三种：InnoDB存储引擎、MyISAM存储引擎和Memory引擎（博主主要掌握的InnoDB存储引擎）</li>
-<li>当然中间还有一个查询缓存，会存储查询出来的数据，但是查询缓存命中不高，MySQL 查询不建议使用缓存，因为查询缓存失效在实际业务场景中可能会非常频繁，假如你对一个表更新的话，这个表上的所有的查询缓存都会被清空，MySQL 8.0 版本后删除了缓存的功能，</li>
-</ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】MySQL存储引擎]]></title>
-        <id>https://xzzz2020.github.io/post/j_WKr1zJr/</id>
-        <link href="https://xzzz2020.github.io/post/j_WKr1zJr/">
-        </link>
-        <updated>2020-07-26T10:42:13.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-myisam-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">一、MyISAM 存储引擎</a></li>
-<li><a href="#%E4%BA%8C-innodb-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">二、InnoDB 存储引擎</a></li>
-<li><a href="#%E4%B8%89-memory-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">三、MEMORY 存储引擎</a></li>
-<li><a href="#%E5%9B%9B-myisam%E5%92%8Cinnodb%E5%8C%BA%E5%88%AB">四、MyISAM和InnoDB区别</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<blockquote>
-<p>存储引擎是表级别的，不同的表可以使用不同的存储引擎！！！</p>
-</blockquote>
-<h2 id="一-myisam-存储引擎">一、MyISAM 存储引擎</h2>
-<ul>
-<li>
-<p>没有提供对数据库事务的支持，也不支持行级锁和外键，所以写操作需要锁定整个表，效率便会低一些</p>
-</li>
-<li>
-<p>执行读取操作的速度很快，而且不占用大量的内存和存储资源，在设计之初就预想数据组织成有固定长度的记录，按顺序存储的</p>
-</li>
-<li>
-<p>可以手工或者自动执行检查和修复操作，但是和事务恢复以及崩溃恢复不同，可能导致一些数据丢失，而且修复操作是非常慢的。</p>
-</li>
-</ul>
-<h2 id="二-innodb-存储引擎">二、InnoDB 存储引擎</h2>
-<ul>
-<li>是 MySQL 默认的事务型存储引擎，只有在需要它不支持的特性时，才考虑使用其它存储引擎。<br>
-实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ 间隙锁（Next-Key Locking）防止幻影读。</li>
-<li>主索引是聚簇索引，在索引中保存了数据，从而避免直接读取磁盘，因此对查询性能有很大的提升。</li>
-<li>内部做了很多优化，包括从磁盘读取数据时采用的可预测性读、能够加快读操作并且自动创建的自适应哈希索引、能够加速插入操作的插入缓冲区等。</li>
-<li>支持真正的在线热备份。其它存储引擎不支持在线热备份，要获取一致性视图需要停止对所有表的写入，而在读写混合场景中，停止写入可能也意味着停止读取</li>
-</ul>
-<h2 id="三-memory-存储引擎">三、MEMORY 存储引擎</h2>
-<ul>
-<li>数据存在内存</li>
-<li>不支持持久化</li>
-</ul>
-<h2 id="四-myisam和innodb区别">四、MyISAM和InnoDB区别</h2>
-<p>MyISAM是MySQL的默认数据库引擎（5.5版之前）。虽然性能极佳，而且提供了大量的特性，包括全文索引、压缩、空间函数等，但MyISAM不支持事务和行级锁，而且最大的缺陷就是崩溃后无法安全恢复。不过，5.5版本之后，MySQL引入了InnoDB（事务性数据库引擎），MySQL 5.5版本后默认的存储引擎为InnoDB。</p>
-<p>大多数时候我们使用的都是 InnoDB 存储引擎，但是在某些情况下使用 MyISAM 也是合适的比如读密集的情况下。（如果你不介意 MyISAM 崩溃恢复问题的话）。</p>
-<p><strong>两者的对比：</strong></p>
-<ol>
-<li><strong>是否支持行级锁</strong> : MyISAM 只有表级锁(table-level locking)，而InnoDB 支持行级锁(row-level locking)和表级锁,默认为行级锁。</li>
-<li><strong>是否支持事务和崩溃后的安全恢复： MyISAM</strong> 强调的是性能，每次查询具有原子性,其执行速度比InnoDB类型更快，但是不提供事务支持。但是<strong>InnoDB</strong> 提供事务支持事务，外部键等高级数据库功能。 具有事务(commit)、回滚(rollback)和崩溃修复能力(crash recovery capabilities)的事务安全(transaction-safe (ACID compliant))型表。</li>
-<li><strong>是否支持外键：</strong> MyISAM不支持，而InnoDB支持。</li>
-<li><strong>是否支持MVCC</strong> ：仅 InnoDB 支持。应对高并发事务, MVCC比单纯的加锁更高效;MVCC只在 <code>READ COMMITTED</code> 和 <code>REPEATABLE READ</code> 两个隔离级别下工作;MVCC可以使用 乐观(optimistic)锁 和 悲观(pessimistic)锁来实现;各数据库中MVCC实现并不统一。</li>
-<li><strong>索引的差别</strong>：MyISAM的B+Tree叶节点的data域存放的是数据记录的地址，然后以 data 域的值为地址读取相应的数据记录；InnoDB的数据文件本身就是索引文件，在根据主索引搜索时，直接找到key所在的节点即可取出数据；在根据辅助索引查找时，则需要先取出主键的值，再走一遍主索引。 因此，在设计表的时候，不建议使用过长的字段作为主键，也不建议使用非单调的字段作为主键，否则会降低查询的素的。</li>
-</ol>
-<p>一般情况下我们选择 InnoDB 都是没有问题的，但是某些情况下你并不在乎可扩展能力和并发能力，也不需要事务支持，也不在乎崩溃后的安全恢复问题的话，选择MyISAM也是一个不错的选择。但是一般情况下，我们都是需要考虑到这些问题的。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】InnoDB存储引擎]]></title>
-        <id>https://xzzz2020.github.io/post/M3FXzw5ip/</id>
-        <link href="https://xzzz2020.github.io/post/M3FXzw5ip/">
-        </link>
-        <updated>2020-07-26T10:41:10.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-innodb%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F">一、InnoDB存储引擎工作方式</a></li>
-<li><a href="#%E4%BA%8C-%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7">二、关键特性</a>
-<ul>
-<li><a href="#1-%E6%8F%92%E5%85%A5%E7%BC%93%E5%AD%98">1. 插入缓存</a></li>
-<li><a href="#2-%E4%B8%A4%E6%AC%A1%E5%86%99">2. 两次写</a></li>
-<li><a href="#3-%E8%87%AA%E9%80%82%E5%BA%94%E5%93%88%E5%B8%8C%E7%B4%A2%E5%BC%95">3. 自适应哈希索引</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%89-redo-log-binlog%E5%92%8Cundo-log">三、redo log、binlog和undo log</a>
-<ul>
-<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AFredo-log">1. 什么是redo log？</a></li>
-<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AFbinlog">2. 什么是binlog？</a></li>
-<li><a href="#3-redo-log%E5%92%8Cbinlog%E5%8C%BA%E5%88%AB">3. redo log和binlog区别</a></li>
-<li><a href="#4-%E5%9B%9E%E6%BB%9A%E6%97%A5%E5%BF%97undo-log">4. 回滚日志（undo log）</a></li>
-<li><a href="#5-redo-log%E5%92%8Cundo-log%E7%9A%84%E5%8C%BA%E5%88%AB">5. redo log和undo log的区别</a></li>
-<li><a href="#6-%E4%B8%80%E6%9D%A1%E6%9B%B4%E6%96%B0%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E7%9A%84%E9%A1%BA%E5%BA%8F">6. 一条更新语句执行的顺序</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-innodb存储引擎工作方式">一、InnoDB存储引擎工作方式</h2>
-<ul>
-<li>将数据库文件按页（每页16k）读取到缓冲池，然后按照最近最少使用的算法（LRU）保留缓存数据。</li>
-<li>如果数据发生更改，总是<code>先修改缓存池的页</code>（脏页），然后再保存在磁盘中</li>
-</ul>
-<h2 id="二-关键特性">二、关键特性</h2>
-<h3 id="1-插入缓存">1. 插入缓存</h3>
-<ul>
-<li>因为主键是表唯一标识，所以插入顺序按照主键递增（自增主键）的顺序插入。</li>
-<li>因此，插入的聚集索引一般是顺序的，不需要对磁盘随机读取，所以速度很快。</li>
-<li>但是一个表不止有聚集索引，索引的插入不再是顺序的</li>
-<li>插入索引对于非聚集索引，不是一次性插入到索引页，先判断索引页是否在缓存池。如果在，直接插入；如果不在，先放入插入缓存，<code>将多个插入合并在一个中</code>(因为都是在一个索引页中)，在根据磁盘IO情况更新到磁盘中。</li>
-<li><code>索引必须是辅助索引，索引不是唯一的</code></li>
-<li>默认最多占一半缓存池空间</li>
-</ul>
-<p><strong>缺点</strong>：</p>
-<ul>
-<li>由于并没有及时把索引更新到磁盘中，如果数据库宕机，则<code>需要很多的时间恢复数据</code></li>
-</ul>
-<h3 id="2-两次写">2. 两次写</h3>
-<ul>
-<li>当数据库宕机时，数据库可能正在写一个页面，而这个页面只写了一部分，则称之为部分写失效，从而导致数据丢失</li>
-<li>如果此时直接使用Undo日志，由于页出现了损坏，所以此时是无意义的</li>
-<li><code>在执行Undo日志之前，先需要一个页副本用来恢复的没有写之前的状态，再进行重做。</code></li>
-</ul>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwNDA5MTgzNjAwOTI2LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
-<ul>
-<li>doublewrite由两部分组成：内存中的doublewrite buffer，物理磁盘共享表中的两个区</li>
-<li><code>在缓冲池脏页刷新时，先将数据拷贝到内存中的doublewrite buffer，然后在写入物理磁盘共享表中的两个区，然后在更新磁盘数据</code></li>
-<li>由于doublewrite是连续的，所以对其的IO操作时顺序写的，开销不大</li>
-</ul>
-<h3 id="3-自适应哈希索引">3. 自适应哈希索引</h3>
-<ul>
-<li>哈希是一种查找办法，常用于join连接操作</li>
-<li>会监控表上索引的查找，如果建立哈希索引可以提供速度，则建立哈希索引。</li>
-<li>哈希索引通过缓存池中的B+数构造而来，因此建立速度很快</li>
-<li>并不是整个表都需要建立哈希索引，InnoDB会根据访问的频率为某些页单独建立哈希索引</li>
-</ul>
-<h2 id="三-redo-log-binlog和undo-log">三、redo log、binlog和undo log</h2>
-<h3 id="1-什么是redo-log">1. 什么是redo log？</h3>
-<ul>
-<li>
-<p>redo  log是InnoDB存储引擎层的日志，又称重做日志文件，<strong>用于记录事务操作的变化，记录的是数据修改之后的值，不管事务是否提交都会记录下来。在实例和介质失败（media failure）时，redo log文件就能派上用场，如数据库掉电，InnoDB存储引擎会使用redo  log恢复到掉电前的时刻，以此来保证数据的完整性。</strong></p>
-</li>
-<li>
-<p><strong>在一条更新语句进行执行的时候，InnoDB引擎会把更新记录写到redo log日志中，然后更新内存</strong>，此时算是语句执行完了，然后<strong>在空闲的时候或者是按照设定的更新策略将redo log中的内容更新到磁盘中</strong>，这里涉及到<code>WAL</code>即<code>Write Ahead logging</code>技术，<strong>他的关键点是先写日志，再写磁盘。</strong></p>
-</li>
-<li>
-<p>有了redo log日志，那么在数据库进行异常重启的时候，可以根据redo log日志进行恢复，也就达到了<code>crash-safe</code>。</p>
-</li>
-<li>
-<p><strong>redo log日志的大小是固定的，即记录满了以后就从头循环写，并且会暂停当前的所有数据更改操作，先将redo log日志同步到磁盘中。</strong></p>
-</li>
-</ul>
-<h3 id="2-什么是binlog">2. 什么是binlog？</h3>
-<ul>
-<li>可以作为数据恢复，在MySQL层面保证数据一致性的</li>
-<li>属于逻辑日志，是以二进制的形式记录的是这个语句的原始逻辑</li>
-<li>也可以用于主从之间保证数据一致性</li>
-</ul>
-<h3 id="3-redo-log和binlog区别">3. redo log和binlog区别</h3>
-<ul>
-<li>
-<p>redo log是属于innoDB层面，binlog属于MySQL Server层面的，这样在数据库用别的存储引擎时可以达到一致性的要求。</p>
-</li>
-<li>
-<p>redo log是物理日志，记录该数据页更新的内容；binlog是逻辑日志，记录的是这个更新语句的原始逻辑</p>
-</li>
-<li>
-<p>redo log是循环写，日志空间大小固定；binlog是追加写，是指一份写到一定大小的时候会更换下一个文件，不会覆盖。</p>
-</li>
-<li>
-<p>binlog可以作为恢复数据使用，也可以用于主从复制搭建，redo log作为异常宕机或者介质故障后的数据恢复使用。</p>
-</li>
-</ul>
-<h3 id="4-回滚日志undo-log">4. 回滚日志（undo log）</h3>
-<ul>
-<li>
-<p>属于InnoDB层面保证事务的原子性</p>
-</li>
-<li>
-<p>保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读</p>
-</li>
-</ul>
-<h3 id="5-redo-log和undo-log的区别">5. redo log和undo log的区别</h3>
-<ul>
-<li>redo log是保证事务持久性的，undo log是保证事务原子性的</li>
-<li>undo log用于备份一个事务开始前的数据，不会影响原本的数据，都是先在备份中更改，最后写入磁盘</li>
-<li>redo log用于记录每一个数据更新的内容，用于在二次写中恢复破损的数据</li>
-</ul>
-<h3 id="6-一条更新语句执行的顺序">6. 一条更新语句执行的顺序</h3>
-<p>update T set c=c+1 where ID=2;</p>
-<ul>
-<li>执行器先找引擎取 ID=2 这一行。ID 是主键，引擎直接用树搜索找到这一行。如果 ID=2 这一行所在的数据页本来就在内存中，就直接返回给执行器；否则，需要先从磁盘读入内存，然后再返回。</li>
-<li>执行器拿到引擎给的行数据，把这个值加上 1，比如原来是 N，现在就是 N+1，得到新的一行数据，再调用引擎接口写入这行新数据。</li>
-<li>引擎将这行新数据更新到内存中，同时将这个更新操作记录到 redo log 里面，此时 redo log 处于 prepare 状态。然后告知执行器执行完成了，随时可以提交事务。</li>
-<li>执行器生成这个操作的 binlog，并把 binlog 写入磁盘。</li>
-<li>执行器调用引擎的提交事务接口，引擎把刚刚写入的 redo log 改成提交（commit）状态，更新完成。</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】数据库优化策略]]></title>
-        <id>https://xzzz2020.github.io/post/5NPno0The/</id>
-        <link href="https://xzzz2020.github.io/post/5NPno0The/">
-        </link>
-        <updated>2020-07-26T10:39:35.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E4%BC%98%E5%8C%96">一、数据结构的优化</a></li>
-<li><a href="#%E4%BA%8C-%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BC%98%E5%8C%96">二、服务器优化</a></li>
-<li><a href="#%E4%B8%89-%E7%BA%BF%E4%B8%8A%E5%AE%9A%E4%BD%8D">三、线上定位</a></li>
-<li><a href="#%E5%9B%9B-%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96">四、查询语句的优化</a>
-<ul>
-<li><a href="#1-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%97%B6%E9%97%B4%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF">1. sql 语句的时间花在哪儿?</a></li>
-<li><a href="#2-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4%E5%8F%88%E8%8A%B1%E5%9C%A8%E5%93%AA%E5%84%BF%E4%BA%86">2. sql 语句的执行时间,又花在哪儿了?</a></li>
-<li><a href="#3-sql-%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF">3. sql 语句的优化思路？</a></li>
-<li><a href="#4-%E5%A6%82%E4%BD%95%E5%AE%9A%E9%87%8F%E5%88%86%E6%9E%90%E6%9F%A5%E7%9A%84%E5%A4%9A%E5%B0%91%E8%A1%8C%E5%92%8C%E6%98%AF%E5%90%A6%E6%B2%BF%E7%9D%80%E7%B4%A2%E5%BC%95%E6%9F%A5">4. 如何定量分析查的多少行,和是否沿着索引查?</a></li>
-<li><a href="#5-%E5%B8%B8%E8%A7%81%E7%9A%84%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96">5. 常见的查询优化</a></li>
-<li><a href="#6-%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96">6. 缓存优化</a></li>
-<li><a href="#7-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">7. 读写分离</a></li>
-<li><a href="#8-mysql-%E7%9A%84%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8">8. mysql 的分库分表</a></li>
-<li><a href="#9-explain%E4%BD%BF%E7%94%A8">9. EXPLAIN使用</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%94-%E7%B4%A2%E5%BC%95%E5%8F%8A%E4%BC%98%E5%8C%96">五、索引及优化</a>
-<ul>
-<li><a href="#1-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%9C%E7%94%A8">1. 索引的作用</a></li>
-<li><a href="#2-%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%86%E7%B1%BB">2. 索引的分类</a></li>
-<li><a href="#3-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BC%98%E7%82%B9%E6%9F%A5%E7%9A%84%E5%BF%AB">3. 索引的优点（查的快）</a></li>
-<li><a href="#4-%E7%B4%A2%E5%BC%95%E7%9A%84%E7%BC%BA%E7%82%B9%E5%A2%9E%E5%88%A0%E6%94%B9%E6%85%A2">4. 索引的缺点（增删改慢）</a></li>
-<li><a href="#5-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E6%88%96%E5%AD%97%E6%AE%B5%E9%80%82%E5%90%88%E5%8A%A0%E7%B4%A2%E5%BC%95">5. 哪些情况或字段适合加索引</a></li>
-<li><a href="#6-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8D%E9%80%82%E5%90%88%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95">6. 哪些情况不适合创建索引</a></li>
-<li><a href="#7-%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88">7. 哪些情况会造成索引失效</a></li>
-<li><a href="#8-%E7%B4%A2%E5%BC%95%E5%8E%9F%E7%90%86">8. 索引原理</a></li>
-</ul>
-</li>
-<li><a href="#%E5%85%AD-%E6%8F%92%E5%85%A5%E4%BC%98%E5%8C%96">六、插入优化</a></li>
-<li><a href="#%E4%B8%83-%E5%A4%A7%E8%A1%A8%E4%BC%98%E5%8C%96">七、大表优化</a>
-<ul>
-<li><a href="#1-%E9%99%90%E5%AE%9A%E6%95%B0%E6%8D%AE%E7%9A%84%E8%8C%83%E5%9B%B4">1. 限定数据的范围</a></li>
-<li><a href="#2-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">2. 读/写分离</a></li>
-<li><a href="#3-%E5%9E%82%E7%9B%B4%E5%88%86%E5%8C%BA">3. 垂直分区</a></li>
-<li><a href="#4-%E6%B0%B4%E5%B9%B3%E5%88%86%E5%8C%BA">4. 水平分区</a></li>
-<li><a href="#5-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%88%86%E5%BA%93%E7%AD%96%E7%95%A5">5. 数据库分库策略</a></li>
-<li><a href="#6-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E4%B9%8B%E5%90%8Eid-%E4%B8%BB%E9%94%AE%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86">6. 分库分表之后,id 主键如何处理？</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-数据结构的优化">一、数据结构的优化</h2>
-<p><strong>三大范式</strong>：</p>
-<ul>
-<li>数据库设计尽量遵循三范式</li>
-<li>根据实际情况进行取舍，有时可能会拿冗余换速度，减少表的关联查询，用空间换时间</li>
-<li>对于需要经常联合查询的表，可以建立中间表以提高查询效率</li>
-<li>对于字段较多的表，如果有些字段的使用频率很低，可以将这些字段分离出来形成新表</li>
-</ul>
-<p><strong>数据库命令规范</strong>：</p>
-<ul>
-<li>所有数据库对象名称必须使用小写字母并用下划线分割</li>
-<li>数据库对象的命名要能做到见名识意，并且最后不要超过 32 个字符</li>
-<li>所有存储相同数据的列名和列类型必须一致（一般作为关联列，如果查询时关联列类型不一致会自动进行数据类型隐式转换，会造成列上的索引失效，导致查询效率降低）</li>
-</ul>
-<p><strong>列的选择</strong>：</p>
-<ul>
-<li>字段类型优先级 整型 &gt; date,time &gt; char,varchar &gt; blob</li>
-<li>尽量不要有null，可以设置为不允许空，或者加一个默认值</li>
-<li>数据大小够用就行</li>
-<li>不要使用大数据字段，如TEXT，BLOB</li>
-<li>财务数据使用decimal，不会丢失精度</li>
-</ul>
-<p><strong>主键的选择</strong>：</p>
-<ul>
-<li>在 myisam 中,字符串索引会被压缩,用字符串做主键性能不如整型</li>
-<li>用递增的值,不要用离散的值,离散值会导致文件在磁盘的位置有间隔,浪费空间且不易连续读取</li>
-</ul>
-<h2 id="二-服务器优化">二、服务器优化</h2>
-<p><strong>优化服务器硬件</strong></p>
-<ul>
-<li>配置较大的内存</li>
-<li>配置高速磁盘，比如 SSD</li>
-<li>配置多核处理器， MySQL 是多线程的数据库，多处理器可以提高同时执行多个线程的能力</li>
-</ul>
-<p><strong>优化 MySQL 的参数</strong></p>
-<ul>
-<li>
-<p>修改my.conf 或者 my.ini 配置文件</p>
-</li>
-<li>
-<p><strong>key_buffer_size</strong>：表示索引缓冲区大小，缓存数据，只对MyISAM表起作用，不是越大越好，大小取决于内存</p>
-</li>
-<li>
-<p><strong>innodb_buffer_pool_size</strong>：表示InnoDB类型表和索引的最大缓存，值越大查询速度越快</p>
-</li>
-<li>
-<p><strong>query_cache_size</strong>：表示查询缓冲区大小，MySQL8以上已经移除</p>
-</li>
-<li>
-<p><strong>max_connections</strong>：表示数据库的最大连接数，也不是越多越好，过多连接可能会导致僵死</p>
-</li>
-</ul>
-<h2 id="三-线上定位">三、线上定位</h2>
-<p><strong>发现系统运行缓慢，如何定位和分析查询慢的 sql 语句 ？</strong></p>
-<ol>
-<li>开启 mysql 慢日志查询 定位查询较慢的 sql 语句 （200ms 500ms ）</li>
-<li>使用 EXPLAIN 关键字可以让你知道 MySQL 是如何处理你的 SQL 语句的。这可以帮你分析你的查询语句或是表结构的性能瓶颈。 EXPLAIN 的查询结果还会告诉你你的索引主键被如何利用的，你的数据表是如何被搜索和排序的……等等，等等</li>
-<li>代码中可以使用 AOP 的操作 对每个持久层的 service 方法 打印执行时间，将所有执行时间较长的 sql 语句进行预警</li>
-<li>查看sql语句是否出现了临时表，临时表可能会通过IO落地到磁盘上，要尽可能避免</li>
-</ol>
-<h2 id="四-查询语句的优化">四、查询语句的优化</h2>
-<h3 id="1-sql-语句的时间花在哪儿">1. sql 语句的时间花在哪儿?</h3>
-<ul>
-<li>等待数据的等待时间，以及执行SQL语句时间.</li>
-<li>这两个时间并非孤立的, 如果单条语句执行的快了,对其他语句的锁定的也就少了</li>
-</ul>
-<h3 id="2-sql-语句的执行时间又花在哪儿了">2. sql 语句的执行时间,又花在哪儿了?</h3>
-<ul>
-<li>查 ----&gt; 沿着索引查,甚至全表扫描</li>
-<li>取 ----&gt; 查到行后,把数据取出来(sending data)</li>
-</ul>
-<h3 id="3-sql-语句的优化思路">3. sql 语句的优化思路？</h3>
-<ul>
-<li>不查, 通过业务逻辑来计算,比如论坛的注册会员数,我们可以根据前 3 个月统计的每天注册数, 用程序来估算</li>
-<li>少查, 尽量精准数据,少取行. 我们观察新闻网站,评论内容等,一般一次性取列表 10-30 条左右</li>
-<li>必须要查,尽量走在索引上查询行</li>
-<li>取时, 取尽量少的列</li>
-</ul>
-<h3 id="4-如何定量分析查的多少行和是否沿着索引查">4. 如何定量分析查的多少行,和是否沿着索引查?</h3>
-<ul>
-<li>用 explain 来分析</li>
-</ul>
-<h3 id="5-常见的查询优化">5. 常见的查询优化</h3>
-<ul>
-<li>SELECT 语句务必指明字段名称（避免直接使用 select * ），使用*时，分析器，会要分析出都有什么列，会消耗很多时间，同时执行的时候，会返回很多没有必要的列</li>
-<li>SQL 语句要避免造成索引失效的写法</li>
-<li>当只需要一条数据的时候，使用 limit 1，这样就通过sql语句过滤，而避免了执行时的过滤</li>
-<li>如果排序字段没有用到索引，就尽量少排序</li>
-<li>如果限制条件中其他字段没有索引，尽量少用 or</li>
-<li>避免在 where 子句中对字段进行 null 值判断</li>
-<li>不建议使用%前缀模糊查询</li>
-<li>避免在 where 子句中对字段进行表达式操作</li>
-<li>Join 优化 能用 inner join 就不用 left join right join，如必须使用 一定要已小表为驱动</li>
-<li>可以使用连接查询（JOIN）代替子查询，连接查询时不需要建立临时表，其速度比子查询快</li>
-</ul>
-<h3 id="6-缓存优化">6. 缓存优化</h3>
-<ul>
-<li>为了提高查询速度，我们可以通过不同的方式去缓存我们的结果从而提高响应效，可以去打开查询缓存或者使用Redis</li>
-</ul>
-<h3 id="7-读写分离">7. 读写分离</h3>
-<ul>
-<li>如果数据库的使用场景读的操作比较的时候，为了避免写的操作所造成的性能影响 可以采用读写分离的架构，读写分离，解决的是，数据库的写入，影响了查询的效率。读写分离的基本原理是让主数据库处理事务性增、改、删操作（INSERT、 UPDATE、 DELETE），而从数据库处理 SELECT 查询操作</li>
-</ul>
-<h3 id="8-mysql-的分库分表">8. mysql 的分库分表</h3>
-<ul>
-<li>
-<p>数据量越来越大时，单体数据库无法满足要求，可以考虑分库分表</p>
-</li>
-<li>
-<p>两种拆分方案：</p>
-<ul>
-<li>垂直拆分：（分库）业务表太多？ 将业务细化 不同的小业务专门用一个库来维护</li>
-<li>水平拆分：（分表）单个表存的数据太多，装不下了？ 将该表查分成多个</li>
-</ul>
-</li>
-<li>
-<p>分库分表常用工具： MyCat</p>
-</li>
-</ul>
-<h3 id="9-explain使用">9. EXPLAIN使用</h3>
-<p><strong>select_type，表示 SELECT 语句的类型，取值如下</strong></p>
-<ul>
-<li><strong>SIMPLE</strong>：表示简单查询，其中不包含连接查询和子查询</li>
-<li><strong>PRIMARY</strong>：主键查血</li>
-<li><strong>UNION</strong>：表示连接查询</li>
-<li><strong>UNION RESULT</strong> ：连接查询的结果</li>
-<li><strong>SUBQUERY</strong>：子查询</li>
-</ul>
-<p><strong>type ，表示表的连接类型 ，取值如下</strong>：</p>
-<ul>
-<li><strong>system</strong>：表仅有一行，这是 const 类型的特列，平时不会出现，这个也可以忽略不计</li>
-<li><strong>const</strong>：数据表最多只有一个匹配行，因为只匹配一行数据，所以很快，常用于 PRIMARY KEY 或者 UNIQUE 索引的查询，<code>可理解为 const 是最优化的</code></li>
-<li><strong>eq_ref</strong> ：读取本表中和关联表表中的每行组合成的一行，索引是主键或唯一非 NULL 索引</li>
-<li><strong>ref</strong>：查询条件索引既不是 UNIQUE 也不是 PRIMARY KEY 的情况</li>
-<li><strong>ref_or_null</strong>：该联接类型如同 ref，但是添加了 MySQL 可以专门搜索包含 NULL 值的行。在解决子查询中经常使用该联接类型的优化。</li>
-</ul>
-<p>上面这五种情况都是很理想的索引使用情况。</p>
-<ul>
-<li><strong>index_merge</strong>：该联接类型表示使用了索引合并优化方法。在这种情况下， key 列包含了使用的索引的清单</li>
-<li><strong>unique_subquery</strong>：是一个索引查找函数,可以完全替换子查询,效率更高。</li>
-<li><strong>index_subquery</strong>：只检索给定范围的行,使用一个索引来选择行</li>
-<li><strong>range</strong>：只检索给定范围的行,使用一个索引来选择行</li>
-<li><strong>index</strong>：该联接类型与 ALL 相同,除了只有索引树被扫描。</li>
-<li><strong>ALL</strong>：对于每个来自于先前的表的行组合,进行完整的表扫描，性能最差</li>
-</ul>
-<p>**possible_keys，可能用到的索引  **</p>
-<p>**key，最终用的索引 ，如果没有选择索引,键是 NULL  **</p>
-<h2 id="五-索引及优化">五、索引及优化</h2>
-<blockquote>
-<p>注意避免冗余索引，比如说(name)和(name,price)，(name)就是冗余索引</p>
-</blockquote>
-<h3 id="1-索引的作用">1. 索引的作用</h3>
-<p>当表中的数据量越来越大时，索引对于性能的影响愈发重要。索引优化应该是对查询性能优化最有效的手段了。</p>
-<p>索引能够轻易将查询性能提高好几个数量级。有了索引相当于我们给数据库的数据加了目录一样，可以快速的找到数据，如果不适用索引则需要一点一点去查找数据。 简单来说提高数据查询的效率。</p>
-<h3 id="2-索引的分类">2. 索引的分类</h3>
-<ul>
-<li>普通索引 index :加速查找</li>
-<li>唯一索引
-<ul>
-<li>主键索引： primary key ：加速查找+约束（不为空且唯一）</li>
-<li>唯一索引： unique：加速查找+约束 （唯一）</li>
-</ul>
-</li>
-<li>联合索引（组合索引）</li>
-</ul>
-<h3 id="3-索引的优点查的快">3. 索引的优点（查的快）</h3>
-<ol>
-<li>可以通过建立唯一索引或者主键索引,保证数据库表中每一行数据的唯一性.</li>
-<li>建立索引可以大大提高检索的数据,以及减少表的检索行数</li>
-<li>在表连接的连接条件 可以加速表与表直接的相连</li>
-<li>在分组和排序字句进行数据检索,可以减少查询时间中 分组 和 排序时所消耗的时间(数据库的记录会重新排序)</li>
-<li>建立索引,在查询中使用索引 可以提高性能</li>
-</ol>
-<h3 id="4-索引的缺点增删改慢">4. 索引的缺点（增删改慢）</h3>
-<ol>
-<li>在创建索引和维护索引 会耗费时间,随着数据量的增加而增加</li>
-<li>索引文件会占用物理空间,除了数据表需要占用物理空间之外,每一个索引还会占用一定的物理空间</li>
-<li>当对表的数据进行 INSERT,UPDATE,DELETE 的时候,索引也要动态的维护,这样就会降低数据的维护速度,(建立索引会占用磁盘空间的索引文件。一般情况这个问题不太严重，但如果你在一个大表上创建了多种组合索引，索引文件的会膨胀很快)</li>
-</ol>
-<h3 id="5-哪些情况或字段适合加索引">5. 哪些情况或字段适合加索引</h3>
-<ol>
-<li>在经常需要搜索的列上,可以加快索引的速度</li>
-<li>主键列上可以确保列的唯一性</li>
-<li>在表与表的而连接条件上加上索引,可以加快连接查询的速度</li>
-<li>在经常需要排序(order by),分组(group by)和的 distinct 列上加索引 可以加快排序查询的时间</li>
-</ol>
-<h3 id="6-哪些情况不适合创建索引">6. 哪些情况不适合创建索引</h3>
-<ol>
-<li>查询中很少使用到的列 不应该创建索引,如果建立了索引然而还会降低 mysql 的性能和增大了空间需求.</li>
-<li>很少数据的列也不应该建立索引,比如 一个性别字段 0或者1,在查询中,结果集的数据占了表中数据行的比例比较大,mysql 需要扫描的行数很多,增加索引,并不能提高效率</li>
-<li>定义为 text 和 image 和 bit 数据类型的列不应该增加索引,</li>
-<li>当表的修改(UPDATE,INSERT,DELETE)操作远远大于检索(SELECT)操作时不应该创建索引,这两个操作是互斥的关系</li>
-</ol>
-<h3 id="7-哪些情况会造成索引失效">7. 哪些情况会造成索引失效</h3>
-<ol>
-<li>如果条件中有 or，即使其中有条件带索引也不会使用(这也是为什么尽量少用 or 的原因)</li>
-<li>索引字段的值不能有 null 值，有 null 值会使该列索引失效</li>
-<li>对于多列索引，不是使用的第一部分，则不会使用索引（最左原则）</li>
-<li>like 查询以%开头</li>
-<li>如果列类型是字符串，那一定要在条件中将数据使用单引号引用起来,否则不使用索引</li>
-<li>在索引的列上使用表达式或者函数会使索引失效</li>
-</ol>
-<h3 id="8-索引原理">8. 索引原理</h3>
-<ul>
-<li>
-<p>MySQL 的基本存储结构是页(记录都存在页里边)：</p>
-</li>
-<li>
-<p>各个数据页可以组成一个双向链表</p>
-</li>
-<li>
-<p>每个数据页中的记录又可以组成一个单向链表</p>
-<ul>
-<li>每个数据页都会为存储在它里边儿的记录生成一个页目录，在通过主键查找某条记录的时候可以在页目录中使用二分法快速定位到对应的槽，然后再遍历该槽对应分组中的记录即可快速找到指定的记录</li>
-<li>以其他列(非主键)作为搜索条件：只能从最小记录开始依次遍历单链表中的每条记录。</li>
-</ul>
-</li>
-</ul>
-<p>所以说，如果我们写 select * from user where indexname = 'xxx'这样没有进行任何优化的 sql 语句，默认会这样做：</p>
-<ol>
-<li>定位到记录所在的页：需要遍历双向链表，找到所在的页</li>
-<li>从所在的页内中查找相应的记录：由于不是根据主键查询，只能遍历所在页的单链表了<br>
-很明显，在数据量很大的情况下这样查找会很慢！这样的时间复杂度为 O（n）</li>
-</ol>
-<p><strong>使用索引之后</strong></p>
-<ul>
-<li>其实就是将无序的数据变成有序(相对)：</li>
-<li>很明显的是：没有用索引我们是需要遍历双向链表来定位对应的页，现在通过 “目录” 就可以很快地定位到对应的页上了！（二分查找，时间复杂度近似为 O(logn)）</li>
-<li>其实底层结构就是 B+树， B+树作为树的一种实现，能够让我们很快地查找出对应的记录</li>
-</ul>
-<p><strong>面试题</strong></p>
-<p>有商品表, 有主键,goods_id, 栏目列 cat_id, 价格 price说:在价格列上已经加了索引,但按价格查询还是很慢,<br>
-问可能是什么原因,怎么解决?</p>
-<p>答: 在实际场景中,一个电商网站的商品分类很多,直接在所有商品中,按价格查商品,是极少的,一般客户都来到分类下,然后再查.</p>
-<p>改正: 去掉单独的 Price 列的索引, 加 (cat_id,price)复合索引再查询</p>
-<p><strong>索引优化策略</strong></p>
-<ol>
-<li>选择唯一性索引</li>
-<li>唯一性索引的值是唯一的，可以更快速的通过该索引来确定某条记录。</li>
-<li>为经常需要排序、分组和联合操作的字段建立索引：</li>
-<li>为常作为查询条件的字段建立索引。</li>
-<li>限制索引的数目： 越多的索引，会使更新表变得很浪费时间。</li>
-<li>尽量使用数据量少的索引</li>
-<li>如果索引的值很长，那么查询的速度会受到影响。</li>
-<li>尽量使用前缀来索引</li>
-<li>如果索引字段的值很长，最好使用值的前缀来索引。</li>
-<li>删除不再使用或者很少使用的索引</li>
-<li>最左前缀匹配原则，非常重要的原则。</li>
-<li>尽量选择区分度高的列作为索引</li>
-<li>区分度的公式是表示字段不重复的比例</li>
-<li>索引列不能参与计算，保持列“干净”：带函数的查询不参与索引。</li>
-<li>尽量的扩展索引，不要新建索引。</li>
-</ol>
-<h2 id="六-插入优化">六、插入优化</h2>
-<p><strong>InnoDB</strong>：</p>
-<ol>
-<li>
-<p>禁用唯一性检查，唯一性校验会降低插入记录的速度，可以在插入记录之前禁用唯一性检查，插入数据完成后再开启</p>
-</li>
-<li>
-<p>禁用外键检查，插入数据之前执行禁止事务的自动提交</p>
-</li>
-<li>
-<p>禁止自动提交，插入数据之前执行禁止事务的自动提交</p>
-</li>
-<li>
-<p>批量插入数据，可以使用一条 INSERT 语句插入一条数据</p>
-</li>
-</ol>
-<h2 id="七-大表优化">七、大表优化</h2>
-<p>当MySQL单表记录数过大时，数据库的CRUD性能会明显下降，一些常见的优化措施如下：</p>
-<h3 id="1-限定数据的范围">1. 限定数据的范围</h3>
-<p>务必禁止不带任何限制数据范围条件的查询语句。比如：我们当用户在查询订单历史的时候，我们可以控制在一个月的范围内；</p>
-<h3 id="2-读写分离">2. 读/写分离</h3>
-<p>经典的数据库拆分方案，主库负责写，从库负责读；</p>
-<h3 id="3-垂直分区">3. 垂直分区</h3>
-<p><strong>根据数据库里面数据表的相关性进行拆分。</strong> 例如，用户表中既有用户的登录信息又有用户的基本信息，可以将用户表拆分成两个单独的表，甚至放到单独的库做分库。</p>
-<p><strong>简单来说垂直拆分是指数据表列的拆分，把一张列比较多的表拆分为多张表。</strong> 如下图所示，这样来说大家应该就更容易理解了</p>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTU0ODA2MDU2LnBuZw?x-oss-process=image/format,png" alt="image-20200717154806056" loading="lazy"></figure>
-<h3 id="4-水平分区">4. 水平分区</h3>
-<p><strong>保持数据表结构不变，通过某种策略存储数据分片。这样每一片数据分散到不同的表或者库中，达到了分布式的目的。 水平拆分可以支撑非常大的数据量。</strong></p>
-<p>水平拆分是指数据表行的拆分，表的行数超过200万行时，就会变慢，这时可以把一张的表的数据拆成多张表来存放。举个例子：我们可以将用户信息表拆分成多个用户信息表，这样就可以避免单一表数据量过大对性能造成影响。</p>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE3MTU0OTEwMjc3LnBuZw?x-oss-process=image/format,png" alt="image-20200717154910277" loading="lazy"></figure>
-<p>分表仅仅是解决了单一表数据过大的问题，但由于表的数据还是在同一台机器上，其实对于提升MySQL并发能力没有什么意义，所以 <strong>水平拆分最好分库</strong> 。</p>
-<h3 id="5-数据库分库策略">5. 数据库分库策略</h3>
-<ul>
-<li><strong>客户端代理：</strong>  <strong>分片逻辑在应用端，封装在jar包中，通过修改或者封装JDBC层来实现。</strong> 当当网的 <strong>Sharding-JDBC</strong> 、阿里的TDDL是两种比较常用的实现。</li>
-<li><strong>中间件代理：</strong> <strong>在应用和数据中间加了一个代理层。分片逻辑统一维护在中间件服务中。</strong> 我们现在谈的 <strong>Mycat</strong> 、360的Atlas、网易的DDB等等都是这种架构的实现。</li>
-</ul>
-<h3 id="6-分库分表之后id-主键如何处理">6. 分库分表之后,id 主键如何处理？</h3>
-<p>因为要是分成多个表之后，每个表都是从 1 开始累加，这样是不对的，我们需要一个全局唯一的 id 来支持。</p>
-<p>生成全局 id 有下面这几种方式：</p>
-<ul>
-<li><strong>UUID</strong>：不适合作为主键，因为太长了，并且无序不可读，查询效率低。比较适合用于生成唯一的名字的标示比如文件的名字。</li>
-<li><strong>数据库自增 id</strong> : : 两台数据库分别设置不同步长，生成不重复ID的策略来实现高可用。这种方式生成的 id 有序，但是需要独立部署数据库实例，成本高，还会有性能瓶颈。</li>
-<li><strong>利用 redis 生成 id :</strong> 性能比较好，灵活方便，不依赖于数据库。但是，引入了新的组件造成系统更加复杂，可用性降低，编码更加复杂，增加了系统成本。</li>
-<li><strong>Twitter的snowflake算法 、美团的Leaf分布式ID生成系统</strong></li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】数据库基础]]></title>
-        <id>https://xzzz2020.github.io/post/74It5jkMz/</id>
-        <link href="https://xzzz2020.github.io/post/74It5jkMz/">
-        </link>
-        <updated>2020-07-26T10:37:57.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9832814.html">数据库专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E8%83%BD%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B%E4%BB%80%E4%B9%88%E6%98%AFmysql%E5%90%97">一、能简单介绍一下什么是Mysql吗？</a></li>
-<li><a href="#%E4%BA%8C-sql-%E7%9A%84%E5%88%86%E7%B1%BB">二、SQL 的分类</a></li>
-<li><a href="#%E4%B8%89-%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%89%E5%A4%A7%E8%8C%83%E5%BC%8F">三、数据库三大范式</a>
-<ul>
-<li><a href="#1-%E7%AC%AC%E4%B8%80%E8%8C%83%E5%BC%8F">1. 第一范式</a></li>
-<li><a href="#2-%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F">2. 第二范式</a></li>
-<li><a href="#3-%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F">3. 第三范式</a></li>
-<li><a href="#4-%E6%80%BB%E7%BB%93">4. 总结</a></li>
-</ul>
-</li>
-<li><a href="#%E5%9B%9B-%E4%BA%8B%E5%8A%A1%E7%9A%84%E7%AE%80%E4%BB%8B">四、事务的简介</a></li>
-<li><a href="#%E4%BA%94-%E4%BA%8B%E5%8A%A1%E7%9A%84%E7%89%B9%E6%80%A7">五、事务的特性</a>
-<ul>
-<li><a href="#1-%E5%8E%9F%E5%AD%90%E6%80%A7">1. 原子性</a></li>
-<li><a href="#2-%E4%B8%80%E8%87%B4%E6%80%A7">2. 一致性</a></li>
-<li><a href="#3-%E9%9A%94%E7%A6%BB%E6%80%A7">3. 隔离性</a></li>
-<li><a href="#4-%E6%8C%81%E4%B9%85%E6%80%A7">4. 持久性</a></li>
-</ul>
-</li>
-<li><a href="#%E5%85%AD-%E5%B9%B6%E5%8F%91%E4%BA%8B%E5%8A%A1%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98">六、并发事务出现的问题</a></li>
-<li><a href="#%E4%B8%83-%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">七、事务隔离级别</a>
-<ul>
-<li><a href="#1-%E5%9B%9B%E4%B8%AA%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">1. 四个隔离级别</a></li>
-</ul>
-</li>
-<li><a href="#%E5%85%AB-%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E5%92%8C%E5%B9%B6%E5%8F%91%E7%AD%96%E7%95%A5">八、数据库锁和并发策略</a>
-<ul>
-<li><a href="#1-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%94%81">1. 常见的锁</a></li>
-<li><a href="#2-%E9%A1%B5%E7%BA%A7%E9%94%81">2. 页级锁</a></li>
-<li><a href="#3-%E4%B9%90%E8%A7%82%E9%94%81">3. 乐观锁</a></li>
-<li><a href="#4-%E6%82%B2%E8%A7%82%E9%94%81">4. 悲观锁</a></li>
-<li><a href="#5-innodb%E9%94%81%E7%AE%97%E6%B3%95">5. InnoDB锁算法</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B9%9D-%E7%BB%99%E5%AE%9A%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF%E8%AF%B4%E6%98%8E%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%80%9D%E8%B7%AF">九、给定业务场景说明设计数据库的思路</a></li>
-<li><a href="#%E5%8D%81-%E8%AF%B4%E4%B8%80%E4%B8%8B%E4%BB%80%E4%B9%88%E6%98%AF%E6%B1%A0%E5%8C%96%E8%AE%BE%E8%AE%A1">十、说一下什么是池化设计</a></li>
-<li><a href="#%E5%8D%81%E4%B8%80-%E4%B8%80%E6%9D%A1sql%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E6%85%A2%E7%9A%84%E5%8E%9F%E5%9B%A0">十一、一条SQL语句执行慢的原因？</a>
-<ul>
-<li><a href="#1-%E5%88%86%E7%B1%BB%E8%AE%A8%E8%AE%BA">1. 分类讨论</a></li>
-<li><a href="#2-%E9%92%88%E5%AF%B9%E5%81%B6%E5%B0%94%E5%BE%88%E6%85%A2%E7%9A%84%E6%83%85%E5%86%B5">2. 针对偶尔很慢的情况</a>
-<ul>
-<li><a href="#a-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9C%A8%E5%88%B7%E6%96%B0%E8%84%8F%E9%A1%B5flush">a. 数据库在刷新脏页（flush）</a></li>
-<li><a href="#b-%E6%8B%BF%E4%B8%8D%E5%88%B0%E9%94%81%E6%88%91%E8%83%BD%E6%80%8E%E4%B9%88%E5%8A%9E">b. 拿不到锁我能怎么办</a></li>
-</ul>
-</li>
-<li><a href="#3-%E9%92%88%E5%AF%B9%E4%B8%80%E7%9B%B4%E9%83%BD%E8%BF%99%E4%B9%88%E6%85%A2%E7%9A%84%E6%83%85%E5%86%B5">3. 针对一直都这么慢的情况</a>
-<ul>
-<li><a href="#a-%E6%B2%A1%E7%94%A8%E5%88%B0%E7%B4%A2%E5%BC%95">a. 没用到索引</a></li>
-<li><a href="#b-%E7%94%A8%E5%88%B0%E4%BA%86%E7%B4%A2%E5%BC%95%E4%BD%86%E6%98%AF%E7%B3%BB%E7%BB%9F%E8%AF%AF%E5%88%A4%E4%BA%86">b. 用到了索引，但是系统误判了</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-能简单介绍一下什么是mysql吗">一、能简单介绍一下什么是Mysql吗？</h2>
-<ul>
-<li>MySQL 是一种关系型数据库</li>
-<li>在Java企业级开发中非常常用，因为 MySQL 是开源免费的</li>
-<li>阿里巴巴数据库系统也大量用到了 MySQL，因此它的稳定性是有保障的</li>
-<li>MySQL的默认端口号是<strong>3306</strong></li>
-</ul>
-<h2 id="二-sql-的分类">二、SQL 的分类</h2>
-<ul>
-<li>
-<p><strong>DQL--数据查询语言</strong>：代表关键字:select</p>
-</li>
-<li>
-<p><strong>DML--数据操纵语言</strong>：代表关键字:insert,delete,update</p>
-</li>
-<li>
-<p><strong>DDL--数据定义语言</strong>：代表关键字:create ,drop,alter,</p>
-</li>
-<li>
-<p><strong>TCL--事务控制语言</strong>：代表关键字:commit ,rollback;</p>
-</li>
-<li>
-<p><strong>DCL--数据控制语言</strong>：代表关键字:grant,revoke.</p>
-</li>
-</ul>
-<h2 id="三-数据库三大范式">三、数据库三大范式</h2>
-<h3 id="1-第一范式">1. 第一范式</h3>
-<p><code>数据库表中不能出现重复记录，每个字段是原子性的不能再分</code></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">学生编号</th>
-<th style="text-align:center">学生姓名</th>
-<th style="text-align:center">联系方式</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">1001</td>
-<td style="text-align:center">张三</td>
-<td style="text-align:center">zs@gmail.com,1359999999</td>
-</tr>
-<tr>
-<td style="text-align:center">1002</td>
-<td style="text-align:center">李四</td>
-<td style="text-align:center">ls@gmail.com,13699999999</td>
-</tr>
-<tr>
-<td style="text-align:center">1001</td>
-<td style="text-align:center">王五</td>
-<td style="text-align:center">ww@163.net,13488888888</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>学生编号重复，因为没有主键</li>
-<li>联系方式既有邮箱和电话</li>
-</ul>
-<p>因此需要修改成如下形式：</p>
-<table>
-<thead>
-<tr>
-<th>学生编号(pk)</th>
-<th>学生姓名</th>
-<th>email</th>
-<th>联系电话</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1001</td>
-<td>张三</td>
-<td>zs@gmail.com</td>
-<td>1359999999</td>
-</tr>
-<tr>
-<td>1002</td>
-<td>李四</td>
-<td>ls@gmail.com</td>
-<td>13699999999</td>
-</tr>
-<tr>
-<td>1003</td>
-<td>王五</td>
-<td>ww@163.net</td>
-<td>13488888888</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>每个行必须唯一，且存在主键</li>
-<li>列不能再分</li>
-</ul>
-<h3 id="2-第二范式">2. 第二范式</h3>
-<p><code>要求所有非主键字段完全依赖主键，不能产生部分依赖</code></p>
-<table>
-<thead>
-<tr>
-<th>学生编号(PK)</th>
-<th>教师编号(PK)</th>
-<th>学生姓名</th>
-<th style="text-align:center">教师姓名</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1001</td>
-<td>001</td>
-<td>张三</td>
-<td style="text-align:center">王老师</td>
-</tr>
-<tr>
-<td>1002</td>
-<td>002</td>
-<td>李四</td>
-<td style="text-align:center">赵老师</td>
-</tr>
-<tr>
-<td>1003</td>
-<td>001</td>
-<td>王五</td>
-<td style="text-align:center">王老师</td>
-</tr>
-<tr>
-<td>1001</td>
-<td>002</td>
-<td>张三</td>
-<td style="text-align:center">赵老师</td>
-</tr>
-<tr>
-<td>1001</td>
-<td>002</td>
-<td>爱迪生</td>
-<td style="text-align:center">赵老师</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>如果只是拿学生编号或者教师编号做主键，都不能确定唯一一行数据，所以采用联合主键</li>
-<li>学生姓名部分依赖了主键的一个字段学生编号，而没有依赖教师编号，而教师姓名部门依赖了主键<br>
-的一个字段教师编号，这就是第二范式部分依赖。</li>
-</ul>
-<p><strong>解决就是分表</strong>：</p>
-<ul>
-<li>学生信息表</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>学生编号（PK）</th>
-<th>学生姓名</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1001</td>
-<td>张三</td>
-</tr>
-<tr>
-<td>1002</td>
-<td>李四</td>
-</tr>
-<tr>
-<td>1003</td>
-<td>王五</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>教师信息表</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>教师编号（PK）</th>
-<th>教师姓名</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>001</td>
-<td>王老师</td>
-</tr>
-<tr>
-<td>002</td>
-<td>赵老师</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>教师和学生的关系表</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>学生编号(PK)</th>
-<th>教师编号(PK)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1001</td>
-<td>001</td>
-</tr>
-<tr>
-<td>1002</td>
-<td>002</td>
-</tr>
-<tr>
-<td>1003</td>
-<td>001</td>
-</tr>
-<tr>
-<td>1001</td>
-<td>002</td>
-</tr>
-</tbody>
-</table>
-<h3 id="3-第三范式">3. 第三范式</h3>
-<p><code>非主键字段不能传递依赖于主键字段。</code></p>
-<table>
-<thead>
-<tr>
-<th>学生编号（PK）</th>
-<th>学生姓名</th>
-<th>班级编号</th>
-<th>班级名称</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1001</td>
-<td>张三</td>
-<td>01</td>
-<td>一年一班</td>
-</tr>
-<tr>
-<td>1002</td>
-<td>李四</td>
-<td>02</td>
-<td>一年二班</td>
-</tr>
-<tr>
-<td>1003</td>
-<td>王五</td>
-<td>03</td>
-<td>一年三班</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>班级名称字段没有直接依赖于主键，班级名称字段依赖于班级编号，班级编号依赖于学生编号，那么这就是传递依赖</li>
-</ul>
-<p><strong>继续分表</strong></p>
-<ul>
-<li>学生信息表</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>学生编号（PK）</th>
-<th>学生姓名</th>
-<th>班级编号</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1001</td>
-<td>张三</td>
-<td>01</td>
-</tr>
-<tr>
-<td>1002</td>
-<td>李四</td>
-<td>02</td>
-</tr>
-<tr>
-<td>1003</td>
-<td>王五</td>
-<td>03</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>班级信息表</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>班级编号</th>
-<th>班级名称</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>01</td>
-<td>一年一班</td>
-</tr>
-<tr>
-<td>02</td>
-<td>一年二班</td>
-</tr>
-<tr>
-<td>03</td>
-<td>一年三班</td>
-</tr>
-</tbody>
-</table>
-<h3 id="4-总结">4. 总结</h3>
-<ul>
-<li>第一范式： 有主键，具有原子性，字段不可分割</li>
-<li>第二范式：完全依赖， 没有部分依赖</li>
-<li>第三范式： 没有传递依赖</li>
-</ul>
-<p>数据库设计尽量遵循三范式，但是还是根据实际情况进行取舍，有时可能会拿冗余换速度，最终用目的要满足客户需求</p>
-<h2 id="四-事务的简介">四、事务的简介</h2>
-<ul>
-<li>当执行 DML 语句是其实就是开启一个事务</li>
-<li>关于事务的回滚需要注意：只能回滚 insert、 delete 和 update 语句，不能回滚 select（回滚 select 没有任何意义），对于 create、 drop、 alter 这些无法回滚.事务只对 DML 有效果。</li>
-<li>注意： rollback，或者 commit 后事务就结束了。</li>
-</ul>
-<h2 id="五-事务的特性">五、事务的特性</h2>
-<h3 id="1-原子性">1. 原子性</h3>
-<ul>
-<li>整个事务中的所有操作，必须作为一个单元全部完成（或全部取消）。</li>
-</ul>
-<p>undo log 名为回滚日志，是实现原子性的关键，当事务回滚时能够撤销所有已经成功执行的 sql 语句，他需要记录你要回滚的相应日志信息。</p>
-<p>undo log 记录了这些回滚需要的信息，当事务执行失败或调用了 rollback，导致事务需要回滚，便可以利用 undolog 中的信息将数据回滚到修改之前的样子。</p>
-<h3 id="2-一致性">2. 一致性</h3>
-<ul>
-<li>关注数据的可见性，中间状态的数据对外部不可见，只有最初状态和最终状态的数据对外可见</li>
-</ul>
-<p>数据库无法保证，需要从应用层角度考虑，用业务来实现。从应用层面，通过代码判断数据库数据是否有效，然后决定回滚还是提交数据</p>
-<h3 id="3-隔离性">3. 隔离性</h3>
-<p>并发访问数据库时，一个用户的事务不被其他事务所干扰，各并发事务之间数据库是独立的</p>
-<p>事务的隔离性是利用的是锁和 MVCC 机制。</p>
-<p>至于 MVCC,即多版本并发控制(Multi Version Concurrency Control),一个行记录数据有多个版本对快照数据，这些快照数据在 undo log 中。</p>
-<p>如果一个事务读取的行正在做 DELELE 或者 UPDATE 操作，读取操作不会等行上的锁释放，而是读取该行的快照版本。</p>
-<h3 id="4-持久性">4. 持久性</h3>
-<p>在事务完成以后，该事务对数据库所作的更改将持久地保存在数据库之中，并不会被回滚。</p>
-<p>事务的持久性是利用 Innodb 的redo log</p>
-<h2 id="六-并发事务出现的问题">六、并发事务出现的问题</h2>
-<ul>
-<li><strong>脏读（Dirty read）:</strong> 当一个事务正在访问数据并且对数据进行了修改，而这种修改还没有提交到数据库中，这时另外一个事务也访问了这个数据，然后使用了这个数据。因为这个数据是还没有提交的数据，那么另外一个事务读到的这个数据是“脏数据”，依据“脏数据”所做的操作可能是不正确的。</li>
-<li><strong>丢失修改（Lost to modify）:</strong>  指在一个事务读取一个数据时，另外一个事务也访问了该数据，那么在第一个事务中修改了这个数据后，第二个事务也修改了这个数据。这样第一个事务内的修改结果就被丢失，因此称为丢失修改。     例如：事务1读取某表中的数据A=20，事务2也读取A=20，事务1修改A=A-1，事务2也修改A=A-1，最终结果A=19，事务1的修改被丢失。</li>
-<li><strong>不可重复读（Unrepeatableread）:</strong> 指在一个事务内多次读同一数据。在这个事务还没有结束时，另一个事务也访问该数据。那么，在第一个事务中的两次读数据之间，由于第二个事务的修改导致第一个事务两次读取的数据可能不太一样。这就发生了在一个事务内两次读到的数据是不一样的情况，因此称为不可重复读。</li>
-<li><strong>幻读（Phantom read）:</strong> 幻读与不可重复读类似。它发生在一个事务（T1）读取了几行数据，接着另一个并发事务（T2）插入了一些数据时。在随后的查询中，第一个事务（T1）就会发现多了一些原本不存在的记录，就好像发生了幻觉一样，所以称为幻读。</li>
-</ul>
-<p><strong>不可重复读和幻读区别：</strong></p>
-<p>不可重复读的重点是修改比如多次读取一条记录发现其中某些列的值被修改，幻读的重点在于新增或者删除比如多次读取一条记录发现记录增多或减少了。</p>
-<h2 id="七-事务隔离级别">七、事务隔离级别</h2>
-<h3 id="1-四个隔离级别">1. 四个隔离级别</h3>
-<ul>
-<li><strong>读未提交</strong>：允许一个事务可以看到其他事务未提交的修改，可能会导致脏读、幻读或不可重复读。</li>
-<li><strong>读已提交</strong>：允许一个事务只能看到其他事务已经提交的修改，可以阻止脏读，但是幻读或不可重复读仍有可能发生。</li>
-<li><strong>可重复读</strong>：确保如果在一个事务中执行两次相同的 SELECT 语句，都能得到相同的结果，不管其他事务是否提交这些修改，可以阻止脏读和不可重复读，但幻读仍有可能发生。</li>
-<li><strong>串行化</strong>：将一个事务与其他事务完全地隔离，相当于加锁，该级别可以防止脏读、不可重复读以及幻读。</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>隔离级别</th>
-<th>脏读</th>
-<th>不可重复读</th>
-<th>幻影读</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>READ-UNCOMMITTED</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>READ-COMMITTED</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-</tr>
-<tr>
-<td>REPEATABLE-READ</td>
-<td>×</td>
-<td>×</td>
-<td>√</td>
-</tr>
-<tr>
-<td>SERIALIZABLE</td>
-<td>×</td>
-<td>×</td>
-<td>×</td>
-</tr>
-</tbody>
-</table>
-<p>MySQL InnoDB 存储引擎的默认支持的隔离级别是 <strong>REPEATABLE-READ（可重读）</strong>。</p>
-<blockquote>
-<p>InnoDB 存储引擎<strong>REPEATABLE-READ（可重读）</strong>  事务隔离级别下使用的是Next-Key Lock 锁算法，因此可以避免幻读的产生，这与其他数据库系统(如 SQL Server) 是不同的。所以说InnoDB 存储引擎的默认支持的隔离级别是 <strong>REPEATABLE-READ（可重读）</strong> 已经可以完全保证事务的隔离性要求，即达到了 SQL标准的 <strong>SERIALIZABLE(可串行化)</strong> 隔离级别。</p>
-</blockquote>
-<h2 id="八-数据库锁和并发策略">八、数据库锁和并发策略</h2>
-<h3 id="1-常见的锁">1. 常见的锁</h3>
-<ul>
-<li><strong>MyIsam 实现了表锁</strong>。表锁可以针对数据库表加锁，在锁的灵活性上不如行锁。表锁分为两种锁：读锁与写锁。</li>
-<li><strong>InnoDB 存储引擎实现了行锁与表锁（意向锁）</strong>。行锁可以以行为单位对数据集进行锁定。行锁也分为两种锁：<br>
-共享锁与排他锁。 InnoDB 对于 Update、 Delete、 insert 语句会自动给涉及的数据集隐式的加上排他锁。对于 select语句 InnoDB 不会加任何锁
-<ul>
-<li><strong>共享锁</strong>：允许一个事务读取一行，阻止其他事务获得相同数据集的排他锁。但允许其他事务获取共享锁。<br>
-显示加锁 select * from table where ... lock in share mode</li>
-<li><strong>排他锁</strong>：允许获得排他锁的事务更新数据，阻止其他事务取得相同数据集的共享与排他锁。但是可以对获取了排他锁的数据集进行单纯的查询访问。<br>
-显示加锁 sql select * from table where ... for update</li>
-</ul>
-</li>
-<li><strong>innoDB 的行锁的实现方式是基于索引项的</strong>。这意味着即使你尝试获取不同行的排他锁，若使用了相同的索引键，也可能会造成锁冲突。</li>
-</ul>
-<p><strong>表级锁和行级锁对比：</strong></p>
-<ul>
-<li>
-<p><strong>表级锁：</strong> MySQL中锁定 <strong>粒度最大</strong> 的一种锁，对当前操作的整张表加锁，实现简单，资源消耗也比较少，加锁快，不会出现死锁。其锁定粒度最大，触发锁冲突的概率最高，并发度最低，MyISAM和 InnoDB引擎都支持表级锁。</p>
-</li>
-<li>
-<p><strong>行级锁：</strong> MySQL中锁定 <strong>粒度最小</strong> 的一种锁，只针对当前操作的行进行加锁。 行级锁能大大减少数据库操作的冲突。其加锁粒度最小，并发度高，但加锁的开销也最大，加锁慢，会出现死锁。</p>
-</li>
-<li>
-<p>事务更新大表中的大部分数据直接使用表级锁效率更高；事务比较复杂，使用行级索很可能引起死锁导致回滚。</p>
-</li>
-</ul>
-<h3 id="2-页级锁">2. 页级锁</h3>
-<p>页级锁是 MySQL 中锁定粒度介于行级锁和表级锁中间的一种锁。表级锁速度快，但冲突多，行级冲突少，但速度慢。所以取了折衷的页级，一次锁定相邻的一组记录。 BDB 支持页级锁</p>
-<h3 id="3-乐观锁">3. 乐观锁</h3>
-<p>乐观锁认为一个用户读数据的时候，别人不会去写自己所读的数据</p>
-<p><strong>实现</strong>：</p>
-<p>时间戳就是在数据库表中单独加一列时间戳，比如“TimeStamp”，每次读出来的时候，把该字段也读出来，当写回去的时候，把该字段加 1，提交之前 ，跟数据库的该字段比较一次，如果比数 据库的值大的话，就允许保存，否则不允许保存，这种处理方法虽然不使用数据库系统提供的锁 机制，但是这种方法可以大大提高数据库处理的并发量</p>
-<pre><code class="language-sql"># 每一个记录都有version，会有冗余，可以一个表一个version
-Select data,version from biao where id = #{id};
-Update biao set data=#{data},version=vsersion+1 where id=#{id} and version = #{version};
-
-# 一个表一个修改
-begin;
-Select version from version_biao where table_name = #{table_name};
-Update biao set data=#{data} where id=#{id};
-Update version_biao set version=vsersion+1 from  where version = #{version};
-commit;
-</code></pre>
-<h3 id="4-悲观锁">4. 悲观锁</h3>
-<p>悲观锁就是在读取数据的时候，为了不让别人修改自己读取的数据，就会先对自己读取的数据加 锁，只有自<br>
-己把数据读完了，才允许别人修改那部分数据，或者反过来说，就是自己修改某条数 据的时候，不允许别人读取<br>
-该数据，只有等自己的整个事务提交了，才释放自己加上的锁，才允许其他用户访问那部分数据。</p>
-<p><strong>实现</strong>：</p>
-<p>sql 语句后边加上 for update</p>
-<pre><code class="language-sql">select id,nam from biao for update ;
-</code></pre>
-<h3 id="5-innodb锁算法">5. InnoDB锁算法</h3>
-<ul>
-<li>
-<p><strong>间隙锁</strong>：锁定一个一个区间记录中的间隙，不包括记录本身</p>
-</li>
-<li>
-<p><strong>行锁</strong>：单个行记录上的锁</p>
-</li>
-<li>
-<p><strong>临键锁</strong>：锁定一个一个区间记录中的间隙以及记录本身</p>
-</li>
-</ul>
-<h2 id="九-给定业务场景说明设计数据库的思路">九、给定业务场景说明设计数据库的思路</h2>
-<ol>
-<li>分析场景选择存储引擎，比如业务是读多还是写多？需不需要支持事务？</li>
-<li>数据库设计的原则，遵循三大范式，但是可以做一些适当的反三大范式</li>
-<li>字段的设计，选择类型</li>
-</ol>
-<h2 id="十-说一下什么是池化设计">十、说一下什么是池化设计</h2>
-<ul>
-<li>我们常见的如java线程池、jdbc连接池、redis连接池等就是这类设计的代表实现。这种设计会初始预设资源，解决的问题就是抵消每次获取资源的消耗，如创建线程的开销，获取远程连接的开销等。</li>
-<li>池化设计会配置一些参数，比如初始线程数，最大线程数等等，还会有一个阻塞队列，当一些请求过多时，会采用一些拒绝的策略</li>
-<li>在连接池中，创建连接后，将其放置在池中，并再次使用它，因此不必建立新的连接。如果使用了所有连接，则会建立一个新连接并将其添加到池中。 连接池还减少了用户必须等待建立与数据库的连接的时间。</li>
-</ul>
-<h2 id="十一-一条sql语句执行慢的原因">十一、一条SQL语句执行慢的原因？</h2>
-<h3 id="1-分类讨论">1. 分类讨论</h3>
-<ul>
-<li>
-<p>大多数情况是正常的，只是偶尔会出现很慢的情况。</p>
-</li>
-<li>
-<p>在数据量不变的情况下，这条SQL语句一直以来都执行的很慢。</p>
-</li>
-</ul>
-<h3 id="2-针对偶尔很慢的情况">2. 针对偶尔很慢的情况</h3>
-<p>一条 SQL 大多数情况正常，偶尔才能出现很慢的情况，针对这种情况，我觉得这条SQL语句的书写本身是没什么问题的，而是其他原因导致的，那会是什么原因呢？</p>
-<h4 id="a-数据库在刷新脏页flush">a. 数据库在刷新脏页（flush）</h4>
-<p>当我们要往数据库插入一条数据、或者要更新一条数据的时候，我们知道数据库会在<strong>内存</strong>中把对应字段的数据更新了，但是更新之后，这些更新的字段并不会马上同步持久化到<strong>磁盘</strong>中去，而是把这些更新的记录写入到 redo log 日记中去，等到空闲的时候，在通过 redo log 里的日记把最新的数据同步到<strong>磁盘</strong>中去。</p>
-<blockquote>
-<p>当内存数据页跟磁盘数据页内容不一致的时候，我们称这个内存页为“脏页”。内存数据写入到磁盘后，内存和磁盘上的数据页的内容就一致了，称为“干净页”。</p>
-</blockquote>
-<p><strong>刷脏页有两种场景会影响性能</strong></p>
-<ul>
-<li>**redolog写满了：**redo log 里的容量是有限的，如果数据库一直很忙，更新又很频繁，这个时候 redo log 很快就会被写满了，这个时候就没办法等到空闲的时候再把数据同步到磁盘的，只能暂停其他操作，全身心来把数据同步到磁盘中去的，而这个时候，<strong>就会导致我们平时正常的SQL语句突然执行的很慢</strong>，所以说，数据库在在同步数据到磁盘的时候，就有可能导致我们的SQL语句执行的很慢了。</li>
-<li>**内存不够用了：**如果一次查询较多的数据，恰好碰到所查数据页不在内存中时，需要申请内存，而此时恰好内存不足的时候就需要淘汰一部分内存数据页，如果是干净页，就直接释放，如果恰好是脏页就需要刷脏页。</li>
-</ul>
-<h4 id="b-拿不到锁我能怎么办">b. 拿不到锁我能怎么办</h4>
-<p>这个就比较容易想到了，我们要执行的这条语句，刚好这条语句涉及到的表，别人在用，并且加锁了，我们拿不到锁，只能慢慢等待别人释放锁了。或者，表没有加锁，但要使用到的某个一行被加锁了，这个时候，我也没办法啊。</p>
-<h3 id="3-针对一直都这么慢的情况">3. 针对一直都这么慢的情况</h3>
-<p>先通过EXPLAN去分析SQL语句是否用到索引，主要关注type，possible_key，keys这几个字段</p>
-<h4 id="a-没用到索引">a. 没用到索引</h4>
-<ul>
-<li>如果该字段没有加索引，那么自然没有用到索引</li>
-<li>字段有索引，但却没有用索引，那说明出现了索引失效，比如说like 查询以%开头，或者不满足索引的最左原则，或者使用了Or关键字，或者索引字段的值有NULL值，或者使用了函数</li>
-</ul>
-<h4 id="b-用到了索引但是系统误判了">b. 用到了索引，但是系统误判了</h4>
-<ul>
-<li>非主键索引存储的是主键索引的值，如果SQL语句走的非主键索引，那么还需要到主键索引去寻找对应的data</li>
-<li>当一个SQL语句范围比较大，比如where  x&gt;0  and  x &lt; 20000或者没有where条件，那么可能命中的数据非常多，甚至命中全表，而全表扫描顶多就是O(n)，此时再走索引，还会有两次索引寻找的时间消耗，即使索引查找非常快</li>
-<li>此时分析器就要判断是否走索引，采用的方式是抽样检测，来预测SQL语句范围中出现相同值的概率，比如在0-20000范围中，数字3可能出现了10次，也可能只出现1次，显然如果重复数字越少，走索引的性能越好</li>
-</ul>
 ]]></content>
     </entry>
 </feed>

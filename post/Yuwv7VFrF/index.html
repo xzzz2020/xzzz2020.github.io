@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】JVM垃圾回收 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/Yuwv7VFrF/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595847222760" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】JVM垃圾回收</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-27</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">5512字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">20 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1595761970908-aeeb4c79b086.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%AF%B9%E8%B1%A1%E6%98%AF%E5%90%A6%E6%AD%BB%E4%BA%A1">一、如何判断对象是否死亡？</a>
+<ul>
+<li><a href="#1-%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95">1. 引用计数法</a></li>
+<li><a href="#2-%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95">2. 可达性分析算法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8">二、四种引用</a></li>
+<li><a href="#%E4%B8%89-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95">三、垃圾回收算法</a>
+<ul>
+<li><a href="#1-%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95">1. 标记清除算法</a></li>
+<li><a href="#2-%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95">2. 复制算法</a></li>
+<li><a href="#3%E6%A0%87%E8%AE%B0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95">3.标记压缩算法</a></li>
+<li><a href="#4-%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95">4. 分代收集算法</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E6%9C%89%E9%82%A3%E4%BA%9B">四、常见的垃圾回收器有那些?</a>
+<ul>
+<li><a href="#1-serial-%E6%94%B6%E9%9B%86%E5%99%A8">1. Serial 收集器</a></li>
+<li><a href="#2-parnew-%E6%94%B6%E9%9B%86%E5%99%A8">2. ParNew 收集器</a></li>
+<li><a href="#3-parallel-scavenge-%E6%94%B6%E9%9B%86%E5%99%A8">3. Parallel Scavenge 收集器</a></li>
+<li><a href="#4-serial-old-%E6%94%B6%E9%9B%86%E5%99%A8">4. Serial Old 收集器</a></li>
+<li><a href="#5-parallel-old-%E6%94%B6%E9%9B%86%E5%99%A8">5. Parallel Old 收集器</a></li>
+<li><a href="#6-cms-%E6%94%B6%E9%9B%86%E5%99%A8">6. CMS 收集器</a></li>
+<li><a href="#7-g1-%E6%94%B6%E9%9B%86%E5%99%A8">7. G1 收集器</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E5%85%B6%E4%BB%96">五、其他</a>
+<ul>
+<li><a href="#1-%E6%96%B9%E6%B3%95%E5%8C%BA%E5%8F%AF%E4%BB%A5gc%E5%90%97">1. 方法区可以GC吗？</a></li>
+<li><a href="#2-%E5%93%AA%E4%BA%9B%E5%85%83%E7%B4%A0%E5%8F%AF%E4%BB%A5%E5%81%9Agc-root">2. 哪些元素可以做GC root？</a></li>
+<li><a href="#3-minor-gc-major-gc%E5%92%8Cfull-gc%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB">3. Minor GC、Major GC和Full GC之间的区别？</a>
+<ul>
+<li><a href="#minor-gc">Minor GC</a></li>
+<li><a href="#major-gc">Major GC</a></li>
+<li><a href="#full-gc">Full GC</a></li>
+</ul>
+</li>
+<li><a href="#4-%E5%B8%B8%E7%94%A8jvm%E5%8F%82%E6%95%B0">4. 常用JVM参数</a></li>
+<li><a href="#5-%E9%A2%91%E7%B9%81fullgc%E7%9A%84%E5%8E%9F%E5%9B%A0">5. 频繁fullGC的原因？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-如何判断对象是否死亡">一、如何判断对象是否死亡？</h2>
+<h3 id="1-引用计数法">1. 引用计数法</h3>
+<p>给对象中添加一个引用计数器，每当有一个地方引用它，计数器就加 1；当引用失效，计数器就减 1；任何时候计数器为 0 的对象就是不可能再被使用的。</p>
+<p><strong>这个方法实现简单，效率高，但是目前主流的虚拟机中并没有选择这个算法来管理内存，其最主要的原因是它很难解决对象之间相互循环引用的问题。</strong></p>
+<h3 id="2-可达性分析算法">2. 可达性分析算法</h3>
+<p>这个算法的基本思想就是通过一系列的称为 <strong>“GC Roots”</strong> 的对象作为起点，从这些节点开始向下搜索，节点所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连的话，则证明此对象是不可用的。</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwNDEzMTg1MzMxNTY5LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<p><strong>不可达的对象并非“非死不可”</strong></p>
+<ul>
+<li>即使在可达性分析法中不可达的对象，也并非是“非死不可”的，这时候它们暂时处于“缓刑阶段”，要真正宣告一个对象死亡，至少要经历两次标记过程</li>
+<li>被判定为需要执行的对象将会被放在一个队列中进行第二次标记，除非这个对象与引用链上的任何一个对象建立关联，否则就会被真的回收。</li>
+</ul>
+<p><strong>如何判断一个常量是废弃常量？</strong></p>
+<ul>
+<li>
+<p>运行时常量池主要回收的是废弃的常量。</p>
+</li>
+<li>
+<p>假如在常量池中存在字符串 &quot;abc&quot;，如果当前没有任何 String 对象引用该字符串常量的话，就说明常量 &quot;abc&quot; 就是废弃常量，如果这时发生内存回收的话而且有必要的话，&quot;abc&quot; 就会被系统清理出常量池。</p>
+</li>
+</ul>
+<p><strong>如何判断一个类是无用的类?</strong></p>
+<p>方法区主要回收的是无用的类，那么如何判断一个类是无用的类的呢？</p>
+<p>判定一个常量是否是“废弃常量”比较简单，而要判定一个类是否是“无用的类”的条件则相对苛刻许多。类需要同时满足下面 3 个条件才能算是 <strong>“无用的类”</strong> ：</p>
+<ul>
+<li>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</li>
+<li>加载该类的 ClassLoader 已经被回收。</li>
+<li>该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ul>
+<p>虚拟机可以对满足上述 3 个条件的无用类进行回收，这里说的仅仅是“可以”，而并不是和对象一样不使用了就会必然被回收。</p>
+<h2 id="二-四种引用">二、四种引用</h2>
+<blockquote>
+<p>无论是通过引用计数法判断对象引用数量，还是通过可达性分析法判断对象的引用链是否可达，判定对象的存活都与“引用”有关。</p>
+</blockquote>
+<p><strong>1．强引用（StrongReference）</strong></p>
+<p>以前我们使用的大部分引用实际上都是强引用，垃圾回收器绝不会回收它。当内存空间不足，Java 虚拟机宁愿抛出 OutOfMemoryError 错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足问题。</p>
+<p><strong>2．软引用（SoftReference）</strong></p>
+<p>如果内存空间足够，垃圾回收器就不会回收它，如果内存空间不足了，就会回收这些对象的内存。只要垃圾回收器没有回收它，该对象就可以被程序使用。软引用可用来实现内存敏感的高速缓存。</p>
+<p>软引用可以和一个引用队列（ReferenceQueue）联合使用，如果软引用所引用的对象被垃圾回收，JAVA 虚拟机就会把这个软引用加入到与之关联的引用队列中。</p>
+<p><strong>3．弱引用（WeakReference）</strong></p>
+<p>弱引用与软引用的区别在于：只具有弱引用的对象拥有更短暂的生命周期。在垃圾回收器线程扫描它所管辖的内存区域的过程中，一旦发现了只具有弱引用的对象，不管当前内存空间足够与否，都会回收它的内存。不过，由于垃圾回收器是一个优先级很低的线程， 因此不一定会很快发现那些只具有弱引用的对象。</p>
+<p>弱引用可以和一个引用队列（ReferenceQueue）联合使用，如果弱引用所引用的对象被垃圾回收，Java 虚拟机就会把这个弱引用加入到与之关联的引用队列中。</p>
+<p><strong>4．虚引用（PhantomReference）</strong></p>
+<p>&quot;虚引用&quot;顾名思义，就是形同虚设，与其他几种引用都不同，虚引用并不会决定对象的生命周期。如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收。</p>
+<p><strong>虚引用主要用来跟踪对象被垃圾回收的活动</strong>。</p>
+<p><strong>虚引用与软引用和弱引用的一个区别在于：</strong>  虚引用必须和引用队列（ReferenceQueue）联合使用。当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象的内存之前，把这个虚引用加入到与之关联的引用队列中。程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否将要被垃圾回收。程序如果发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动。</p>
+<p>特别注意，在程序设计中一般很少使用弱引用与虚引用，使用软引用的情况较多，这是因为<strong>软引用可以加速 JVM 对垃圾内存的回收速度，可以维护系统的运行安全，防止内存溢出（OutOfMemory）等问题的产生</strong>。.</p>
+<h2 id="三-垃圾回收算法">三、垃圾回收算法</h2>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTg1MjQ5MTE1LnBuZw?x-oss-process=image/format,png" alt="image-20200715185249115" loading="lazy"></figure>
+<h3 id="1-标记清除算法">1. 标记清除算法</h3>
+<p>该算法分为“标记”和“清除”阶段：首先比较出所有需要回收的对象，在标记完成后统一回收掉所有被标记的对象。它是最基础的收集算法，后续的算法都是对其不足进行改进得到。这种垃圾收集算法会带来两个明显的问题：</p>
+<ol>
+<li><strong>效率问题，需要STW，会影响性能</strong></li>
+<li><strong>空间问题（标记清除后会产生大量不连续的碎片）</strong></li>
+</ol>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200715183224647.png" alt="image-20200715183224647" style="zoom:67%;" />
+<p><strong>为什么不能边运行，边标记？</strong></p>
+<ul>
+<li>因为标记和清理的过程是遍历全部对象</li>
+<li>如果代码没有停止运行，就无法梳理所有的对象关系，此时的标记和清除是不准的，所以必须<code>停止应用程序</code></li>
+</ul>
+<h3 id="2-复制算法">2. 复制算法</h3>
+<p>复制算法的核心就是，将原有的内存空间一分为二，每次只用其中的一块，在垃圾回收时，将正在使用的对象复制到另一个内存空间中，然后将该内存空间清空，交换两个内存的角色，完成垃圾的回收。</p>
+<p>如果内存中的垃圾对象较多，需要复制的对象就较少，这种情况下适合使用该方式并且效率比较高，反之，则不适合。</p>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200715183550748.png" alt="image-20200715183550748" style="zoom:67%;" />
+<h3 id="3标记压缩算法">3.标记压缩算法</h3>
+<p>根据老年代的特点提出的一种标记算法，标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象回收，而是让所有存活的对象向一端移动，然后直接清理掉端边界以外的内存，<strong>从而解决了<code>碎片化</code>的问题</strong>。</p>
+<p>不过，标记压缩算法多了一步，对象移动内存位置的步骤，其<strong>效率</strong>也有有一定的影响</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTg0MjMwNDU3LnBuZw?x-oss-process=image/format,png" alt="image-20200715184230457" loading="lazy"></figure>
+<h3 id="4-分代收集算法">4. 分代收集算法</h3>
+<blockquote>
+<p>这样分区主要为了提高GC的效率，根据不同点分区选择不同的GC算法</p>
+</blockquote>
+<p>当前虚拟机的垃圾收集都采用分代收集算法，这种算法没有什么新的思想，只是根据对象存活周期的不同将内存分为几块。一般将 java 堆分为新生代和老年代，这样我们就可以根据各个年代的特点选择合适的垃圾收集算法。</p>
+<p><strong>比如在新生代中，每次收集都会有大量对象死去，所以可以选择复制算法，只需要付出少量对象的复制成本就可以完成每次垃圾收集。而老年代的对象存活几率是比较高的，而且没有额外的空间对它进行分配担保，所以我们必须选择“标记-清除”或“标记-整理”算法进行垃圾收集。</strong></p>
+<h2 id="四-常见的垃圾回收器有那些">四、常见的垃圾回收器有那些?</h2>
+<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTg1NTQxOTM1LnBuZw?x-oss-process=image/format,png" alt="image-20200715185541935" loading="lazy"></figure>
+<h3 id="1-serial-收集器">1. Serial 收集器</h3>
+<p>Serial（串行）收集器收集器是最基本、历史最悠久的垃圾收集器了。大家看名字就知道这个收集器是一个单线程收集器了。它的 <strong>“单线程”</strong> 的意义不仅仅意味着它只会使用一条垃圾收集线程去完成垃圾收集工作，更重要的是它在进行垃圾收集工作的时候必须暂停其他所有的工作线程（ <strong>&quot;Stop The World&quot;</strong> ），直到它收集结束。</p>
+<p><strong>新生代采用复制算法，老年代采用标记-整理算法</strong></p>
+<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAxOTIzMjE1LnBuZw?x-oss-process=image/format,png" alt="image-20200716101923215" loading="lazy"></figure>
+<p>但是 Serial 收集器有没有优于其他垃圾收集器的地方呢？当然有，它<strong>简单而高效（与其他收集器的单线程相比）</strong>。Serial 收集器由于没有线程交互的开销，自然可以获得很高的单线程收集效率。Serial 收集器对于运行在 Client 模式下的虚拟机来说是个不错的选择。</p>
+<h3 id="2-parnew-收集器">2. ParNew 收集器</h3>
+<p><strong>ParNew 收集器其实就是 Serial 收集器的多线程版本，除了使用多线程进行垃圾收集外，其余行为（控制参数、收集算法、回收策略等等）和 Serial 收集器完全一样。</strong></p>
+<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAyMDIxNTU5LnBuZw?x-oss-process=image/format,png" alt="image-20200716102021559" loading="lazy"></figure>
+<p><strong>新生代采用复制算法，老年代采用标记-整理算法。</strong></p>
+<p>它是许多运行在 Server 模式下的虚拟机的首要选择，除了 Serial 收集器外，只有它能与 CMS 收集器（真正意义上的并发收集器，后面会介绍到）配合工作</p>
+<h3 id="3-parallel-scavenge-收集器">3. Parallel Scavenge 收集器</h3>
+<p><strong>Parallel Scavenge 收集器关注点是吞吐量（高效率的利用 CPU）。CMS 等垃圾收集器的关注点更多的是用户线程的停顿时间（提高用户体验）。所谓吞吐量就是 CPU 中用于运行用户代码的时间与 CPU 总消耗时间的比值。</strong> Parallel Scavenge 收集器提供了很多参数供用户找到最合适的停顿时间或最大吞吐量，如果对于收集器运作不太了解的话，手工优化存在困难的话可以选择把内存管理优化交给虚拟机去完成也是一个不错的选择。</p>
+<figure data-type="image" tabindex="7"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAyMTQ3NzY4LnBuZw?x-oss-process=image/format,png" alt="image-20200716102147768" loading="lazy"></figure>
+<p><strong>新生代采用复制算法，老年代采用标记-整理算法。</strong></p>
+<p><strong>有两个很重要的参数</strong>：</p>
+<ul>
+<li>控制吞吐量大小</li>
+<li>控制最大垃圾收集停顿时间的</li>
+</ul>
+<h3 id="4-serial-old-收集器">4. Serial Old 收集器</h3>
+<p><strong>Serial 收集器的老年代版本</strong>，它同样是一个单线程收集器。它主要有两大用途：一种用途是在 JDK1.5 以及以前的版本中与 Parallel Scavenge 收集器搭配使用，另一种用途是作为 CMS 收集器的后备方案。</p>
+<h3 id="5-parallel-old-收集器">5. Parallel Old 收集器</h3>
+<p><strong>Parallel Scavenge 收集器的老年代版本</strong>。使用多线程和“标记-整理”算法。在注重吞吐量以及 CPU 资源的场合，都可以优先考虑 Parallel Scavenge 收集器和 Parallel Old 收集器。</p>
+<h3 id="6-cms-收集器">6. CMS 收集器</h3>
+<p><strong>CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。它非常符合在注重用户体验的应用上使用。</strong></p>
+<p><strong>CMS（Concurrent Mark Sweep）收集器是 HotSpot 虚拟机第一款真正意义上的并发收集器，它第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。</strong></p>
+<p>从名字中的<strong>Mark Sweep</strong>这两个词可以看出，CMS 收集器是一种 <strong>“标记-清除”算法</strong>实现的，它的运作过程相比于前面几种垃圾收集器来说更加复杂一些。整个过程分为四个步骤：</p>
+<ul>
+<li><strong>初始标记（STW）：</strong> 暂停所有的其他线程，并记录下直接与 root 相连的对象，速度很快 ；</li>
+<li><strong>并发标记：</strong> 同时开启 GC 和用户线程，用一个闭包结构去记录可达对象。但在这个阶段结束，这个闭包结构并不能保证包含当前所有的可达对象。因为用户线程可能会不断的更新引用域，所以 GC 线程无法保证可达性分析的实时性。所以这个算法里会跟踪记录这些发生引用更新的地方。</li>
+<li><strong>重新标记（STW）：</strong> 重新标记阶段就是为了修正并发标记期间因为用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，这个阶段的停顿时间一般会比初始标记阶段的时间稍长，远远比并发标记阶段时间短</li>
+<li><strong>并发清除：</strong> 开启用户线程，同时 GC 线程开始对未标记的区域做清扫。</li>
+</ul>
+<figure data-type="image" tabindex="8"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE2MTAyMzE5MjcxLnBuZw?x-oss-process=image/format,png" alt="image-20200716102319271" loading="lazy"></figure>
+<p>从它的名字就可以看出它是一款优秀的垃圾收集器，主要优点：<strong>并发收集、低停顿</strong>。但是它有下面三个明显的缺点：</p>
+<ul>
+<li><strong>对 CPU 资源敏感；</strong></li>
+<li><strong>无法处理浮动垃圾，并发清理阶段用户线程还在运行，这段时间就可能产生新的垃圾，新的垃圾在此次GC无法清除，只能等到下次清理。；</strong></li>
+<li><strong>它使用的回收算法-“标记-清除”算法会导致收集结束时会有大量空间碎片产生。</strong></li>
+</ul>
+<h3 id="7-g1-收集器">7. G1 收集器</h3>
+<p><strong>G1 (Garbage-First) 是一款面向服务器的垃圾收集器,主要针对配备多颗处理器及大容量内存的机器. 以极高概率满足 GC 停顿时间要求的同时,还具备高吞吐量性能特征.</strong></p>
+<p>被视为 JDK1.7 中 HotSpot 虚拟机的一个重要进化特征。它具备一下特点：</p>
+<ul>
+<li><strong>并行与并发</strong>：G1 能充分利用 CPU、多核环境下的硬件优势，使用多个 CPU（CPU 或者 CPU 核心）来缩短 Stop-The-World  停顿时间。部分其他收集器原本需要停顿 Java 线程执行的 GC 动作，G1 收集器仍然可以通过并发的方式让 java 程序继续执行。</li>
+<li><strong>分代收集</strong>：虽然 G1 可以不需要其他收集器配合就能独立管理整个 GC 堆，但是还是保留了分代的概念。</li>
+<li><strong>空间整合</strong>：与 CMS 的“标记--清除”算法不同，G1 从整体来看是基于“标记整理”算法实现的收集器；从局部上来看是基于“复制”算法实现的。</li>
+<li><strong>可预测的停顿</strong>：这是 G1 相对于 CMS 的另一个大优势，降低停顿时间是 G1 和 CMS 共同的关注点，但 G1 除了追求低停顿外，还能建立可预测的停顿时间模型，能让使用者明确指定在一个长度为 M 毫秒的时间片段内。</li>
+</ul>
+<p>G1 收集器的运作大致分为以下几个步骤：</p>
+<ul>
+<li><strong>初始标记</strong>：只标记GCRoots能直接关联到的对象</li>
+<li><strong>并发标记</strong>：进行GC Roots Tracing的过程</li>
+<li><strong>最终标记</strong>：修正并发标记期间，因程序运行导致标记发生变化的那一部分对象</li>
+<li><strong>筛选回收</strong>：根据时间来进行价值最大化的回收</li>
+</ul>
+<figure data-type="image" tabindex="9"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMTkxMTA5MjM0ODI1MTc0LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
+<p><strong>G1 收集器在后台维护了一个优先列表，每次根据允许的收集时间，优先选择回收价值最大的 Region(这也就是它的名字 Garbage-First 的由来)</strong>。这种使用 Region 划分内存空间以及有优先级的区域回收方式，保证了 G1 收集器在有限时间内可以尽可能高的收集效率（把内存化整为零）。</p>
+<h2 id="五-其他">五、其他</h2>
+<h3 id="1-方法区可以gc吗">1. 方法区可以GC吗？</h3>
+<p>方法区和堆一样，都是线程共享的内存区域，被用于存储已被虚拟机加载的类信息（字段等）、即时编译后的代码（方法字节码）、静态变量和常量等数据。</p>
+<p>根据Java虚拟机规范的规定，方法区无法满足内存分配需求时，也会抛出OutOfMemoryError异常，虽然规范规定虚拟机可以不实现垃圾收集，因为和堆的垃圾回收效率相比，方法区的回收效率实在太低，但是此部分内存区域也是可以被回收的。</p>
+<p>方法区的垃圾回收主要有两种，分别是<strong>对废弃常量的回收（常量池的回收）和对无用类的回收（类的卸载）。</strong></p>
+<p><strong>当一个常量对象不再任何地方被引用的时候，则被标记为废弃常量，这个常量可以被回收。</strong></p>
+<p><strong>方法区中的类需要同时满足以下三个条件才能被标记为无用的类</strong>：</p>
+<ol>
+<li>
+<p>Java堆中不存在该类的任何实例对象；</p>
+</li>
+<li>
+<p>加载该类的类加载器已经被回收；</p>
+</li>
+<li>
+<p>该类对应的java.lang.Class对象不在任何地方被引用，且无法在任何地方通过反射访问该类的方法。</p>
+</li>
+</ol>
+<p>当满足上述三个条件的类才可以被回收，但是并不是一定会被回收，需要参数进行控制，例如HotSpot虚拟机提供了-Xnoclassgc参数进行控制是否回收。</p>
+<h3 id="2-哪些元素可以做gc-root">2. 哪些元素可以做GC root？</h3>
+<ul>
+<li>虚拟机栈中的引用对象。</li>
+<li>方法区中的类静态变量引用的对象。</li>
+<li>方法区中常量引用对象。</li>
+<li>本地方法栈中JNI引用对象。</li>
+</ul>
+<h3 id="3-minor-gc-major-gc和full-gc之间的区别">3. Minor GC、Major GC和Full GC之间的区别？</h3>
+<h4 id="minor-gc">Minor GC</h4>
+<ul>
+<li>清理java堆中的年轻代，一般使用复制算法</li>
+</ul>
+<p><strong>触发条件</strong>:</p>
+<ul>
+<li>新生代空间不足时</li>
+</ul>
+<h4 id="major-gc">Major GC</h4>
+<ul>
+<li>一般使用标记-清除法，清理老年代</li>
+</ul>
+<p><strong>触发条件</strong>：</p>
+<ul>
+<li>当老年代不足时，会触发Major GC</li>
+</ul>
+<p><strong>什么时候老年代需要申请空间</strong></p>
+<ul>
+<li>新生代清理后依然出现空间不足，新生代复制到老年代</li>
+<li>年龄大于15，会复制到老年代</li>
+<li>新建一个大对象</li>
+</ul>
+<h4 id="full-gc">Full GC</h4>
+<ul>
+<li>
+<p>Full GC 是清理整个堆空间—包括年轻代和老久代</p>
+</li>
+<li>
+<p>只要发生fullGC，JAVA程序就会STW</p>
+</li>
+</ul>
+<p><strong>触发条件</strong>：</p>
+<ul>
+<li>
+<p>老年代空间不足</p>
+</li>
+<li>
+<p>方法区空间不足</p>
+</li>
+<li>
+<p>调用System.gc时，系统建议执行Full GC，但是不必然执行</p>
+</li>
+<li>
+<p>通过Minor GC后进入老年代的平均大小大于老年代的可用内存</p>
+</li>
+</ul>
+<p><strong>SafePoint</strong></p>
+<ul>
+<li>
+<p>分析过程中对象引用关系不会发生变化的点</p>
+</li>
+<li>
+<p>产生 Safepoint 的地方：方法调用、循环跳转、异常跳转等</p>
+</li>
+</ul>
+<h3 id="4-常用jvm参数">4. 常用JVM参数</h3>
+<ul>
+<li><strong>-Xmx</strong>：堆内存最大值，默认是机器物理内存的 1/4。 这个值决定了最多可用的 Java 堆内存。分配过少就会在应用中需要大量内存作缓存或者临时对象时出现 OOM（ Out Of Memory） 的问题 。如果分配过大，那么就会因PermSize 过小而引起的另外一种 Out Of Memory。</li>
+<li><strong>-Xms</strong>：设置 Java 堆初始化时的大小， 默认情况是机器物理内存的 1/64。这个主要是根据应用启动时消耗的资源决定，分配少了申请起来会降低运行速度，分配多了也浪费。</li>
+<li><strong>-XX:PermSize</strong>：初始化永久内存区域大小。</li>
+<li><strong>-Xmn</strong>：直接设置青年代大小。 整个 JVM 可用内存大小=青年代大小 + 老年代大小 + 持久代大小 。Sun 官方推荐配置为整个堆的3/8。</li>
+<li><strong>-XX:NewRatio</strong>：控制默认的 Young 代的大小，例如，设置-XX:NewRatio=3 意味着 Young 代和老年代的比率是 1:3。换句话说，Eden 和 Survivor 空间总和是整个堆大小的 1/4。</li>
+<li><strong>-XX:SurvivorRatio</strong>：设置年轻代中 Eden 区与 Survivor 区的大小比值。设置为 4，则两个 Survivor 区与一个 Eden 区的比值为 2:4，一个 Survivor 区占整个年轻代的 1/6。</li>
+<li><strong>-Xss</strong>：设置每个线程的堆栈大小， 根据应用的线程所需内存大小进行调整， 在相同物理内存下，减小这个值能生成更多的线程。</li>
+</ul>
+<h3 id="5-频繁fullgc的原因">5. 频繁fullGC的原因？</h3>
+<ul>
+<li>可能堆空间设置的太小了</li>
+<li>可能有对象长时间得不到释放</li>
+<li>内存碎片导致</li>
+</ul>
+<p><strong>所以建议先用jstack 保存当前堆栈信息，然后重启系统，保证系统的高可用</strong></p>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%AF%B9%E8%B1%A1%E6%98%AF%E5%90%A6%E6%AD%BB%E4%BA%A1">一、如何判断对象是否死亡？</a>
+<ul>
+<li><a href="#1-%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95">1. 引用计数法</a></li>
+<li><a href="#2-%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95">2. 可达性分析算法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8">二、四种引用</a></li>
+<li><a href="#%E4%B8%89-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95">三、垃圾回收算法</a>
+<ul>
+<li><a href="#1-%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95">1. 标记清除算法</a></li>
+<li><a href="#2-%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95">2. 复制算法</a></li>
+<li><a href="#3%E6%A0%87%E8%AE%B0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95">3.标记压缩算法</a></li>
+<li><a href="#4-%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95">4. 分代收集算法</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E6%9C%89%E9%82%A3%E4%BA%9B">四、常见的垃圾回收器有那些?</a>
+<ul>
+<li><a href="#1-serial-%E6%94%B6%E9%9B%86%E5%99%A8">1. Serial 收集器</a></li>
+<li><a href="#2-parnew-%E6%94%B6%E9%9B%86%E5%99%A8">2. ParNew 收集器</a></li>
+<li><a href="#3-parallel-scavenge-%E6%94%B6%E9%9B%86%E5%99%A8">3. Parallel Scavenge 收集器</a></li>
+<li><a href="#4-serial-old-%E6%94%B6%E9%9B%86%E5%99%A8">4. Serial Old 收集器</a></li>
+<li><a href="#5-parallel-old-%E6%94%B6%E9%9B%86%E5%99%A8">5. Parallel Old 收集器</a></li>
+<li><a href="#6-cms-%E6%94%B6%E9%9B%86%E5%99%A8">6. CMS 收集器</a></li>
+<li><a href="#7-g1-%E6%94%B6%E9%9B%86%E5%99%A8">7. G1 收集器</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E5%85%B6%E4%BB%96">五、其他</a>
+<ul>
+<li><a href="#1-%E6%96%B9%E6%B3%95%E5%8C%BA%E5%8F%AF%E4%BB%A5gc%E5%90%97">1. 方法区可以GC吗？</a></li>
+<li><a href="#2-%E5%93%AA%E4%BA%9B%E5%85%83%E7%B4%A0%E5%8F%AF%E4%BB%A5%E5%81%9Agc-root">2. 哪些元素可以做GC root？</a></li>
+<li><a href="#3-minor-gc-major-gc%E5%92%8Cfull-gc%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB">3. Minor GC、Major GC和Full GC之间的区别？</a>
+<ul>
+<li><a href="#minor-gc">Minor GC</a></li>
+<li><a href="#major-gc">Major GC</a></li>
+<li><a href="#full-gc">Full GC</a></li>
+</ul>
+</li>
+<li><a href="#4-%E5%B8%B8%E7%94%A8jvm%E5%8F%82%E6%95%B0">4. 常用JVM参数</a></li>
+<li><a href="#5-%E9%A2%91%E7%B9%81fullgc%E7%9A%84%E5%8E%9F%E5%9B%A0">5. 频繁fullGC的原因？</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-27 18:50:25";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-27 18:50:25";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>50</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

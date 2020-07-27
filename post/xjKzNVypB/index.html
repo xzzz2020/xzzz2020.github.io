@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】Redis基础 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/xjKzNVypB/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595847222760" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】Redis基础</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-27</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">5998字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">22 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1595789419250-e4b6788a5a25" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bredis">一、简单介绍一下Redis</a></li>
+<li><a href="#%E4%BA%8C-%E4%BA%94%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">二、五种数据结构</a>
+<ul>
+<li><a href="#1-%E5%AD%97%E7%AC%A6%E4%B8%B2-string">1. 字符串 string</a></li>
+<li><a href="#2-%E5%88%97%E8%A1%A8-list">2. 列表 list</a></li>
+<li><a href="#3-%E5%AD%97%E5%85%B8-hash">3. 字典 hash</a></li>
+<li><a href="#4-%E9%9B%86%E5%90%88-set">4. 集合 set</a></li>
+<li><a href="#5-%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8-zset">5. 有序列表 zset</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-redis%E5%92%8Cmemcached%E7%9A%84%E5%8C%BA%E5%88%AB">二、Redis和Memcached的区别？</a></li>
+<li><a href="#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E9%82%A3%E4%B9%88%E5%BF%AB">三、为什么Redis那么快？</a></li>
+<li><a href="#%E5%9B%9B-%E4%BB%8E%E6%B5%B7%E9%87%8Fkey%E9%87%8C%E6%9F%A5%E8%AF%A2%E5%87%BA%E6%9F%90%E4%B8%80%E5%9B%BA%E5%AE%9A%E5%89%8D%E7%BC%80%E7%9A%84key">四、从海量Key里查询出某一固定前缀的Key？</a></li>
+<li><a href="#%E4%BA%94-%E5%A6%82%E4%BD%95%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">五、如何用Redis实现异步消息队列</a></li>
+<li><a href="#%E5%85%AD-redis%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">六、Redis有哪些使用场景？</a></li>
+<li><a href="#%E4%B8%83-redis%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B">七、redis的删除策略有哪些</a></li>
+<li><a href="#%E5%85%AB-%E4%BB%80%E4%B9%88%E6%98%AF%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8">八、什么是布隆过滤器？</a>
+<ul>
+<li><a href="#1-%E5%8E%9F%E7%90%86">1. 原理</a></li>
+</ul>
+</li>
+<li><a href="#2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">2. 使用场景</a></li>
+<li><a href="#%E4%B9%9D-%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F">九、缓存穿透</a>
+<ul>
+<li><a href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95">有哪些解决办法？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81-%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">十、缓存雪崩</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-%E7%BC%93%E5%AD%98%E9%A2%84%E7%83%AD">十一、缓存预热</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-%E7%BC%93%E5%AD%98%E9%99%8D%E7%BA%A7">十二、缓存降级</a></li>
+<li><a href="#%E5%8D%81%E4%B8%89-%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5">十三、过期键的删除策略</a></li>
+<li><a href="#%E5%8D%81%E5%9B%9B-redis%E7%9A%84%E5%86%85%E5%AD%98%E7%94%A8%E5%AE%8C%E4%BA%86%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88">十四、Redis的内存用完了会发生什么？</a></li>
+<li><a href="#%E5%8D%81%E4%BA%94-redis%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3">十五、Redis事务相关</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-简单介绍一下redis">一、简单介绍一下Redis</h2>
+<ul>
+<li>一个 C 语言开发的数据库，是一个非关系型数据库，不过与传统数据库不同的是 Redis 的数据是存在内存中的，同时，所以读写速度非常快，因此 Redis 被广泛应用于缓存方向。</li>
+<li>除了做缓存之外，Redis 也经常用来做分布式锁</li>
+<li>Redis 提供了多种数据类型来支持不同的业务场景。Redis 还支持事务 、持久化、Lua 脚本、多种集群方案。</li>
+</ul>
+<h2 id="二-五种数据结构">二、五种数据结构</h2>
+<p><strong>Redis</strong> 有 5 种基础数据结构，它们分别是：<strong>string(字符串)</strong>、<strong>list(列表)</strong>、<strong>hash(字典)</strong>、<strong>set(集合)</strong> 和 <strong>zset(有序集合)</strong>。</p>
+<blockquote>
+<p>每种数据结构都有自己底层的内部编码实现，而且是多种实现，这样Redis会在合适的场景选择合适的内部编码。</p>
+<p>可以看到每种数据结构都有两种以上的内部编码实现，例如string数据结构就包含了raw、int和embstr三种内部编码。</p>
+<p>同时，有些内部编码可以作为多种外部数据结构的内部实现，例如ziplist就是hash、list和zset共有的内部编码。</p>
+</blockquote>
+<h3 id="1-字符串-string">1. 字符串 string</h3>
+<ul>
+<li>Redis 中的字符串是一种 <strong>动态字符串</strong>，这意味着使用者可以修改，它的底层实现有点类似于 Java 中的 <strong>ArrayList</strong>，有一个字符数组</li>
+</ul>
+<p><strong>为什么对于String这同样一组结构，Redis 使用泛型定义了好多次，而不直接使用int定义一组结构？</strong></p>
+<ul>
+<li>对于字符串的定义是SDS，结构里不直接使用 int 类型定义的原因是：当字符串比较短的时候，像长度len就可以用byte和short表示，为了对内存做极致的优化，不同长度的字符串使用不同的结构体来表示。</li>
+</ul>
+<pre><code class="language-c">struct __attribute__ ((__packed__)) sdshdr8 {
+    uint8_t len; /* used */
+    uint8_t alloc; /* excluding the header and null terminator */
+    unsigned char flags; /* 3 lsb of type, 5 unused bits */
+    char buf[];
+};
+</code></pre>
+<p><strong>SDS 与 C 字符串的区别？</strong></p>
+<ul>
+<li>因为 C 语言这种简单的字符串表示方式不符合 Redis 对字符串在安全性、效率以及功能方面的要求。</li>
+<li>例如C 语言使用了一个长度为 N+1 的字符数组来表示长度为 N 的字符串，并且字符数组最后一个元素总是 <code>'\0'</code></li>
+<li>这样简单的数据结构可能会造成一些问题，比如获取字符串长度为 O(N) 级别的操作，因为C 不保存数组的长度，每次都需要遍历一遍整个数组；不能很好的杜绝缓冲区溢出或者内存泄漏的问题，比如在做拼接字符串的时候，如果操作不当，就很容易出现问题；C 字符串只能保存文本数据，因为 C 语言中的字符串必须符合某种编码（比如 ASCII），例如中间出现的 <code>'\0'</code> 可能会被判定为提前结束的字符串而识别不了；</li>
+</ul>
+<blockquote>
+<p>Redis 规定了字符串的长度不得超过 512 MB</p>
+</blockquote>
+<p><strong>常用的操作有哪些？</strong></p>
+<ul>
+<li>通常使用 <code>SET</code> 和 <code>GET</code> 来设置和获取字符串值。</li>
+<li>还可以使用 <code>EXISTS</code> 和 <code>DEL</code> 关键字来查询是否存在和删除键值对</li>
+<li>还可以用<code>EXPIRE</code>设置过期时间</li>
+<li>可以进行原子的递增<code>INCR</code>或递减<code>DECR</code></li>
+<li><code>SET + EXPIRE + NX</code>实现分布式锁，SET key value [EX seconds]  NX  EX</li>
+</ul>
+<h3 id="2-列表-list">2. 列表 list</h3>
+<ul>
+<li>Redis 的列表相当于 Java 语言中的 <strong>LinkedList</strong>，注意它是链表而不是数组。这意味着 list 的插入和删除操作非常快，时间复杂度为 O(1)，但是索引定位很慢，时间复杂度为 O(n)。</li>
+</ul>
+<p><strong>底层定义一个头指针和尾指针实现双向链表，也就是可以实现队列和栈的功能</strong></p>
+<pre><code class="language-c">typedef struct list {
+    listNode *head;
+    listNode *tail;
+    void *(*dup)(void *ptr);
+    void (*free)(void *ptr);
+    int (*match)(void *ptr, void *key);
+    unsigned long len;
+} list;
+</code></pre>
+<p><strong>基本操作</strong></p>
+<ul>
+<li><code>LPUSH</code> 和 <code>RPUSH</code> 分别可以向 list 的左边（头部）和右边（尾部）添加一个新元素；</li>
+<li><code>LRANGE</code> 命令可以从 list 中取出一定范围的元素；</li>
+</ul>
+<h3 id="3-字典-hash">3. 字典 hash</h3>
+<ul>
+<li>Redis 中的字典相当于 Java 中的 <strong>HashMap</strong>，内部实现也差不多类似，都是通过 <strong>&quot;数组 + 链表&quot;</strong> 的链地址法来解决部分 <strong>哈希冲突</strong>，同时这样的结构也吸收了两种不同数据结构的优点。</li>
+</ul>
+<p><strong>内部定义就是哈希表，但是实际上定义了两个HashTable，而一般只使用其中一个，另一个用于渐进式Rehash</strong></p>
+<pre><code class="language-c">typedef struct dictht {
+    // 哈希表数组
+    dictEntry **table;
+    // 哈希表大小
+    unsigned long size;
+    // 哈希表大小掩码，用于计算索引值，总是等于 size - 1
+    unsigned long sizemask;
+    // 该哈希表已有节点的数量
+    unsigned long used;
+} dictht;
+
+typedef struct dict {
+    dictType *type;
+    void *privdata;
+    // 内部有两个 dictht 结构
+    dictht ht[2];
+    long rehashidx; /* rehashing not in progress if rehashidx == -1 */
+    unsigned long iterators; /* number of iterators currently running */
+} dict;
+</code></pre>
+<p><strong>渐进式ReHash</strong></p>
+<ul>
+<li>大字典的扩容是比较耗时间的，需要重新申请新的数组，然后将旧字典所有链表中的元素重新挂接到新的数组下面，这是一个 O(n) 级别的操作，作为单线程的 Redis 很难承受这样耗时的过程</li>
+<li>渐进式 rehash 会在 rehash 的同时，保留新旧两个 hash 结构，然后在后续的定时任务以及 hash 操作指令中，循序渐进的把旧字典的内容迁移到新字典中。当搬迁完成了，就会使用新的 hash 结构取而代之。</li>
+</ul>
+<p><strong>扩容和缩容</strong></p>
+<ul>
+<li>正常情况下，当 hash 表中 元素的个数等于第一维数组的长度时，就会开始扩容，扩容的新数组是原数组大小的 2 倍，不过如果 Redis 正在做 <code>bgsave(持久化命令)</code>，Redis 尽量不去扩容，但是如果 hash 表非常满了，达到了第一维数组长度的 5 倍了，这个时候就会 强制扩容。</li>
+<li>元素个数低于数组长度的 10%就会缩容，缩容不会考虑 Redis 是否在做持久化。</li>
+</ul>
+<p><strong>和String的取舍</strong></p>
+<ul>
+<li>Hash使用上相当于一个key 存储了多个String，但是底层更加复杂，占的空间更大</li>
+<li>一般用Hash存储对象，但是String也可以存储转换成JSON串的对象</li>
+</ul>
+<h3 id="4-集合-set">4. 集合 set</h3>
+<ul>
+<li>Redis 的集合相当于 Java 语言中的 <strong>HashSet</strong>，它内部的键值对是无序、唯一的。它的内部实现相当于一个特殊的字典，字典中所有的 value 都是一个值 NULL。</li>
+</ul>
+<h3 id="5-有序列表-zset">5. 有序列表 zset</h3>
+<ul>
+<li>类似于 Java 中 <strong>SortedSet</strong>，内部实现用的是一种叫做 <strong>「跳跃表」</strong> 的数据结构</li>
+</ul>
+<blockquote>
+<p>什么是跳跃表，可以看看这篇文章</p>
+</blockquote>
+<h2 id="二-redis和memcached的区别">二、Redis和Memcached的区别？</h2>
+<blockquote>
+<p>两者都是非关系型内存键值数据库</p>
+</blockquote>
+<ul>
+<li><strong>数据类型</strong>：Memcached 仅支持字符串类型，而 Redis 支持五种不同的数据类型，可以更灵活地解决问题。</li>
+<li><strong>数据持久化</strong>：Redis 支持两种持久化策略：RDB 快照和 AOF 日志，而 Memcached 不支持持久化。</li>
+<li><strong>分布式</strong>：Memcached 不支持分布式，只能通过在客户端使用一致性哈希来实现分布式存储，这种方式在存储和查询时都需要先在客户端计算一次数据所在的节点。Redis Cluster 实现了分布式的支持</li>
+<li><strong>主从</strong>：Memcached不支持主从，而Redis支持</li>
+<li><strong>内存管理机制</strong>：在 Redis 中，并不是所有数据都一直存储在内存中，可以将一些很久没用的 value 交换到磁盘，而Memcached 的数据则会一直在内存中。</li>
+</ul>
+<pre><code>vm-enabled yes    #开启虚拟内存功能
+vm-max-memory 268435456     #redis 使用的最大内存上限（256MB） ，超过上限后redis 开始交换 value 到磁盘 swap 文件中。建议设置为系统空闲内存的 60%-80%
+vm-swap-file /tmp/redis.swap    #交换出来 value 保存的文件路径/tmp/redis.swap
+</code></pre>
+<h2 id="三-为什么redis那么快">三、为什么Redis那么快？</h2>
+<ul>
+<li>完全基于内存，绝大部分请求是纯粹的内存操作，执行效率高</li>
+<li>数据结构简单，对数据操作也简单，主要都是key-value，类似于hashmap</li>
+<li>实用的单线程，在高并发的时候，避免了线程切换和锁的竞争</li>
+<li>使用多路I/O复用模型，非阻塞IO，通过多路复用函数，检测文件是否可读和可写的状态</li>
+</ul>
+<h2 id="四-从海量key里查询出某一固定前缀的key">四、从海量Key里查询出某一固定前缀的Key？</h2>
+<blockquote>
+<p><strong>在回答问题之前，需要注意一下</strong>:摸清数据规模，问清楚边界</p>
+</blockquote>
+<ul>
+<li>如果直接使用keys指令，但是这个这个指令是O(n)，会阻塞当前的redis</li>
+<li>可以使用scan指令，每次执行都只会返回少量元素，是一个基于游标的迭代器。这意味着命令每次被调用都需要使用上一次这个调用返回的游标作为该次调用的游标参数，以此来延续之前的迭代过程，可以使用给定一个count来控制返回的结果数，但是并不会严格的控制，<strong>但是这个可能会获取到重复的key，可以使用HashSet去重</strong></li>
+</ul>
+<h2 id="五-如何用redis实现异步消息队列">五、如何用Redis实现异步消息队列</h2>
+<p><strong>方案一</strong></p>
+<ul>
+<li>
+<p>可以使用list这个数据结构实现，使用rpush和lpop实现</p>
+</li>
+<li>
+<p>但是当队列中没有元素，可以在Java端加一个sleep去等待生产者产生新的元素</p>
+</li>
+<li>
+<p>也可以使用blpop + timeout 阻塞住，等待队列中有新的元素</p>
+</li>
+</ul>
+<p><strong>方案二</strong></p>
+<ul>
+<li>pub/sub :主题订阅者模式，发送者(pub)发送消息，订阅者(sub)接收消息，可以订阅多个频道</li>
+<li>解决了方案一只能让一个消费者消费的问题</li>
+<li>但是消息的发布是无状态的，无法保证消息是否可达</li>
+</ul>
+<h2 id="六-redis有哪些使用场景">六、Redis有哪些使用场景？</h2>
+<ul>
+<li><strong>计数器</strong>：可以对 String 进行自增自减运算，从而实现计数器功能。</li>
+<li><strong>缓存</strong>：将热点数据放到内存中，设置内存的最大使用量以及淘汰策略来保证缓存的命中率。</li>
+<li><strong>消息队列</strong>：List 是一个双向链表，可以通过 lpush 和 rpop 写入和读取消息 ，不过最好使用RocketMq</li>
+<li><strong>分布式Session</strong>：可以使用 Redis 来统一存储多台应用服务器的会话信息</li>
+<li><strong>分布式锁实现</strong>：在分布式场景下，无法使用单机环境下的锁来对多个节点上的进程进行同步，可以使用 Redis 自带的 SETNX 命令实现分布式锁，除此之外，还可以使用官方提供的 RedLock 分布式锁实现。</li>
+</ul>
+<h2 id="七-redis的删除策略有哪些">七、redis的删除策略有哪些</h2>
+<ul>
+<li>
+<p>主要分成两大类，一个是对设置缓存时间的淘汰以及对所有数据进行淘汰</p>
+</li>
+<li>
+<p>对于缓存策略都存在一个是LRU、一个是随机，在Redis4.0之后，引入了LFU。LRU是淘汰最近使用时间最久远的，LFU是淘汰最近使用频率最小的</p>
+</li>
+<li>
+<p>对于设置缓存时间的，还可以淘汰快要过期的</p>
+</li>
+<li>
+<p>最后一个策略是不允许淘汰</p>
+</li>
+</ul>
+<p><strong>Redis 具体有 6 种淘汰策略</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">策略</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">volatile-lru</td>
+<td style="text-align:center">从已设置过期时间的数据集中挑选最近最少使用的数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">volatile-ttl</td>
+<td style="text-align:center">从已设置过期时间的数据集中挑选将要过期的数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">volatile-random</td>
+<td style="text-align:center">从已设置过期时间的数据集中任意选择数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">allkeys-lru</td>
+<td style="text-align:center">从所有数据集中挑选最近最少使用的数据淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">allkeys-random</td>
+<td style="text-align:center">从所有数据集中任意选择数据进行淘汰</td>
+</tr>
+<tr>
+<td style="text-align:center">noeviction</td>
+<td style="text-align:center">禁止驱逐数据</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>作为内存数据库，出于对性能和内存消耗的考虑，Redis 的淘汰算法实际实现上并非针对所有 key，而是抽样一小部分并且从中选出被淘汰的 key</p>
+</li>
+<li>
+<p>使用 Redis 缓存数据时，为了提高缓存命中率，需要保证缓存数据都是热点数据。可以将内存最大使用量设置为热点数据占用的内存量，然后启用 allkeys-lru 淘汰策略，将最近最少使用的数据淘汰</p>
+</li>
+<li>
+<p>Redis 4.0 引入了 volatile-lfu 和 allkeys-lfu 淘汰策略，LFU 策略通过统计访问频率，将访问频率最少的键值对淘汰。</p>
+</li>
+</ul>
+<h2 id="八-什么是布隆过滤器">八、什么是布隆过滤器？</h2>
+<ul>
+<li>
+<p>可以把它 <strong>简单理解</strong> 为一个不怎么精确的 <strong>set</strong> 结构，当你使用它的 <code>contains</code> 方法判断某个对象是否存在时，它可能会误判。但是布隆过滤器也不是特别不精确，只要参数设置的合理，它的精确度可以控制的相对足够精确，只会有小小的误判概率。</p>
+</li>
+<li>
+<p>当布隆过滤器说某个值存在时，这个值 <strong>可能不存在</strong>；当它说不存在时，那么 <strong>一定不存在</strong>。</p>
+</li>
+</ul>
+<h3 id="1-原理">1. 原理</h3>
+<p>布隆过滤器 <strong>本质上</strong> 是由长度为 <code>m</code> 的位向量或位列表（仅包含 <code>0</code> 或 <code>1</code> 位值的列表）组成，最初所有的值均设置为 <code>0</code>，所以我们先来创建一个稍微长一些的位向量用作展示：</p>
+<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL3Bhc3RlZC01LnBuZw?x-oss-process=image/format,png" alt="img" loading="lazy"></figure>
+<p>当我们向布隆过滤器中添加数据时，会使用 <strong>多个</strong> <code>hash</code> 函数对 <code>key</code> 进行运算，算得一个证书索引值，然后对位数组长度进行取模运算得到一个位置，每个 <code>hash</code> 函数都会算得一个不同的位置。再把位数组的这几个位置都置为 <code>1</code> 就完成了 <code>add</code> 操作，例如，我们添加一个 <code>wmyskxz</code>：</p>
+<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL3Bhc3RlZC02LnBuZw?x-oss-process=image/format,png" alt="img" loading="lazy"></figure>
+<p>向布隆过滤器查查询 <code>key</code> 是否存在时，跟 <code>add</code> 操作一样，会把这个 <code>key</code> 通过相同的多个 <code>hash</code> 函数进行运算，查看 <strong>对应的位置</strong> 是否 <strong>都</strong> 为 <code>1</code>，<strong>只要有一个位为 <code>0</code></strong>，那么说明布隆过滤器中这个 <code>key</code> 不存在。如果这几个位置都是 <code>1</code>，并不能说明这个 <code>key</code> 一定存在，只能说极有可能存在，因为这些位置的 <code>1</code> 可能是因为其他的 <code>key</code> 存在导致的，因为Hash函数会存在哈希冲突的问题。</p>
+<blockquote>
+<p>注意：不要让实际元素数量远大于初始化数量</p>
+</blockquote>
+<h2 id="2-使用场景">2. 使用场景</h2>
+<ul>
+<li>
+<p><strong>大数据判断是否存在</strong>：这就可以实现出上述的去重功能，如果你的服务器内存足够大的话，那么使用 HashMap 可能是一个不错的解决方案，理论上时间复杂度可以达到 O(1)的级别，但是当数据量起来之后，还是只能考虑布隆过滤器。</p>
+</li>
+<li>
+<p><strong>解决缓存穿透</strong>：我们经常会把一些热点数据放在 Redis 中当作缓存，例如产品详情。 通常一个请求过来之后我们会先查询缓存，而不用直接读取数据库，这是提升性能最简单也是最普遍的做法，但是 <strong>如果一直请求一个不存在的缓存</strong>，那么此时一定不存在缓存，那就会有 <strong>大量请求直接打到数据库</strong> 上，造成 <strong>缓存穿透</strong>，布隆过滤器也可以用来解决此类问题。</p>
+</li>
+</ul>
+<h2 id="九-缓存穿透">九、缓存穿透</h2>
+<ul>
+<li>缓存穿透说简单点就是大量请求的 key 根本不存在于缓存中，导致请求直接到了数据库上，根本没有经过缓存这一层。举个例子：某个黑客故意制造我们缓存中不存在的 key 发起大量请求，导致大量请求落到数据库。</li>
+</ul>
+<h3 id="有哪些解决办法">有哪些解决办法？</h3>
+<p>最基本的就是首先做好参数校验，一些不合法的参数请求直接抛出异常信息返回给客户端。比如查询的数据库 id 不能小于 0、传入的邮箱格式不对的时候直接返回错误消息给客户端等等。</p>
+<p><strong>1）缓存无效 key</strong></p>
+<p>如果缓存和数据库都查不到某个 key 的数据就写一个到 Redis 中去并设置过期时间，具体命令如下：<code>SET key value EX 10086</code>。这种方式可以解决请求的 key 变化不频繁的情况，如果黑客恶意攻击，每次构建不同的请求 key，会导致 Redis 中缓存大量无效的 key  。很明显，这种方案并不能从根本上解决此问题。如果非要用这种方式来解决穿透问题的话，尽量将无效的 key 的过期时间设置短一点比如 1 分钟。</p>
+<p><strong>2）布隆过滤器</strong></p>
+<p>布隆过滤器是一个非常神奇的数据结构，通过它我们可以非常方便地判断一个给定数据是否存在于海量数据中。我们需要的就是判断 key 是否合法，有没有感觉布隆过滤器就是我们想要找的那个“人”。</p>
+<p>具体是这样做的：把所有可能存在的请求的值都存放在布隆过滤器中，当用户请求过来，先判断用户发来的请求的值是否存在于布隆过滤器中。不存在的话，直接返回请求参数错误信息给客户端，存在的话才会走下面的流程。</p>
+<p>加入布隆过滤器之后的缓存处理流程图如下。</p>
+<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2UzODRjZWM1ODQzMTRiMDE5ZGU2ZTNhMzllZTU2NDI1LnBuZw?x-oss-process=image/format,png" alt="image" loading="lazy"></figure>
+<p>但是，需要注意的是布隆过滤器可能会存在误判的情况。总结来说就是： <strong>布隆过滤器说某个元素存在，小概率会误判。布隆过滤器说某个元素不在，那么这个元素一定不在。</strong></p>
+<p>我们先来看一下，<strong>当一个元素加入布隆过滤器中的时候，会进行哪些操作：</strong></p>
+<ol>
+<li>使用布隆过滤器中的哈希函数对元素值进行计算，得到哈希值（有几个哈希函数得到几个哈希值）。</li>
+<li>根据得到的哈希值，在位数组中把对应下标的值置为 1。</li>
+</ol>
+<p>我们再来看一下，<strong>当我们需要判断一个元素是否存在于布隆过滤器的时候，会进行哪些操作：</strong></p>
+<ol>
+<li>对给定元素再次进行相同的哈希计算；</li>
+<li>得到值之后判断位数组中的每个元素是否都为 1，如果值都为 1，那么说明这个值在布隆过滤器中，如果存在一个值不为 1，说明该元素不在布隆过滤器中。</li>
+</ol>
+<p>然后，一定会出现这样一种情况：<strong>不同的字符串可能哈希出来的位置相同。</strong></p>
+<h2 id="十-缓存雪崩">十、缓存雪崩</h2>
+<ul>
+<li>缓存在同一时间大面积的失效，后面的请求都直接落到了数据库上，造成数据库短时间内承受大量请求。</li>
+<li>可能因为系统的缓存模块出了问题比如宕机导致不可用。造成系统的所有访问，都要走数据库。</li>
+<li>也可能有一些被大量访问数据（热点缓存）在某一时刻大面积失效，导致对应的请求直接落到了数据库上。</li>
+</ul>
+<p><strong>Redis服务不可用</strong>：</p>
+<ol>
+<li>采用Redis集群，避免单机出现问题整个缓存服务都没办法使用。</li>
+<li>限流，避免同时处理大量的请求。</li>
+</ol>
+<p><strong>热点缓存失效</strong>：</p>
+<ol>
+<li>设置不同的失效时间比如随机设置缓存的失效时间。</li>
+<li>缓存永不失效。</li>
+</ol>
+<h2 id="十一-缓存预热">十一、缓存预热</h2>
+<p>缓存预热就是系统上线后，将相关的缓存数据直接加载到缓存系统。这样就可以避免在用户请求的时候，先查询数据库，然后再将数据缓存的问题！用户直接查询事先被预热的缓存数据！</p>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li>
+<p>直接写个缓存刷新页面，上线时手工操作一下；</p>
+</li>
+<li>
+<p>数据量不大，可以在项目启动的时候自动进行加载；</p>
+</li>
+<li>
+<p>定时刷新缓存；</p>
+</li>
+</ul>
+<h2 id="十二-缓存降级">十二、缓存降级</h2>
+<p>当访问量剧增、服务出现问题（如响应时间慢或不响应）或非核心服务影响到核心流程的性能时，仍然需要保证服务还是可用的，即使是有损服务。系统可以根据一些关键数据进行自动降级，也可以配置开关实现人工降级。</p>
+<p><strong>缓存降级</strong>的最终目的是保证核心服务可用，即使是有损的。而且有些服务是无法降级的（如加入购物车、结算）。</p>
+<p>服务降级的目的，是为了防止Redis服务故障，导致数据库跟着一起发生雪崩问题。因此，对于不重要的缓存数据，可以采取服务降级策略，例如一个比较常见的做法就是，Redis出现问题，不去数据库查询，而是直接返回默认值给用户。</p>
+<h2 id="十三-过期键的删除策略">十三、过期键的删除策略</h2>
+<p><strong>过期策略通常有以下三种</strong>：</p>
+<ul>
+<li><strong>定时过期</strong>：每个设置过期时间的key都需要创建一个定时器，到过期时间就会立即清除。该策略可以立即清除过期的数据，对内存很友好；但是会占用大量的CPU资源去处理过期的数据，从而影响缓存的响应时间和吞吐量。</li>
+<li><strong>惰性过期</strong>：只有当访问一个key时，才会判断该key是否已过期，过期则清除。该策略可以最大化地节省CPU资源，却对内存非常不友好。极端情况可能出现大量的过期key没有再次被访问，从而不会被清除，占用大量内存。</li>
+<li><strong>定期过期</strong>：每隔一定的时间，会扫描一定数量的数据库的expires字典中一定数量的key，并清除其中已过期的key。该策略是前两者的一个折中方案。通过调整定时扫描的时间间隔和每次扫描的限定耗时，可以在不同情况下使得CPU和内存资源达到最优的平衡效果。</li>
+</ul>
+<p>(expires字典会保存所有设置了过期时间的key的过期时间数据，其中，key是指向键空间中的某个键的指针，value是该键的毫秒精度的UNIX时间戳表示的过期时间。键空间是指该Redis集群中保存的所有键。)</p>
+<h2 id="十四-redis的内存用完了会发生什么">十四、Redis的内存用完了会发生什么？</h2>
+<ul>
+<li>如果达到设置的上限，Redis的写命令会返回错误信息（但是读命令还可以正常返回。）或者你可以配置内存淘汰机制，当Redis达到内存上限时会冲刷掉旧的内容。</li>
+</ul>
+<h2 id="十五-redis事务相关">十五、Redis事务相关</h2>
+<ul>
+<li>Redis 事务的本质是通过一组命令的集合，去执行多个命令，一个事务中所有命令都会被序列化。</li>
+<li>redis 不支持回滚，“Redis 在事务失败时不进行回滚，而是继续执行余下的命令”， 所以 Redis 的内部可以保持简单且快速。</li>
+</ul>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bredis">一、简单介绍一下Redis</a></li>
+<li><a href="#%E4%BA%8C-%E4%BA%94%E7%A7%8D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">二、五种数据结构</a>
+<ul>
+<li><a href="#1-%E5%AD%97%E7%AC%A6%E4%B8%B2-string">1. 字符串 string</a></li>
+<li><a href="#2-%E5%88%97%E8%A1%A8-list">2. 列表 list</a></li>
+<li><a href="#3-%E5%AD%97%E5%85%B8-hash">3. 字典 hash</a></li>
+<li><a href="#4-%E9%9B%86%E5%90%88-set">4. 集合 set</a></li>
+<li><a href="#5-%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8-zset">5. 有序列表 zset</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-redis%E5%92%8Cmemcached%E7%9A%84%E5%8C%BA%E5%88%AB">二、Redis和Memcached的区别？</a></li>
+<li><a href="#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E9%82%A3%E4%B9%88%E5%BF%AB">三、为什么Redis那么快？</a></li>
+<li><a href="#%E5%9B%9B-%E4%BB%8E%E6%B5%B7%E9%87%8Fkey%E9%87%8C%E6%9F%A5%E8%AF%A2%E5%87%BA%E6%9F%90%E4%B8%80%E5%9B%BA%E5%AE%9A%E5%89%8D%E7%BC%80%E7%9A%84key">四、从海量Key里查询出某一固定前缀的Key？</a></li>
+<li><a href="#%E4%BA%94-%E5%A6%82%E4%BD%95%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">五、如何用Redis实现异步消息队列</a></li>
+<li><a href="#%E5%85%AD-redis%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">六、Redis有哪些使用场景？</a></li>
+<li><a href="#%E4%B8%83-redis%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B">七、redis的删除策略有哪些</a></li>
+<li><a href="#%E5%85%AB-%E4%BB%80%E4%B9%88%E6%98%AF%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8">八、什么是布隆过滤器？</a>
+<ul>
+<li><a href="#1-%E5%8E%9F%E7%90%86">1. 原理</a></li>
+</ul>
+</li>
+<li><a href="#2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">2. 使用场景</a></li>
+<li><a href="#%E4%B9%9D-%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F">九、缓存穿透</a>
+<ul>
+<li><a href="#%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95">有哪些解决办法？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81-%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">十、缓存雪崩</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80-%E7%BC%93%E5%AD%98%E9%A2%84%E7%83%AD">十一、缓存预热</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-%E7%BC%93%E5%AD%98%E9%99%8D%E7%BA%A7">十二、缓存降级</a></li>
+<li><a href="#%E5%8D%81%E4%B8%89-%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5">十三、过期键的删除策略</a></li>
+<li><a href="#%E5%8D%81%E5%9B%9B-redis%E7%9A%84%E5%86%85%E5%AD%98%E7%94%A8%E5%AE%8C%E4%BA%86%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88">十四、Redis的内存用完了会发生什么？</a></li>
+<li><a href="#%E5%8D%81%E4%BA%94-redis%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3">十五、Redis事务相关</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-27 18:41:03";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-27 18:41:03";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>50</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

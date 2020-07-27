@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】Redis配置 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/IAIpFCygR/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1595847222760" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】Redis配置</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-27</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">4544字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">18 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1592438893151-2f81c7cb0532.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_10005022.html">Redis专栏</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%AE%B9%E7%81%BE%E7%AD%96%E7%95%A5">一、容灾策略</a>
+<ul>
+<li><a href="#1-%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AErdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6">1. 如何配置RDB持久化机制</a></li>
+<li><a href="#2-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">2. RDB持久化机制的工作流程</a></li>
+<li><a href="#3-aof%E6%8C%81%E4%B9%85%E5%8C%96%E7%9A%84%E9%85%8D%E7%BD%AE">3. AOF持久化的配置</a></li>
+<li><a href="#4-aof-rewrite">4. AOF rewrite</a></li>
+<li><a href="#5-aof%E7%A0%B4%E6%8D%9F%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%AE%E5%A4%8D">5. AOF破损文件的修复</a></li>
+<li><a href="#6-aof%E5%92%8Crdb%E5%90%8C%E6%97%B6%E5%B7%A5%E4%BD%9C">6. AOF和RDB同时工作</a></li>
+<li><a href="#7-%E4%BC%81%E4%B8%9A%E7%BA%A7%E7%9A%84%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5">7. 企业级的备份策略</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">二、读写分离</a>
+<ul>
+<li><a href="#1-redis-replication%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E8%BF%87%E7%A8%8B">1. redis replication主从复制过程</a></li>
+<li><a href="#2-%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA">2. 主从搭建</a>
+<ul>
+<li><a href="#%E4%BB%8E%E8%8A%82%E7%82%B9">从节点</a></li>
+<li><a href="#%E4%B8%BB%E8%8A%82%E7%82%B9">主节点</a></li>
+<li><a href="#%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84%E7%9A%84%E6%B5%8B%E8%AF%95">读写分离架构的测试</a></li>
+</ul>
+</li>
+<li><a href="#3-%E5%BF%AB%E9%80%9F%E5%8E%8B%E6%B5%8B">3. 快速压测</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%93%A8%E5%85%B5%E9%85%8D%E7%BD%AE">三、哨兵配置</a>
+<ul>
+<li><a href="#1-%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%92%8C%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 解决异步复制和脑裂导致的数据丢失</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE%E7%BB%8F%E5%85%B8%E4%B8%89%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5">2. 配置经典三节点哨兵</a></li>
+<li><a href="#3-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">3. 常用命令</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-redis-cluster%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE">四、Redis-cluster集群配置</a>
+<ul>
+<li><a href="#1-redis-cluster%E7%9A%84%E9%87%8D%E8%A6%81%E9%85%8D%E7%BD%AE">1. redis cluster的重要配置</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">2. 编写配置文件</a></li>
+<li><a href="#3-%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83">3. 准备环境</a></li>
+<li><a href="#4-%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4">4. 创建集群</a></li>
+<li><a href="#5-%E6%B7%BB%E5%8A%A0%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9">5. 添加删除节点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-容灾策略">一、容灾策略</h2>
+<h3 id="1-如何配置rdb持久化机制">1. 如何配置RDB持久化机制</h3>
+<p>redis.conf文件，也就是/etc/redis/6379.conf，去配置持久化</p>
+<pre><code class="language-go">save 900 1
+save 300 10
+save 60 10000
+</code></pre>
+<p>每隔60s，如果有超过1000个key发生了变更，那么就生成一个新的dump.rdb文件，就是当前redis内存中完整的数据快照，这个操作也被称之为snapshotting，快照</p>
+<p>也可以手动调用save或者bgsave命令，同步或异步执行rdb快照生成</p>
+<p>save可以设置多个，就是多个snapshotting检查点，每到一个检查点，就会去check一下，是否有指定的key数量发生了变更，如果有，就生成一个新的dump.rdb文件</p>
+<h3 id="2-rdb持久化机制的工作流程">2. RDB持久化机制的工作流程</h3>
+<p>（1）redis根据配置自己尝试去生成rdb快照文件</p>
+<p>（2）fork一个子进程出来</p>
+<p>（3）子进程尝试将数据dump到临时的rdb快照文件中</p>
+<p>（4）完成rdb快照文件的生成之后，就替换之前的旧的快照文件</p>
+<p>dump.rdb，每次生成一个新的快照，都会覆盖之前的老快照</p>
+<h3 id="3-aof持久化的配置">3. AOF持久化的配置</h3>
+<p>AOF持久化，默认是关闭的，默认是打开RDB持久化</p>
+<p><strong>appendonly yes</strong>，可以打开AOF持久化机制，在生产环境里面，一般来说AOF都是要打开的，除非你说随便丢个几分钟的数据也无所谓</p>
+<p>打开AOF持久化机制之后，redis每次接收到一条写命令，就会写入日志文件中，当然是先写入os cache的，然后每隔一定时间再fsync一下</p>
+<p>而且即使AOF和RDB都开启了，redis重启的时候，也是优先通过AOF进行数据恢复的，因为aof数据比较完整</p>
+<p>可以配置AOF的fsync策略，有三种策略可以选择，一种是每次写入一条数据就执行一次fsync; 一种是每隔一秒执行一次fsync; 一种是不主动执行fsync</p>
+<ul>
+<li>
+<p><strong>always</strong>: 每次写入一条数据，立即将这个数据对应的写日志fsync到磁盘上去，<strong>性能非常非常差，吞吐量很低; 确保说redis里的数据一条都不丢</strong>，那就只能这样了</p>
+</li>
+<li>
+<p><strong>everysec</strong>: 每秒将os cache中的数据fsync到磁盘，这个最常用的，生产环境一般都这么配置，性能很高，QPS还是可以上万的，但是可能会失去一秒的数据</p>
+</li>
+<li>
+<p><strong>no</strong>: 仅仅redis负责将数据写入os cache就撒手不管了，然后后面os自己会时不时有自己的策略将数据刷入磁盘，不可控了</p>
+</li>
+</ul>
+<pre><code class="language-java"># appendfsync always
+appendfsync everysec
+# appendfsync no
+</code></pre>
+<h3 id="4-aof-rewrite">4. AOF rewrite</h3>
+<p>redis中的数据其实有限的，很多数据可能会自动过期，可能会被用户删除，可能会被redis用缓存清除的算法清理掉。</p>
+<p>redis中的数据会不断淘汰掉旧的，就一部分常用的数据会被自动保留在redis内存中</p>
+<p>所以可能很多之前的已经被清理掉的数据，对应的写日志还停留在AOF中，AOF日志文件就一个，会不断的膨胀，到很大很大。</p>
+<p>所以AOF会自动在后台每隔一定时间做rewrite操作，比如日志里已经存放了针对100w数据的写日志了; redis内存只剩下10万; 基于内存中当前的10万数据构建一套最新的日志，到AOF中; 覆盖之前的老日志; 确保AOF日志文件不会过大，保持跟redis内存数据量一致</p>
+<pre><code>no-appendfsync-on-rewrite no
+</code></pre>
+<p>当进行rewrite操作时，涉及大量磁盘操作，这样就会造成主进程在写aof文件的时候出现阻塞的情形，设置成no意思就是接受阻塞，而设置成yes则相当于将appendfsync设置为no，将可能丢失30s的数据</p>
+<p>如果应用系统无法忍受延迟，而可以容忍少量的数据丢失，则设置为yes；如果应用系统无法忍受数据丢失，则设置为no。</p>
+<p>在redis.conf中，可以配置rewrite策略</p>
+<pre><code>auto-aof-rewrite-percentage 100  # 增长超过100%的比例
+
+auto-aof-rewrite-min-size 64mb   # 最小的重写大小
+</code></pre>
+<p>每一次rewrite之后会记住当前文件的大小，当文件大小超过一定比例时就会进行rewrite</p>
+<p>比如说上一次AOF rewrite之后，是128mb</p>
+<p>然后就会接着128mb继续写AOF的日志，如果发现增长的比例，超过了之前的100%，256mb，就可能会去触发一次rewrite</p>
+<p>但是此时还要去跟min-size，64mb去比较，256mb &gt; 64mb，才会去触发rewrite</p>
+<p><strong>重写的过程</strong>：</p>
+<ol>
+<li>
+<p>redis fork一个子进程</p>
+</li>
+<li>
+<p>子进程基于当前内存中的数据，构建日志，开始往一个新的临时的AOF文件中写入日志</p>
+</li>
+<li>
+<p>redis主进程，接收到client新的写操作之后，在内存中写入日志，同时新的日志也继续写入旧的AOF文件</p>
+</li>
+<li>
+<p>子进程写完新的日志文件之后，redis主进程将内存中的新日志再次追加到新的AOF文件中</p>
+</li>
+<li>
+<p>用新的日志文件替换掉旧的日志文件</p>
+</li>
+</ol>
+<h3 id="5-aof破损文件的修复">5. AOF破损文件的修复</h3>
+<p>如果redis在append数据到AOF文件时，机器宕机了，可能会导致AOF文件破损</p>
+<p><strong>用redis-check-aof --fix命令来修复破损的AOF文件，就是删除那些破损的命令</strong></p>
+<h3 id="6-aof和rdb同时工作">6. AOF和RDB同时工作</h3>
+<ol>
+<li><strong>RDB和AOF 重写同一时间只会执行一个</strong></li>
+<li>同时有RDB snapshot文件和AOF日志文件，<strong>那么redis重启的时候，会优先使用AOF进行数据恢复，因为其中的日志更完整</strong></li>
+</ol>
+<h3 id="7-企业级的备份策略">7. 企业级的备份策略</h3>
+<p>RDB中每隔一分钟更改的数据量为多少需要根据业务需求改变</p>
+<blockquote>
+<p>博主设置的为<code>save 60 1000</code></p>
+</blockquote>
+<p>AOF一定要打开，fsync磁盘刷新策略使用everysec，重写策略采用就是超过100%，最小大小设置为16mb</p>
+<pre><code>auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 16mb
+</code></pre>
+<p>然后设置定时任务每天和每个小时都做一个备份，然后每天都将备份上传到云服务器上</p>
+<p>备份也可以避免上线出现的BUG，比如12点上线了代码，发现代码有bug，导致代码生成的所有的缓存数据，写入redis，全部错了找到一份11点的rdb的冷备，然后按照上面的步骤，去恢复到11点的数据</p>
+<h2 id="二-读写分离">二、读写分离</h2>
+<p>单机Redis最高不超过10万QPS，一般情况下，大量的请求都是读请求</p>
+<h3 id="1-redis-replication主从复制过程">1. redis replication主从复制过程</h3>
+<blockquote>
+<p>千万不能关闭主节点的持久化，否则一旦重启主节点，数据将是空，然后将全部的从节点也变成空</p>
+</blockquote>
+<p>当启动一个slave node的时候，它会发送一个PSYNC命令给master node</p>
+<p>如果这是slave node重新连接master node，那么master node仅仅会复制给slave部分缺少的数据; 否则如果是slave node第一次连接master node，那么会触发一次全量复制</p>
+<p><strong>全量复制</strong></p>
+<ul>
+<li>master会启动一个后台线程，开始生成一份RDB快照文件，同时还会将从客户端收到的所有写命令缓存在内存中。RDB文件生成完毕之后，master会将这个RDB发送给slave，slave会先写入本地磁盘，然后再从本地磁盘加载到内存中。然后master会将内存中缓存的写命令发送给slave，slave也会同步这些数据。</li>
+<li>如果发现有多个slave node都来重新连接，仅仅会启动一个rdb save操作，用一份数据服务所有slave node。</li>
+</ul>
+<p><strong>异步同步</strong></p>
+<ul>
+<li>当给一个主节点写一条数据的时候，会直接返回给客户端写入成功，然后在异步的把这个命令同步给从节点</li>
+</ul>
+<p><strong>断点续传</strong></p>
+<ul>
+<li>如果主从复制过程中，网络连接断掉了，那么可以接着上次复制的地方，继续复制下去，而不是从头开始复制一份</li>
+</ul>
+<p><strong>无磁盘化同步</strong></p>
+<ul>
+<li>master在内存中直接创建rdb，然后发送给slave，不会在自己本地落地磁盘了</li>
+</ul>
+<pre><code>repl-diskless-sync yes      # 开启无磁盘化，默认是false
+repl-diskless-sync-delay 5  # 等待一定时长再开始复制，因为要等更多slave重新连接过来，默认等待5秒
+</code></pre>
+<p><strong>过期key处理</strong></p>
+<ul>
+<li>slave不会过期key，只会等待master过期key。如果master过期了一个key，或者通过LRU淘汰了一个key，那么会模拟一条del命令发送给slave。</li>
+</ul>
+<h3 id="2-主从搭建">2. 主从搭建</h3>
+<h4 id="从节点">从节点</h4>
+<p><strong>修改绑定的IP地址</strong></p>
+<pre><code class="language-properties">bind 0.0.0.0
+</code></pre>
+<p><strong>配置从节点</strong></p>
+<pre><code class="language-properties">slaveof  192.168.xxx.xxx 6379
+</code></pre>
+<p><strong>强制读写分离</strong></p>
+<pre><code class="language-properties">slave-read-only yes
+</code></pre>
+<ul>
+<li>开启了只读的redis slave node，会拒绝所有的写操作，这样可以强制搭建成读写分离的架构</li>
+</ul>
+<p><strong>集群安全认证</strong></p>
+<pre><code class="language-properties">masterauth redis-pass # master连接口令
+</code></pre>
+<h4 id="主节点">主节点</h4>
+<p><strong>修改绑定的IP地址</strong></p>
+<pre><code class="language-properties">bind 0.0.0.0
+</code></pre>
+<p><strong>集群安全认证</strong></p>
+<pre><code class="language-properties">requirepass redis-pass  # master上启用安全认证
+</code></pre>
+<h4 id="读写分离架构的测试">读写分离架构的测试</h4>
+<ul>
+<li>先启动主节点，eshop-cache01上的redis实例</li>
+<li>再启动从节点，eshop-cache02上的redis实例</li>
+</ul>
+<p><strong>使用命令查看各个节点状态</strong></p>
+<pre><code class="language-shell">redis-cli -a redis-pass
+info replication
+</code></pre>
+<h3 id="3-快速压测">3. 快速压测</h3>
+<pre><code class="language-shell">redis-3.2.8/src
+
+./redis-benchmark -h eshop-cache01
+
+-c &lt;clients&gt;       Number of parallel connections (default 50)
+-n &lt;requests&gt;      Total number of requests (default 100000)
+-d &lt;size&gt;          Data size of SET/GET value in bytes (default 2)
+
+根据你自己的高峰期的访问量，在高峰期，瞬时最大用户量会达到10万+，-c 100000，-n 10000000，-d 50
+</code></pre>
+<h2 id="三-哨兵配置">三、哨兵配置</h2>
+<h3 id="1-解决异步复制和脑裂导致的数据丢失">1. 解决异步复制和脑裂导致的数据丢失</h3>
+<pre><code class="language-properties">min-slaves-to-write 1 # 从服务器的数量少于1个，或者小于1个从服务器的延迟（lag）值都小于等于10秒时
+min-slaves-max-lag 10 # 允许丢失多长时间的数据量
+</code></pre>
+<ul>
+<li>
+<p><strong>要求至少有一个slave数据复制和同步的延迟不能超过10秒</strong></p>
+</li>
+<li>
+<p><strong>如果说一旦所有的slaves，数据复制和同步的延迟都超过了10秒钟，或者当前连接的slave数少于1，那么这个时候，master将会变成只读</strong></p>
+</li>
+</ul>
+<p>上面两个配置可以减少异步复制和脑裂导致的数据丢失</p>
+<p><strong>（1）减少异步复制的数据丢失</strong></p>
+<p>有了min-slaves-max-lag这个配置，就可以确保说，一旦slave复制数据和ack延时太长，就认为可能master宕机后损失的数据太多了，那么就拒绝写请求，这样可以把master宕机时由于部分数据未同步到slave导致的数据丢失降低的可控范围内</p>
+<p><strong>（2）减少脑裂的数据丢失</strong></p>
+<p>如果一个master出现了脑裂，跟其他slave丢了连接，那么上面两个配置可以确保说，如果不能继续给指定数量的slave发送数据，而且slave超过10秒没有给自己ack消息，那么就直接拒绝客户端的写请求</p>
+<p>这样脑裂后的旧master就不会接受client的新数据，也就避免了数据丢失</p>
+<p>上面的配置就确保了，如果跟所有的slave丢了连接，在10秒后发现没有slave给自己ack，那么就拒绝新的写请求</p>
+<p>因此在脑裂场景下，最多就丢失10秒的数据</p>
+<h3 id="2-配置经典三节点哨兵">2. 配置经典三节点哨兵</h3>
+<p>哨兵的配置文件在sentinel.conf</p>
+<ul>
+<li>
+<p>每一个哨兵都可以去监控多个maser-slaves的主从架构</p>
+</li>
+<li>
+<p>因为可能你的公司里，为不同的项目，部署了多个master-slaves的redis主从集群</p>
+</li>
+<li>
+<p>相同的一套哨兵集群，就可以去监控不同的多个redis主从集群</p>
+</li>
+<li>
+<p>你自己给每个redis主从集群分配一个逻辑的名称</p>
+</li>
+</ul>
+<p>类似这种配置，来指定对一个master的监控，给监控的master指定的一个名称，因为后面分布式集群架构里会讲解，可以配置多个master做数据拆分</p>
+<p><strong>核心配置</strong>：</p>
+<pre><code class="language-properties">sentinel down-after-milliseconds mymaster 60000 # 哨兵主管认为的宕机时间（60s）
+sentinel failover-timeout mymaster 180000 # 一台机器故障转移超时时间（180s）
+sentinel parallel-syncs mymaster 1 # 故障转移每次转移几台机器
+</code></pre>
+<p>上面的三个配置，都是针对某个监控的master配置的，给其指定上面分配的名称即可</p>
+<p>上面这段配置，就监控了两个master node</p>
+<p>这是最小的哨兵配置，如果发生了master-slave故障转移，或者新的哨兵进程加入哨兵集群，那么哨兵会自动更新自己的配置文件</p>
+<pre><code class="language-properties">sentinel monitor master-group-name hostname port quorum
+</code></pre>
+<p><strong>quorum的解释如下</strong>：</p>
+<ol>
+<li>至少多少个哨兵要一致同意，master进程挂掉了，或者slave进程挂掉了，或者要启动一个故障转移操作</li>
+<li>quorum是用来识别故障的，真正执行故障转移的时候，还是要在哨兵集群执行选举，选举一个哨兵进程出来执行故障转移操作</li>
+<li>假设有5个哨兵，quorum设置了2，那么如果5个哨兵中的2个都认为master挂掉了; 2个哨兵中的一个就会做一个选举，选举一个哨兵出来，执行故障转移; 如果5个哨兵中有3个哨兵都是运行的，那么故障转移就会被允许执行</li>
+</ol>
+<p><strong>down-after-milliseconds</strong></p>
+<ul>
+<li>超过多少毫秒跟一个redis实例断了连接，哨兵就可能认为这个redis实例挂了</li>
+</ul>
+<p><strong>parallel-syncs</strong></p>
+<ul>
+<li>
+<p>新的master别切换之后，同时有多少个slave被切换到去连接新master，重新做同步，数字越低，花费的时间越多</p>
+</li>
+<li>
+<p>假设你的redis是1个master，4个slave</p>
+</li>
+<li>
+<p>然后master宕机了，4个slave中有1个切换成了master，剩下3个slave就要挂到新的master上面去</p>
+</li>
+<li>
+<p>这个时候，如果parallel-syncs是1，那么3个slave，一个一个地挂接到新的master上面去，1个挂接完，而且从新的master sync完数据之后，再挂接下一个</p>
+</li>
+<li>
+<p>如果parallel-syncs是3，那么一次性就会把所有slave挂接到新的master上去</p>
+</li>
+</ul>
+<p><strong>failover-timeout</strong></p>
+<ul>
+<li>执行故障转移的timeout超时时长</li>
+</ul>
+<p><strong>配置sentinal</strong></p>
+<pre><code class="language-shell">mkdir /etc/sentinal
+mkdir -p /var/sentinal/5000
+mkdir -p /var/log/sentinal/5000
+cp /var/sentinal/5000/26379.log  /var/log/sentinal/5000/5000.log
+cp /usr/local/redis/redis-3.2.8/sentinel.conf /etc/sentinal/5000.conf
+vi /etc/sentinal/5000.conf
+</code></pre>
+<p><strong>详细配置</strong></p>
+<pre><code class="language-properties">port 5000
+bind 0.0.0.0
+dir /var/sentinal/5000
+sentinel monitor mymaster 192.168.31.187 6379 2
+sentinel down-after-milliseconds mymaster 30000
+sentinel failover-timeout mymaster 60000
+sentinel parallel-syncs mymaster 1
+daemonize yes  # 配置成后台进程
+logfile /var/log/sentinal/5000/5000.log
+sentinel auth-pass mymaster redis-pass # 配置主节点的密码
+</code></pre>
+<p><strong>启动哨兵</strong></p>
+<pre><code class="language-shell">redis-sentinel /etc/sentinal/5000.conf
+</code></pre>
+<p><strong>连接哨兵查看状态</strong></p>
+<pre><code class="language-shell">redis-cli -h 127.0.0.1 -p 5000 
+info sentinel # 展示基本信息
+</code></pre>
+<p>日志里会显示出来，每个哨兵都能去监控到对应的redis master，并能够自动发现对应的slave</p>
+<p>哨兵之间，互相会自动进行发现，用的就是之前说的pub/sub，消息发布和订阅channel消息系统和机制</p>
+<h3 id="3-常用命令">3. 常用命令</h3>
+<p><strong>增加sentinal，会自动发现</strong></p>
+<p><strong>删除sentinal的步骤</strong></p>
+<ul>
+<li>停止sentinal进程</li>
+</ul>
+<pre><code class="language-shell">SENTINEL RESET * # 在所有sentinal上执行，清理所有的master状态
+</code></pre>
+<p><strong>slave的永久下线</strong></p>
+<pre><code class="language-shell"> SENTINEL RESET mymaster # 让master摘除某个已经下线的slave
+</code></pre>
+<h2 id="四-redis-cluster集群配置">四、Redis-cluster集群配置</h2>
+<h3 id="1-redis-cluster的重要配置">1. redis cluster的重要配置</h3>
+<ul>
+<li>
+<p><strong>cluster-enabled &lt;yes/no&gt;</strong>：开启集群</p>
+</li>
+<li>
+<p><strong>cluster-config-file &lt;filename&gt;</strong>：这是指定一个文件，供cluster模式下的redis实例将集群状态保存在那里，包括集群中其他机器的信息，比如节点的上线和下限，故障转移，不是我们去维护的，给它指定一个文件，让redis自己去维护的</p>
+</li>
+<li>
+<p><strong>cluster-node-timeout &lt;milliseconds&gt;</strong>：节点存活超时时长，超过一定时长，认为节点宕机，master宕机的话就会触发主备切换，slave宕机就不会提供服务</p>
+</li>
+</ul>
+<h3 id="2-编写配置文件">2. 编写配置文件</h3>
+<pre><code class="language-properties">port 7001
+cluster-enabled yes
+cluster-config-file /etc/redis-cluster/node-7001.conf
+cluster-node-timeout 15000
+daemonize	yes							
+pidfile		/var/run/redis_7001.pid 						
+dir 		/var/redis/7001		
+logfile /var/log/redis/7001.log
+bind 192.168.31.187		
+appendonly yes
+</code></pre>
+<h3 id="3-准备环境">3. 准备环境</h3>
+<p>准备启动脚本并启动</p>
+<pre><code class="language-shell">mkdir -p /etc/redis-cluster
+mkdir -p /var/log/redis
+mkdir -p /var/redis/7001
+mkdir -p /var/redis/7002
+cd /etc/init.d
+cp redis_6379 7001_redis
+cp redis_6379 7002_redis
+vi 7001_redis
+vi 7002_redis
+
+./7002_redis start
+./7002_redis start
+</code></pre>
+<h3 id="4-创建集群">4. 创建集群</h3>
+<pre><code class="language-shell">wget https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.1.tar.gz
+tar -zxvf ruby-2.3.1.tar.gz
+./configure -prefix=/usr/local/ruby
+make &amp;&amp; make install
+cd /usr/local/ruby/ruby-2.3.1
+cp bin/ruby /usr/local/bin
+cp bin/gem /usr/local/bin
+
+wget http://rubygems.org/downloads/redis-3.3.0.gem
+gem install -l ./redis-3.3.0.gem
+gem list --check redis gem
+
+cp /usr/local/redis-3.2.8/src/redis-trib.rb /usr/local/bin
+
+redis-trib.rb create --replicas 1 192.168.31.187:7001 192.168.31.187:7002 192.168.31.19:7003 192.168.31.19:7004 192.168.31.227:7005 192.168.31.227:7006
+
+
+redis-trib.rb check 192.168.31.187:7001
+</code></pre>
+<h3 id="5-添加删除节点">5. 添加删除节点</h3>
+<p><strong>添加</strong></p>
+<pre><code>redis-trib.rb add-node 192.168.31.227:7007 192.168.31.187:7001
+redis-trib.rb reshard 192.168.31.187:7001
+
+# 迁移slot到一个node的id
+
+</code></pre>
+<p><strong>删除</strong></p>
+<pre><code>先用resharding将数据都移除到其他节点，确保node为空之后，才能执行remove操作
+
+redis-trib.rb del-node 192.168.31.187:7001 bd5a40a6ddccbd46a0f4a2208eb25d2453c2a8db
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%AE%B9%E7%81%BE%E7%AD%96%E7%95%A5">一、容灾策略</a>
+<ul>
+<li><a href="#1-%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AErdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6">1. 如何配置RDB持久化机制</a></li>
+<li><a href="#2-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">2. RDB持久化机制的工作流程</a></li>
+<li><a href="#3-aof%E6%8C%81%E4%B9%85%E5%8C%96%E7%9A%84%E9%85%8D%E7%BD%AE">3. AOF持久化的配置</a></li>
+<li><a href="#4-aof-rewrite">4. AOF rewrite</a></li>
+<li><a href="#5-aof%E7%A0%B4%E6%8D%9F%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%AE%E5%A4%8D">5. AOF破损文件的修复</a></li>
+<li><a href="#6-aof%E5%92%8Crdb%E5%90%8C%E6%97%B6%E5%B7%A5%E4%BD%9C">6. AOF和RDB同时工作</a></li>
+<li><a href="#7-%E4%BC%81%E4%B8%9A%E7%BA%A7%E7%9A%84%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5">7. 企业级的备份策略</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB">二、读写分离</a>
+<ul>
+<li><a href="#1-redis-replication%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E8%BF%87%E7%A8%8B">1. redis replication主从复制过程</a></li>
+<li><a href="#2-%E4%B8%BB%E4%BB%8E%E6%90%AD%E5%BB%BA">2. 主从搭建</a>
+<ul>
+<li><a href="#%E4%BB%8E%E8%8A%82%E7%82%B9">从节点</a></li>
+<li><a href="#%E4%B8%BB%E8%8A%82%E7%82%B9">主节点</a></li>
+<li><a href="#%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84%E7%9A%84%E6%B5%8B%E8%AF%95">读写分离架构的测试</a></li>
+</ul>
+</li>
+<li><a href="#3-%E5%BF%AB%E9%80%9F%E5%8E%8B%E6%B5%8B">3. 快速压测</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%93%A8%E5%85%B5%E9%85%8D%E7%BD%AE">三、哨兵配置</a>
+<ul>
+<li><a href="#1-%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%92%8C%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 解决异步复制和脑裂导致的数据丢失</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE%E7%BB%8F%E5%85%B8%E4%B8%89%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5">2. 配置经典三节点哨兵</a></li>
+<li><a href="#3-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">3. 常用命令</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-redis-cluster%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE">四、Redis-cluster集群配置</a>
+<ul>
+<li><a href="#1-redis-cluster%E7%9A%84%E9%87%8D%E8%A6%81%E9%85%8D%E7%BD%AE">1. redis cluster的重要配置</a></li>
+<li><a href="#2-%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">2. 编写配置文件</a></li>
+<li><a href="#3-%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83">3. 准备环境</a></li>
+<li><a href="#4-%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4">4. 创建集群</a></li>
+<li><a href="#5-%E6%B7%BB%E5%8A%A0%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9">5. 添加删除节点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-07-27 18:43:03";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-07-27，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-07-27 18:43:03";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>50</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>
