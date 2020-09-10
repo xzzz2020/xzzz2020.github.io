@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】自定义SpringIOC | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/axgzRz0gg/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1599740351189" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】自定义SpringIOC</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-09-10</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/spring/" class="tag">Spring</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">3150字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">14 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1599709513275-507ff045e42b.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%89%8B%E5%86%99springioc%E5%AE%B9%E5%99%A8%E7%AE%80%E4%BB%8B">一、手写SpringIOC容器简介</a></li>
+<li><a href="#%E4%BA%8C-%E5%88%9B%E5%BB%BA%E6%B3%A8%E8%A7%A3">二、创建注解</a></li>
+<li><a href="#%E4%B8%89-%E6%8F%90%E5%8F%96%E6%A0%87%E8%AE%B0%E5%AF%B9%E8%B1%A1">三、提取标记对象</a>
+<ul>
+<li><a href="#1-%E6%8C%87%E5%AE%9A%E8%8C%83%E5%9B%B4%E5%8A%A0%E8%BD%BD">1. 指定范围加载</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%AE%9E%E7%8E%B0ioc%E5%AE%B9%E5%99%A8">四、实现IOC容器</a>
+<ul>
+<li><a href="#1-%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%8D%95%E4%BE%8B">1. 枚举的单例</a></li>
+<li><a href="#2-%E4%BF%9D%E5%AD%98class%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%AE%9E%E4%BE%8B%E7%9A%84%E8%BD%BD%E4%BD%93">2. 保存Class对象及其实例的载体</a></li>
+<li><a href="#3-%E5%AE%B9%E5%99%A8%E5%8A%A0%E8%BD%BD">3. 容器加载</a></li>
+<li><a href="#4-%E5%AE%B9%E5%99%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5">4. 容器的操作（增删改查）</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5">五、依赖注入</a>
+<ul>
+<li><a href="#1-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E6%B3%A8%E8%A7%A3">1. 依赖注入的注解</a></li>
+<li><a href="#2-%E5%AF%B9%E6%9C%89%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%B1%9E%E6%80%A7%E8%BF%9B%E8%A1%8C%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5">2. 对有注解的属性进行依赖注入</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-手写springioc容器简介">一、手写SpringIOC容器简介</h2>
+<p><strong>已经实现的功能有</strong>：</p>
+<ol>
+<li><strong>提供注解@Service、@Component、@Controller、@Repositor，标记需要加载到IOC容器管理的类</strong></li>
+<li>提供了一个ClassUtil工具类，<strong>支持加载指定包下及其子包所有.class文件</strong>，支持注入属性，支持通过反射class加载实例化对象（<strong>仅支持默认构造</strong>）</li>
+<li>提供IOC容器BeanContainer，支持通过ClassUtil工具类，加载被注解标记的类，目前<strong>仅支持单例模式以及非懒加载的方式</strong></li>
+<li><strong>提供IOC容器增产改的方法，获取IOC的Bean的方式有：通过class直接加载；获取某一个标记的注解所有class集合；获取全部的class集合；获取父类或者接口的实现类结合Class</strong></li>
+<li><strong>提供依赖注入的注解@Autowired，仅支持注入到属性上，该注解提供一个value，用户可以指定获取具体的接口实现类的名称</strong></li>
+<li>提供完成所有标记在IOC容器中对象属性依赖注入的类DependencyInjector，将扫描@Autowired，根据用户定义的注解value或者默认值注入到属性中</li>
+</ol>
+<blockquote>
+<p>使用BeanContainer的loadBeans方法，指定框架需要管理的包路径，将相关类加入到IOC容器中，再利用DependencyInjector的doIoc方法实现属性的依赖注入。</p>
+</blockquote>
+<p><strong>实现的思路为</strong>：</p>
+<ol>
+<li>创建注解</li>
+<li>提取标记对象</li>
+<li>实现容器</li>
+<li>依赖注入</li>
+</ol>
+<p><strong>提取标记对象</strong></p>
+<ol>
+<li>指定范围，获取范围内全部的类</li>
+<li>遍历所有类，获取被注解标记的类并加载到容器里</li>
+</ol>
+<h2 id="二-创建注解">二、创建注解</h2>
+<pre><code class="language-java">//设置是作用在类上面的
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Component {
+}
+</code></pre>
+<pre><code class="language-java">//设置是作用在类上面的
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Controller {
+}
+</code></pre>
+<pre><code class="language-java">//设置是作用在类上面的
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Repository {
+}
+</code></pre>
+<pre><code class="language-java">//设置是作用在类上面的
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Service {
+}
+</code></pre>
+<h2 id="三-提取标记对象">三、提取标记对象</h2>
+<h3 id="1-指定范围加载">1. 指定范围加载</h3>
+<ul>
+<li>
+<p>首先需要获取到一个类加载器，通过类加载器加载用户指定包的资源，类加载器详解，查看这个文章：<a href="https://xzzz2020.gitee.io/post/jTbAiVT5N/">类加载器总结</a></p>
+</li>
+<li>
+<p>获取类加载的方式，可以通过当前的线程获取</p>
+</li>
+</ul>
+<pre><code class="language-java">/**
+ * 获取类加载器
+ *
+ * @return 当前类加载器
+ */
+public static ClassLoader getClassLoader() {
+    return Thread.currentThread().getContextClassLoader();
+}
+</code></pre>
+<ul>
+<li>由于用户传递过来的只是个包名称，而对于不同的机器，项目所在的位置不同，所以就需要通过类加载器获取到资源的具体路径</li>
+</ul>
+<pre><code class="language-java">URL url = classLoader.getResource(packageName.replace(&quot;.&quot;, &quot;/&quot;));
+</code></pre>
+<ul>
+<li>getResource()接收的是一个以反斜杠分割的路径，而一般用户提供的都是以“.”分割的，所以我们需要替换成反斜杠</li>
+<li>classLoader.getResource()方法返回的是一个URL，可以获取到协议，域名，端口号，路径，请求参数，如：https[协议]😕/www.xzzz2020.cn[域名]:80[端口号]/public/simplespring[路径]?id=xxx[请求参数]</li>
+<li>而我们需要关注的是这样的URL：<strong>file:///F:/study/Spring</strong>，该资源可以定位本机的唯一资源，所以需要通过URL类中两个方法getProtocol()和getPath()获取定位包的文件协议和绝对路径</li>
+<li>接着主要是递归调用目录所有.class文件，利用反射Class.forName方法创建实例，并加入到集合中</li>
+</ul>
+<p><strong>完整代码如下所示：</strong></p>
+<pre><code class="language-java">/**
+ * 类加载工具类
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/7/31 13:20
+ */
+
+@Slf4j
+public final class ClassUtil {
+
+    private static final String FILE_PROTOCLO = &quot;file&quot;;
+
+    private ClassUtil() {
+    }
+
+    /**
+     * 获取包下类的集合
+     *
+     * @param packageName 包名
+     * @return 获取类的集合
+     */
+    public static Set&lt;Class&lt;?&gt;&gt; extractPackageClass(String packageName) {
+        //1. 获取类的加载器，为了获取项目发布的实际路径
+        ClassLoader classLoader = getClassLoader();
+        //2. 通过类加载器获取到加载的资源信息
+        URL url = classLoader.getResource(packageName.replace(&quot;.&quot;, &quot;/&quot;));
+        if (url == null) {
+            log.warn(&quot;unable to retrieve anything from package: &quot; + packageName);
+            return null;
+        } else {
+            log.info(&quot;load path is &quot;+url.getProtocol()+&quot;://&quot;+url.getPath());
+        }
+        //3. 根据不同的资源类型，采用不同的方式获取资源的集合
+        Set&lt;Class&lt;?&gt;&gt; classSet = null;
+        //过滤出文件类型的资源
+        if (url.getProtocol().equalsIgnoreCase(FILE_PROTOCLO)){
+            classSet = new HashSet&lt;&gt;();
+            File packageDirectory = new File(url.getPath());//获取文件的实际路径
+            //递归遍历该目录下所有的class文件
+            extractClassFile(classSet,packageDirectory,packageName);
+        }
+        return classSet;
+    }
+
+    /**
+     * 递归遍历该目录下所有的class文件
+     * @param emptyClassSet 装载目标类的集合
+     * @param fileSource 文件或目录
+     * @param packageName 加载的包路径
+     */
+    private static void extractClassFile(Set&lt;Class&lt;?&gt;&gt; emptyClassSet, File fileSource, String packageName) {
+        if (!fileSource.isDirectory()){
+
+        }else {
+            //列出当前目录的所有文件和文件夹
+            File[] files = fileSource.listFiles(new FileFilter() {
+                /**
+                 * 该方法是过滤当前目录下的所有文件和目录
+                 * @param file 文件目录
+                 * @return 如果是目录，返回true，如果是.class文件，加载到容器中，其他的返回false
+                 */
+                @Override
+                public boolean accept(File file) {
+                    if (file.isDirectory()){
+                        return true;
+                    }else {
+                        //获取文件的绝对值路径
+                        String absoluteFilePath = file.getAbsolutePath();
+                        if (absoluteFilePath.endsWith(&quot;.class&quot;)){
+                            //如果是class文件，直接加载
+                            addToClassSet(absoluteFilePath);
+                        }
+                        //TODO 此处可以加入针对其他类型资源的处理
+                    }
+                    return false;
+                }
+
+                /**
+                 * 根据class文件的绝对值路径，获取并生成class对象，并放入classSet中
+                 * @param absoluteFilePath 文件的绝对值路径
+                 */
+                private void addToClassSet(String absoluteFilePath) {
+                    //1.从class文件的绝对值路径里提取出包含了package的类名
+                    //如/Users/baidu/imooc/springframework/sampleframework/target/classes/cn/xzzz2020/entity/dto/MainPageInfoDTO.class
+                    //需要弄成cn.xzzz2020.entity.dto.MainPageInfoDTO
+                    absoluteFilePath  = absoluteFilePath.replace(File.separator, &quot;.&quot;);
+                    String className = absoluteFilePath.substring(absoluteFilePath.indexOf(packageName));
+                    className = className.substring(0,className.lastIndexOf(&quot;.&quot;));
+                    //2.通过反射机制获取对应的Class对象并加入到classSet里
+                    Class&lt;?&gt; targetClass = loadClass(className);
+                    emptyClassSet.add(targetClass);
+                }
+            });
+            //递归遍历全部目录
+            if (files!=null){//如果file的数组为空，使用foreach，还是会抛出空指针异常
+                for (File file : files) {
+                    extractClassFile(emptyClassSet,file,packageName);
+                }
+            }
+
+        }
+    }
+
+    /**
+     * 获取类加载器
+     *
+     * @return 当前类加载器
+     */
+    public static ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+
+    /**
+     * 获取class对象
+     * @param className class全限定类名
+     * @return
+     */
+    public static Class&lt;?&gt; loadClass(String className){
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            log.error(&quot;Load class error &quot; + e);
+            throw new RuntimeException();
+        }
+    }
+    
+    
+    /**
+     * 实例化类对象
+     * @param clazz 需要实例化的class
+     * @param accessible 是否允许使用私有的构造函数
+     * @param &lt;T&gt; 对象
+     * @return
+     */
+    public static &lt;T&gt; T newInstance(Class&lt;?&gt; clazz,boolean accessible){
+        try {
+            Constructor constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(accessible);
+            return (T) constructor.newInstance();
+        } catch (Exception e) {
+            log.error(&quot;newInstance &quot;+clazz+&quot; error &quot;+e);
+            throw new RuntimeException();
+        }
+    }
+    
+    /**
+     * 设置类的属性值
+     * @param field 成员变量
+     * @param target 类实例
+     * @param value 成员变量的值
+     * @param accessible 是否允许设置私有属性
+     */
+    public static void setField(Field field,Object target,Object value,boolean accessible){
+        field.setAccessible(accessible);
+        try {
+            field.set(target,value);
+        } catch (Exception e) {
+            log.error(&quot;setFiled error &quot;,e);
+            throw new RuntimeException(e);
+        }
+    }
+
+}
+</code></pre>
+<h2 id="四-实现ioc容器">四、实现IOC容器</h2>
+<p><strong>容器一般由以下组成部分：</strong></p>
+<ul>
+<li>保存Class对象及其实例的载体</li>
+<li>容器的加载</li>
+<li>容器的操作方式</li>
+</ul>
+<blockquote>
+<p>容器首先是单例的，但是传统的单例只能避免多线程下重复创建的问题，面对反射的强大能力，很容易就被创建一个新的对象</p>
+<p>而Java提供了一个枚举类的形式，可以从源码层面避免创建多个对象。</p>
+</blockquote>
+<h3 id="1-枚举的单例">1. 枚举的单例</h3>
+<pre><code class="language-java">//设置私有构造器
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
+public class BeanContainer {
+
+    /**
+     * 获取容器实例
+     * @return 容器
+     */
+    public static BeanContainer getInstance() {
+        return BeanContainerHolder.HOLDER.getInstance();
+    }
+
+    private enum BeanContainerHolder{
+        HOLDER;
+        private BeanContainer instance;
+        BeanContainerHolder(){
+            instance = new BeanContainer();
+        }
+
+        public BeanContainer getInstance() {
+            return instance;
+        }
+    }
+}
+</code></pre>
+<h3 id="2-保存class对象及其实例的载体">2. 保存Class对象及其实例的载体</h3>
+<p>为了方便调用，将采用map的方式创建载体，但是不是使用HashMap，而是ConcurrentHashMap以保证高并发下的容器线程安全。</p>
+<pre><code class="language-java">//存放所有被标记的map
+private final Map&lt;Class&lt;?&gt;,Object&gt; beanMap = new ConcurrentHashMap&lt;&gt;();
+</code></pre>
+<h3 id="3-容器加载">3. 容器加载</h3>
+<pre><code class="language-java">/**
+ * 加载Bean到容器中
+ * @param packageName 包名称
+ */
+public synchronized void loadBeans(String packageName){
+    //判断是否重复加载
+    if (isLoaded()){
+        log.warn(&quot;BeanContainer has been loaded.&quot;);
+        return;
+    }
+    //获取指定包下面的class对象
+    Set&lt;Class&lt;?&gt;&gt; classSet = ClassUtil.extractPackageClass(packageName);
+    //判断能否加载对象
+    if (ValidationUtil.isEmpty(classSet)){
+        log.warn(&quot;This package &quot;+packageName+&quot; has nothing.&quot;);
+        return;
+    }
+    for (Class&lt;?&gt; clazz :classSet){
+        for (Class&lt;? extends Annotation&gt; annotation : BEAN_ANNOTATION) {
+            //如果类上面标记了自定义的注解，就放入到容器中
+            if (clazz.isAnnotationPresent(annotation)){
+                beanMap.put(clazz,ClassUtil.newInstance(clazz,true));
+            }
+        }
+    }
+    loaded = true;
+}
+</code></pre>
+<h3 id="4-容器的操作增删改查">4. 容器的操作（增删改查）</h3>
+<pre><code class="language-java">/**
+ * 判断是否过容器
+ * @return true代表已经加载过容器了
+ */
+public boolean isLoaded() {
+    return loaded;
+}
+/**
+ * 获取加载到容器中bean实例的个数
+ * @return
+ */
+public int getBeansSize(){
+    return beanMap.size();
+}
+/**
+ * 添加对象实例到容器中
+ * @param clazz 指定对象
+ * @param bean 指定实例
+ * @return 添加的对象
+ */
+public Object addBean(Class&lt;?&gt; clazz,Object bean){
+    return beanMap.put(clazz, bean);
+}
+/**
+ * 删除容器中bean的实例
+ * @param clazz 指定对象
+ * @return 删除的对象
+ */
+public Object removeBean(Class&lt;?&gt; clazz){
+    return beanMap.remove(clazz);
+}
+/**
+ * 获取指定对象的实例
+ * @param clazz 指定对象
+ * @return 指定实例
+ */
+public Object getBean(Class&lt;?&gt; clazz){
+    return beanMap.get(clazz);
+}
+/**
+ * 获取容器中所有对象的集合
+ * @return 对象集合
+ */
+public Set&lt;Class&lt;?&gt;&gt; getClasses(){
+    return beanMap.keySet();
+}
+/**
+ * 获取容器中所有实例化对象集合
+ * @return 实例化对象集合
+ */
+public Set&lt;Object&gt; getBeans(){
+    return new HashSet&lt;&gt;(beanMap.values());
+}
+/**
+ * 根据注解获取对象集合
+ * @param annotation 注解
+ * @return
+ */
+public Set&lt;Class&lt;?&gt;&gt; getClassesByAnnotation(Class&lt;? extends Annotation&gt; annotation){
+    //1.获取beanMap的所有class对象
+    Set&lt;Class&lt;?&gt;&gt; keySet = getClasses();
+    if(ValidationUtil.isEmpty(keySet)){
+        log.warn(&quot;nothing in beanMap&quot;);
+        return null;
+    }
+    //2.通过注解筛选被注解标记的class对象，并添加到classSet里
+    Set&lt;Class&lt;?&gt;&gt; classSet = new HashSet&lt;&gt;();
+    for (Class&lt;?&gt; clazz : keySet) {
+        if (clazz.isAnnotationPresent(annotation)){
+            classSet.add(clazz);
+        }
+    }
+    return classSet.size()&gt;0?classSet:null;
+}
+/**
+ * 通过接口或者父类获取实现类或者子类的Class集合，不包括其本身
+ *
+ * @param interfaceOrClass 接口Class或者父类Class
+ * @return Class集合
+ */
+public Set&lt;Class&lt;?&gt;&gt; getClassesBySuper(Class&lt;?&gt; interfaceOrClass){
+    //1.获取beanMap的所有class对象
+    Set&lt;Class&lt;?&gt;&gt; keySet = getClasses();
+    if(ValidationUtil.isEmpty(keySet)){
+        log.warn(&quot;nothing in beanMap&quot;);
+        return null;
+    }
+    //2.通过keySet的元素是否是传入的接口或者子类，如果是，并添加到classSet里
+    Set&lt;Class&lt;?&gt;&gt; classSet = new HashSet&lt;&gt;();
+    for (Class&lt;?&gt; clazz : keySet) {
+        //isAssignableFrom可以判断是否是同一个类或者其超类
+        if (interfaceOrClass.isAssignableFrom(clazz) &amp;&amp; !clazz.equals(interfaceOrClass)){
+            classSet.add(clazz);
+        }
+    }
+    return classSet.size()&gt;0?classSet:null;
+}
+</code></pre>
+<h2 id="五-依赖注入">五、依赖注入</h2>
+<h3 id="1-依赖注入的注解">1. 依赖注入的注解</h3>
+<pre><code class="language-java">/**
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/7/31 17:06
+ */
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Autowired {
+    String value() default &quot;&quot;;
+}
+</code></pre>
+<h3 id="2-对有注解的属性进行依赖注入">2. 对有注解的属性进行依赖注入</h3>
+<pre><code class="language-java">/**
+ * 提供依赖注入
+ *
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/7/31 17:12
+ */
+@Slf4j
+public class DependencyInjector {
+    //Bean容器
+    private BeanContainer beanContainer;
+
+    public DependencyInjector() {
+        beanContainer = BeanContainer.getInstance();
+    }
+
+    /**
+     * 执行依赖注入
+     */
+    public void doIoc() {
+        if (ValidationUtil.isEmpty(beanContainer.getClasses())) {
+            log.warn(&quot;empty classset in BeanContainer&quot;);
+            return;
+        }
+        //1.遍历Bean容器中所有的Class对象
+        Set&lt;Class&lt;?&gt;&gt; classSet = beanContainer.getClasses();
+        for (Class&lt;?&gt; clazz : classSet) {
+            //2.遍历Class对象的所有成员变量
+            Field[] fields = clazz.getDeclaredFields();
+            if (ValidationUtil.isEmpty(fields)){
+                continue;
+            }
+            //3.找出被Autowired标记的成员变量
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(Autowired.class)){
+                    //获取属性上面的注解，来解析属性
+                    Autowired autowired = field.getAnnotation(Autowired.class);
+                    String value = autowired.value();
+                    //4.获取这些成员变量的类型
+                    Class&lt;?&gt; fieldClazz = field.getType();
+                    //5.获取这些成员变量的类型在容器里对应的实例
+                    Object fieldValue = getFieldInstance(fieldClazz,value);
+                    //获取不到对象，注入失败
+                    if (fieldValue == null){
+                        throw new RuntimeException(&quot;unable to inject relevant type，target fieldClass is:&quot; + fieldClazz.getName() + &quot; in &quot; +clazz.getSimpleName() );
+                    }
+                    //6.通过反射将对应的成员变量实例注入到成员变量所在类的实例里
+                    Object targetBean = beanContainer.getBean(clazz);
+                    ClassUtil.setField(field,targetBean,fieldValue,true);
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * 根据class对象获取其对象或者实现类
+     * @param fieldClazz 属性定义的对象
+     * @return
+     */
+    private Object getFieldInstance(Class&lt;?&gt; fieldClazz,String value) {
+        Object fieldValue = beanContainer.getBean(fieldClazz);
+        if (fieldValue!=null){
+            return fieldClazz;
+        }else {
+           Class&lt;?&gt; implClass = getImplementClass(fieldClazz,value);
+           if (implClass!=null){
+               return beanContainer.getBean(implClass);
+           }else {
+               return null;
+           }
+        }
+    }
+
+    /**
+     * 获取接口的实现类
+     * @param fieldClazz 接口
+     * @return
+     */
+    private Class&lt;?&gt; getImplementClass(Class&lt;?&gt; fieldClazz,String value) {
+        Set&lt;Class&lt;?&gt;&gt; classSet = beanContainer.getClassesBySuper(fieldClazz);
+        if (!ValidationUtil.isEmpty(classSet)){
+            if (ValidationUtil.isEmpty(value)){//代表用户没有指定具体是那个实现类
+                if (classSet.size()==1){
+                    return classSet.iterator().next();
+                }else {//如果该接口有多个实现类，则抛出异常
+                    throw new RuntimeException(&quot;multiple implemented classes for &quot; + fieldClazz.getName() + &quot; please set @Autowired's value to pick one&quot;);
+                }
+            }else {//用户指定具体实现子类
+                for (Class&lt;?&gt; clazz : classSet) {
+                    if (value.equals(clazz.getSimpleName())){//是用户的指定类
+                        return clazz;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+}
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E6%89%8B%E5%86%99springioc%E5%AE%B9%E5%99%A8%E7%AE%80%E4%BB%8B">一、手写SpringIOC容器简介</a></li>
+<li><a href="#%E4%BA%8C-%E5%88%9B%E5%BB%BA%E6%B3%A8%E8%A7%A3">二、创建注解</a></li>
+<li><a href="#%E4%B8%89-%E6%8F%90%E5%8F%96%E6%A0%87%E8%AE%B0%E5%AF%B9%E8%B1%A1">三、提取标记对象</a>
+<ul>
+<li><a href="#1-%E6%8C%87%E5%AE%9A%E8%8C%83%E5%9B%B4%E5%8A%A0%E8%BD%BD">1. 指定范围加载</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-%E5%AE%9E%E7%8E%B0ioc%E5%AE%B9%E5%99%A8">四、实现IOC容器</a>
+<ul>
+<li><a href="#1-%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%8D%95%E4%BE%8B">1. 枚举的单例</a></li>
+<li><a href="#2-%E4%BF%9D%E5%AD%98class%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E5%AE%9E%E4%BE%8B%E7%9A%84%E8%BD%BD%E4%BD%93">2. 保存Class对象及其实例的载体</a></li>
+<li><a href="#3-%E5%AE%B9%E5%99%A8%E5%8A%A0%E8%BD%BD">3. 容器加载</a></li>
+<li><a href="#4-%E5%AE%B9%E5%99%A8%E7%9A%84%E6%93%8D%E4%BD%9C%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5">4. 容器的操作（增删改查）</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5">五、依赖注入</a>
+<ul>
+<li><a href="#1-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E6%B3%A8%E8%A7%A3">1. 依赖注入的注解</a></li>
+<li><a href="#2-%E5%AF%B9%E6%9C%89%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%B1%9E%E6%80%A7%E8%BF%9B%E8%A1%8C%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5">2. 对有注解的属性进行依赖注入</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-09-10 20:11:26";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-09-10 20:11:26";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>58</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

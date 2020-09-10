@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】自定义SpringAOP | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/c2A2Jmewz/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1599740351189" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】自定义SpringAOP</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-09-10</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/spring/" class="tag">Spring</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">4291字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">19 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1599713201276-6733c471d85a.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a>
+<ul>
+<li><a href="#1-aop%E7%9A%84%E5%BC%95%E5%87%BA">1. AOP的引出</a></li>
+<li><a href="#2-%E8%87%AA%E7%A0%94aop%E6%8F%90%E4%BE%9B%E7%9A%84%E5%8A%9F%E8%83%BD">2. 自研AOP提供的功能</a></li>
+<li><a href="#3-aop%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">3. AOP的核心概念：</a></li>
+<li><a href="#4-advice%E7%9A%84%E7%A7%8D%E7%B1%BB">4. Advice的种类：</a></li>
+<li><a href="#5-%E5%88%87%E9%9D%A2%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F">5. 切面执行顺序</a></li>
+<li><a href="#6-introduction-%E5%BC%95%E5%85%A5%E5%9E%8Badvice">6. Introduction--引入型Advice</a></li>
+<li><a href="#7-jdk%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86">7. JDK动态代理</a></li>
+<li><a href="#8-cglib%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86">8. CGLIb动态代理</a></li>
+<li><a href="#9-springaop%E7%9A%84%E5%BA%95%E5%B1%82%E6%9C%BA%E5%88%B6">9. SpringAOP的底层机制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%88%A9%E7%94%A8cglib%E5%AE%9E%E7%8E%B0aop%E9%80%BB%E8%BE%91">二、利用CGLib实现AOP逻辑</a>
+<ul>
+<li><a href="#1-%E5%AE%8C%E6%88%90%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%88%9B%E5%BB%BA">1. 完成注解的创建</a></li>
+<li><a href="#2-%E5%88%87%E9%9D%A2%E6%A8%A1%E6%9D%BF%E7%B1%BB">2. 切面模板类</a></li>
+<li><a href="#3-%E8%A2%AB%E4%BB%A3%E7%90%86%E7%B1%BB%E7%9A%84%E7%BB%87%E5%85%A5%E5%AE%9E%E7%8E%B0">3. 被代理类的织入实现</a></li>
+<li><a href="#4-%E6%89%A7%E8%A1%8C%E5%AE%B9%E5%99%A8%E7%9A%84aop%E6%93%8D%E4%BD%9C">4. 执行容器的AOP操作</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%BC%95%E5%85%A5aspectj%E6%A1%86%E6%9E%B6">三、引入AspectJ框架</a>
+<ul>
+<li><a href="#1-aspectj%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B">1. AspectJ框架简介</a></li>
+<li><a href="#2-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">2. 环境配置</a></li>
+<li><a href="#3-%E8%A7%A3%E6%9E%90aspect%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%B9%B6%E5%AE%9A%E4%BD%8D%E8%A2%AB%E7%BB%87%E5%85%A5%E7%9B%AE%E6%A0%87">3. 解析Aspect表达式并定位被织入目标</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-简介">一、简介</h2>
+<h3 id="1-aop的引出">1. AOP的引出</h3>
+<p><strong>在开发中除了有业务需求，也会存在系统需求：</strong></p>
+<ul>
+<li><strong>添加日志信息</strong>：为每个方法添加统计统计</li>
+<li>**添加系统权限校验：**针对某些方法进行限制</li>
+<li><strong>事务控制</strong>：针对持久化的数据，进行事务的精细控制</li>
+</ul>
+<p><strong>面向对象编程需要在每个方法加入通用的代码，代码没有被复用，同时增加维护成本</strong></p>
+<p>软件工程里面有一个概念叫做关注点分离，即不同的问题交给不同的部分去解决，面向切面编程（AOP）就是一种关注点分离的技术。</p>
+<p>将业务功能代码和系统层面代码分离，系统通用化功能的代码实现就是切面Aspect。Aspect之于AOP，相当于class之于OOP，Bean之于IOC。</p>
+<h3 id="2-自研aop提供的功能">2. 自研AOP提供的功能</h3>
+<ul>
+<li>
+<p>利用CGLIB实现对目标类方法的增强</p>
+<ul>
+<li>定义MethodInterceptor实现类，完成对方法的增强，methodProxy的invokeSuper方法复杂执行原定的方法逻辑，在这个方法执行前后以及出现异常的时候，可以织入相关逻辑。同时定义了@Order注解，对切面按照指定的顺序执行。</li>
+<li>利用Enhancer的create方法，传入目标类和对方法增强的织入逻辑，动态产生一个增强后的类，替换掉原来的类</li>
+</ul>
+</li>
+<li>
+<p>引入AspectJ的表达式解析能力，更加灵活的定义切点</p>
+<ul>
+<li><strong>PointcutParser</strong>：提供对表达式语法的支持，利用parsePointcutExpression方法，解析表达式，将返回一个PointcutExpression接口的实现类</li>
+<li><strong>PointcutExpression接口</strong>：用于验证类或者方法是否符合表达式规则，couldMatchJoinPointsInType方法提供类的粗检查，只能校验within的表达式，其他的都会表达true；matchesMethodExecution方法提供对方法的精确检查</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-aop的核心概念">3. AOP的核心概念：</h3>
+<ul>
+<li>**切面Aspect：**将横切关注点逻辑逻辑进行模块化封装的实体对象</li>
+<li>**通知Advice：**好比是Class里面的方法，还定义了织入逻辑的时机</li>
+<li>**连接点JoinPoint：**允许使用Advice的地方</li>
+<li>**切入点PointCut：**定义一系列规则对JoinPoint进行筛选</li>
+<li>**目标对象Target：**符合PointCut的对象</li>
+<li><strong>织入</strong>：将Aspect模块化的横切关注点集成到OOP里</li>
+<li>**织入器：**完成织入过程的执行者，如ajc</li>
+</ul>
+<h3 id="4-advice的种类">4. Advice的种类：</h3>
+<blockquote>
+<p>需要注意一点@Around注解如果使用了try..catch..，就会让@AfterThrowing注解失败</p>
+</blockquote>
+<ul>
+<li>**BeforeAdvice：**在JoinPoint前被执行的Advice，无法阻止JoinPoint的执行，除非发生了异常</li>
+<li>**AfterAdvice：**好比try..catch..finally里面的finally方法，不管方法是否发生异常，都会最终执行</li>
+<li>**AfterReturningAdvice：**在JoinPoint正常执行后，才能正在执行，如果出现异常，则无法执行</li>
+<li>**AfterThrowingAdvice：**在JoinPoint在执行时抛出才会触发</li>
+<li>**AroundAdvice：**可以在JoinPoint执行前后进行织入，也可以决定JoinPoint是否需要执行</li>
+</ul>
+<p><strong>分拆的原因</strong>：丰富Advice的语义，可以单独将某个环节拆出来用，并能依据不同场景，最小化织入Advice</p>
+<h3 id="5-切面执行顺序">5. 切面执行顺序</h3>
+<blockquote>
+<p>多个Aspect可以使用@Order进行排序，数值越小越先执行</p>
+</blockquote>
+<ol>
+<li>@Around，JoinPoint的proceed方法执行前</li>
+<li>@Before，在@Around选择执行时触发，在执行前织入</li>
+<li>@Around方法执行以及执行后逻辑</li>
+<li>@After</li>
+<li>如果正常执行，是@AfterReturning，出现异常是@AfterThrowing</li>
+</ol>
+<h3 id="6-introduction-引入型advice">6. Introduction--引入型Advice</h3>
+<ul>
+<li>为目标类引入新接口，而不需要目标类做任何实现</li>
+<li>使得目标类在使用过程中转型成新接口对象，调用新接口方法</li>
+</ul>
+<h3 id="7-jdk动态代理">7. JDK动态代理</h3>
+<h3 id="8-cglib动态代理">8. CGLIb动态代理</h3>
+<ul>
+<li>不要求被代理类实现接口</li>
+<li>内部主要封装了ASM Java字节码操作框架，可以帮助我们安全的操作字节码</li>
+<li>动态生成一个子类以覆盖非final的方法，绑定钩子回调自定义拦截器</li>
+</ul>
+<p><strong>被代理类：</strong></p>
+<pre><code class="language-java">public class CommonPayment {
+    public void pay() {
+        System.out.println(&quot;个人名义或者公司名义都可以走这个支付通道&quot;);
+    }
+}
+</code></pre>
+<p><strong>方法拦截器：</strong></p>
+<pre><code class="language-java">public class AlipayMethodInterceptor implements MethodInterceptor {
+    /**
+     *
+     * @param proxy 生成的代理对象
+     * @param method 被增强的方法
+     * @param args 方法的参数
+     * @param methodProxy 增强后的方法
+     * @return 方法的返回值
+     * @throws Throwable
+     */
+    @Override
+    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        beforePay();
+        Object result = methodProxy.invokeSuper(proxy,args);
+        afterPay();
+        return result;
+    }
+
+    private void afterPay() {
+        System.out.println(&quot;支付给公司&quot;);
+    }
+
+    private void beforePay() {
+        System.out.println(&quot;从银行取款&quot;);
+    }
+
+}
+</code></pre>
+<p><strong>Cglib工具类</strong>：</p>
+<pre><code class="language-java">public class CglibUtil {
+    public static &lt;T&gt; T creatProxy(T targetObject, MethodInterceptor interceptor){
+        Object proxy = Enhancer.create(targetObject.getClass(), interceptor);
+        return (T) proxy;
+    }
+}
+</code></pre>
+<p><strong>JDK动态代理和Cglib的区别？</strong></p>
+<blockquote>
+<p>JDK动态代理做了很多优化，所以性能和Cglib差异不大</p>
+</blockquote>
+<ul>
+<li>JDK动态代理是基于反射实现的，要求业务类必须实现接口，是JDK原生，在JVM运行更可靠，可以减少依赖</li>
+<li>Cglib基于ASM机制实现，通过生成业务类的子类作为代理类，无需实现接口，能实现代理类的无侵入</li>
+</ul>
+<h3 id="9-springaop的底层机制">9. SpringAOP的底层机制</h3>
+<ul>
+<li>是Cglib与JDK动态代理共存的</li>
+<li><strong>默认策略</strong>：如果Bean实现了接口采用JDK动态代理的方式，否则使用CGlib</li>
+</ul>
+<h2 id="二-利用cglib实现aop逻辑">二、利用CGLib实现AOP逻辑</h2>
+<blockquote>
+<p>由于CGLib不需要实现接口，实现比较简单</p>
+</blockquote>
+<h3 id="1-完成注解的创建">1. 完成注解的创建</h3>
+<p><strong>标记类为切面，实现横切逻辑</strong></p>
+<pre><code class="language-java">//只能注入到类上
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Aspect {
+    /*
+    * 需要被织入横切逻辑的注解标签
+    */
+    Class&lt;? extends Annotation&gt; value();
+}
+</code></pre>
+<p><strong>标记切面的执行顺序</strong></p>
+<pre><code class="language-java">@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Order {
+    /*
+    值越小，越先执行
+     */
+    int value() default Integer.MAX_VALUE;
+}
+</code></pre>
+<h3 id="2-切面模板类">2. 切面模板类</h3>
+<blockquote>
+<p>切面需要继承该类，并重写相应的方法实现横切逻辑</p>
+<p>如果没有重写，则相应方法为空，不影响结果</p>
+</blockquote>
+<pre><code class="language-java">public abstract class DefaultAspect {
+    /**
+     * 事前拦截
+     * @param targetClass 被代理的目标类
+     * @param method 被代理的目标方法
+     * @param args 被代理的目标方法对应的参数列表
+     * @throws Throwable
+     */
+    public void before(Class&lt;?&gt; targetClass, Method method, Object[] args) throws Throwable{
+
+    }
+    /**
+     * 事后拦截
+     * @param targetClass 被代理的目标类
+     * @param method 被代理的目标方法
+     * @param args 被代理的目标方法对应的参数列表
+     * @param returnValue 被代理的目标方法执行后的返回值
+     * @throws Throwable
+     */
+    public Object afterReturning(Class&lt;?&gt; targetClass, Method method, Object[] args, Object returnValue) throws Throwable{
+        return returnValue;
+    }
+    /**
+     *
+     * @param targetClass 被代理的目标类
+     * @param method 被代理的目标方法
+     * @param args 被代理的目标方法对应的参数列表
+     * @param e 被代理的目标方法抛出的异常
+     * @throws Throwable
+     */
+    public void afterThrowing(Class&lt;?&gt; targetClass, Method method, Object[] args,  Throwable e) throws Throwable{
+
+    }
+}
+</code></pre>
+<h3 id="3-被代理类的织入实现">3. 被代理类的织入实现</h3>
+<blockquote>
+<ul>
+<li>
+<p>实现CGLib中MethodInterceptor接口的intercept方法，实现被代理类的切入逻辑</p>
+</li>
+<li>
+<p>会自动对传入的切面按照order排序</p>
+</li>
+</ul>
+</blockquote>
+<pre><code class="language-java">public class AspectListExecutor implements MethodInterceptor {
+    //被代理的类
+    private Class&lt;?&gt; targetClass;
+    //排过序的Aspect列表
+    @Getter
+    private List&lt;AspectInfo&gt; sortedAspectInfos;
+
+    public AspectListExecutor(Class&lt;?&gt; targetClass, List&lt;AspectInfo&gt; aspectInfos) {
+        this.targetClass = targetClass;
+        this.sortedAspectInfos = sortAspectInfoList(aspectInfos);
+    }
+
+    /**
+     * 根据aspectInfos的Order属性值进行排序
+     *
+     * @param aspectInfos
+     * @return
+     */
+    private List&lt;AspectInfo&gt; sortAspectInfoList(List&lt;AspectInfo&gt; aspectInfos) {
+        aspectInfos.sort(new Comparator&lt;AspectInfo&gt;() {
+            @Override
+            public int compare(AspectInfo o1, AspectInfo o2) {
+                //按照order的大小排序
+                return o1.getOrderIndex() - o2.getOrderIndex();
+            }
+        });
+        return aspectInfos;
+    }
+
+    /**
+     * 实现被代理类的织入逻辑
+     * @param proxy 生成的代理对象
+     * @param method 被增强的方法
+     * @param args 方法的参数
+     * @param methodProxy 增强后的方法
+     * @return 方法的返回值
+     * @throws Throwable
+     */
+    @Override
+    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        Object returnValue = null;
+        if (ValidationUtil.isEmpty(sortedAspectInfos)){
+            return null;
+        }
+        try {
+            //1.按照order的顺序升序执行完所有Aspect的before方法
+            invokeBeforeAdvices(method,args);
+            //2.执行被代理类的方法
+            returnValue = methodProxy.invokeSuper(proxy,args);
+            //3.如果被代理方法正常返回，则按照order的顺序降序执行完所有Aspect的afterReturning方法
+            returnValue = invokeAfterReturningAdvice(method,args,returnValue);
+        } catch (Throwable throwable) {
+            //4.如果被代理方法抛出异常，则按照order的顺序降序执行完所有Aspect的afterThrowing方法
+            invokeAfterThrowingAdvices(method,args,throwable);
+        }
+        return returnValue;
+    }
+
+    //如果被代理方法抛出异常，则按照order的顺序降序执行完所有Aspect的afterThrowing方法
+    private void invokeAfterThrowingAdvices(Method method, Object[] args, Throwable throwable) throws Throwable {
+        for(int i = sortedAspectInfos.size()-1;i&gt;=0;i--){
+           sortedAspectInfos.get(i).getDefaultAspect().afterThrowing(targetClass,method,args,throwable);
+        }
+    }
+
+    //如果被代理方法正常返回，则按照order的顺序降序执行完所有Aspect的afterReturning方法
+    private Object invokeAfterReturningAdvice(Method method, Object[] args, Object returnValue) throws Throwable {
+        Object result = null;
+        for(int i = sortedAspectInfos.size()-1;i&gt;=0;i--){
+            result = sortedAspectInfos.get(i).getDefaultAspect().afterReturning(targetClass,method,args,returnValue);
+        }
+        return result;
+    }
+
+    //按照order的顺序升序执行完所有Aspect的before方法
+    private void invokeBeforeAdvices(Method method, Object[] args) throws Throwable {
+        for (AspectInfo sortedAspectInfo : sortedAspectInfos) {
+            sortedAspectInfo.getDefaultAspect().before(targetClass,method,args);
+        }
+    }
+}
+</code></pre>
+<h3 id="4-执行容器的aop操作">4. 执行容器的AOP操作</h3>
+<p><strong>基本逻辑为：</strong></p>
+<ol>
+<li>将所有被@Aspect注解标记的切面类获取</li>
+<li>根据切面类的切入点不同，进行分类</li>
+<li>根据不同的切入点，生成该切入点的动态代理类，替换掉容器中没有被代理的类</li>
+</ol>
+<pre><code class="language-java">public class AspectWeaver {
+    private BeanContainer beanContainer;
+
+    public AspectWeaver() {
+        beanContainer = BeanContainer.getInstance();
+    }
+
+    public void doAop() {
+        //1.获取所有的切面类
+        Set&lt;Class&lt;?&gt;&gt; aspectSet = beanContainer.getClassesByAnnotation(Aspect.class);
+        if (ValidationUtil.isEmpty(aspectSet)) {
+            return;
+        }
+        //2.将切面类按照不同的织入目标分类
+        Map&lt;Class&lt;? extends Annotation&gt;, List&lt;AspectInfo&gt;&gt; categorizedMap = new HashMap&lt;&gt;();
+        for (Class&lt;?&gt; aspectClass : aspectSet) {
+            //验证切面
+            if (verifyAspect(aspectClass)) {
+                categorizeAspect(categorizedMap, aspectClass);
+            } else {
+                //不遵守规范则直接抛出异常
+                throw new RuntimeException(&quot;@Aspect and @Order must be added to the Aspect class, and Aspect class must extend from DefaultAspect&quot;);
+            }
+        }
+        //3.按照不同的织入目标，分别去按序织入Aspect的逻辑
+        if (!ValidationUtil.isEmpty(categorizedMap)){
+            for (Class&lt;? extends Annotation&gt; category : categorizedMap.keySet()) {
+                weaveByCategory(category,categorizedMap.get(category));
+            }
+        }
+    }
+
+    private void weaveByCategory(Class&lt;? extends Annotation&gt; category, List&lt;AspectInfo&gt; aspectInfos) {
+        //1.获取被代理类的集合
+        Set&lt;Class&lt;?&gt;&gt; classSet = beanContainer.getClassesByAnnotation(category);
+        if (ValidationUtil.isEmpty(classSet)){
+            return;
+        }
+        //2.遍历被代理类，分别为每个被代理类生成动态代理实例
+        for (Class&lt;?&gt; targerClass : classSet) {
+            //创建动态代理对象
+            AspectListExecutor aspectListExecutor = new AspectListExecutor(targerClass,aspectInfos);
+            //本质调用的这个Enhancer.create(targetClass,interceptor);
+            Object proxyBean = ProxyCreator.createProxy(targerClass, aspectListExecutor);
+            //3.将动态代理的实例对象添加到容器中，取代未被代理前的实例
+            beanContainer.addBean(targerClass,proxyBean);
+        }
+    }
+
+    //将切面类按照不同的织入目标分类
+    private void categorizeAspect(Map&lt;Class&lt;? extends Annotation&gt;, List&lt;AspectInfo&gt;&gt; categorizedMap, Class&lt;?&gt; aspectClass) {
+        Order orderTag = aspectClass.getAnnotation(Order.class);
+        Aspect aspectTag = aspectClass.getAnnotation(Aspect.class);
+        DefaultAspect bean = (DefaultAspect) beanContainer.getBean(aspectClass);
+        AspectInfo aspectInfo = new AspectInfo(orderTag.value(),bean);
+        //获取织入点的集合
+        List&lt;AspectInfo&gt; infoList = categorizedMap.getOrDefault(aspectTag.value(), new ArrayList&lt;AspectInfo&gt;());
+        infoList.add(aspectInfo);
+        categorizedMap.put(aspectTag.value(),infoList);
+    }
+
+    //框架中一定要遵守给Aspect类添加@Aspect和@Order标签的规范，同时，必须继承自DefaultAspect.class
+    //此外，@Aspect的属性值不能是它本身
+    private boolean verifyAspect(Class&lt;?&gt; aspectClass) {
+        return aspectClass.isAnnotationPresent(Aspect.class)
+                &amp;&amp; aspectClass.isAnnotationPresent(Order.class)
+                &amp;&amp; DefaultAspect.class.isAssignableFrom(aspectClass)
+                &amp;&amp; aspectClass.getAnnotation(Aspect.class).value() != Aspect.class;
+    }
+}
+
+/**
+ * 创建动态代理对象
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/8/8 11:33
+ */
+public class ProxyCreator {
+
+    public static Object createProxy(Class&lt;?&gt; targetClass, MethodInterceptor interceptor){
+        return Enhancer.create(targetClass,interceptor);
+    }
+}
+
+</code></pre>
+<h2 id="三-引入aspectj框架">三、引入AspectJ框架</h2>
+<blockquote>
+<p>让Pointcut更加灵活，引入AspectJ的切面表达式和相关的定位解析机制</p>
+</blockquote>
+<h3 id="1-aspectj框架简介">1. AspectJ框架简介</h3>
+<ul>
+<li>定义了切面语法以及切面语法的解析机制</li>
+<li>提供了强大的织入工具，由于Cglib只支持方法的织入，而AspectJ可以支持所有的织入，比如说属性或者构造函数</li>
+</ul>
+<p><strong>支持多种时机的织入，</strong></p>
+<ul>
+<li><strong>编译时织入（静态织入）</strong>：利用ajc编译器而不是Javac编译器，将源文件编译成class文件，并将切面逻辑织入到class文件</li>
+<li><strong>编译后织入（静态织入）</strong>：先利用Javac将源文件编译成class文件，再利用ajc将切面逻辑织入到class文件</li>
+<li><strong>类加载期织入（动态织入，Load Time Weaving）</strong>：利用java agent，在类加载的时候织入切面逻辑</li>
+</ul>
+<p><strong>优点：</strong></p>
+<ul>
+<li>
+<p>相比于Spring性能更高，Spring是在类加载后才去生成一个动态代理的对象，而AspectJ是在编译期或者类加载时期完成切面逻辑的替换</p>
+<blockquote>
+<p>SpringAOP在容器Refresh时已经完成了加载，同时类是单例的，存储在缓存中，实际使用时性能差距并不大</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>对于Spring而言仅仅使用了AspectJ的切面语法，并没用使用ajc编译器</strong></p>
+<ul>
+<li>避免增加用户的学习成本，即使用20%的学习成本满足80%的需求</li>
+<li>只是默认不使用，如果想用ajc还是可以引入的</li>
+<li>织入机制还是沿用了CGLIB以及JDK动态代理机制</li>
+</ul>
+<h3 id="2-环境配置">2. 环境配置</h3>
+<p><strong>引入aspectjweaver的JAR包，以支持表达式的解析。</strong></p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+    &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;
+    &lt;version&gt;1.9.5&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><strong>修改@Aspect注解</strong></p>
+<pre><code class="language-java">@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Aspect {
+    String pointcut();
+}
+</code></pre>
+<h3 id="3-解析aspect表达式并定位被织入目标">3. 解析Aspect表达式并定位被织入目标</h3>
+<p><strong>有两个关键的类</strong></p>
+<ul>
+<li><strong>PointcutParser</strong>：提供对表达式语法的支持，利用parsePointcutExpression方法，解析表达式，将返回一个PointcutExpression接口的实现类</li>
+<li><strong>PointcutExpression接口</strong>：用于验证类或者方法是否符合表达式规则，couldMatchJoinPointsInType方法提供类的粗检查，只能校验within的表达式，其他的都会表达true；matchesMethodExecution方法提供对方法的精确检查</li>
+</ul>
+<pre><code class="language-java">public class PointcutLocator {
+    //表达式解析器，判断类和方法是否符合表达式
+    private PointcutExpression pointcutExpression;
+
+    public PointcutLocator(String expression){
+        //Pointcut解析器,支持所有AspectJ的所有语法树，解析String类型的Pointcut语法
+        PointcutParser pointcutParser = PointcutParser.getPointcutParserSupportingSpecifiedPrimitivesAndUsingContextClassloaderForResolution(
+                PointcutParser.getAllSupportedPointcutPrimitives()
+        );
+        this.pointcutExpression = pointcutParser.parsePointcutExpression(expression);
+    }
+
+    /**
+     * 判断传入的Class对象是否符合Pointcut表达式（初筛）
+     * @param targetClass 目标类
+     * @return 是否匹配
+     */
+    public boolean roughMatches(Class&lt;?&gt; targetClass){
+        //只能校验within的表达式，其他的都会表达true
+        return pointcutExpression.couldMatchJoinPointsInType(targetClass);
+    }
+
+    /**
+     * 判断传入的Method对象是否符合Pointcut表达式（精确筛选）
+     * @param method 目标方法
+     * @return 是否匹配
+     */
+    public boolean accurateMatches(Method method){
+        ShadowMatch shadowMatch = pointcutExpression.matchesMethodExecution(method);
+        //判断是否完全匹配
+        return shadowMatch.alwaysMatches();
+    }
+}
+</code></pre>
+<p><strong>修改AspectInfo类，提供对表达式解析的支持</strong></p>
+<pre><code class="language-java">@AllArgsConstructor
+@Getter
+@ToString
+public class AspectInfo {
+    //Aspect的执行顺序
+    private  int OrderIndex;
+    //Aspect
+    private  DefaultAspect defaultAspect;
+
+    private PointcutLocator pointcutLocator;
+
+}
+</code></pre>
+<p><strong>修改doAop的逻辑以支持表达式</strong></p>
+<pre><code class="language-java">public class AspectWeaver {
+    private BeanContainer beanContainer;
+
+    public AspectWeaver() {
+        beanContainer = BeanContainer.getInstance();
+    }
+
+    public void doAop() {
+        //1.获取所有的切面类
+        Set&lt;Class&lt;?&gt;&gt; aspectSet = beanContainer.getClassesByAnnotation(Aspect.class);
+        if (ValidationUtil.isEmpty(aspectSet)) {
+            return;
+        }
+        //2.拼装AspectInfoList
+        List&lt;AspectInfo&gt; aspectInfoList = packAspectInfoList(aspectSet);
+        //3.遍历容器的所有类
+        Set&lt;Class&lt;?&gt;&gt; classSet = beanContainer.getClasses();
+        for (Class&lt;?&gt; targetClass : classSet) {
+            //排除切面类本身
+            if(!targetClass.isAnnotationPresent(Aspect.class)){
+                //4.粗筛符合条件的切面
+                List&lt;AspectInfo&gt; roughMatchedAspectList = collectRoughMatchedAspectListForSpecificClass(aspectInfoList,targetClass);
+                //5.尝试进行Aspect织入
+                wrapIfNecessary(roughMatchedAspectList,targetClass);
+            }
+        }
+
+
+    }
+
+    /**
+     *
+     * @param roughMatchedAspectList
+     * @param targetClass
+     */
+    private void wrapIfNecessary(List&lt;AspectInfo&gt; roughMatchedAspectList, Class&lt;?&gt; targetClass) {
+        if(!ValidationUtil.isEmpty(roughMatchedAspectList)){
+            //创建动态代理对象
+            AspectListExecutor aspectListExecutor = new AspectListExecutor(targetClass,roughMatchedAspectList);
+            Object proxy = ProxyCreator.createProxy(targetClass, aspectListExecutor);
+            beanContainer.addBean(targetClass,proxy);
+        }
+    }
+
+    /**
+     * 粗筛选出存在对应切点的切面逻辑
+     * @param aspectInfoList 切面集合
+     * @param targetClass 目标类
+     * @return
+     */
+    private List&lt;AspectInfo&gt; collectRoughMatchedAspectListForSpecificClass(List&lt;AspectInfo&gt; aspectInfoList, Class&lt;?&gt; targetClass) {
+        List&lt;AspectInfo&gt; roughMatchedAspectList = new ArrayList&lt;&gt;();
+        for (AspectInfo aspectInfo : aspectInfoList) {
+            //粗筛
+            if (aspectInfo.getPointcutLocator().roughMatches(targetClass)){
+                roughMatchedAspectList.add(aspectInfo);
+            }
+        }
+        return roughMatchedAspectList;
+    }
+
+    /**
+     * 验证被@Aspect注解标记的类是否符合要求
+     * 如果符合要求，取出所需的Pointcut表达式，Order值以及对应的Bean
+     * @param aspectSet
+     * @return
+     */
+    private List&lt;AspectInfo&gt; packAspectInfoList(Set&lt;Class&lt;?&gt;&gt; aspectSet) {
+        List&lt;AspectInfo&gt; aspectInfos = new ArrayList&lt;&gt;();
+        for (Class&lt;?&gt; aspectClass : aspectSet) {
+            if (verifyAspect(aspectClass)){
+                Order orderTag = aspectClass.getAnnotation(Order.class);
+                Aspect aspectTag = aspectClass.getAnnotation(Aspect.class);
+                DefaultAspect defaultAspect = (DefaultAspect) beanContainer.getBean(aspectClass);
+                //初始化表达式定位器
+                PointcutLocator pointcutLocator = new PointcutLocator(aspectTag.pointcut());
+                AspectInfo aspectInfo = new AspectInfo(orderTag.value(),defaultAspect,pointcutLocator);
+                aspectInfos.add(aspectInfo);
+            }else {
+                //不遵守规范则直接抛出异常
+                throw new RuntimeException(&quot;@Aspect and @Order must be added to the Aspect class, and Aspect class must extend from DefaultAspect&quot;);
+            }
+        }
+        return aspectInfos;
+    }
+
+    //框架中一定要遵守给Aspect类添加@Aspect和@Order标签的规范，同时，必须继承自DefaultAspect.class
+    //此外，@Aspect的属性值不能是它本身
+    private boolean verifyAspect(Class&lt;?&gt; aspectClass) {
+        return aspectClass.isAnnotationPresent(Aspect.class) &amp;&amp;
+                aspectClass.isAnnotationPresent(Order.class) &amp;&amp;
+                DefaultAspect.class.isAssignableFrom(aspectClass);
+    }
+
+}
+</code></pre>
+<p><strong>在织入之前做一次精确的判断</strong></p>
+<pre><code class="language-java">@Override
+public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+    Object returnValue = null;
+    //对代理类进行精筛
+    collectAccurateMatchedAspectList(method);
+    if (ValidationUtil.isEmpty(sortedAspectInfos)){
+        return methodProxy.invokeSuper(proxy,args);
+    }
+    try {
+        //1.按照order的顺序升序执行完所有Aspect的before方法
+        invokeBeforeAdvices(method,args);
+        //2.执行被代理类的方法
+        returnValue = methodProxy.invokeSuper(proxy,args);
+        //3.如果被代理方法正常返回，则按照order的顺序降序执行完所有Aspect的afterReturning方法
+        returnValue = invokeAfterReturningAdvice(method,args,returnValue);
+    } catch (Throwable throwable) {
+        //4.如果被代理方法抛出异常，则按照order的顺序降序执行完所有Aspect的afterThrowing方法
+        invokeAfterThrowingAdvices(method,args,throwable);
+    }
+    return returnValue;
+}
+
+    /**
+     * 对代理类进行精筛
+     * @param method
+     */
+    private void collectAccurateMatchedAspectList(Method method) {
+        if (!ValidationUtil.isEmpty(sortedAspectInfos)){
+            Iterator&lt;AspectInfo&gt; iterator = sortedAspectInfos.iterator();
+            while (iterator.hasNext()){
+                AspectInfo aspectInfo = iterator.next();
+                if (!aspectInfo.getPointcutLocator().accurateMatches(method)){
+                    iterator.remove();
+                }
+            }
+        }
+    }
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a>
+<ul>
+<li><a href="#1-aop%E7%9A%84%E5%BC%95%E5%87%BA">1. AOP的引出</a></li>
+<li><a href="#2-%E8%87%AA%E7%A0%94aop%E6%8F%90%E4%BE%9B%E7%9A%84%E5%8A%9F%E8%83%BD">2. 自研AOP提供的功能</a></li>
+<li><a href="#3-aop%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">3. AOP的核心概念：</a></li>
+<li><a href="#4-advice%E7%9A%84%E7%A7%8D%E7%B1%BB">4. Advice的种类：</a></li>
+<li><a href="#5-%E5%88%87%E9%9D%A2%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F">5. 切面执行顺序</a></li>
+<li><a href="#6-introduction-%E5%BC%95%E5%85%A5%E5%9E%8Badvice">6. Introduction--引入型Advice</a></li>
+<li><a href="#7-jdk%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86">7. JDK动态代理</a></li>
+<li><a href="#8-cglib%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86">8. CGLIb动态代理</a></li>
+<li><a href="#9-springaop%E7%9A%84%E5%BA%95%E5%B1%82%E6%9C%BA%E5%88%B6">9. SpringAOP的底层机制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%88%A9%E7%94%A8cglib%E5%AE%9E%E7%8E%B0aop%E9%80%BB%E8%BE%91">二、利用CGLib实现AOP逻辑</a>
+<ul>
+<li><a href="#1-%E5%AE%8C%E6%88%90%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%88%9B%E5%BB%BA">1. 完成注解的创建</a></li>
+<li><a href="#2-%E5%88%87%E9%9D%A2%E6%A8%A1%E6%9D%BF%E7%B1%BB">2. 切面模板类</a></li>
+<li><a href="#3-%E8%A2%AB%E4%BB%A3%E7%90%86%E7%B1%BB%E7%9A%84%E7%BB%87%E5%85%A5%E5%AE%9E%E7%8E%B0">3. 被代理类的织入实现</a></li>
+<li><a href="#4-%E6%89%A7%E8%A1%8C%E5%AE%B9%E5%99%A8%E7%9A%84aop%E6%93%8D%E4%BD%9C">4. 执行容器的AOP操作</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%BC%95%E5%85%A5aspectj%E6%A1%86%E6%9E%B6">三、引入AspectJ框架</a>
+<ul>
+<li><a href="#1-aspectj%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B">1. AspectJ框架简介</a></li>
+<li><a href="#2-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">2. 环境配置</a></li>
+<li><a href="#3-%E8%A7%A3%E6%9E%90aspect%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%B9%B6%E5%AE%9A%E4%BD%8D%E8%A2%AB%E7%BB%87%E5%85%A5%E7%9B%AE%E6%A0%87">3. 解析Aspect表达式并定位被织入目标</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-09-10 20:07:20";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-09-10 20:07:20";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>58</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【2021届】Java面试复习提纲 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/1gW2y906H/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1599740351189" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【2021届】Java面试复习提纲</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-09-06</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1686字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">7 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+<font color=7D26CD>置顶</font></section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1599119282057-6f310c399de5.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<blockquote>
+<p>该文章主要是作为一个Java复习的提纲，采用的并不是对每一个知识点进行讲解的形式，它的目的很纯粹，就是为了检测自己的掌握程度，针对面试题目复习，如果掌握不够好，建议先去专栏学习：<a href="https://xzzz2020.gitee.io/tag/Interview_summary/">面试复习专栏</a></p>
+<p>你可以将其作为<strong>模拟面试</strong>的问题来源，测试你的熟练程度；也可以当作面试前的<strong>知识点梳理</strong>，对一些细节问题进行填补；</p>
+<p>当然，这个笔记本也同样适用于那些能够通过简历筛选，但是对计算机基础所知甚少的人，如果你之前从未在学校修过或者自学过这些课程，你依然可以通过这份笔记<strong>快速备战面试</strong>。</p>
+</blockquote>
+<blockquote>
+<p>首先，如果对Java学习的体系不了解，建议先去这个博客保存一下这张图：<a href="https://blog.csdn.net/qq_43040688/article/details/105819866">Java技能图谱</a></p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-java%E5%9F%BA%E7%A1%80">一、Java基础</a>
+<ul>
+<li><a href="#11-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80">1.1 语言基础</a></li>
+<li><a href="#12-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">1.2 面向对象</a></li>
+<li><a href="#13-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">1.3 面向对象</a></li>
+<li><a href="#14-%E5%BC%82%E5%B8%B8">1.4 异常</a></li>
+<li><a href="#15-%E6%95%B0%E7%BB%84">1.5 数组</a></li>
+<li><a href="#16-%E5%B8%B8%E7%94%A8%E7%B1%BB">1.6 常用类</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%AE%B9%E5%99%A8%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81">二、容器集合（源码）</a>
+<ul>
+<li><a href="#21-list">2.1 List</a></li>
+<li><a href="#22-set">2.2 Set</a></li>
+<li><a href="#23-map">2.3 Map</a></li>
+<li><a href="#24-collections">2.4 Collections</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%B9%B6%E5%8F%91">三、并发</a>
+<ul>
+<li><a href="#31-%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80">3.1 并发基础</a></li>
+<li><a href="#32-cas">3.2 CAS</a></li>
+<li><a href="#33-synchronize%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BC%98%E5%8C%96">3.3 Synchronize原理及优化</a></li>
+<li><a href="#34-juc%E5%B7%A5%E5%85%B7">3.4 JUC工具</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-jvm">四、JVM</a>
+<ul>
+<li><a href="#41-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B">4.1  类加载过程</a></li>
+<li><a href="#42-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8">4.2 类加载器</a></li>
+<li><a href="#43-jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">4.3 JVM垃圾回收</a></li>
+<li><a href="#44-jvm%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6">4.4 JVM内存机制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-java%E9%AB%98%E7%BA%A7">五、Java高级</a>
+<ul>
+<li><a href="#51-%E5%8F%8D%E5%B0%84">5.1 反射</a></li>
+<li><a href="#52-%E6%B3%A8%E8%A7%A3">5.2 注解</a></li>
+<li><a href="#53-socket">5.3 Socket</a></li>
+<li><a href="#54-nio-bio">5.4 Nio、Bio</a></li>
+<li><a href="#55-%E6%B3%9B%E5%9E%8B">5.5 泛型</a></li>
+<li><a href="#56-jdk8%E5%92%8C11">5.6 JDK8和11</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">六、操作系统</a></li>
+<li><a href="#%E4%B8%83-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C">七、计算机网络</a></li>
+<li><a href="#%E5%85%AB-%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">八、算法与数据结构</a></li>
+<li><a href="#%E4%B9%9D-%E6%95%B0%E6%8D%AE%E5%BA%93mysql">九、数据库（MySQL）</a></li>
+<li><a href="#%E5%8D%81-%E7%BC%93%E5%AD%98redis">十、缓存（Redis）</a>
+<ul>
+<li><a href="#101-redis%E5%9F%BA%E7%A1%80">10.1 Redis基础</a></li>
+<li><a href="#102-%E8%B7%B3%E8%B7%83%E8%A1%A8">10.2 跳跃表</a></li>
+<li><a href="#103-redis%E6%8C%81%E4%B9%85%E5%8C%96">10.3 Redis持久化</a></li>
+<li><a href="#104-redis%E5%93%A8%E5%85%B5">10.4 Redis哨兵</a></li>
+<li><a href="#105-redis%E9%85%8D%E7%BD%AE">10.5 Redis配置</a></li>
+<li><a href="#106-redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">10.6 Redis主从复制</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E4%B8%80-spring">十一、Spring</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-springboot">十二、SpringBoot</a></li>
+<li><a href="#%E5%8D%81%E4%B8%89-springmvc">十三、SpringMVC</a></li>
+<li><a href="#%E5%8D%81%E5%9B%9B-mybatis">十四、Mybatis</a></li>
+<li><a href="#%E5%8D%81%E4%BA%94-%E5%B8%B8%E7%94%A8%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">十五、常用设计模式</a></li>
+<li><a href="#%E5%8D%81%E5%85%AD-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97rocketmq-rabbitmq-kafka">十六、消息队列（RocketMq、rabbitMQ、kafka）</a></li>
+<li><a href="#%E5%8D%81%E4%B8%83-%E5%BE%AE%E6%9C%8D%E5%8A%A1dubbo-zookeeper-springcloud">十七、微服务（Dubbo、zookeeper、SpringCloud）</a></li>
+<li><a href="#%E5%8D%81%E5%85%AB-%E9%A1%B9%E7%9B%AE">十八、项目</a>
+<ul>
+<li><a href="#181-%E9%AB%98%E5%B9%B6%E5%8F%91">18.1 高并发</a></li>
+<li><a href="#182-%E9%AB%98%E5%8F%AF%E7%94%A8">18.2 高可用</a></li>
+<li><a href="#183-%E9%AB%98%E5%AE%89%E5%85%A8">18.3 高安全</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E4%B9%9D-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84">十九、系统架构</a></li>
+<li><a href="#%E4%BA%8C%E5%8D%81-netty">二十、Netty</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-java基础">一、Java基础</h2>
+<h3 id="11-语言基础">1.1 语言基础</h3>
+<h3 id="12-面向对象">1.2 面向对象</h3>
+<h3 id="13-面向对象">1.3 面向对象</h3>
+<h3 id="14-异常">1.4 异常</h3>
+<h3 id="15-数组">1.5 数组</h3>
+<h3 id="16-常用类">1.6 常用类</h3>
+<h2 id="二-容器集合源码">二、容器集合（源码）</h2>
+<h3 id="21-list">2.1 List</h3>
+<h3 id="22-set">2.2 Set</h3>
+<h3 id="23-map">2.3 Map</h3>
+<h3 id="24-collections">2.4 Collections</h3>
+<h2 id="三-并发">三、并发</h2>
+<h3 id="31-并发基础">3.1 并发基础</h3>
+<h3 id="32-cas">3.2 CAS</h3>
+<h3 id="33-synchronize原理及优化">3.3 Synchronize原理及优化</h3>
+<h3 id="34-juc工具">3.4 JUC工具</h3>
+<h2 id="四-jvm">四、JVM</h2>
+<h3 id="41-类加载过程">4.1  类加载过程</h3>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/FOuttAozI/#%E4%B8%80-%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B">一、类的加载过程</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/FOuttAozI/#%E4%BA%8C-%E5%8A%A0%E8%BD%BD">二、加载</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/FOuttAozI/#%E4%B8%89-%E9%AA%8C%E8%AF%81">三、验证</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/FOuttAozI/#%E5%9B%9B-%E5%87%86%E5%A4%87">四、准备</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/FOuttAozI/#%E4%BA%94-%E8%A7%A3%E6%9E%90">五、解析</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/FOuttAozI/#%E5%85%AD-%E5%88%9D%E5%A7%8B%E5%8C%96">六、初始化</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/FOuttAozI/#%E4%B8%83-%E5%8D%B8%E8%BD%BD">七、卸载</a></li>
+</ul>
+<h3 id="42-类加载器">4.2 类加载器</h3>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/jTbAiVT5N/#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/jTbAiVT5N/#%E4%BA%8C-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A0%E8%BD%BD%E5%99%A8">二、自定义加载器</a></li>
+<li>三、双亲委派模型
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/jTbAiVT5N/#1-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%A5%BD%E5%A4%84">1. 双亲委派模型的好处</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/jTbAiVT5N/#2-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90">2. 双亲委派模型实现源码分析</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/jTbAiVT5N/#3-%E5%A6%82%E6%9E%9C%E6%88%91%E4%BB%AC%E4%B8%8D%E6%83%B3%E7%94%A8%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E6%80%8E%E4%B9%88%E5%8A%9E">3. 如果我们不想用双亲委派模型怎么办？</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/jTbAiVT5N/#4-classloaderloadclass-%E5%92%8C-classforname-%E7%9A%84%E5%8C%BA%E5%88%AB">4. ClassLoader.loadClass 和 Class.forName 的区别</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="43-jvm垃圾回收">4.3 JVM垃圾回收</h3>
+<ul>
+<li>
+<p>一、如何判断对象是否死亡？</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#1-%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95">1. 引用计数法</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#2-%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95">2. 可达性分析算法</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#%E4%BA%8C-%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8">二、四种引用</a></p>
+</li>
+<li>
+<p>三、垃圾回收算法</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#1-%E6%A0%87%E8%AE%B0%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95">1. 标记清除算法</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#2-%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95">2. 复制算法</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#3%E6%A0%87%E8%AE%B0%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95">3.标记压缩算法</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#4-%E5%88%86%E4%BB%A3%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95">4. 分代收集算法</a></li>
+</ul>
+</li>
+<li>
+<p>四、常见的垃圾回收器有那些?</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#1-serial-%E6%94%B6%E9%9B%86%E5%99%A8">1. Serial 收集器</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#2-parnew-%E6%94%B6%E9%9B%86%E5%99%A8">2. ParNew 收集器</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#3-parallel-scavenge-%E6%94%B6%E9%9B%86%E5%99%A8">3. Parallel Scavenge 收集器</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#4-serial-old-%E6%94%B6%E9%9B%86%E5%99%A8">4. Serial Old 收集器</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#5-parallel-old-%E6%94%B6%E9%9B%86%E5%99%A8">5. Parallel Old 收集器</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#6-cms-%E6%94%B6%E9%9B%86%E5%99%A8">6. CMS 收集器</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#7-g1-%E6%94%B6%E9%9B%86%E5%99%A8">7. G1 收集器</a></li>
+</ul>
+</li>
+<li>
+<p>五、其他</p>
+<ul>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#1-%E6%96%B9%E6%B3%95%E5%8C%BA%E5%8F%AF%E4%BB%A5gc%E5%90%97">1. 方法区可以GC吗？</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#2-%E5%93%AA%E4%BA%9B%E5%85%83%E7%B4%A0%E5%8F%AF%E4%BB%A5%E5%81%9Agc-root">2. 哪些元素可以做GC root？</a></p>
+</li>
+<li>
+<ol start="3">
+<li>Minor GC、Major GC和Full GC之间的区别？</li>
+</ol>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#minor-gc">Minor GC</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#major-gc">Major GC</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#full-gc">Full GC</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#4-%E5%B8%B8%E7%94%A8jvm%E5%8F%82%E6%95%B0">4. 常用JVM参数</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/Yuwv7VFrF/#5-%E9%A2%91%E7%B9%81fullgc%E7%9A%84%E5%8E%9F%E5%9B%A0">5. 频繁fullGC的原因？</a></p>
+</li>
+</ul>
+<h3 id="44-jvm内存机制">4.4 JVM内存机制</h3>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E4%BA%8C-%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8">二、程序计数器</a></li>
+<li>三、虚拟机栈
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E9%97%AE%E9%A2%98%E8%BE%A8%E6%9E%90">问题辨析</a></li>
+</ul>
+</li>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E5%9B%9B-%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88">四、本地方法栈</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E4%BA%94-%E5%A0%86">五、堆</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E5%85%AD-%E6%96%B9%E6%B3%95%E5%8C%BA">六、方法区</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E4%B8%83-%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0">七、运行时常量池</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/YkvbP7GKA/#%E5%85%AB-%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98">八、直接内存</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="五-java高级">五、Java高级</h2>
+<h3 id="51-反射">5.1 反射</h3>
+<h3 id="52-注解">5.2 注解</h3>
+<h3 id="53-socket">5.3 Socket</h3>
+<h3 id="54-nio-bio">5.4 Nio、Bio</h3>
+<h3 id="55-泛型">5.5 泛型</h3>
+<h3 id="56-jdk8和11">5.6 JDK8和11</h3>
+<h2 id="六-操作系统">六、操作系统</h2>
+<h2 id="七-计算机网络">七、计算机网络</h2>
+<h2 id="八-算法与数据结构">八、算法与数据结构</h2>
+<h2 id="九-数据库mysql">九、数据库（MySQL）</h2>
+<h2 id="十-缓存redis">十、缓存（Redis）</h2>
+<h3 id="101-redis基础">10.1 Redis基础</h3>
+<ul>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E4%B8%80-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bredis">一、简单介绍一下Redis</a></p>
+</li>
+<li>
+<p>二、五种数据结构</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#1-%E5%AD%97%E7%AC%A6%E4%B8%B2-string">1. 字符串 string</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#2-%E5%88%97%E8%A1%A8-list">2. 列表 list</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#3-%E5%AD%97%E5%85%B8-hash">3. 字典 hash</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#4-%E9%9B%86%E5%90%88-set">4. 集合 set</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#5-%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8-zset">5. 有序列表 zset</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E4%BA%8C-redis%E5%92%8Cmemcached%E7%9A%84%E5%8C%BA%E5%88%AB">二、Redis和Memcached的区别？</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E9%82%A3%E4%B9%88%E5%BF%AB">三、为什么Redis那么快？</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%9B%9B-%E4%BB%8E%E6%B5%B7%E9%87%8Fkey%E9%87%8C%E6%9F%A5%E8%AF%A2%E5%87%BA%E6%9F%90%E4%B8%80%E5%9B%BA%E5%AE%9A%E5%89%8D%E7%BC%80%E7%9A%84key">四、从海量Key里查询出某一固定前缀的Key？</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E4%BA%94-%E5%A6%82%E4%BD%95%E7%94%A8redis%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97">五、如何用Redis实现异步消息队列</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%85%AD-redis%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">六、Redis有哪些使用场景？</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E4%B8%83-redis%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E4%BA%9B">七、redis的删除策略有哪些</a></p>
+</li>
+<li>
+<p>八、什么是布隆过滤器？</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#1-%E5%8E%9F%E7%90%86">1. 原理</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">2. 使用场景</a></p>
+</li>
+<li>
+<p>九、缓存穿透</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95">有哪些解决办法？</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%8D%81-%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">十、缓存雪崩</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%8D%81%E4%B8%80-%E7%BC%93%E5%AD%98%E9%A2%84%E7%83%AD">十一、缓存预热</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%8D%81%E4%BA%8C-%E7%BC%93%E5%AD%98%E9%99%8D%E7%BA%A7">十二、缓存降级</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%8D%81%E4%B8%89-%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5">十三、过期键的删除策略</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%8D%81%E5%9B%9B-redis%E7%9A%84%E5%86%85%E5%AD%98%E7%94%A8%E5%AE%8C%E4%BA%86%E4%BC%9A%E5%8F%91%E7%94%9F%E4%BB%80%E4%B9%88">十四、Redis的内存用完了会发生什么？</a></p>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/xjKzNVypB/#%E5%8D%81%E4%BA%94-redis%E4%BA%8B%E5%8A%A1%E7%9B%B8%E5%85%B3">十五、Redis事务相关</a></p>
+</li>
+</ul>
+<h3 id="102-跳跃表">10.2 跳跃表</h3>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/MiE8tJSYr/#%E4%B8%80-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%B7%83%E8%A1%A8">一、为什么要使用跳跃表？</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/MiE8tJSYr/#%E4%BA%8C-%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%B3%E8%B7%83%E8%A1%A8">二、什么是跳跃表？</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/MiE8tJSYr/#%E4%B8%89-redis%E5%AE%9E%E7%8E%B0">三、Redis实现</a></li>
+</ul>
+<h3 id="103-redis持久化">10.3 Redis持久化</h3>
+<ul>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/Y_OlIRTju/#%E4%B8%80-%E6%8C%81%E4%B9%85%E5%8C%96%E7%9A%84%E6%84%8F%E4%B9%89">一、持久化的意义</a></p>
+</li>
+<li>
+<p>持久化详解</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/Y_OlIRTju/#1-rdb%E5%92%8Caof%E4%B8%A4%E7%A7%8D%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BB%8B%E7%BB%8D">1、RDB和AOF两种持久化机制的介绍</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Y_OlIRTju/#2-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BC%98%E7%82%B9">2、RDB持久化机制的优点</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Y_OlIRTju/#3-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E7%BC%BA%E7%82%B9">3、RDB持久化机制的缺点</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Y_OlIRTju/#4-aof%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BC%98%E7%82%B9">4、AOF持久化机制的优点</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Y_OlIRTju/#5-aof%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E7%BC%BA%E7%82%B9">5、AOF持久化机制的缺点</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/Y_OlIRTju/#6-rdb%E5%92%8Caof%E5%88%B0%E5%BA%95%E8%AF%A5%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9">6、RDB和AOF到底该如何选择</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="104-redis哨兵">10.4 Redis哨兵</h3>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E4%B8%80-%E5%93%A8%E5%85%B5%E7%9A%84%E4%BB%8B%E7%BB%8D">一、哨兵的介绍</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E4%BA%8C-%E5%93%A8%E5%85%B5%E7%9A%84%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86">二、 哨兵的核心知识</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88redis%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E5%8F%AA%E6%9C%892%E4%B8%AA%E8%8A%82%E7%82%B9%E6%97%A0%E6%B3%95%E6%AD%A3%E5%B8%B8%E5%B7%A5%E4%BD%9C">三、为什么redis哨兵集群只有2个节点无法正常工作？</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E5%9B%9B-%E7%BB%8F%E5%85%B8%E7%9A%843%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4">四、经典的3节点哨兵集群</a></li>
+<li>五、两种数据丢失的情况
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#1-%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 异步复制导致的数据丢失</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#2-%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">2. 脑裂导致的数据丢失</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#3-%E8%A7%A3%E5%86%B3">3. 解决</a></li>
+</ul>
+</li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E5%85%AD-sdown%E5%92%8Codown%E8%BD%AC%E6%8D%A2%E6%9C%BA%E5%88%B6">六、sdown和odown转换机制</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E4%B8%83-%E5%93%A8%E5%85%B5%E9%9B%86%E7%BE%A4%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%E6%9C%BA%E5%88%B6">七、哨兵集群的自动发现机制</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E5%85%AB-slave%E9%85%8D%E7%BD%AE%E7%9A%84%E8%87%AA%E5%8A%A8%E7%BA%A0%E6%AD%A3">八、slave配置的自动纠正</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E4%B9%9D-slave-master%E9%80%89%E4%B8%BE%E7%AE%97%E6%B3%95">九、slave-&gt;master选举算法</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E5%8D%81-quorum%E5%92%8Cmajority">十、quorum和majority</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E5%8D%81%E4%B8%80-configuration-epoch">十一、configuration epoch</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/XQ2Qib6Xc/#%E5%8D%81%E4%BA%8C-configuraiton%E4%BC%A0%E6%92%AD">十二、configuraiton传播</a></li>
+</ul>
+<h3 id="105-redis配置">10.5 Redis配置</h3>
+<ul>
+<li>
+<p>一、容灾策略</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#1-%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AErdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6">1. 如何配置RDB持久化机制</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#2-rdb%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">2. RDB持久化机制的工作流程</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#3-aof%E6%8C%81%E4%B9%85%E5%8C%96%E7%9A%84%E9%85%8D%E7%BD%AE">3. AOF持久化的配置</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#4-aof-rewrite">4. AOF rewrite</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#5-aof%E7%A0%B4%E6%8D%9F%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%AE%E5%A4%8D">5. AOF破损文件的修复</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#6-aof%E5%92%8Crdb%E5%90%8C%E6%97%B6%E5%B7%A5%E4%BD%9C">6. AOF和RDB同时工作</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#7-%E4%BC%81%E4%B8%9A%E7%BA%A7%E7%9A%84%E5%A4%87%E4%BB%BD%E7%AD%96%E7%95%A5">7. 企业级的备份策略</a></li>
+</ul>
+</li>
+<li>
+<p>二、读写分离</p>
+<ul>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#1-redis-replication%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E8%BF%87%E7%A8%8B">1. redis replication主从复制过程</a></p>
+</li>
+<li>
+<ol start="2">
+<li>主从搭建</li>
+</ol>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#%E4%BB%8E%E8%8A%82%E7%82%B9">从节点</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#%E4%B8%BB%E8%8A%82%E7%82%B9">主节点</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E6%9E%B6%E6%9E%84%E7%9A%84%E6%B5%8B%E8%AF%95">读写分离架构的测试</a></li>
+</ul>
+</li>
+<li>
+<p><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#3-%E5%BF%AB%E9%80%9F%E5%8E%8B%E6%B5%8B">3. 快速压测</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>三、哨兵配置</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#1-%E8%A7%A3%E5%86%B3%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6%E5%92%8C%E8%84%91%E8%A3%82%E5%AF%BC%E8%87%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%A2%E5%A4%B1">1. 解决异步复制和脑裂导致的数据丢失</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#2-%E9%85%8D%E7%BD%AE%E7%BB%8F%E5%85%B8%E4%B8%89%E8%8A%82%E7%82%B9%E5%93%A8%E5%85%B5">2. 配置经典三节点哨兵</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#3-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">3. 常用命令</a></li>
+</ul>
+</li>
+<li>
+<p>四、Redis-cluster集群配置</p>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#1-redis-cluster%E7%9A%84%E9%87%8D%E8%A6%81%E9%85%8D%E7%BD%AE">1. redis cluster的重要配置</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#2-%E7%BC%96%E5%86%99%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">2. 编写配置文件</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#3-%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83">3. 准备环境</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#4-%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4">4. 创建集群</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/IAIpFCygR/#5-%E6%B7%BB%E5%8A%A0%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9">5. 添加删除节点</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="106-redis主从复制">10.6 Redis主从复制</h3>
+<ul>
+<li><a href="https://xzzz2020.gitee.io/post/y9Xr-Nu8H/#1-%E5%A4%8D%E5%88%B6%E7%9A%84%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B">1. 复制的完整流程</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/y9Xr-Nu8H/#2-%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E7%9B%B8%E5%85%B3%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6">2. 数据同步相关的核心机制</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/y9Xr-Nu8H/#3-%E5%85%A8%E9%87%8F%E5%A4%8D%E5%88%B6">3. 全量复制</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/y9Xr-Nu8H/#4-%E5%A2%9E%E9%87%8F%E5%A4%8D%E5%88%B6">4. 增量复制</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/y9Xr-Nu8H/#5-heartbeat">5. heartbeat</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/y9Xr-Nu8H/#6-%E5%BC%82%E6%AD%A5%E5%A4%8D%E5%88%B6">6. 异步复制</a></li>
+<li><a href="https://xzzz2020.gitee.io/post/y9Xr-Nu8H/#7-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%B5%81%E7%A8%8B">7. 主从复制流程</a></li>
+</ul>
+<h2 id="十一-spring">十一、Spring</h2>
+<h2 id="十二-springboot">十二、SpringBoot</h2>
+<h2 id="十三-springmvc">十三、SpringMVC</h2>
+<h2 id="十四-mybatis">十四、Mybatis</h2>
+<h2 id="十五-常用设计模式">十五、常用设计模式</h2>
+<h2 id="十六-消息队列rocketmq-rabbitmq-kafka">十六、消息队列（RocketMq、rabbitMQ、kafka）</h2>
+<h2 id="十七-微服务dubbo-zookeeper-springcloud">十七、微服务（Dubbo、zookeeper、SpringCloud）</h2>
+<h2 id="十八-项目">十八、项目</h2>
+<h3 id="181-高并发">18.1 高并发</h3>
+<h3 id="182-高可用">18.2 高可用</h3>
+<h3 id="183-高安全">18.3 高安全</h3>
+<h2 id="十九-系统架构">十九、系统架构</h2>
+<h2 id="二十-netty">二十、Netty</h2>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-java%E5%9F%BA%E7%A1%80">一、Java基础</a>
+<ul>
+<li><a href="#11-%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80">1.1 语言基础</a></li>
+<li><a href="#12-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">1.2 面向对象</a></li>
+<li><a href="#13-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">1.3 面向对象</a></li>
+<li><a href="#14-%E5%BC%82%E5%B8%B8">1.4 异常</a></li>
+<li><a href="#15-%E6%95%B0%E7%BB%84">1.5 数组</a></li>
+<li><a href="#16-%E5%B8%B8%E7%94%A8%E7%B1%BB">1.6 常用类</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%AE%B9%E5%99%A8%E9%9B%86%E5%90%88%E6%BA%90%E7%A0%81">二、容器集合（源码）</a>
+<ul>
+<li><a href="#21-list">2.1 List</a></li>
+<li><a href="#22-set">2.2 Set</a></li>
+<li><a href="#23-map">2.3 Map</a></li>
+<li><a href="#24-collections">2.4 Collections</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E5%B9%B6%E5%8F%91">三、并发</a>
+<ul>
+<li><a href="#31-%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80">3.1 并发基础</a></li>
+<li><a href="#32-cas">3.2 CAS</a></li>
+<li><a href="#33-synchronize%E5%8E%9F%E7%90%86%E5%8F%8A%E4%BC%98%E5%8C%96">3.3 Synchronize原理及优化</a></li>
+<li><a href="#34-juc%E5%B7%A5%E5%85%B7">3.4 JUC工具</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-jvm">四、JVM</a>
+<ul>
+<li><a href="#41-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B">4.1  类加载过程</a></li>
+<li><a href="#42-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8">4.2 类加载器</a></li>
+<li><a href="#43-jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6">4.3 JVM垃圾回收</a></li>
+<li><a href="#44-jvm%E5%86%85%E5%AD%98%E6%9C%BA%E5%88%B6">4.4 JVM内存机制</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-java%E9%AB%98%E7%BA%A7">五、Java高级</a>
+<ul>
+<li><a href="#51-%E5%8F%8D%E5%B0%84">5.1 反射</a></li>
+<li><a href="#52-%E6%B3%A8%E8%A7%A3">5.2 注解</a></li>
+<li><a href="#53-socket">5.3 Socket</a></li>
+<li><a href="#54-nio-bio">5.4 Nio、Bio</a></li>
+<li><a href="#55-%E6%B3%9B%E5%9E%8B">5.5 泛型</a></li>
+<li><a href="#56-jdk8%E5%92%8C11">5.6 JDK8和11</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%AD-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">六、操作系统</a></li>
+<li><a href="#%E4%B8%83-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C">七、计算机网络</a></li>
+<li><a href="#%E5%85%AB-%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">八、算法与数据结构</a></li>
+<li><a href="#%E4%B9%9D-%E6%95%B0%E6%8D%AE%E5%BA%93mysql">九、数据库（MySQL）</a></li>
+<li><a href="#%E5%8D%81-%E7%BC%93%E5%AD%98redis">十、缓存（Redis）</a>
+<ul>
+<li><a href="#101-redis%E5%9F%BA%E7%A1%80">10.1 Redis基础</a></li>
+<li><a href="#102-%E8%B7%B3%E8%B7%83%E8%A1%A8">10.2 跳跃表</a></li>
+<li><a href="#103-redis%E6%8C%81%E4%B9%85%E5%8C%96">10.3 Redis持久化</a></li>
+<li><a href="#104-redis%E5%93%A8%E5%85%B5">10.4 Redis哨兵</a></li>
+<li><a href="#105-redis%E9%85%8D%E7%BD%AE">10.5 Redis配置</a></li>
+<li><a href="#106-redis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">10.6 Redis主从复制</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E4%B8%80-spring">十一、Spring</a></li>
+<li><a href="#%E5%8D%81%E4%BA%8C-springboot">十二、SpringBoot</a></li>
+<li><a href="#%E5%8D%81%E4%B8%89-springmvc">十三、SpringMVC</a></li>
+<li><a href="#%E5%8D%81%E5%9B%9B-mybatis">十四、Mybatis</a></li>
+<li><a href="#%E5%8D%81%E4%BA%94-%E5%B8%B8%E7%94%A8%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">十五、常用设计模式</a></li>
+<li><a href="#%E5%8D%81%E5%85%AD-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97rocketmq-rabbitmq-kafka">十六、消息队列（RocketMq、rabbitMQ、kafka）</a></li>
+<li><a href="#%E5%8D%81%E4%B8%83-%E5%BE%AE%E6%9C%8D%E5%8A%A1dubbo-zookeeper-springcloud">十七、微服务（Dubbo、zookeeper、SpringCloud）</a></li>
+<li><a href="#%E5%8D%81%E5%85%AB-%E9%A1%B9%E7%9B%AE">十八、项目</a>
+<ul>
+<li><a href="#181-%E9%AB%98%E5%B9%B6%E5%8F%91">18.1 高并发</a></li>
+<li><a href="#182-%E9%AB%98%E5%8F%AF%E7%94%A8">18.2 高可用</a></li>
+<li><a href="#183-%E9%AB%98%E5%AE%89%E5%85%A8">18.3 高安全</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%81%E4%B9%9D-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84">十九、系统架构</a></li>
+<li><a href="#%E4%BA%8C%E5%8D%81-netty">二十、Netty</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-09-06，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-09-06 10:36:13";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-09-06，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-09-06 10:36:13";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>58</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

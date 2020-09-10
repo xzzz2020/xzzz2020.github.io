@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】自定义SpringMVC | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/aAuoQMUUV/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1599740351189" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】自定义SpringMVC</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-09-10</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/spring/" class="tag">Spring</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">5001字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">23 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1599703284018-fdd16e608b7d.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a>
+<ul>
+<li><a href="#1-springmvc%E7%9A%84%E5%BC%95%E5%87%BA">1. SpringMVC的引出</a></li>
+<li><a href="#2-%E8%87%AA%E5%AE%9A%E4%B9%89mvc%E6%8F%90%E4%BE%9B%E7%9A%84%E5%8A%9F%E8%83%BD">2. 自定义MVC提供的功能</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%BB%BA%E7%AB%8B%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91%E5%99%A8">二、建立请求转发器</a>
+<ul>
+<li><a href="#1-%E8%AF%B7%E6%B1%82%E7%9A%84%E6%8B%A6%E6%88%AA">1. 请求的拦截</a></li>
+<li><a href="#2-%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82">2. 责任链处理请求</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E5%99%A8">三、请求处理器</a>
+<ul>
+<li><a href="#1-%E8%AF%B7%E6%B1%82%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8">1. 请求预处理器</a></li>
+<li><a href="#2-%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E5%A4%84%E7%90%86%E5%99%A8">2. 静态资源处理器</a></li>
+<li><a href="#3-jsp%E5%A4%84%E7%90%86%E5%99%A8">3. JSP处理器</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-controller%E5%A4%84%E7%90%86%E5%99%A8">四、Controller处理器</a>
+<ul>
+<li><a href="#1-%E7%9B%B8%E5%85%B3%E6%B3%A8%E8%A7%A3%E5%92%8C%E9%85%8D%E7%BD%AE%E7%B1%BB">1. 相关注解和配置类</a></li>
+<li><a href="#2-controllerrequestprocessor">2. ControllerRequestProcessor</a></li>
+<li><a href="#3-%E5%BB%BA%E7%AB%8Bcontroller%E6%96%B9%E6%B3%95%E4%B8%8E%E8%AF%B7%E6%B1%82%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB">3. 建立Controller方法与请求的映射关系</a></li>
+<li><a href="#4-%E7%BB%99%E9%9C%80%E8%A6%81%E6%89%A7%E8%A1%8C%E7%9A%84%E6%96%B9%E6%B3%95%E5%8F%82%E6%95%B0%E8%B5%8B%E5%80%BC">4. 给需要执行的方法参数赋值</a></li>
+<li><a href="#5-%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E6%89%A7%E8%A1%8C%E8%8E%B7%E5%8F%96%E6%89%A7%E8%A1%8C%E7%9A%84%E7%BB%93%E6%9E%9C">5. 利用反射执行获取执行的结果</a></li>
+<li><a href="#6-%E6%A0%B9%E6%8D%AE%E7%BB%93%E6%9E%9C%E8%AE%BE%E7%BD%AE%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">6. 根据结果设置结果渲染器</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E5%A4%84%E7%90%86%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">五、处理结果渲染器</a>
+<ul>
+<li><a href="#1-%E9%BB%98%E8%AE%A4%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">1. 默认结果渲染器</a></li>
+<li><a href="#2-%E5%BC%82%E5%B8%B8%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">2. 异常结果渲染器</a></li>
+<li><a href="#3-%E6%89%BE%E4%B8%8D%E5%88%B0%E8%B7%AF%E5%BE%84%E6%B8%B2%E6%9F%93%E5%99%A8">3. 找不到路径渲染器</a></li>
+<li><a href="#4-json%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">4. Json结果渲染器</a></li>
+<li><a href="#5-%E8%A7%86%E5%9B%BE%E8%A7%A3%E6%9E%90%E5%99%A8">5. 视图解析器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-简介">一、简介</h2>
+<h3 id="1-springmvc的引出">1. SpringMVC的引出</h3>
+<ul>
+<li>
+<p>最开始都是用的Servlet</p>
+</li>
+<li>
+<p>如果一个Servlet对应一个类，比如说商品类，但是如果我们除了需要查询产品还查询了订单，就需要访问两个Servlet</p>
+</li>
+<li>
+<p>如果一个Servlet对应一个页面，比如说商品页，随着页面的增多，Servlet也会越来越多，同时如果一个页面有多个get请求，将无法处理</p>
+</li>
+</ul>
+<p><strong>参照SpringMVC，仅通过DispatcherServlet进行请求派发这样可以让系统模块更加明确，该类的任务有</strong>：</p>
+<ul>
+<li>拦截全部请求</li>
+<li>解析请求</li>
+<li>派发给对应的Controller里面进行处理</li>
+</ul>
+<p><strong>通过下面的注解可以拦截到全部请求</strong></p>
+<pre><code class="language-java">@WebServlet(&quot;/&quot;)
+</code></pre>
+<p><strong>下面的会对jsp请求也会进行拦截，如果我们在页面中转发到jsp，就会依然被拦截到这个类里</strong></p>
+<pre><code class="language-java">@WebServlet(&quot;/*&quot;)
+</code></pre>
+<p>原因在tomcat的web.xml中，反斜杠是Servlet中特殊的匹配模式，优先级最低，比*.jsp优先级低，但是反斜杠星号属于路径匹配，优先级比*.jsp高</p>
+<pre><code class="language-xml">&lt;!-- The mapping for the default servlet --&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;default&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+
+ &lt;!-- The mappings for the JSP servlet --&gt;    
+ &lt;servlet-mapping&gt;                                      
+     &lt;servlet-name&gt;jsp&lt;/servlet-name&gt;          
+     &lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;              
+     &lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;            
+ &lt;/servlet-mapping&gt;                                     
+</code></pre>
+<h3 id="2-自定义mvc提供的功能">2. 自定义MVC提供的功能</h3>
+<ul>
+<li>
+<p>对所有的请求结果进行转发，利用责任链模式处理对应的请求</p>
+</li>
+<li>
+<p>进行编码相关的预处理</p>
+</li>
+<li>
+<p>支持<strong>静态资源、JSP以及Controller</strong>的请求处理，<strong>需要被转发的Controller需要在类和方法上都加入@RequestMapping注解，目前只提供Get和Post两种请求方法</strong></p>
+</li>
+<li>
+<p>提供<strong>基本类型</strong>的参数转换，将请求的参数赋值在方法上，但是<strong>要求每个参数都需要加上@RequestParam注解</strong></p>
+</li>
+<li>
+<p><strong>如果方法上有@ResponseBody注解，将提供Json的视图渲染</strong></p>
+</li>
+<li>
+<p><strong>如果方法上没有提供@ResponseBody注解，将提供ModelAndView的页面渲染，返回值可以是ModelAndView，或者String类型，渲染到JSP页面</strong></p>
+</li>
+</ul>
+<h2 id="二-建立请求转发器">二、建立请求转发器</h2>
+<h3 id="1-请求的拦截">1. 请求的拦截</h3>
+<p><strong>建立DispatcherServlet</strong></p>
+<ul>
+<li>初始化容器</li>
+<li>初始化请求处理器责任链</li>
+<li>通过责任链模式来依次调用请求处理器对请求进行处理</li>
+<li>对处理结果进行渲染</li>
+</ul>
+<pre><code class="language-java">/**
+ * 1.完成框架的初始化
+ * 2.对请求进行分发
+ * 3.对结果进行渲染
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:05
+ */
+@WebServlet(&quot;/*&quot;)
+public class DispatcherServlet extends HttpServlet {
+    //处理器列表
+    private List&lt;RequestProcessor&gt; Processor = new ArrayList&lt;&gt;();
+
+    @Override
+    public void init(){
+        //1.初始化容器
+        BeanContainer beanContainer = BeanContainer.getInstance();
+        beanContainer.loadBeans(&quot;com.imooc&quot;);
+        new AspectWeaver().doAop();
+        new DependencyInjector().doIoc();
+        //2.初始化请求处理器责任链
+        Processor.add(new PreRequestProcessor());
+        Processor.add(new StaticResourceRequestProcessor(getServletContext()));
+        Processor.add(new JspRequestProcessor(getServletContext()));
+        Processor.add(new ControllerRequestProcessor());
+    }
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) {
+        //1.创建责任链对象实例
+        RequestProcessorChain requestProcessorChain = new RequestProcessorChain(Processor.iterator(), req, resp);
+        //2.通过责任链模式来依次调用请求处理器对请求进行处理
+        requestProcessorChain.doRequestProcessorChain();
+        //3.对处理结果进行渲染
+        requestProcessorChain.doRender();
+    }
+}
+</code></pre>
+<h3 id="2-责任链处理请求">2. 责任链处理请求</h3>
+<pre><code class="language-java">/**
+ * 责任链处理实例
+ * 1.以责任链的模式执行注册的请求处理器
+ * 2.委派给特定的Render实例对处理的结果进行渲染
+ *
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:05
+ */
+@Data
+@Slf4j
+public class RequestProcessorChain {
+
+    //请求处理器迭代器
+    private final Iterator&lt;RequestProcessor&gt; requestProcessorIterator;
+    //请求Request
+    private final HttpServletRequest request;
+    //请求Response
+    private final HttpServletResponse response;
+    //http请求方法
+    private String requestMethod;
+    //http请求路径
+    private String requestPath;
+    //请求状态码
+    private int responseCode;
+    //请求结果渲染器
+    private ResultRender resultRender;
+
+    public RequestProcessorChain(Iterator&lt;RequestProcessor&gt; requestProcessorIterator, HttpServletRequest req, HttpServletResponse resp) {
+        this.requestProcessorIterator = requestProcessorIterator;
+        this.request = req;
+        this.response = resp;
+        this.requestMethod = req.getMethod();
+        this.requestPath = req.getPathInfo();
+        this.responseCode = HttpServletResponse.SC_OK;
+    }
+
+    /**
+     * 以责任链的模式处理请求
+     */
+    public void doRequestProcessorChain() {
+        //1.通过迭代器遍历注册的请求处理器实现类列表
+        try {
+            while (requestProcessorIterator.hasNext()) {
+                //2.直到某个请求处理器执行后返回为false为止
+                RequestProcessor requestProcessor = requestProcessorIterator.next();
+                boolean processStatue = requestProcessor.process(this);
+                if (!processStatue) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            //3.期间如果出现异常，则交由内部异常渲染器处理
+            this.resultRender = new InternalErrorResultRender();
+            log.error(&quot;doRequestProcessorChain error:&quot;, e);
+        }
+
+    }
+
+    /**
+     * 结果渲染器
+     */
+    public void doRender() {
+        //1.如果请求处理器实现类均未选择合适的渲染器，则使用默认的
+        if (this.resultRender == null) {
+            this.resultRender = new DefaultResultRender();
+        }
+        try {
+            //2.调用渲染器的render方法对结果进行渲染
+            resultRender.render(this);
+        } catch (Exception e) {
+            log.error(&quot;doRender error:&quot;, e);
+            throw new RuntimeException(e);
+        }
+    }
+}
+</code></pre>
+<h2 id="三-请求处理器">三、请求处理器</h2>
+<blockquote>
+<p>采用责任链模式，如果没有被当前处理器处理，则交给下一个处理器处理，直到有处理器处理成功</p>
+</blockquote>
+<h3 id="1-请求预处理器">1. 请求预处理器</h3>
+<pre><code class="language-java">/**
+ * 请求预处理，包括进行统一的UTF-8编码以及路径处理
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:06
+ */
+@Slf4j
+public class PreRequestProcessor implements RequestProcessor {
+    @Override
+    public boolean process(RequestProcessorChain requestProcessorChain) throws Exception {
+        // 1.设置请求编码，将其统一设置成UTF-8
+        requestProcessorChain.getRequest().setCharacterEncoding(&quot;UTF-8&quot;);
+        // 2.将请求路径末尾的/剔除，为后续匹配Controller请求路径做准备
+        // （一般Controller的处理路径是/aaa/bbb，所以如果传入的路径结尾是/aaa/bbb/，
+        // 就需要处理成/aaa/bbb）
+        String requestPath = requestProcessorChain.getRequestPath();
+        //http://localhost:8080/simpleframework requestPath=&quot;/&quot;
+        if(requestPath.length() &gt; 1 &amp;&amp; requestPath.endsWith(&quot;/&quot;)){
+            requestProcessorChain.setRequestPath(requestPath.substring(0, requestPath.length() - 1));
+        }
+        log.info(&quot;preprocess request {} {}&quot;, requestProcessorChain.getRequestMethod(), requestProcessorChain.getRequestPath());
+        return true;
+    }
+}
+</code></pre>
+<h3 id="2-静态资源处理器">2. 静态资源处理器</h3>
+<blockquote>
+<p>利用的tomcat默认请求派发器RequestDispatcher处理</p>
+</blockquote>
+<pre><code class="language-java">/**
+ * 静态资源请求的处理，包括但不限于图片、css、以及js文件等
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:08
+ */
+@Slf4j
+public class StaticResourceRequestProcessor implements RequestProcessor {
+    public static final String DEFAULT_TOMCAT_SERVLET = &quot;default&quot;;
+    public static final String STATIC_RESOURCE_PREFIX = &quot;/static/&quot;;
+    //tomcat默认请求派发器RequestDispatcher的名称
+    RequestDispatcher defaultDispatcher;
+
+    public StaticResourceRequestProcessor(ServletContext servletContext) {
+        this.defaultDispatcher = servletContext.getNamedDispatcher(DEFAULT_TOMCAT_SERVLET);
+        if(this.defaultDispatcher == null){
+            throw new RuntimeException(&quot;There is no default tomcat servlet&quot;);
+        }
+        log.info(&quot;The default servlet for static resource is {}&quot;, DEFAULT_TOMCAT_SERVLET);
+    }
+
+    @Override
+    public boolean process(RequestProcessorChain requestProcessorChain) throws Exception {
+        //1.通过请求路径判断是否是请求的静态资源 webapp/static
+        if(isStaticResource(requestProcessorChain.getRequestPath())){
+            //2.如果是静态资源，则将请求转发给default servlet处理
+            defaultDispatcher.forward(requestProcessorChain.getRequest(), requestProcessorChain.getResponse());
+            return false;
+        }
+        return true;
+    }
+    //通过请求路径前缀（目录）是否为静态资源 /static/
+    private boolean isStaticResource(String path){
+        return path.startsWith(STATIC_RESOURCE_PREFIX);
+    }
+}
+</code></pre>
+<h3 id="3-jsp处理器">3. JSP处理器</h3>
+<blockquote>
+<p>利用的tomcat的jspServlet处理</p>
+</blockquote>
+<pre><code class="language-java">/**
+ * jsp资源请求处理
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:08
+ */
+public class JspRequestProcessor implements RequestProcessor {
+
+    //jsp请求的RequestDispatcher的名称
+    private static final String JSP_SERVLET = &quot;jsp&quot;;
+    //Jsp请求资源路径前缀
+    private static final String  JSP_RESOURCE_PREFIX = &quot;/templates/&quot;;
+
+    /**
+     * jsp的RequestDispatcher,处理jsp资源
+     */
+    private RequestDispatcher jspServlet;
+
+    public JspRequestProcessor(ServletContext servletContext) {
+        jspServlet = servletContext.getNamedDispatcher(JSP_SERVLET);
+        if (null == jspServlet) {
+            throw new RuntimeException(&quot;there is no jsp servlet&quot;);
+        }
+    }
+
+    @Override
+    public boolean process(RequestProcessorChain requestProcessorChain) throws Exception {
+        if (isJspResource(requestProcessorChain.getRequestPath())) {
+            jspServlet.forward(requestProcessorChain.getRequest(), requestProcessorChain.getResponse());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 是否请求的是jsp资源
+     */
+    private boolean isJspResource(String url) {
+        return url.startsWith(JSP_RESOURCE_PREFIX);
+    }
+
+}
+</code></pre>
+<h2 id="四-controller处理器">四、Controller处理器</h2>
+<h3 id="1-相关注解和配置类">1. 相关注解和配置类</h3>
+<h3 id="2-controllerrequestprocessor">2. ControllerRequestProcessor</h3>
+<p><strong>功能</strong>：</p>
+<ul>
+<li>针对特定请求，选择匹配的Controllerf方法进行处理</li>
+<li>解析出请求里的参数及其对应的值，并赋值给Controller方法的参数</li>
+<li>选择合适的Render，为后续请求处理结果的渲染做准备</li>
+</ul>
+<h3 id="3-建立controller方法与请求的映射关系">3. 建立Controller方法与请求的映射关系</h3>
+<blockquote>
+<p>请求中包含的信息有路径和请求参数，所以需要根据这些信息找到对应的Controller方法</p>
+</blockquote>
+<p><strong>存储请求的信息</strong></p>
+<pre><code class="language-java">/**
+ * 存储http请求路径和请求方法
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/5 16:45
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+public class RequestPathInfo {
+    //http请求方法
+    private String httpMethod;
+    //http请求路径
+    private String httpPath;
+
+}
+</code></pre>
+<p><strong>存储Controller以及方法的信息</strong></p>
+<pre><code class="language-java">/**
+ * 封装待执行的Controller及其方法实例和参数的映射
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/5 16:40
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ControllerMethod {
+    //Controller对应的Class对象
+    private Class&lt;?&gt; controllerClass;
+    //执行的Controller方法实例
+    private Method invokeMethod;
+    //方法参数名称以及对应的参数类型
+    private Map&lt;String,Class&lt;?&gt;&gt; methodParameters;
+}
+</code></pre>
+<p><strong>建立的映射关系就是RequestPathInfo与ControllerMethod的，这样就可以根据请求定位到对应的方法</strong></p>
+<pre><code class="language-java">private Map&lt;RequestPathInfo, ControllerMethod&gt; pathControllerMethodMap = new ConcurrentHashMap&lt;&gt;();
+</code></pre>
+<h3 id="4-给需要执行的方法参数赋值">4. 给需要执行的方法参数赋值</h3>
+<pre><code class="language-java">/**
+ * 给方法赋值的工具类
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/7 16:10
+ */
+public class ConverterUtil {
+    /**
+     * 返回基本数据类型的空值
+     *需要特殊处理的基本类型即int\double\short\long\byte\float\boolean
+     * @param type 参数类型
+     * @return 对应的空值
+     */
+    public static Object primitiveNull(Class&lt;?&gt; type) {
+        if (type == int.class || type == double.class ||
+                type == short.class || type == long.class ||
+                type == byte.class || type == float.class) {
+            return 0;
+        } else if(type == boolean.class){
+            return false;
+        }
+        return null;
+    }
+    /**
+     * String类型转换成对应的参数类型
+     *
+     * @param type  参数类型
+     * @param requestValue 值
+     * @return 转换后的Object
+     */
+    public static Object convert(Class&lt;?&gt; type, String requestValue) {
+        if(isPrimitive(type)){
+            if(ValidationUtil.isEmpty(requestValue)){
+                return primitiveNull(type);
+            }
+            if (type.equals(int.class) || type.equals(Integer.class)) {
+                return Integer.parseInt(requestValue);
+            } else if (type.equals(String.class)) {
+                return requestValue;
+            } else if (type.equals(Double.class) || type.equals(double.class)) {
+                return Double.parseDouble(requestValue);
+            } else if (type.equals(Float.class) || type.equals(float.class)) {
+                return Float.parseFloat(requestValue);
+            } else if (type.equals(Long.class) || type.equals(long.class)) {
+                return Long.parseLong(requestValue);
+            } else if (type.equals(Boolean.class) || type.equals(boolean.class)) {
+                return Boolean.parseBoolean(requestValue);
+            } else if (type.equals(Short.class) || type.equals(short.class)) {
+                return Short.parseShort(requestValue);
+            } else if (type.equals(Byte.class) || type.equals(byte.class)) {
+                return Byte.parseByte(requestValue);
+            }
+            return requestValue;
+        } else {
+            throw new RuntimeException(&quot;count not support non primitive type conversion yet&quot;);
+        }
+    }
+
+    /**
+     * 判定是否基本数据类型(包括包装类以及String)
+     *
+     * @param type 参数类型
+     * @return 是否为基本数据类型
+     */
+    private static boolean isPrimitive(Class&lt;?&gt; type) {
+        return type == boolean.class
+                || type == Boolean.class
+                || type == double.class
+                || type == Double.class
+                || type == float.class
+                || type == Float.class
+                || type == short.class
+                || type == Short.class
+                || type == int.class
+                || type == Integer.class
+                || type == long.class
+                || type == Long.class
+                || type == String.class
+                || type == byte.class
+                || type == Byte.class
+                || type == char.class
+                || type == Character.class;
+    }
+}
+</code></pre>
+<h3 id="5-利用反射执行获取执行的结果">5. 利用反射执行获取执行的结果</h3>
+<pre><code class="language-java">Object controller = beanContainer.getBean(controllerMethod.getControllerClass());
+Method invokeMethod = controllerMethod.getInvokeMethod();
+invokeMethod.setAccessible(true);
+Object result;
+try {
+    if (methodParam.size()==0){
+        result = invokeMethod.invoke(controller);
+    }else {
+        result = invokeMethod.invoke(controller,methodParam.toArray());
+    }
+} catch (IllegalAccessException e) {
+    throw new RuntimeException(e);
+} catch (InvocationTargetException e) {
+    //如果是调用异常的话，需要通过e.getTargetException()
+    // 去获取执行方法抛出的异常
+    throw new RuntimeException(e.getTargetException());
+}
+</code></pre>
+<h3 id="6-根据结果设置结果渲染器">6. 根据结果设置结果渲染器</h3>
+<pre><code class="language-java">ResultRender resultRender;
+boolean isJson = controllerMethod.getInvokeMethod().isAnnotationPresent(ResponseBody.class);
+if (isJson){
+    resultRender = new JsonResultRender(result);
+}else {
+    resultRender = new ViewResultRender(result);
+}
+requestProcessorChain.setResultRender(resultRender);
+</code></pre>
+<p><strong>完整代码如下</strong>：</p>
+<pre><code class="language-java">/**
+ * 将请求转发给对应的Controller进行处理
+ *
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:10
+ */
+@Slf4j
+public class ControllerRequestProcessor implements RequestProcessor {
+    //IOC容器
+    private BeanContainer beanContainer;
+    //请求和Controller的映射
+    private Map&lt;RequestPathInfo, ControllerMethod&gt; pathControllerMethodMap = new ConcurrentHashMap&lt;&gt;();
+
+    /**
+     * 依靠容器，建立起请求路径、请求方法与Controller方法实例的映射
+     */
+    public ControllerRequestProcessor() {
+        this.beanContainer = BeanContainer.getInstance();
+        // 获取被@RequestMapping标记的Controller类
+        Set&lt;Class&lt;?&gt;&gt; requestMappingSet = beanContainer.getClassesByAnnotation(RequestMapping.class);
+        // 建立映射
+        initPathControllerMethodMap(requestMappingSet);
+    }
+
+    /**
+     * 建立起请求路径、请求方法与Controller方法实例的映射
+     *
+     * @param requestMappingSet 需要被转发的Controller
+     */
+    private void initPathControllerMethodMap(Set&lt;Class&lt;?&gt;&gt; requestMappingSet) {
+        if (ValidationUtil.isEmpty(requestMappingSet)) {//如果没有类被@RequestMapping标记
+            return;
+        }
+        //1.遍历所有被@RequestMapping标记的类，获取类上面该注解的属性值作为一级路径
+        for (Class&lt;?&gt; requestMappingClass : requestMappingSet) {
+            //获取@RequestMapping注解
+            RequestMapping requestMapping = requestMappingClass.getAnnotation(RequestMapping.class);
+            //获取注解值
+            String basePath = requestMapping.value();
+            if (!basePath.startsWith(&quot;/&quot;)) {//如果不是以“/”开头，为了方便处理，加上“/”
+                basePath = &quot;/&quot; + basePath;
+            }
+            //2.遍历类里所有被@RequestMapping标记的方法，获取方法上面该注解的属性值，作为二级路径
+            Method[] methods = requestMappingClass.getDeclaredMethods();
+            if (ValidationUtil.isEmpty(methods)) {
+                continue;
+            }
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(RequestMapping.class)) {//获取方法被@RequestMapping标记的
+                    //获取@RequestMapping注解
+                    RequestMapping methodRequest = method.getAnnotation(RequestMapping.class);
+                    //获取注解值
+                    String methodPath = methodRequest.value();
+                    if (!methodPath.startsWith(&quot;/&quot;)) {//如果不是以“/”开头，为了方便处理，加上“/”
+                        methodPath = &quot;/&quot; + methodPath;
+                    }
+                    //拼接一级和二级路径路径
+                    String url = basePath + methodPath;
+                    //3.解析方法里被@RequestParam标记的参数，
+                    // 获取该注解的属性值，作为参数名，
+                    // 获取被标记的参数的数据类型，建立参数名和参数类型的映射
+                    Map&lt;String, Class&lt;?&gt;&gt; methodParams = new HashMap&lt;&gt;();
+                    //获取方法的参数
+                    Parameter[] parameters = method.getParameters();
+                    if (!ValidationUtil.isEmpty(parameters)) {
+                        for (Parameter parameter : parameters) {
+                            //获取方法参数上的注解属性
+                            RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
+                            //目前暂定为Controller方法里面所有的参数都需要@RequestParam注解
+                            if (requestParam == null) {//如果方法参数没有注解，则暂时报错
+                                throw new RuntimeException(&quot;The parameter must have @RequestParam&quot;);
+                            }
+                            methodParams.put(requestParam.value(), parameter.getType());
+                        }
+                    }
+                    //4.将获取到的信息封装成RequestPathInfo实例和ControllerMethod实例，放置到映射表里
+                    String httpMethod = String.valueOf(methodRequest.method());//获取注解中所要求的请求方法
+                    RequestPathInfo requestPathInfo = new RequestPathInfo(httpMethod, url);
+                    //如果出现了重复的路径
+                    if (this.pathControllerMethodMap.containsKey(requestPathInfo)) {
+                        log.warn(&quot;duplicate url:{} registration，current class {} method{} will override the former one&quot;,
+                                requestPathInfo.getHttpPath(), requestMappingClass.getName(), method.getName());
+                    }
+                    ControllerMethod controllerMethod = new ControllerMethod(requestMappingClass, method, methodParams);
+                    this.pathControllerMethodMap.put(requestPathInfo, controllerMethod);
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * 处理请求
+     *
+     * @param requestProcessorChain 责任链
+     * @return 返回一定成功
+     * @throws Exception 处理出错会抛出异常
+     */
+    @Override
+    public boolean process(RequestProcessorChain requestProcessorChain) throws Exception {
+        //1.解析HttpServletRequest的请求方法,请求路径，获取对应的ControllerMethod实例
+        String method = requestProcessorChain.getRequestMethod();//获取请求的方法类型
+        String path = requestProcessorChain.getRequestPath();//获取请求路径
+        ControllerMethod controllerMethod = this.pathControllerMethodMap.get(new RequestPathInfo(method, path));//查找对应的路径和方法
+        if (controllerMethod == null) {//找不到请求路径
+            requestProcessorChain.setResultRender(new ResourceNotFoundResultRender(method, path));
+            return false;
+        }
+        //2.解析请求参数，并传递给获取到的ControllerMethod实例去执行
+        Object result = invokeControllerMethod(controllerMethod, requestProcessorChain.getRequest());
+        //3.根据处理的结果，选择对应的render进行渲染
+        setResultRender(result, controllerMethod, requestProcessorChain);
+        return false;
+    }
+
+    /**
+     * 根据处理的结果，选择对应的render进行渲染
+     *
+     * @param result                处理的结果
+     * @param controllerMethod      执行的Controller及其方法
+     * @param requestProcessorChain 请求处理链
+     */
+    private void setResultRender(Object result, ControllerMethod controllerMethod, RequestProcessorChain requestProcessorChain) {
+        if (result == null) {
+            return;
+        }
+        ResultRender resultRender;
+        boolean isJson = controllerMethod.getInvokeMethod().isAnnotationPresent(ResponseBody.class);
+        if (isJson) {
+            resultRender = new JsonResultRender(result);
+        } else {
+            resultRender = new ViewResultRender(result);
+        }
+        requestProcessorChain.setResultRender(resultRender);
+    }
+
+    /**
+     * 解析请求参数，并传递给获取到的ControllerMethod实例去执行
+     *
+     * @param controllerMethod 需要执行的Controller配置
+     * @param request          http请求
+     * @return 处理的结果
+     */
+    private Object invokeControllerMethod(ControllerMethod controllerMethod, HttpServletRequest request) {
+        //1.从请求里获取GET或者POST的参数名及其对应的值
+        Map&lt;String, String&gt; requestParamMap = new HashMap&lt;&gt;();
+        //GET，POST方法的请求参数获取方式
+        Map&lt;String, String[]&gt; parameterMap = request.getParameterMap();
+        for (Map.Entry&lt;String, String[]&gt; parameter : parameterMap.entrySet()) {
+            if (ValidationUtil.isEmpty(parameter.getValue())) {
+                //只支持一个参数对应一个值的形式
+                requestParamMap.put(parameter.getKey(), parameter.getValue()[0]);
+            }
+        }
+        //2.根据获取到的请求参数名及其对应的值，以及controllerMethod里面的参数和类型的映射关系，去实例化出方法对应的参数
+        List&lt;Object&gt; methodParam = new ArrayList&lt;&gt;();
+        Map&lt;String, Class&lt;?&gt;&gt; methodParameterMap = controllerMethod.getMethodParameters();
+        for (String paramName : methodParameterMap.keySet()) {
+            Class&lt;?&gt; type = methodParameterMap.get(paramName);
+            String requestValue = requestParamMap.get(paramName);
+            Object value;
+            //只支持String 以及基础类型char,int,short,byte,double,long,float,boolean,及它们的包装类型
+            if (requestValue == null) {
+                //将请求里的参数值转成适配于参数类型的空值
+                value = ConverterUtil.primitiveNull(type);
+            } else {
+                value = ConverterUtil.convert(type, requestValue);
+            }
+            methodParam.add(value);
+        }
+        //3.执行Controller里面对应的方法并返回结果
+        Object controller = beanContainer.getBean(controllerMethod.getControllerClass());
+        Method invokeMethod = controllerMethod.getInvokeMethod();
+        invokeMethod.setAccessible(true);
+        Object result;
+        try {
+            if (methodParam.size() == 0) {
+                result = invokeMethod.invoke(controller);
+            } else {
+                result = invokeMethod.invoke(controller, methodParam.toArray());
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            //如果是调用异常的话，需要通过e.getTargetException()
+            // 去获取执行方法抛出的异常
+            throw new RuntimeException(e.getTargetException());
+        }
+        return result;
+    }
+
+
+}
+</code></pre>
+<h2 id="五-处理结果渲染器">五、处理结果渲染器</h2>
+<h3 id="1-默认结果渲染器">1. 默认结果渲染器</h3>
+<blockquote>
+<p>如果请求处理器实现类均未选择合适的渲染器，则使用默认的结果渲染器</p>
+</blockquote>
+<pre><code class="language-java">if (this.resultRender == null) {
+    this.resultRender = new DefaultResultRender();
+}
+</code></pre>
+<p><strong>主要将处理的结果状态码返回，默认为200</strong></p>
+<pre><code class="language-java">/**
+ * 默认渲染器，只会返回状态码
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:28
+ */
+public class DefaultResultRender implements ResultRender {
+    @Override
+    public void render(RequestProcessorChain requestProcessorChain) throws Exception {
+        //将相应状态码设置到response中
+        requestProcessorChain.getResponse().setStatus(requestProcessorChain.getResponseCode());
+    }
+}
+
+</code></pre>
+<h3 id="2-异常结果渲染器">2. 异常结果渲染器</h3>
+<blockquote>
+<p>以责任链的模式处理请求，期间如果出现异常，则交由内部异常渲染器处理</p>
+</blockquote>
+<pre><code class="language-java">/**
+ * 以责任链的模式处理请求
+ */
+public void doRequestProcessorChain() {
+    //1.通过迭代器遍历注册的请求处理器实现类列表
+    try {
+        while (requestProcessorIterator.hasNext()) {
+            //2.直到某个请求处理器执行后返回为false为止
+            RequestProcessor requestProcessor = requestProcessorIterator.next();
+            boolean processStatue = requestProcessor.process(this);
+            if (!processStatue) {
+                break;
+            }
+        }
+    } catch (Exception e) {
+        //3.期间如果出现异常，则交由内部异常渲染器处理
+        this.resultRender = new InternalErrorResultRender(e.getMessage());
+        log.error(&quot;doRequestProcessorChain error:&quot;, e);
+    }
+
+}
+</code></pre>
+<p><strong>设置状态码500和异常信息</strong></p>
+<pre><code class="language-java">/**
+ * 处理在请求中出现的异常
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:31
+ */
+public class InternalErrorResultRender implements ResultRender {
+
+    private String errorMsg;
+
+    public InternalErrorResultRender(String errorMsg){
+        this.errorMsg = errorMsg;
+    }
+
+    @Override
+    public void render(RequestProcessorChain requestProcessorChain) throws Exception {
+        HttpServletResponse response = requestProcessorChain.getResponse();
+        //设置状态码500和错误信息
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,errorMsg);
+    }
+}
+</code></pre>
+<h3 id="3-找不到路径渲染器">3. 找不到路径渲染器</h3>
+<blockquote>
+<p>在根据请求路径转发到Controller时，找不到对应的对象或者方法，则使用该渲染器</p>
+</blockquote>
+<p><strong>返回404和请求的路径及方法</strong></p>
+<pre><code class="language-java">/**
+ * 渲染找不到资源结果的渲染器
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:32
+ */
+public class ResourceNotFoundResultRender implements ResultRender {
+
+    private String httpMethod;
+    private String httpPath;
+
+    public ResourceNotFoundResultRender(String httpMethod, String httpPath) {
+        this.httpMethod = httpMethod;
+        this.httpPath = httpPath;
+    }
+
+    @Override
+    public void render(RequestProcessorChain requestProcessorChain) throws Exception {
+        requestProcessorChain.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND,
+                &quot;获取不到对应的请求资源：请求路径[&quot; + httpPath + &quot;]&quot; + &quot;请求方法[&quot; + httpMethod + &quot;]&quot;);
+    }
+}
+</code></pre>
+<h3 id="4-json结果渲染器">4. Json结果渲染器</h3>
+<blockquote>
+<p>当方法上面使用@ResponseBody注解时，利用Gson将结果转换成Json数据返回</p>
+</blockquote>
+<pre><code class="language-java">/**
+ * 将结果返回成Json数据
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:29
+ */
+public class JsonResultRender implements ResultRender {
+    private Object jsonData;
+    public JsonResultRender(Object jsonData) {
+        this.jsonData = jsonData;
+    }
+
+    @Override
+    public void render(RequestProcessorChain requestProcessorChain) throws Exception {
+        //设置响应头
+        requestProcessorChain.getResponse().setContentType(&quot;application/json&quot;);
+        requestProcessorChain.getResponse().setCharacterEncoding(&quot;UTF-8&quot;);
+        //响应流写入经过Gson格式化的处理结果
+        PrintWriter writer = requestProcessorChain.getResponse().getWriter();
+        Gson gson = new Gson();
+        String str = gson.toJson(jsonData);
+        writer.write(str);
+        writer.flush();
+    }
+}
+</code></pre>
+<h3 id="5-视图解析器">5. 视图解析器</h3>
+<blockquote>
+<p>当方法上面没用使用@ResponseBody注解时，将使用视图解析器</p>
+</blockquote>
+<p><strong>模仿Spring MVC 定义一个视图ModelAndView</strong></p>
+<pre><code class="language-java">/**
+ * 存储请求结果，以及显示该数据的视图
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/7 18:02
+ */
+
+public class ModelAndView {
+    //页面所在的路径
+    @Getter
+    private String view;
+    //页面的数据
+    @Getter
+    private Map&lt;String ,Object&gt; model = new HashMap&lt;&gt;();
+
+    public ModelAndView setView(String view) {
+        this.view = view;
+        return this;
+    }
+    //这样可以使用一连串的设置
+    //modelAndView.setView(&quot;addheadline.jsp&quot;).addViewData(&quot;aaa&quot;, &quot;bbb&quot;);
+    public ModelAndView addViewData(String attributeName, Object attributeValue){
+        model.put(attributeName,attributeValue);
+        return this;
+    }
+}
+</code></pre>
+<p><strong>视图解析器则根据返回结果的不同，而进行跳转</strong></p>
+<ul>
+<li>如果是String数据，则创建一个ModelAndView对象，并将数据加入到视图地址</li>
+<li>如果是ModelAndView，则会解析其中的视图地址和数据</li>
+</ul>
+<pre><code class="language-java">/**
+ * 渲染页面，比如ModelAndView类型
+ * @author xzzz2020
+ * @version 1.0
+ * @date 2020/9/4 16:29
+ */
+public class ViewResultRender implements ResultRender {
+    public static final String VIEW_PATH = &quot;/templates/&quot;;
+
+    private ModelAndView modelAndView;
+    /**
+     * 对传入的参数进行处理，并赋值给ModelAndView成员变量
+     * @param mv
+     */
+    public ViewResultRender(Object mv) {
+        if(mv instanceof ModelAndView){
+            //1.如果入参类型是ModelAndView，则直接赋值给成员变量
+            this.modelAndView = (ModelAndView)mv;
+        } else if(mv instanceof  String){
+            //2.如果入参类型是String，则为视图，需要包装后才赋值给成员变量
+            this.modelAndView = new ModelAndView().setView((String)mv);
+        } else {
+            //3.针对其他情况，则直接抛出异常
+            throw new RuntimeException(&quot;illegal request result type&quot;);
+        }
+    }
+
+    /**
+     * 将请求处理结果按照视图路径转发至对应视图进行展示
+     * @param requestProcessorChain
+     * @throws Exception
+     */
+    @Override
+    public void render(RequestProcessorChain requestProcessorChain) throws Exception {
+        HttpServletRequest request = requestProcessorChain.getRequest();
+        HttpServletResponse response = requestProcessorChain.getResponse();
+        //视图路径
+        String path = modelAndView.getView();
+        Map&lt;String, Object&gt; model = modelAndView.getModel();
+        for(Map.Entry&lt;String, Object&gt; entry : model.entrySet()){
+            request.setAttribute(entry.getKey(), entry.getValue());
+        }
+        //JSP
+        request.getRequestDispatcher(VIEW_PATH +path).forward(request, response);
+
+    }
+}
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a>
+<ul>
+<li><a href="#1-springmvc%E7%9A%84%E5%BC%95%E5%87%BA">1. SpringMVC的引出</a></li>
+<li><a href="#2-%E8%87%AA%E5%AE%9A%E4%B9%89mvc%E6%8F%90%E4%BE%9B%E7%9A%84%E5%8A%9F%E8%83%BD">2. 自定义MVC提供的功能</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%BB%BA%E7%AB%8B%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91%E5%99%A8">二、建立请求转发器</a>
+<ul>
+<li><a href="#1-%E8%AF%B7%E6%B1%82%E7%9A%84%E6%8B%A6%E6%88%AA">1. 请求的拦截</a></li>
+<li><a href="#2-%E8%B4%A3%E4%BB%BB%E9%93%BE%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82">2. 责任链处理请求</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-%E8%AF%B7%E6%B1%82%E5%A4%84%E7%90%86%E5%99%A8">三、请求处理器</a>
+<ul>
+<li><a href="#1-%E8%AF%B7%E6%B1%82%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8">1. 请求预处理器</a></li>
+<li><a href="#2-%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E5%A4%84%E7%90%86%E5%99%A8">2. 静态资源处理器</a></li>
+<li><a href="#3-jsp%E5%A4%84%E7%90%86%E5%99%A8">3. JSP处理器</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-controller%E5%A4%84%E7%90%86%E5%99%A8">四、Controller处理器</a>
+<ul>
+<li><a href="#1-%E7%9B%B8%E5%85%B3%E6%B3%A8%E8%A7%A3%E5%92%8C%E9%85%8D%E7%BD%AE%E7%B1%BB">1. 相关注解和配置类</a></li>
+<li><a href="#2-controllerrequestprocessor">2. ControllerRequestProcessor</a></li>
+<li><a href="#3-%E5%BB%BA%E7%AB%8Bcontroller%E6%96%B9%E6%B3%95%E4%B8%8E%E8%AF%B7%E6%B1%82%E7%9A%84%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB">3. 建立Controller方法与请求的映射关系</a></li>
+<li><a href="#4-%E7%BB%99%E9%9C%80%E8%A6%81%E6%89%A7%E8%A1%8C%E7%9A%84%E6%96%B9%E6%B3%95%E5%8F%82%E6%95%B0%E8%B5%8B%E5%80%BC">4. 给需要执行的方法参数赋值</a></li>
+<li><a href="#5-%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E6%89%A7%E8%A1%8C%E8%8E%B7%E5%8F%96%E6%89%A7%E8%A1%8C%E7%9A%84%E7%BB%93%E6%9E%9C">5. 利用反射执行获取执行的结果</a></li>
+<li><a href="#6-%E6%A0%B9%E6%8D%AE%E7%BB%93%E6%9E%9C%E8%AE%BE%E7%BD%AE%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">6. 根据结果设置结果渲染器</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-%E5%A4%84%E7%90%86%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">五、处理结果渲染器</a>
+<ul>
+<li><a href="#1-%E9%BB%98%E8%AE%A4%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">1. 默认结果渲染器</a></li>
+<li><a href="#2-%E5%BC%82%E5%B8%B8%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">2. 异常结果渲染器</a></li>
+<li><a href="#3-%E6%89%BE%E4%B8%8D%E5%88%B0%E8%B7%AF%E5%BE%84%E6%B8%B2%E6%9F%93%E5%99%A8">3. 找不到路径渲染器</a></li>
+<li><a href="#4-json%E7%BB%93%E6%9E%9C%E6%B8%B2%E6%9F%93%E5%99%A8">4. Json结果渲染器</a></li>
+<li><a href="#5-%E8%A7%86%E5%9B%BE%E8%A7%A3%E6%9E%90%E5%99%A8">5. 视图解析器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-09-10 20:13:10";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-09-10 20:13:10";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>58</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

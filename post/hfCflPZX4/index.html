@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】SpringMVC源码分析 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/hfCflPZX4/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1599740351189" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】SpringMVC源码分析</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-09-10</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/spring/" class="tag">Spring</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1299字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">7 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1599709513142-d1ae14edf533.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90">一、配置文件分析</a>
+<ul>
+<li><a href="#1-xml%E9%85%8D%E7%BD%AE%E5%88%86%E6%9E%90">1. XML配置分析</a></li>
+<li><a href="#2-mvc%E9%85%8D%E7%BD%AE">2. MVC配置</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%85%A5%E5%8F%A3%E6%96%B9%E6%B3%95%E5%88%86%E6%9E%90">二、入口方法分析</a>
+<ul>
+<li><a href="#1-%E5%AE%B9%E5%99%A8%E5%88%9D%E5%A7%8B%E5%8C%96">1. 容器初始化</a></li>
+<li><a href="#2-%E8%A7%A3%E6%9E%90controller">2. 解析Controller</a></li>
+<li><a href="#3-spring%E5%AF%B9%E6%B3%A8%E8%A7%A3%E7%9A%84%E9%85%8D%E7%BD%AE%E6%94%AF%E6%8C%81">3. Spring对注解的配置支持</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-springmvc%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B">三、SpringMVC的核心流程</a>
+<ul>
+<li><a href="#1-%E5%85%B3%E9%94%AE%E6%B5%81%E7%A8%8B">1. 关键流程</a></li>
+<li><a href="#2-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6">2. 核心组件</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-配置文件分析">一、配置文件分析</h2>
+<h3 id="1-xml配置分析">1. XML配置分析</h3>
+<p><strong>在一个SSM项目中，需要在xml文件配置SpingMVC的相关组件</strong></p>
+<ol>
+<li><strong>DispatcherServlet</strong>：做请求分发以及结果渲染</li>
+<li><strong>ContextLoaderListener</strong>：配置监听器，在创建Servlet前，加载SpringMVC的配置</li>
+</ol>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xmlns=&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;
+         xsi:schemaLocation=&quot;http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd&quot;
+         version=&quot;3.1&quot;&gt;
+
+    &lt;!-- 配置加载类路径的配置文件 --&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;classpath*:applicationContext.xml&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;!-- 配置监听器 --&gt;
+    &lt;listener&gt;
+        &lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+    &lt;/listener&gt;
+
+    &lt;!-- 前端控制器（加载classpath:springmvc.xml 服务器启动创建servlet） --&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;dispatcherServlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+        &lt;!-- 配置初始化参数，创建完DispatcherServlet对象，加载springmvc.xml配置文件 --&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+            &lt;param-value&gt;classpath:spring-mvc.xml&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;!-- 服务器启动的时候，让DispatcherServlet对象创建 --&gt;
+        &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
+&lt;/web-app&gt;
+</code></pre>
+<h3 id="2-mvc配置">2. MVC配置</h3>
+<ol>
+<li>配置了视图解析器<strong>viewResolver</strong>，提供了视图解析的目录以及后缀</li>
+</ol>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:mvc=&quot;http://www.springframework.org/schema/mvc&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+       xsi:schemaLocation=&quot;
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop
+      http://www.springframework.org/schema/aop/spring-aop.xsd
+           &quot;&gt;
+
+    &lt;!-- 扫描controller的注解，别的不扫描 --&gt;
+    &lt;context:component-scan base-package=&quot;cn.xzzz2020.ssm.controller&quot;&gt;
+    &lt;/context:component-scan&gt;
+
+    &lt;!-- 配置视图解析器 --&gt;
+    &lt;bean id=&quot;viewResolver&quot; class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+        &lt;!-- JSP文件所在的目录 --&gt;
+        &lt;property name=&quot;prefix&quot; value=&quot;/pages/&quot; /&gt;
+        &lt;!-- 文件的后缀名 --&gt;
+        &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+    &lt;/bean&gt;
+
+    &lt;!-- 开启对SpringMVC注解的支持 --&gt;
+    &lt;mvc:annotation-driven /&gt;
+
+    &lt;!--
+        支持AOP的注解支持，AOP底层使用代理技术
+        JDK动态代理，要求必须有接口
+        cglib代理，生成子类对象，proxy-target-class=&quot;true&quot; 默认使用cglib的方式
+    --&gt;
+    &lt;aop:aspectj-autoproxy proxy-target-class=&quot;true&quot;/&gt;
+
+&lt;/beans&gt;
+</code></pre>
+<h2 id="二-入口方法分析">二、入口方法分析</h2>
+<h3 id="1-容器初始化">1. 容器初始化</h3>
+<blockquote>
+<p>第一个需要关注的是ContextLoaderListener</p>
+</blockquote>
+<ol>
+<li>
+<p>这个类实现了ServletContextListener接口，本质上是Servlet的监听器</p>
+</li>
+<li>
+<p>Tomcat会优先加载Servlet的监听器，以保证在Servlet初始化时，调用初始化方法contextInitialized</p>
+</li>
+<li>
+<p>接着读取并解析容器的配置，创建并刷新出容器的实例来</p>
+</li>
+</ol>
+<pre><code class="language-java">public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
+
+   /**
+    * Initialize the root web application context.
+    */
+   @Override
+   public void contextInitialized(ServletContextEvent event) {
+      initWebApplicationContext(event.getServletContext());
+   }
+}
+</code></pre>
+<h3 id="2-解析controller">2. 解析Controller</h3>
+<ol>
+<li>配置前端控制器，这样在容器初始化后，就会解析Controller的@RequestMapping注解</li>
+<li>根据注解，建立请求方法和Controller的映射</li>
+</ol>
+<pre><code class="language-xml">&lt;!-- 前端控制器（加载classpath:springmvc.xml 服务器启动创建servlet） --&gt;
+&lt;servlet&gt;
+    &lt;servlet-name&gt;dispatcherServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+    &lt;!-- 配置初始化参数，创建完DispatcherServlet对象，加载springmvc.xml配置文件 --&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;classpath:spring-mvc.xml&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;!-- 服务器启动的时候，让DispatcherServlet对象创建 --&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+&lt;/servlet&gt;
+</code></pre>
+<h3 id="3-spring对注解的配置支持">3. Spring对注解的配置支持</h3>
+<p><strong>配置SpringMVC</strong></p>
+<pre><code class="language-java">public class StartWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+	/**
+	 * SpringContext中相关的bean
+	 *
+	 * @return
+	 */
+	@Override
+	protected Class&lt;?&gt;[] getRootConfigClasses() {
+		return new Class&lt;?&gt;[]{SpringRootConfig.class};
+	}
+	/**
+	 * DispatcherServlet中上下文相关的Bean
+	 *
+	 * @return
+	 */
+	@Override
+	protected Class&lt;?&gt;[] getServletConfigClasses() {
+		return new Class&lt;?&gt;[]{MVCConfig.class};
+	}
+	/**
+	 * Servlet请求映射路径
+	 *
+	 * @return
+	 */
+	@Override
+	protected String[] getServletMappings(){
+		return new String[]{&quot;/&quot;};
+	}
+	/**
+	 * 拦截并处理请求的编码
+	 *
+	 * @return
+	 */
+	@Override
+	protected Filter[] getServletFilters() {
+		CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+		encodingFilter.setEncoding(&quot;UTF-8&quot;);
+		encodingFilter.setForceEncoding(true);
+		return new Filter[]{encodingFilter};
+	}
+}
+</code></pre>
+<p><strong>设置需要扫描的核心包路径</strong></p>
+<pre><code class="language-java">/**
+ * SpringContext中相关的bean
+ *
+ * @return
+ */
+@Configuration
+@ComponentScan(&quot;com.imooc.service&quot;)
+public class SpringRootConfig {
+}
+</code></pre>
+<p><strong>配置需要扫描的Controller路径</strong></p>
+<pre><code class="language-java">/**
+ * DispatcherServlet中上下文相关的Bean
+ *
+ * @return
+ */
+@Configuration
+@ComponentScan(&quot;com.imooc.controller&quot;)
+@EnableWebMvc
+public class MVCConfig {
+    //内部资源视图解析器
+	@Bean
+	public InternalResourceViewResolver viewResolver(){
+		InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
+		internalResourceViewResolver.setPrefix(&quot;/WEB-INF/jsp/&quot;);
+		internalResourceViewResolver.setSuffix(&quot;.jsp&quot;);
+		return internalResourceViewResolver;
+	}
+}
+</code></pre>
+<h2 id="三-springmvc的核心流程">三、SpringMVC的核心流程</h2>
+<blockquote>
+<p>主要流程与自定义SpringMVC思路一样，可以参考文章：</p>
+</blockquote>
+<h3 id="1-关键流程">1. 关键流程</h3>
+<ol>
+<li>建立请求和Controller方法的映射集合的流程</li>
+<li>根据请求查找对应的Controller方法的流程</li>
+<li>请求参数绑定到方法的形参</li>
+<li>执行方法处理请求</li>
+<li>渲染视图</li>
+</ol>
+<h3 id="2-核心组件">2. 核心组件</h3>
+<figure data-type="image" tabindex="1"><img src="https://img-service.csdnimg.cn/img_convert/b550b1f740d71acd5fb649e2af8ad1aa.png" alt="img" loading="lazy"></figure>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90">一、配置文件分析</a>
+<ul>
+<li><a href="#1-xml%E9%85%8D%E7%BD%AE%E5%88%86%E6%9E%90">1. XML配置分析</a></li>
+<li><a href="#2-mvc%E9%85%8D%E7%BD%AE">2. MVC配置</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-%E5%85%A5%E5%8F%A3%E6%96%B9%E6%B3%95%E5%88%86%E6%9E%90">二、入口方法分析</a>
+<ul>
+<li><a href="#1-%E5%AE%B9%E5%99%A8%E5%88%9D%E5%A7%8B%E5%8C%96">1. 容器初始化</a></li>
+<li><a href="#2-%E8%A7%A3%E6%9E%90controller">2. 解析Controller</a></li>
+<li><a href="#3-spring%E5%AF%B9%E6%B3%A8%E8%A7%A3%E7%9A%84%E9%85%8D%E7%BD%AE%E6%94%AF%E6%8C%81">3. Spring对注解的配置支持</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-springmvc%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B">三、SpringMVC的核心流程</a>
+<ul>
+<li><a href="#1-%E5%85%B3%E9%94%AE%E6%B5%81%E7%A8%8B">1. 关键流程</a></li>
+<li><a href="#2-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6">2. 核心组件</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-09-10 20:17:52";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-09-10，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-09-10 20:17:52";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>58</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>
