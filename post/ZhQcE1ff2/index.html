@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】ZooKeeper基础 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/ZhQcE1ff2/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1600686962942" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】ZooKeeper基础</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-09-21</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/zookeeper/" class="tag">Zookeeper</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2714字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">10 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1600356604120-a282718b29b2.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%8Ezookeeper%E7%AE%80%E4%BB%8B">一、分布式系统与Zookeeper简介</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bzookeeper">1. 简单介绍一下Zookeeper</a></li>
+<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F">2. 什么是分布式系统？</a></li>
+<li><a href="#3-%E5%88%97%E4%B8%BE%E4%B8%80%E4%B8%8Bzookeeper%E7%9A%84%E7%89%B9%E6%80%A7">3. 列举一下Zookeeper的特性</a></li>
+<li><a href="#4-zoocfg%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%9C%89%E5%93%AA%E4%BA%9B">4. zoo.cfg常用配置有哪些？</a></li>
+<li><a href="#5-zookeeper%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%9C%E7%94%A8">5. Zookeeper都有哪些作用？</a></li>
+<li><a href="#6-session%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">6. session的基本原理</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-zookeeper%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B">二、Zookeeper的基本数据模型</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B">1. 简介</a></li>
+<li><a href="#2-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">2. 基本操作</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-watcher%E6%9C%BA%E5%88%B6">三、Watcher机制</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E5%8D%95%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8Bwatcher%E6%9C%BA%E5%88%B6">1. 简单描述一下Watcher机制</a></li>
+<li><a href="#2-watcher%E7%9A%84%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B">2. Watcher的事件类型都有哪些？</a></li>
+<li><a href="#3-%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9%E7%9A%84watcher">3. 创建节点的Watcher</a></li>
+<li><a href="#4-watcher%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">4. watcher的使用场景</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-acl%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6">四、ACL权限控制</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B-2">1. 简介</a></li>
+<li><a href="#2-acl%E6%9D%83%E9%99%90%E5%88%97%E8%A1%A8%E7%9A%84%E6%9E%84%E6%88%90">2. Acl权限列表的构成</a></li>
+<li><a href="#3-%E6%9D%83%E9%99%90%E6%9C%BA%E5%88%B6">3. 权限机制</a></li>
+<li><a href="#4-%E6%9D%83%E9%99%90%E7%BB%84%E5%90%88%E5%AD%97%E7%AC%A6%E4%B8%B2">4. 权限组合字符串</a></li>
+<li><a href="#5-%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C">5. 命令行相关操作</a></li>
+<li><a href="#6-%E5%B8%B8%E7%94%A8%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">6. 常用使用场景</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-four-latter-words">五、Four Latter Words</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B-3">1. 简介</a></li>
+<li><a href="#2-%E5%B8%B8%E8%A7%81%E5%9B%9B%E5%AD%97%E5%91%BD%E4%BB%A4">2. 常见四字命令</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-分布式系统与zookeeper简介">一、分布式系统与Zookeeper简介</h2>
+<h3 id="1-简单介绍一下zookeeper">1. 简单介绍一下Zookeeper</h3>
+<ul>
+<li>是一个<strong>中间件</strong>，可以提供协调服务，比如说存储消息</li>
+<li>作用于<strong>分布式系统</strong>，发挥其优势，可以为大数据服务</li>
+<li>支持Java，提供java和c客户端的API</li>
+</ul>
+<h3 id="2-什么是分布式系统">2. 什么是分布式系统？</h3>
+<ul>
+<li>很多台计算机组成一个整体，一个整体一致对外并且处理同一个请求</li>
+<li>内部的每台计算机都可以互相通信（rest/rpc）</li>
+<li>客户端到服务端的一次请求到相应结束会历经多台计算机</li>
+</ul>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200917163612201.png" alt="image-20200917163612201" style="zoom: 67%;" />
+<h3 id="3-列举一下zookeeper的特性">3. 列举一下Zookeeper的特性</h3>
+<ul>
+<li><strong>一致性</strong>：数据一致性，只能保证数据的最终一致性，而不是强一致性，也就是说数据按照顺序分批入库，慢慢保存进来</li>
+<li><strong>原子性</strong>：事务要么成功，要么失败，不会局部化，局部化指的是部分机器成功，部分机器失败</li>
+<li><strong>单一视图</strong>：客户端连接集群中任意一个zookeeper节点，数据都是一致的</li>
+<li><strong>可靠性</strong>：每次对zookeeper的操作状态都会保存到服务端，我们可以去查看这个状态</li>
+<li><strong>实时性</strong>：客户端可以读到zookeeper服务端的最新数据</li>
+</ul>
+<h3 id="4-zoocfg常用配置有哪些">4. zoo.cfg常用配置有哪些？</h3>
+<ol>
+<li>
+<p><strong>tickTime</strong>：用于计算的基本时间单元，默认是2000ms。比如Session超时：给一个N倍数，N*ticktime后，会销毁</p>
+</li>
+<li>
+<p><strong>initLimit</strong>：用于集群，允许从节点连接并同步到master节点的初始化连接时间，以tickTime倍数表示，默认10倍</p>
+</li>
+<li>
+<p><strong>syncLimit</strong>：用于集群，master主节点与从节点之间发送消息，请求和应答的时间（心跳机制），默认5倍</p>
+</li>
+<li>
+<p><strong>dataDir</strong>：数据存储的目录，必须指定</p>
+</li>
+<li>
+<p><strong>dataLogDir</strong>：日志目录，如果没有配置，将存储在dataDir</p>
+</li>
+<li>
+<p><strong>clientPort</strong>：连接服务器的端口，默认2181</p>
+</li>
+</ol>
+<h3 id="5-zookeeper都有哪些作用">5. Zookeeper都有哪些作用？</h3>
+<ul>
+<li><strong>master节点选举</strong>：主节点挂了以后，从节点就会接手主节点的工作，并且保证这个节点是唯一的。这也是首脑模式，从而保证我们的集群是高可用的。</li>
+<li><strong>统一配置文件管理</strong>：只需要部署一台服务器，则可以把相同的配置文件同步更新到其他所有服务器，此操作在云计算中用的比较多，比如可以统一修改redis的配置</li>
+<li><strong>发布与订阅</strong>：类似消息队列MQ，dubbo发布者把数据存储在znode上，订阅者会读取这个数据</li>
+<li><strong>提供分布式锁</strong>：提供在分布式环境下，类似于多线程中锁的机制，让不同的进制之间争夺资源</li>
+</ul>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200918095528121.png" alt="image-20200918095528121" style="zoom: 33%;" />
+<ul>
+<li><strong>集群管理</strong>：集群中保证数据的强一致性。一个客户端修改了主节点的数据，那么主节点的附属节点也会同步修改，保证客户端不管从哪个节点读取数据，都是一致的</li>
+</ul>
+<h3 id="6-session的基本原理">6. session的基本原理</h3>
+<ul>
+<li>
+<p>客户端与服务端之间的连接存在会话，类似于Servlet中的session</p>
+</li>
+<li>
+<p>每个会话都可以设置一个超时时间，客户端会定时向服务端发送一个ping包；心跳检测超时后，会话就会被清除</p>
+</li>
+<li>
+<p>如果session过期，临时节点znode就会被抛弃或者删除</p>
+</li>
+</ul>
+<h2 id="二-zookeeper的基本数据模型">二、Zookeeper的基本数据模型</h2>
+<h3 id="1-简介">1. 简介</h3>
+<ul>
+<li>是一个<strong>树形结构</strong>，zk的数据模型也可以理解为linux/unix的文件目录：/usr/local....</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/img_convert/c8c4e14273185d69bec7b7505fd0ba6a.png" alt="image-20200918092521359" loading="lazy"></figure>
+<ul>
+<li>每一个节点都称之为<strong>znode</strong>，它可以有子节点，也可以有数据</li>
+<li>每一个节点分为<strong>临时节点和永久节点</strong>。临时节点除了人为对数据的操作，数据在客户端断开后也会消失；而永久节点相当于一个持久化的过程，这些数据只能人为添加或者删除。</li>
+<li>每一个zk节点都有各自的<strong>版本号</strong>，可以通过命令行来显示节点信息</li>
+<li>每当该节点的数据发生变化，该节点的版本号就会采用<strong>乐观锁</strong>的方式累加</li>
+<li>删除或者修改过时的节点，<strong>版本号不匹配</strong>会报错</li>
+<li>每个zk节点存储的<strong>数据不宜过大</strong>，几k即可</li>
+<li>节点可以设置<strong>权限acl</strong>，可以通过权限限制用户的访问</li>
+</ul>
+<h3 id="2-基本操作">2. 基本操作</h3>
+<ol>
+<li><strong>启动zk和客户端连接zk</strong></li>
+</ol>
+<pre><code class="language-shell">../bin/zkServer.sh start
+
+../bin/zkCli.sh
+</code></pre>
+<ol start="2">
+<li><strong>显示指定节点的子节点</strong></li>
+</ol>
+<pre><code class="language-shell">ls /xxxx/xxx
+</code></pre>
+<ol start="3">
+<li><strong>显示指定节点的子节点以及状态信息</strong></li>
+</ol>
+<pre><code class="language-shell">ls2 /xxxx/xxx  # 相当于ls + stat
+</code></pre>
+<p><strong>状态信息解释</strong>：</p>
+<blockquote>
+<p><strong>cZxid</strong>：创建时节点的id</p>
+<p><strong>ctime</strong>：创建节点的时间</p>
+<p><strong>mZxid</strong>：修改后的节点id</p>
+<p><strong>mtime</strong>：修改节点的时间</p>
+<p><strong>pZxid</strong>：子节点的id</p>
+<p><strong>cversion</strong>：子节点的version</p>
+<p><strong>dataVersion</strong>：当前节点的版本号</p>
+<p><strong>aclVersion</strong>：权限相关版本号</p>
+<p><strong>ephemeralOwner</strong>：如果是0x0代表是永久节点，反之是临时节点</p>
+<p><strong>dataLength</strong>：数据长度</p>
+<p><strong>numChildren</strong>：子节点的个数</p>
+</blockquote>
+<ol start="4">
+<li><strong>显示节点的状态</strong></li>
+</ol>
+<pre><code class="language-shell">stat /xxx/xxx
+</code></pre>
+<ol start="5">
+<li><strong>取出指定节点的数据</strong></li>
+</ol>
+<pre><code class="language-shell">get /xxx/xxx
+</code></pre>
+<ol start="6">
+<li><strong>创建节点</strong></li>
+</ol>
+<pre><code class="language-shell">creat [节点名称] [数据]  # 默认创建一个无序且持久化的永久节点
+creat -e [节点名称] [数据] # 创建一个临时的节点
+creat -s [节点名称] [数据]  # 默认创建一个有序且持久化的永久节点，每次累加1
+</code></pre>
+<ol start="7">
+<li><strong>覆盖节点的数据</strong></li>
+</ol>
+<pre><code class="language-shell">set [节点名称] [数据]  # 直接覆盖节点的数据，并让其版本号+1
+set [节点名称] [数据] [期望的版本号] # 类似于CAS，比较当前版本号和期望版本号是否相同，不同会报错
+</code></pre>
+<ol start="8">
+<li><strong>删除节点</strong></li>
+</ol>
+<pre><code class="language-shell">delete [节点名称] # 直接删除该节点
+delete [节点名称] [期望的版本号] # 只有版本号和当前最新的匹配才可以删除
+</code></pre>
+<blockquote>
+<p>建议使用带版本号的更新和删除机制，这样才可以实现乐观锁的机制</p>
+</blockquote>
+<h2 id="三-watcher机制">三、Watcher机制</h2>
+<h3 id="1-简单描述一下watcher机制">1. 简单描述一下Watcher机制</h3>
+<ul>
+<li>针对每个节点的操作，比如说更新删除操作，都会有一个监督者，叫做watcher</li>
+<li>当监控的某个对象（znode）发生了变化，则触发watcher事件，<strong>对于不同的操作，触发的watcher是不同的</strong>，比如说：节点创建、节点删除、节点数据更新</li>
+<li>zk中watcher是<strong>一次性</strong>的，触发后就会立即销毁</li>
+<li>父节点和子节点都会触发watcher，也就是说<strong>对子节点进行操作时，该子节点的父节点也会触发</strong></li>
+</ul>
+<h3 id="2-watcher的事件类型都有哪些">2. Watcher的事件类型都有哪些？</h3>
+<ul>
+<li><strong>创建父节点触发</strong>：NodeCreated</li>
+<li><strong>修改父节点数据触发</strong>：NodeDataChanged</li>
+<li><strong>删除父节点触发</strong>：NodeDeleted</li>
+<li><strong>创建子节点时触发</strong>：NodeChildrenChanged，需要先在父节点创建watcher</li>
+<li><strong>删除子节点时触发</strong>：NodeChildrenChanged，需要先在父节点创建watcher</li>
+<li><strong>修改子节点时</strong>：不会触发任何事件，如果想要触发watcher，需要把该子节点当作父节点来创建和观察watcher</li>
+</ul>
+<h3 id="3-创建节点的watcher">3. 创建节点的Watcher</h3>
+<pre><code class="language-shell">get [节点名称] watcher
+stat [节点名称] watcher
+ls [节点名称] watcher
+ls2 [节点名称] watcher
+</code></pre>
+<h3 id="4-watcher的使用场景">4. watcher的使用场景</h3>
+<ul>
+<li><strong>统一资源配置</strong>：在一个zk集群中，给每个节点设置一个watcher。修改集群中节点的数据，此时会触发watcher修改客户端的配置；与此同时，集群中所有的zk都会更新数据并且触发watcher，最后将更新所有的配置信息</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://img-blog.csdnimg.cn/img_convert/8916c09e1c686af873c4d0f9edb02100.png" alt="image-20200919111156393" loading="lazy"></figure>
+<h2 id="四-acl权限控制">四、ACL权限控制</h2>
+<h3 id="1-简介-2">1. 简介</h3>
+<ul>
+<li>针对节点可以<strong>设置相关读写等权限</strong>，目的是<strong>保障数据安全性</strong></li>
+<li>权限permissions可以指定不同的权限范围和角色</li>
+</ul>
+<h3 id="2-acl权限列表的构成">2. Acl权限列表的构成</h3>
+<blockquote>
+<p>acl通过[scheme: id : permissions​]来构成权限列表</p>
+</blockquote>
+<ul>
+<li><strong>scheme</strong>：代表某种权限机制</li>
+<li><strong>id</strong>：代表允许访问的用户</li>
+<li><strong>permissions</strong>：权限组合字符串</li>
+</ul>
+<h3 id="3-权限机制">3. 权限机制</h3>
+<ul>
+<li>
+<p><strong>world</strong>：world下只有一个id，即只有一个用户，也就是anyone，代表的是默认权限。组合的写法就是：world:anyone: [permissions]</p>
+</li>
+<li>
+<p><strong>auth</strong>：代表认证登录，需要注册用户拥有权限。组合的写法就是：auth:user:password:[permissions]</p>
+</li>
+<li>
+<p><strong>digest</strong>：需要对密码加密后才能访问。组合的写法就是：digest:user:BASE64(SHA1(password)):[permissions]</p>
+</li>
+<li>
+<p><strong>ip</strong>：限制ip地址访问。组合的写法就是：ip:xxx.xxx.xxx.xxx:[permissions]</p>
+</li>
+<li>
+<p><strong>super</strong>：超级管理员，拥有所有的权限。</p>
+</li>
+</ul>
+<blockquote>
+<p>auth和digest的区别在于，前者明文后者密文</p>
+</blockquote>
+<blockquote>
+<p>对于super权限，需要修改zkServer.sh增加super管理员，最后重启zkServer.sh</p>
+</blockquote>
+<h3 id="4-权限组合字符串">4. 权限组合字符串</h3>
+<blockquote>
+<p>权限字符串列表：crdwa</p>
+</blockquote>
+<ul>
+<li><strong>create</strong>：创建当前节点的子节点</li>
+<li><strong>read</strong>：获取当前节点以及子节点</li>
+<li><strong>write</strong>：设置当前节点的数据</li>
+<li><strong>delete</strong>：删除当前节点的子节点</li>
+<li><strong>admin</strong>：可以分配当前节点的权限</li>
+</ul>
+<h3 id="5-命令行相关操作">5. 命令行相关操作</h3>
+<ol>
+<li><strong>获取某个节点的权限信息</strong></li>
+</ol>
+<pre><code class="language-shell">getAcl [节点名称] 
+</code></pre>
+<ol start="2">
+<li><strong>设置某个节点的权限信息</strong></li>
+</ol>
+<pre><code class="language-shell">setAcl [节点名称] [权限列表]
+</code></pre>
+<ol start="3">
+<li><strong>注册用户</strong></li>
+</ol>
+<blockquote>
+<p>注册时输入明文密码，但是在zk系统中是以加密的形式存在的</p>
+</blockquote>
+<pre><code class="language-shell">addauth digest [用户名]:[密码]
+</code></pre>
+<h3 id="6-常用使用场景">6. 常用使用场景</h3>
+<ul>
+<li><strong>开发和测试环境分离</strong>，开发者无权操作测试库的节点，只能看；测试和开发连接的节点不同。</li>
+<li><strong>防止集群连接混乱</strong>，生产环境上控制指定ip的服务可以访问相关节点</li>
+</ul>
+<h2 id="五-four-latter-words">五、Four Latter Words</h2>
+<h3 id="1-简介-3">1. 简介</h3>
+<ul>
+<li>zk可以通过它自身提供的简写来和服务器进行交互</li>
+<li>需要安装nc：yum install nc</li>
+<li>基本使用规则：echo [commond] | nc [ip] [port]，端口和ip之间是一个空格而不是冒号</li>
+</ul>
+<h3 id="2-常见四字命令">2. 常见四字命令</h3>
+<ul>
+<li><strong>stat</strong>：查看zk状态信息，以及是否是集群模式</li>
+<li><strong>ruok</strong>：查看zkServer是否启动，如果启动会返回一个imok</li>
+<li><strong>dump</strong>：列出未经处理的会话和临时节点</li>
+<li><strong>conf</strong>：查看zk相关配置</li>
+<li><strong>cons</strong>：展示连接到zk的客户端信息</li>
+<li><strong>envi</strong>：查看zk的环境变量</li>
+<li><strong>mntr</strong>：监控zk的健康信息</li>
+<li><strong>wchs</strong>：展示watch的个数</li>
+<li><strong>wchc和wchp</strong>：展示watch的详细信息</li>
+</ul>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%8Ezookeeper%E7%AE%80%E4%BB%8B">一、分布式系统与Zookeeper简介</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bzookeeper">1. 简单介绍一下Zookeeper</a></li>
+<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F">2. 什么是分布式系统？</a></li>
+<li><a href="#3-%E5%88%97%E4%B8%BE%E4%B8%80%E4%B8%8Bzookeeper%E7%9A%84%E7%89%B9%E6%80%A7">3. 列举一下Zookeeper的特性</a></li>
+<li><a href="#4-zoocfg%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%9C%89%E5%93%AA%E4%BA%9B">4. zoo.cfg常用配置有哪些？</a></li>
+<li><a href="#5-zookeeper%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%9C%E7%94%A8">5. Zookeeper都有哪些作用？</a></li>
+<li><a href="#6-session%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">6. session的基本原理</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-zookeeper%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B">二、Zookeeper的基本数据模型</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B">1. 简介</a></li>
+<li><a href="#2-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">2. 基本操作</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-watcher%E6%9C%BA%E5%88%B6">三、Watcher机制</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E5%8D%95%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8Bwatcher%E6%9C%BA%E5%88%B6">1. 简单描述一下Watcher机制</a></li>
+<li><a href="#2-watcher%E7%9A%84%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B">2. Watcher的事件类型都有哪些？</a></li>
+<li><a href="#3-%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9%E7%9A%84watcher">3. 创建节点的Watcher</a></li>
+<li><a href="#4-watcher%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">4. watcher的使用场景</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-acl%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6">四、ACL权限控制</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B-2">1. 简介</a></li>
+<li><a href="#2-acl%E6%9D%83%E9%99%90%E5%88%97%E8%A1%A8%E7%9A%84%E6%9E%84%E6%88%90">2. Acl权限列表的构成</a></li>
+<li><a href="#3-%E6%9D%83%E9%99%90%E6%9C%BA%E5%88%B6">3. 权限机制</a></li>
+<li><a href="#4-%E6%9D%83%E9%99%90%E7%BB%84%E5%90%88%E5%AD%97%E7%AC%A6%E4%B8%B2">4. 权限组合字符串</a></li>
+<li><a href="#5-%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C">5. 命令行相关操作</a></li>
+<li><a href="#6-%E5%B8%B8%E7%94%A8%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">6. 常用使用场景</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-four-latter-words">五、Four Latter Words</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B-3">1. 简介</a></li>
+<li><a href="#2-%E5%B8%B8%E8%A7%81%E5%9B%9B%E5%AD%97%E5%91%BD%E4%BB%A4">2. 常见四字命令</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-09-21，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-09-21 17:26:05";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-09-21，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-09-21 17:26:05";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>61</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

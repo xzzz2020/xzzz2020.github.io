@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】Apache Curator入门使用 | xzzz2020</title>
+<link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
+
+<link rel="canonical" href="https://xzzz2020.github.io/post/H2W9aCW-q/" />
+</head>
+<body>
+<div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
+<noscript><p class="warn" >本页面需要浏览器支持（启用）JavaScript</p></noscript><div class="header"><div class="logo_title"><div class="title animated fadeInDown"><a href="https://xzzz2020.github.io"><img alt="logo" style="display:inline-block;" src="https://xzzz2020.github.io/images/avatar.png"/></a><h1 title="xzzz2020" class="weaklink"><a  href="/">xzzz2020</a></h1>
+
+<div class="navbar weaklink">
+<div class="normal_nav">
+<div class="bitcron_nav_container"><div class="bitcron_nav"><div class="bitcron_nav"><div style="display:flex;justify-content:center;"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul></nav>
+<div style="float:right;margin-top:1em"><form id="gridea-search-form" data-update="1578893743252" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="Search..."></form></div><div style="margin-left:0.5em;margin-top:1.2em"><input id="switch_default" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+<div class="clear clear_nav_inline_end"></div></div></div><div class="clear clear_nav_end"></div></div></div><div class="hamberger" href="javascript:void(0)" onclick="btn_toggle();"><i class="iconfont icon-category"></i></div></div></div></div>
+<div id="hn" class="no-js hidden_nav animated fadeInDown"><div class="bitcron_nav_container"><div class="bitcron_nav"><nav class="mixed_site_nav_wrap site_nav_wrap"><ul class="mixed_site_nav site_nav sm sm-base">	<li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/" class="selected active current nav__item" >首页</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/archives" class="selected active current nav__item" >归档</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/tags" class="selected active current nav__item" >标签</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/about" class="selected active current nav__item" >关于</a></li><li><a id="d2ef19af68cc211e98f8a0242ac110003" href="/post/Friendship_chain" class="selected active current nav__item" >友链</a></li></ul><div class="clear clear_nav_inline_end"></div></nav></div><div class="clear clear_nav_end"></div></div>
+<div style="display:flex;justify-content:center;inline-block;text-align:center;margin-top:7%"><div><form id="gridea-search-form" data-update="1600686962942" action="/search/index.html"><input class="search-input" autocomplete="off" spellcheck="false" name="q"  placeholder="Search..." /></form></div><div style="margin-left:0.5em"><input id="switch_default_h" onclick="mobileBtn()" type="checkbox" class="switch_default"><label for="switch_default" class="toggleBtn"></label></div></div>
+</div></div>
+<script>function enableDarkmode(){document.body.classList.add("darkmode"),document.getElementById("switch_default").checked=1,document.getElementById("switch_default_h").checked=1}function removeDarkmode(){document.body.classList.remove("darkmode"),document.getElementById("switch_default").checked=0,document.getElementById("switch_default_h").checked=0}function getCookie(a){var b,c=new RegExp("(^| )"+a+"=([^;]*)(;|$)");return(b=document.cookie.match(c))?unescape(b[2]):null}cookie=getCookie("darkmode"),"enable"==cookie&&enableDarkmode(),window.matchMedia("(prefers-color-scheme: dark)").matches&&"disable"!==cookie&&(enableDarkmode(),document.cookie="darkmode=enable; path=/");var mobileBtn=function(){1==document.getElementById("switch_default").checked?(enableDarkmode(),document.cookie="darkmode=enable; path=/"):(removeDarkmode(),document.cookie="darkmode=disable; path=/")};</script>
+
+<div class="main"><div class="main-inner"><div class="content">
+<article class="post">
+<h2 class="post_title sm_margin"><a>【总结】Apache Curator入门使用</a></h2>
+<script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-09-21</span><i class="iconfont icon-browse"></i><span style="margin-right:15px"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/zookeeper/" class="tag">Zookeeper</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">2336字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">11 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+</section>
+
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1600489000360-34bd69182634.webp" referrerpolicy="no-referrer">
+
+<div style="display:flex">
+<div class="md_block" id="md_block">
+<div class="round-shape-one"></div>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-apache-curator%E7%AE%80%E4%BB%8B">一、Apache Curator简介</a></li>
+<li><a href="#%E4%BA%8C-curator%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">二、Curator基本操作</a>
+<ul>
+<li><a href="#1-%E9%87%8D%E8%AF%95%E7%AD%96%E7%95%A5">1. 重试策略</a></li>
+<li><a href="#2-%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%85%B3%E9%97%ADzookeeper">2. 连接与关闭Zookeeper</a></li>
+<li><a href="#3-%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9">3. 创建节点</a></li>
+<li><a href="#4-%E5%88%A0%E9%99%A4%E5%92%8C%E6%9B%B4%E6%96%B0%E8%8A%82%E7%82%B9">4. 删除和更新节点</a></li>
+<li><a href="#5-%E6%9F%A5%E8%AF%A2%E8%8A%82%E7%82%B9%E4%BB%A5%E5%8F%8A%E5%AD%90%E8%8A%82%E7%82%B9">5. 查询节点以及子节点</a></li>
+<li><a href="#6-%E5%88%9B%E5%BB%BAwatcher">6. 创建watcher</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-watcher%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E4%BF%AE%E6%94%B9">三、watcher统一配置修改</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-apache-curator简介">一、Apache Curator简介</h2>
+<ul>
+<li>
+<p><strong>解决了watcher的一次性的问题</strong>，注册一个watcher可以触发多次</p>
+</li>
+<li>
+<p>Api简单易用</p>
+</li>
+<li>
+<p>可以<strong>递归创建节点</strong></p>
+</li>
+<li>
+<p><strong>提供ZooKeeper各种应用场景</strong>(recipe， 比如：分布式锁服务、集群领导选举、共享计数器、缓存机制、分布式队列等)的抽象封装</p>
+</li>
+<li>
+<p>提供了常用的Zookeeper工具类</p>
+</li>
+<li>
+<p>提供了一套Fluent风格的操作API</p>
+</li>
+</ul>
+<h2 id="二-curator基本操作">二、Curator基本操作</h2>
+<h3 id="1-重试策略">1. 重试策略</h3>
+<blockquote>
+<p>一共有五种重试策略</p>
+</blockquote>
+<ol>
+<li>
+<p><strong>重试策略ExponentialBackoffRetry，重试N次限制总的重试时间</strong></p>
+<ul>
+<li><code>baseSleepTimeMs</code>：两次重试之间的间隔时间</li>
+<li><code>maxRetries</code>：最大重试次数，如果超过次数就放弃</li>
+<li><code>maxSleepMs</code>：最大重试时间，如果超过该时间就放弃</li>
+<li><strong>推荐的使用方式为</strong>：<code>RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 5);</code></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryNTimes，重试N次</strong></p>
+<ul>
+<li><code>n</code>：重试的次数</li>
+<li><code>sleepMsBetweenRetries</code>：两次重试之间的间隔时间</li>
+<li><strong>推荐的使用方式为</strong>：<code>RetryPolicy retryPolicy = new RetryNTimes(3, 5000);</code></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryOneTime，重试一次</strong></p>
+<ul>
+<li><code>sleepMsBetweenRetry</code>：两次重试之间的间隔时间</li>
+<li><strong>不推荐使用</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryForever，一直在重试</strong></p>
+<ul>
+<li><code>retryIntervalMs</code>：两次重试之间的间隔时间</li>
+<li><strong>不推荐使用</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryUntilElapsed</strong></p>
+<ul>
+<li><code>maxElapsedTimeMs</code>：最大重试时间，重试时间超过maxElapsedTimeMs后，就不再重试</li>
+<li><code>sleepMsBetweenRetries</code>：两次重试之间的间隔时间</li>
+<li><strong>推荐使用方式为</strong>：<code>RetryPolicy retryPolicy = new RetryUntilElapsed(2000, 3000);</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="2-连接与关闭zookeeper">2. 连接与关闭Zookeeper</h3>
+<pre><code class="language-java">//1 重试策略：初试时间为1s 重试10次
+RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 10);
+//2 通过工厂创建连接
+CuratorFramework client = CuratorFrameworkFactory.builder()
+        .connectString(&quot;192.168.1.110:2181&quot;)//连接地址
+        .connectionTimeoutMs(3_000)//连接超时时间
+        .sessionTimeoutMs(30_000)//会话超时时间
+        .retryPolicy(retryPolicy)//重试策略
+        .namespace(&quot;super&quot;)//命名空间，连接后所有的操作都是在这个/super节点之下
+        .build();
+//3 开启连接
+client.start();
+//4 关闭连接
+client.close();
+</code></pre>
+<h3 id="3-创建节点">3. 创建节点</h3>
+<p><strong>creatingParentsIfNeeded是递归创建节点，如果不存在父节点则同时会创建父节点</strong></p>
+<p><strong>创建模式有以下几种</strong>:</p>
+<ul>
+<li><code>CreateMode.PERSISTENT</code>：永久节点</li>
+<li><code>CreateMode.PERSISTENT_SEQUENTIAL</code>：永久顺序节点</li>
+<li><code>CreateMode.EPHEMERAL</code>：临时节点</li>
+<li><code>CreateMode.EPHEMERAL_SEQUENTIAL</code>：临时顺序节点</li>
+</ul>
+<p><strong>权限控制</strong>：</p>
+<ul>
+<li>通过withACL，添加一个权限列表List&lt;ACL&gt;</li>
+<li>ACL类有两个属性
+<ul>
+<li>第一个是perms，可以通过Perms的枚举选择，代表了权限字符串列表：crdwa</li>
+<li>第二个是Id，代表着五种权限机制，比如说world、digest等</li>
+</ul>
+</li>
+<li>Id类，有两个属性
+<ul>
+<li>第一个是scheme，代表权限模式</li>
+<li>第二个是id，代表权限模式后面的字符串，如digest模式，user:BASE64(SHA1(password))</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-java">List&lt;ACL&gt; acls = new ArrayList&lt;ACL&gt;();
+Id demo1 = new Id(&quot;digest&quot;, AclUtils.getDigestUserPwd(&quot;demo1:123456&quot;));
+Id demo2 = new Id(&quot;digest&quot;, AclUtils.getDigestUserPwd(&quot;demo2:123456&quot;));
+acls.add(new ACL(Perms.ALL, demo1));
+acls.add(new ACL(Perms.READ, demo2));
+acls.add(new ACL(Perms.DELETE | Perms.CREATE, demo2));
+</code></pre>
+<p><strong>创建节点举例</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+byte[] data = &quot;superme&quot;.getBytes();
+// 创建节点
+client.create().creatingParentsIfNeeded()
+		.withMode(CreateMode.PERSISTENT)//创建模式
+		.withACL(ZooDefs.Ids.OPEN_ACL_UNSAFE)//权限列表，如果想要将所有递归创建的节点都指定当前的权限，可以多一个参数true，如withACL(ZooDefs.Ids.OPEN_ACL_UNSAFE，true)
+		.forPath(nodePath, data);
+</code></pre>
+<h3 id="4-删除和更新节点">4. 删除和更新节点</h3>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// 更新节点数据
+byte[] newData = &quot;batman&quot;.getBytes();
+client.setData().withVersion(0).forPath(nodePath, newData);
+
+// 删除节点
+client.delete()
+     .guaranteed()                // 如果删除失败，那么在后端还是继续会删除，直到成功
+     .deletingChildrenIfNeeded()  // 如果有子节点，就删除
+     .withVersion(0)              // 版本号，如果不匹配会报错
+     .forPath(nodePath);		  // 删除的节点地址
+</code></pre>
+<h3 id="5-查询节点以及子节点">5. 查询节点以及子节点</h3>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// 判断节点是否存在,如果不存在则为空
+Stat statExist = cto.client.checkExists().forPath(nodePath + &quot;/abc&quot;);
+System.out.println(statExist);//statExist!=null，则代表节点存在
+
+// 读取节点数据
+Stat stat = new Stat();
+byte[] data = client.getData()
+        .storingStatIn(stat)//将节点的状态信息也读取进来
+        .forPath(nodePath);
+System.out.println(&quot;节点&quot; + nodePath + &quot;的数据为: &quot; + new String(data));
+System.out.println(&quot;该节点的版本号为: &quot; + stat.getVersion());
+
+ // 查询子节点
+ List&lt;String&gt; childNodes = client.getChildren()
+         .forPath(nodePath);
+ System.out.println(&quot;开始打印子节点：&quot;);
+ for (String s : childNodes) {
+     System.out.println(s);
+ }
+</code></pre>
+<h3 id="6-创建watcher">6. 创建watcher</h3>
+<p><strong>一次性的创建方式</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+// 添加watcher 事件  当使用usingWatcher的时候，监听只会触发一次，监听完毕后就销毁
+cto.client.getData().usingWatcher((Watcher) event -&gt; {
+    System.out.println(&quot;触发了watcher&quot;+event);
+}).forPath(nodePath);
+
+cto.client.getData().usingWatcher((CuratorWatcher) event -&gt; {
+    System.out.println(&quot;触发了watcher&quot;+event);
+}).forPath(nodePath);
+</code></pre>
+<p><strong>重复使用父节点的watcher</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// NodeCache: 监听数据节点的变更，会触发事件
+NodeCache nodeCache = new NodeCache(client, nodePath);
+
+nodeCache.start(true);//buildInitial : 初始化的时候获取node的值并且缓存，true代表进行初始化，缓存节点值，默认为false
+
+if (nodeCache.getCurrentData() != null) {
+   System.out.println(&quot;节点初始化数据为：&quot; + new String(nodeCache.getCurrentData().getData()));
+} else {
+   System.out.println(&quot;节点初始化数据为空...&quot;);
+}
+
+//创建监听器，当节点数据发生更改或者创建时，就会触发该方法
+nodeCache.getListenable().addListener(() -&gt; {
+    //如果是因为删除，导致获取不到节点
+    if (nodeCache.getCurrentData() == null) {
+        System.out.println(&quot;节点被删除了~&quot;);
+        return;
+    }
+    //获取数据
+    String data = new String(nodeCache.getCurrentData().getData());
+    //获取触发的节点路径
+    String path = nodeCache.getCurrentData().getPath()；
+    System.out.println(&quot;节点路径：&quot; + path + &quot;数据：&quot; + data);
+});
+</code></pre>
+<p><strong>重复使用子节点的watcher</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// 为子节点添加watcher
+// PathChildrenCache: 监听数据节点的增删改，会触发事件
+String childNodePathCache = nodePath;
+
+//新建一个子节点缓存
+PathChildrenCache childrenCache = new PathChildrenCache(client, childNodePathCache, true);//cacheData: 设置缓存节点的数据状态，如果为true，也会将子节点的状态信息缓存下来
+
+
+/**
+ * StartMode: 初始化方式
+ * POST_INITIALIZED_EVENT：异步初始化，初始化之后会触发初始化事件（推荐）
+ * NORMAL：异步初始化
+ * BUILD_INITIAL_CACHE：同步初始化
+ */
+childrenCache.start(StartMode.POST_INITIALIZED_EVENT);
+
+//获取缓存的子节点数据
+List&lt;ChildData&gt; childDataList = childrenCache.getCurrentData();
+System.out.println(&quot;当前数据节点的子节点数据列表：&quot;);
+for (ChildData cd : childDataList) {
+    String childData = new String(cd.getData());
+    System.out.println(childData);
+}
+
+//为子节点缓存添加监听器，可以对子节点触发的event的类型进行判断
+childrenCache.getListenable().addListener((client, event) -&gt; {
+    if (event.getType().equals(PathChildrenCacheEvent.Type.INITIALIZED)) {//初始化事件触发
+        System.out.println(&quot;子节点初始化ok...&quot;);
+    } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_ADDED)) {//增加子节点
+        String path = event.getData().getPath();
+        if (path.equals(ADD_PATH)) {
+            System.out.println(&quot;添加子节点:&quot; + event.getData().getPath());
+            System.out.println(&quot;子节点数据:&quot; + new String(event.getData().getData()));
+        } else if (path.equals(&quot;/super/imooc/e&quot;)) {
+            System.out.println(&quot;添加不正确...&quot;);
+        }
+    } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_REMOVED)) {//删除子节点
+        System.out.println(&quot;删除子节点:&quot; + event.getData().getPath());
+    } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_UPDATED)) {//子节点数据修改事件
+        System.out.println(&quot;修改子节点路径:&quot; + event.getData().getPath());
+        System.out.println(&quot;修改子节点数据:&quot; + new String(event.getData().getData()));
+    }
+});
+</code></pre>
+<h2 id="三-watcher统一配置修改">三、watcher统一配置修改</h2>
+<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200921165758514.png" alt="image-20200921165758514" loading="lazy"></figure>
+<pre><code class="language-java">public class Client1 {
+
+   public CuratorFramework client = null;
+   public static final String zkServerPath = &quot;192.168.1.110:2181&quot;;
+
+   public Client1() {
+      RetryPolicy retryPolicy = new RetryNTimes(3, 5000);
+      client = CuratorFrameworkFactory.builder()
+            .connectString(zkServerPath)
+            .sessionTimeoutMs(10000).retryPolicy(retryPolicy)
+            .namespace(&quot;workspace&quot;).build();
+      client.start();
+   }
+   
+   public void closeZKClient() {
+      if (client != null) {
+         this.client.close();
+      }
+   }
+   
+   public final static String CONFIG_NODE_PATH = &quot;/super/demo&quot;;
+   public final static String SUB_PATH = &quot;/redis-config&quot;;
+   public static CountDownLatch countDown = new CountDownLatch(1);
+   
+   public static void main(String[] args) throws Exception {
+      //连接Zookeeper
+      Client1 cto = new Client1();
+      System.out.println(&quot;client1 启动成功...&quot;);
+      
+       //需要在父节点添加对子节点的监听
+      final PathChildrenCache childrenCache = new PathChildrenCache(cto.client, CONFIG_NODE_PATH, true);
+      childrenCache.start(StartMode.BUILD_INITIAL_CACHE);
+      
+      // 添加监听器
+      childrenCache.getListenable().addListener(new PathChildrenCacheListener() {
+         public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+            // 监听节点变化
+            if(event.getType().equals(PathChildrenCacheEvent.Type.CHILD_UPDATED)){
+               String configNodePath = event.getData().getPath();
+               if (configNodePath.equals(CONFIG_NODE_PATH + SUB_PATH)) {
+                  System.out.println(&quot;监听到配置发生变化，节点路径为:&quot; + configNodePath);
+                  
+                  // 读取节点数据
+                  String jsonConfig = new String(event.getData().getData());
+                  System.out.println(&quot;节点&quot; + CONFIG_NODE_PATH + &quot;的数据为: &quot; + jsonConfig);
+                  
+                  // 从json转换配置
+                  RedisConfig redisConfig = null;
+                  if (StringUtils.isNotBlank(jsonConfig)) {
+                     redisConfig = JsonUtils.jsonToPojo(jsonConfig, RedisConfig.class);
+                  }
+                  
+                  // 配置不为空则进行相应操作
+                  if (redisConfig != null) {
+                     String type = redisConfig.getType();
+                     String url = redisConfig.getUrl();
+                     String remark = redisConfig.getRemark();
+                     // 判断事件
+                     if (type.equals(&quot;add&quot;)) {
+                        System.out.println(&quot;监听到新增的配置，准备下载...&quot;);
+                        // ... 连接ftp服务器，根据url找到相应的配置
+                        Thread.sleep(500);
+                        System.out.println(&quot;开始下载新的配置文件，下载路径为&lt;&quot; + url + &quot;&gt;&quot;);
+                        // ... 下载配置到你指定的目录
+                        Thread.sleep(1000);
+                        System.out.println(&quot;下载成功，已经添加到项目中&quot;);
+                        // ... 拷贝文件到项目目录
+                     } else if (type.equals(&quot;update&quot;)) {
+                        System.out.println(&quot;监听到更新的配置，准备下载...&quot;);
+                        // ... 连接ftp服务器，根据url找到相应的配置
+                        Thread.sleep(500);
+                        System.out.println(&quot;开始下载配置文件，下载路径为&lt;&quot; + url + &quot;&gt;&quot;);
+                        // ... 下载配置到你指定的目录
+                        Thread.sleep(1000);
+                        System.out.println(&quot;下载成功...&quot;);
+                        System.out.println(&quot;删除项目中原配置文件...&quot;);
+                        Thread.sleep(100);
+                        // ... 删除原文件
+                        System.out.println(&quot;拷贝配置文件到项目目录...&quot;);
+                        // ... 拷贝文件到项目目录
+                     } else if (type.equals(&quot;delete&quot;)) {
+                        System.out.println(&quot;监听到需要删除配置&quot;);
+                        System.out.println(&quot;删除项目中原配置文件...&quot;);
+                     }
+                     
+                     // TODO 视情况统一重启服务
+                  }
+               }
+            }
+         }
+      });
+      
+      countDown.await();
+      
+      cto.closeZKClient();
+   }
+   
+}
+</code></pre>
+
+<span id="footnote"></span>
+<div id = "warn"></div>
+</div>
+<div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-apache-curator%E7%AE%80%E4%BB%8B">一、Apache Curator简介</a></li>
+<li><a href="#%E4%BA%8C-curator%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">二、Curator基本操作</a>
+<ul>
+<li><a href="#1-%E9%87%8D%E8%AF%95%E7%AD%96%E7%95%A5">1. 重试策略</a></li>
+<li><a href="#2-%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%85%B3%E9%97%ADzookeeper">2. 连接与关闭Zookeeper</a></li>
+<li><a href="#3-%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9">3. 创建节点</a></li>
+<li><a href="#4-%E5%88%A0%E9%99%A4%E5%92%8C%E6%9B%B4%E6%96%B0%E8%8A%82%E7%82%B9">4. 删除和更新节点</a></li>
+<li><a href="#5-%E6%9F%A5%E8%AF%A2%E8%8A%82%E7%82%B9%E4%BB%A5%E5%8F%8A%E5%AD%90%E8%8A%82%E7%82%B9">5. 查询节点以及子节点</a></li>
+<li><a href="#6-%E5%88%9B%E5%BB%BAwatcher">6. 创建watcher</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-watcher%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E4%BF%AE%E6%94%B9">三、watcher统一配置修改</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="fullPage"><canvas id="canvas"></canvas></div>
+</article>
+<div id="eof"><span>EOF</span></div><div class="round-shape-one"></div>
+<section>
+<div class="doc_comments">
+
+	  
+		<div id="gitalk-container"></div>
+		<!--评论显示区，请插入合适的位置-->
+<div id="comment"></div>
+<!--Leancloud 操作库:-->
+<script src="//cdn1.lncld.net/static/js/3.6.1/av-min.js"></script>
+<!--Valine 的核心代码库-->
+<script src="//cdn.jsdelivr.net/npm/valine@1.4.4/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el:'#comment',
+        appId: 'DysN4QrSvmmE6SpDXopbCLD6-gzGzoHsz',
+        appKey: 'mjK643yLFa4WWXtobofr24Ap',
+        placeholder: 'ヾﾉ≧∀≦)o快来评论一下吧!',
+        avatar:''
+    });
+</script>
+	  
+		  
+	  
+
+</div></section>
+</div></div></div>
+<!--
+<script>
+"use strict";!function(){for(var n=document.getElementsByTagName("pre"),e=n.length,s=0;s<e;s++){n[s].innerHTML='<span class="line-number"></span>'+n[s].innerHTML+'<span class="cl"></span>';for(var a=n[s].innerHTML.split(/\n/).length,r=0;r<a-1;r++){n[s].getElementsByTagName("span")[0].innerHTML+="<span>"+(r+1)+"</span>"}}}();
+let mainNavLinks=document.querySelectorAll(".markdownIt-TOC a");window.addEventListener("scroll",event=>{let fromTop=window.scrollY;mainNavLinks.forEach((link,index)=>{let section=document.getElementById(decodeURI(link.hash).substring(1));let nextSection=null
+if(mainNavLinks[index+1]){nextSection=document.getElementById(decodeURI(mainNavLinks[index+1].hash).substring(1));}
+if(section.offsetTop<=fromTop){if(nextSection){if(nextSection.offsetTop>fromTop){link.classList.add("currentToc");}else{link.classList.remove("currentToc");}}else{link.classList.add("currentToc");}}else{link.classList.remove("currentToc");}});});
+var list=document.querySelectorAll(".katex");for(var i=0;i<list.length;i++){list[i].style.display="unset"};
+var h=document.documentElement,b=document.body,st="scrollTop",sh="scrollHeight",progress=document.querySelector(".progress"),scroll;document.addEventListener("scroll",function(){scroll=(h[st]||b[st])/((h[sh]||b[sh])-h.clientHeight)*100;progress.style.setProperty("--scroll",scroll+"%")});
+var wxScale=new WxScale({fullPage:document.querySelector("#fullPage"),canvas:document.querySelector("#canvas")});var imgBox=document.querySelectorAll("#md_block img");for(var i=0;i<imgBox.length;i++){imgBox[i].onclick=function(e){wxScale.start(this)}};
+content="本文最后更新于2020-09-21，已超过 1 年没有更新，涉及的内容可能已经失效！";var date1="2020-09-21 17:23:27";date1=date1.replace("-","/");var date2=new Date();var date3=date2.getTime()-new Date(date1).getTime();var days=Math.floor(date3/(24*3600*1000));if(days>=365){document.getElementById("warn").innerHTML=content};
+</script>
+-->
+
+<script>
+    "use strict";
+    ! function () {
+        for (var n = document.getElementsByTagName("pre"), e = n.length, s = 0; s < e; s++) {
+            n[s].innerHTML = '<span class="line-number"></span>' + n[s].innerHTML + '<span class="cl"></span>';
+            for (var a = n[s].innerHTML.split(/\n/).length, r = 0; r < a - 1; r++) {
+                n[s].getElementsByTagName("span")[0].innerHTML += "<span>" + (r + 1) + "</span>"
+            }
+        }
+    }();
+    let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+    window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+        mainNavLinks.forEach((link, index) => {
+            let section = document.getElementById(decodeURI(link.hash).substring(1));
+            let nextSection = null
+            if (mainNavLinks[index + 1]) {
+                nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(
+                    1));
+            }
+            if (section.offsetTop <= fromTop) {
+                if (nextSection) {
+                    if (nextSection.offsetTop > fromTop) {
+                        link.classList.add("currentToc");
+                    } else {
+                        link.classList.remove("currentToc");
+                    }
+                } else {
+                    link.classList.add("currentToc");
+                }
+            } else {
+                link.classList.remove("currentToc");
+            }
+        });
+    });
+    var list = document.querySelectorAll(".katex");
+    for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "unset"
+    };
+    var h = document.documentElement,
+        b = document.body,
+        st = "scrollTop",
+        sh = "scrollHeight",
+        progress = document.querySelector(".progress"),
+        scroll;
+    document.addEventListener("scroll", function () {
+        scroll = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+        progress.style.setProperty("--scroll", scroll + "%")
+    });
+    var wxScale = new WxScale({
+        fullPage: document.querySelector("#fullPage"),
+        canvas: document.querySelector("#canvas")
+    });
+    var imgBox = document.querySelectorAll("#md_block img");
+    for (var i = 0; i < imgBox.length; i++) {
+        imgBox[i].onclick = function (e) {
+            wxScale.start(this)
+        }
+    };
+    content = "本文最后更新于2020-09-21，已超过 1 年没有更新，涉及的内容可能已经失效！";
+    var date1 = "2020-09-21 17:23:27";
+    date1 = date1.replace("-", "/");
+    var date2 = new Date();
+    var date3 = date2.getTime() - new Date(date1).getTime();
+    var days = Math.floor(date3 / (24 * 3600 * 1000));
+    if (days >= 365) {
+        document.getElementById("warn").innerHTML = content
+    };
+</script>
+
+<style>#magnifyImg{position:fixed;left:0;top:0;text-align:center;width:100%;display:none;z-index:9999}#magnifyImg img{object-fit:contain;background:#eaecef;padding:15px;border-radius:10px;height:auto;width:auto;vertical-align:middle}</style>
+<a id="scrollUp" href="#top" style="position: fixed; z-index: 2147483647; display: block;"></a><div class="footer animated fadeInDown"><div class="site_footer"><div class="mysocials"><div class="my_socials"></div></div><div class="copyright"id="copyright">Copyright © 2018-2020 <a href="https://xzzz2020.github.io" style="margin:0;">xzzz2020</a>.</div>
+<span style="display: inline;margin-right:15px;">👁<strong><span id="busuanzi_value_site_pv"></span></strong></span><span id="busuanzi_container_page_pv" style="display: inline;"><span>📚<strong>61</strong> posts</span></div></div>
+<script>
+console.log("\n %c \u26a1Theme: Bitcron-pro Author's Blog:https://blog.blinkstar.cn  Writen By Serence  \n\n", "color: #ffffff; background: rgba(49, 49, 49, 0.85); padding:5px 0;border-radius:5px;", );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+<script type="text/javascript" async src="https://xzzz2020.github.io/media/js/prism.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xzzz2020.github.io</id>
     <title>xzzz2020</title>
-    <updated>2020-09-10T12:47:23.534Z</updated>
+    <updated>2020-09-21T11:16:10.687Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xzzz2020.github.io"/>
     <link rel="self" href="https://xzzz2020.github.io/atom.xml"/>
@@ -10,6 +10,853 @@
     <logo>https://xzzz2020.github.io/images/avatar.png</logo>
     <icon>https://xzzz2020.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, xzzz2020</rights>
+    <entry>
+        <title type="html"><![CDATA[【总结】ZooKeeper基础]]></title>
+        <id>https://xzzz2020.github.io/post/ZhQcE1ff2/</id>
+        <link href="https://xzzz2020.github.io/post/ZhQcE1ff2/">
+        </link>
+        <updated>2020-09-21T09:26:05.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%8Ezookeeper%E7%AE%80%E4%BB%8B">一、分布式系统与Zookeeper简介</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bzookeeper">1. 简单介绍一下Zookeeper</a></li>
+<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F">2. 什么是分布式系统？</a></li>
+<li><a href="#3-%E5%88%97%E4%B8%BE%E4%B8%80%E4%B8%8Bzookeeper%E7%9A%84%E7%89%B9%E6%80%A7">3. 列举一下Zookeeper的特性</a></li>
+<li><a href="#4-zoocfg%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%9C%89%E5%93%AA%E4%BA%9B">4. zoo.cfg常用配置有哪些？</a></li>
+<li><a href="#5-zookeeper%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BD%9C%E7%94%A8">5. Zookeeper都有哪些作用？</a></li>
+<li><a href="#6-session%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">6. session的基本原理</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C-zookeeper%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B">二、Zookeeper的基本数据模型</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B">1. 简介</a></li>
+<li><a href="#2-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">2. 基本操作</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-watcher%E6%9C%BA%E5%88%B6">三、Watcher机制</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E5%8D%95%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8Bwatcher%E6%9C%BA%E5%88%B6">1. 简单描述一下Watcher机制</a></li>
+<li><a href="#2-watcher%E7%9A%84%E4%BA%8B%E4%BB%B6%E7%B1%BB%E5%9E%8B%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B">2. Watcher的事件类型都有哪些？</a></li>
+<li><a href="#3-%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9%E7%9A%84watcher">3. 创建节点的Watcher</a></li>
+<li><a href="#4-watcher%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">4. watcher的使用场景</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B-acl%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6">四、ACL权限控制</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B-2">1. 简介</a></li>
+<li><a href="#2-acl%E6%9D%83%E9%99%90%E5%88%97%E8%A1%A8%E7%9A%84%E6%9E%84%E6%88%90">2. Acl权限列表的构成</a></li>
+<li><a href="#3-%E6%9D%83%E9%99%90%E6%9C%BA%E5%88%B6">3. 权限机制</a></li>
+<li><a href="#4-%E6%9D%83%E9%99%90%E7%BB%84%E5%90%88%E5%AD%97%E7%AC%A6%E4%B8%B2">4. 权限组合字符串</a></li>
+<li><a href="#5-%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C">5. 命令行相关操作</a></li>
+<li><a href="#6-%E5%B8%B8%E7%94%A8%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">6. 常用使用场景</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94-four-latter-words">五、Four Latter Words</a>
+<ul>
+<li><a href="#1-%E7%AE%80%E4%BB%8B-3">1. 简介</a></li>
+<li><a href="#2-%E5%B8%B8%E8%A7%81%E5%9B%9B%E5%AD%97%E5%91%BD%E4%BB%A4">2. 常见四字命令</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-分布式系统与zookeeper简介">一、分布式系统与Zookeeper简介</h2>
+<h3 id="1-简单介绍一下zookeeper">1. 简单介绍一下Zookeeper</h3>
+<ul>
+<li>是一个<strong>中间件</strong>，可以提供协调服务，比如说存储消息</li>
+<li>作用于<strong>分布式系统</strong>，发挥其优势，可以为大数据服务</li>
+<li>支持Java，提供java和c客户端的API</li>
+</ul>
+<h3 id="2-什么是分布式系统">2. 什么是分布式系统？</h3>
+<ul>
+<li>很多台计算机组成一个整体，一个整体一致对外并且处理同一个请求</li>
+<li>内部的每台计算机都可以互相通信（rest/rpc）</li>
+<li>客户端到服务端的一次请求到相应结束会历经多台计算机</li>
+</ul>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200917163612201.png" alt="image-20200917163612201" style="zoom: 67%;" />
+<h3 id="3-列举一下zookeeper的特性">3. 列举一下Zookeeper的特性</h3>
+<ul>
+<li><strong>一致性</strong>：数据一致性，只能保证数据的最终一致性，而不是强一致性，也就是说数据按照顺序分批入库，慢慢保存进来</li>
+<li><strong>原子性</strong>：事务要么成功，要么失败，不会局部化，局部化指的是部分机器成功，部分机器失败</li>
+<li><strong>单一视图</strong>：客户端连接集群中任意一个zookeeper节点，数据都是一致的</li>
+<li><strong>可靠性</strong>：每次对zookeeper的操作状态都会保存到服务端，我们可以去查看这个状态</li>
+<li><strong>实时性</strong>：客户端可以读到zookeeper服务端的最新数据</li>
+</ul>
+<h3 id="4-zoocfg常用配置有哪些">4. zoo.cfg常用配置有哪些？</h3>
+<ol>
+<li>
+<p><strong>tickTime</strong>：用于计算的基本时间单元，默认是2000ms。比如Session超时：给一个N倍数，N*ticktime后，会销毁</p>
+</li>
+<li>
+<p><strong>initLimit</strong>：用于集群，允许从节点连接并同步到master节点的初始化连接时间，以tickTime倍数表示，默认10倍</p>
+</li>
+<li>
+<p><strong>syncLimit</strong>：用于集群，master主节点与从节点之间发送消息，请求和应答的时间（心跳机制），默认5倍</p>
+</li>
+<li>
+<p><strong>dataDir</strong>：数据存储的目录，必须指定</p>
+</li>
+<li>
+<p><strong>dataLogDir</strong>：日志目录，如果没有配置，将存储在dataDir</p>
+</li>
+<li>
+<p><strong>clientPort</strong>：连接服务器的端口，默认2181</p>
+</li>
+</ol>
+<h3 id="5-zookeeper都有哪些作用">5. Zookeeper都有哪些作用？</h3>
+<ul>
+<li><strong>master节点选举</strong>：主节点挂了以后，从节点就会接手主节点的工作，并且保证这个节点是唯一的。这也是首脑模式，从而保证我们的集群是高可用的。</li>
+<li><strong>统一配置文件管理</strong>：只需要部署一台服务器，则可以把相同的配置文件同步更新到其他所有服务器，此操作在云计算中用的比较多，比如可以统一修改redis的配置</li>
+<li><strong>发布与订阅</strong>：类似消息队列MQ，dubbo发布者把数据存储在znode上，订阅者会读取这个数据</li>
+<li><strong>提供分布式锁</strong>：提供在分布式环境下，类似于多线程中锁的机制，让不同的进制之间争夺资源</li>
+</ul>
+<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200918095528121.png" alt="image-20200918095528121" style="zoom: 33%;" />
+<ul>
+<li><strong>集群管理</strong>：集群中保证数据的强一致性。一个客户端修改了主节点的数据，那么主节点的附属节点也会同步修改，保证客户端不管从哪个节点读取数据，都是一致的</li>
+</ul>
+<h3 id="6-session的基本原理">6. session的基本原理</h3>
+<ul>
+<li>
+<p>客户端与服务端之间的连接存在会话，类似于Servlet中的session</p>
+</li>
+<li>
+<p>每个会话都可以设置一个超时时间，客户端会定时向服务端发送一个ping包；心跳检测超时后，会话就会被清除</p>
+</li>
+<li>
+<p>如果session过期，临时节点znode就会被抛弃或者删除</p>
+</li>
+</ul>
+<h2 id="二-zookeeper的基本数据模型">二、Zookeeper的基本数据模型</h2>
+<h3 id="1-简介">1. 简介</h3>
+<ul>
+<li>是一个<strong>树形结构</strong>，zk的数据模型也可以理解为linux/unix的文件目录：/usr/local....</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/img_convert/c8c4e14273185d69bec7b7505fd0ba6a.png" alt="image-20200918092521359" loading="lazy"></figure>
+<ul>
+<li>每一个节点都称之为<strong>znode</strong>，它可以有子节点，也可以有数据</li>
+<li>每一个节点分为<strong>临时节点和永久节点</strong>。临时节点除了人为对数据的操作，数据在客户端断开后也会消失；而永久节点相当于一个持久化的过程，这些数据只能人为添加或者删除。</li>
+<li>每一个zk节点都有各自的<strong>版本号</strong>，可以通过命令行来显示节点信息</li>
+<li>每当该节点的数据发生变化，该节点的版本号就会采用<strong>乐观锁</strong>的方式累加</li>
+<li>删除或者修改过时的节点，<strong>版本号不匹配</strong>会报错</li>
+<li>每个zk节点存储的<strong>数据不宜过大</strong>，几k即可</li>
+<li>节点可以设置<strong>权限acl</strong>，可以通过权限限制用户的访问</li>
+</ul>
+<h3 id="2-基本操作">2. 基本操作</h3>
+<ol>
+<li><strong>启动zk和客户端连接zk</strong></li>
+</ol>
+<pre><code class="language-shell">../bin/zkServer.sh start
+
+../bin/zkCli.sh
+</code></pre>
+<ol start="2">
+<li><strong>显示指定节点的子节点</strong></li>
+</ol>
+<pre><code class="language-shell">ls /xxxx/xxx
+</code></pre>
+<ol start="3">
+<li><strong>显示指定节点的子节点以及状态信息</strong></li>
+</ol>
+<pre><code class="language-shell">ls2 /xxxx/xxx  # 相当于ls + stat
+</code></pre>
+<p><strong>状态信息解释</strong>：</p>
+<blockquote>
+<p><strong>cZxid</strong>：创建时节点的id</p>
+<p><strong>ctime</strong>：创建节点的时间</p>
+<p><strong>mZxid</strong>：修改后的节点id</p>
+<p><strong>mtime</strong>：修改节点的时间</p>
+<p><strong>pZxid</strong>：子节点的id</p>
+<p><strong>cversion</strong>：子节点的version</p>
+<p><strong>dataVersion</strong>：当前节点的版本号</p>
+<p><strong>aclVersion</strong>：权限相关版本号</p>
+<p><strong>ephemeralOwner</strong>：如果是0x0代表是永久节点，反之是临时节点</p>
+<p><strong>dataLength</strong>：数据长度</p>
+<p><strong>numChildren</strong>：子节点的个数</p>
+</blockquote>
+<ol start="4">
+<li><strong>显示节点的状态</strong></li>
+</ol>
+<pre><code class="language-shell">stat /xxx/xxx
+</code></pre>
+<ol start="5">
+<li><strong>取出指定节点的数据</strong></li>
+</ol>
+<pre><code class="language-shell">get /xxx/xxx
+</code></pre>
+<ol start="6">
+<li><strong>创建节点</strong></li>
+</ol>
+<pre><code class="language-shell">creat [节点名称] [数据]  # 默认创建一个无序且持久化的永久节点
+creat -e [节点名称] [数据] # 创建一个临时的节点
+creat -s [节点名称] [数据]  # 默认创建一个有序且持久化的永久节点，每次累加1
+</code></pre>
+<ol start="7">
+<li><strong>覆盖节点的数据</strong></li>
+</ol>
+<pre><code class="language-shell">set [节点名称] [数据]  # 直接覆盖节点的数据，并让其版本号+1
+set [节点名称] [数据] [期望的版本号] # 类似于CAS，比较当前版本号和期望版本号是否相同，不同会报错
+</code></pre>
+<ol start="8">
+<li><strong>删除节点</strong></li>
+</ol>
+<pre><code class="language-shell">delete [节点名称] # 直接删除该节点
+delete [节点名称] [期望的版本号] # 只有版本号和当前最新的匹配才可以删除
+</code></pre>
+<blockquote>
+<p>建议使用带版本号的更新和删除机制，这样才可以实现乐观锁的机制</p>
+</blockquote>
+<h2 id="三-watcher机制">三、Watcher机制</h2>
+<h3 id="1-简单描述一下watcher机制">1. 简单描述一下Watcher机制</h3>
+<ul>
+<li>针对每个节点的操作，比如说更新删除操作，都会有一个监督者，叫做watcher</li>
+<li>当监控的某个对象（znode）发生了变化，则触发watcher事件，<strong>对于不同的操作，触发的watcher是不同的</strong>，比如说：节点创建、节点删除、节点数据更新</li>
+<li>zk中watcher是<strong>一次性</strong>的，触发后就会立即销毁</li>
+<li>父节点和子节点都会触发watcher，也就是说<strong>对子节点进行操作时，该子节点的父节点也会触发</strong></li>
+</ul>
+<h3 id="2-watcher的事件类型都有哪些">2. Watcher的事件类型都有哪些？</h3>
+<ul>
+<li><strong>创建父节点触发</strong>：NodeCreated</li>
+<li><strong>修改父节点数据触发</strong>：NodeDataChanged</li>
+<li><strong>删除父节点触发</strong>：NodeDeleted</li>
+<li><strong>创建子节点时触发</strong>：NodeChildrenChanged，需要先在父节点创建watcher</li>
+<li><strong>删除子节点时触发</strong>：NodeChildrenChanged，需要先在父节点创建watcher</li>
+<li><strong>修改子节点时</strong>：不会触发任何事件，如果想要触发watcher，需要把该子节点当作父节点来创建和观察watcher</li>
+</ul>
+<h3 id="3-创建节点的watcher">3. 创建节点的Watcher</h3>
+<pre><code class="language-shell">get [节点名称] watcher
+stat [节点名称] watcher
+ls [节点名称] watcher
+ls2 [节点名称] watcher
+</code></pre>
+<h3 id="4-watcher的使用场景">4. watcher的使用场景</h3>
+<ul>
+<li><strong>统一资源配置</strong>：在一个zk集群中，给每个节点设置一个watcher。修改集群中节点的数据，此时会触发watcher修改客户端的配置；与此同时，集群中所有的zk都会更新数据并且触发watcher，最后将更新所有的配置信息</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://img-blog.csdnimg.cn/img_convert/8916c09e1c686af873c4d0f9edb02100.png" alt="image-20200919111156393" loading="lazy"></figure>
+<h2 id="四-acl权限控制">四、ACL权限控制</h2>
+<h3 id="1-简介-2">1. 简介</h3>
+<ul>
+<li>针对节点可以<strong>设置相关读写等权限</strong>，目的是<strong>保障数据安全性</strong></li>
+<li>权限permissions可以指定不同的权限范围和角色</li>
+</ul>
+<h3 id="2-acl权限列表的构成">2. Acl权限列表的构成</h3>
+<blockquote>
+<p>acl通过[scheme: id : permissions​]来构成权限列表</p>
+</blockquote>
+<ul>
+<li><strong>scheme</strong>：代表某种权限机制</li>
+<li><strong>id</strong>：代表允许访问的用户</li>
+<li><strong>permissions</strong>：权限组合字符串</li>
+</ul>
+<h3 id="3-权限机制">3. 权限机制</h3>
+<ul>
+<li>
+<p><strong>world</strong>：world下只有一个id，即只有一个用户，也就是anyone，代表的是默认权限。组合的写法就是：world:anyone: [permissions]</p>
+</li>
+<li>
+<p><strong>auth</strong>：代表认证登录，需要注册用户拥有权限。组合的写法就是：auth:user:password:[permissions]</p>
+</li>
+<li>
+<p><strong>digest</strong>：需要对密码加密后才能访问。组合的写法就是：digest:user:BASE64(SHA1(password)):[permissions]</p>
+</li>
+<li>
+<p><strong>ip</strong>：限制ip地址访问。组合的写法就是：ip:xxx.xxx.xxx.xxx:[permissions]</p>
+</li>
+<li>
+<p><strong>super</strong>：超级管理员，拥有所有的权限。</p>
+</li>
+</ul>
+<blockquote>
+<p>auth和digest的区别在于，前者明文后者密文</p>
+</blockquote>
+<blockquote>
+<p>对于super权限，需要修改zkServer.sh增加super管理员，最后重启zkServer.sh</p>
+</blockquote>
+<h3 id="4-权限组合字符串">4. 权限组合字符串</h3>
+<blockquote>
+<p>权限字符串列表：crdwa</p>
+</blockquote>
+<ul>
+<li><strong>create</strong>：创建当前节点的子节点</li>
+<li><strong>read</strong>：获取当前节点以及子节点</li>
+<li><strong>write</strong>：设置当前节点的数据</li>
+<li><strong>delete</strong>：删除当前节点的子节点</li>
+<li><strong>admin</strong>：可以分配当前节点的权限</li>
+</ul>
+<h3 id="5-命令行相关操作">5. 命令行相关操作</h3>
+<ol>
+<li><strong>获取某个节点的权限信息</strong></li>
+</ol>
+<pre><code class="language-shell">getAcl [节点名称] 
+</code></pre>
+<ol start="2">
+<li><strong>设置某个节点的权限信息</strong></li>
+</ol>
+<pre><code class="language-shell">setAcl [节点名称] [权限列表]
+</code></pre>
+<ol start="3">
+<li><strong>注册用户</strong></li>
+</ol>
+<blockquote>
+<p>注册时输入明文密码，但是在zk系统中是以加密的形式存在的</p>
+</blockquote>
+<pre><code class="language-shell">addauth digest [用户名]:[密码]
+</code></pre>
+<h3 id="6-常用使用场景">6. 常用使用场景</h3>
+<ul>
+<li><strong>开发和测试环境分离</strong>，开发者无权操作测试库的节点，只能看；测试和开发连接的节点不同。</li>
+<li><strong>防止集群连接混乱</strong>，生产环境上控制指定ip的服务可以访问相关节点</li>
+</ul>
+<h2 id="五-four-latter-words">五、Four Latter Words</h2>
+<h3 id="1-简介-3">1. 简介</h3>
+<ul>
+<li>zk可以通过它自身提供的简写来和服务器进行交互</li>
+<li>需要安装nc：yum install nc</li>
+<li>基本使用规则：echo [commond] | nc [ip] [port]，端口和ip之间是一个空格而不是冒号</li>
+</ul>
+<h3 id="2-常见四字命令">2. 常见四字命令</h3>
+<ul>
+<li><strong>stat</strong>：查看zk状态信息，以及是否是集群模式</li>
+<li><strong>ruok</strong>：查看zkServer是否启动，如果启动会返回一个imok</li>
+<li><strong>dump</strong>：列出未经处理的会话和临时节点</li>
+<li><strong>conf</strong>：查看zk相关配置</li>
+<li><strong>cons</strong>：展示连接到zk的客户端信息</li>
+<li><strong>envi</strong>：查看zk的环境变量</li>
+<li><strong>mntr</strong>：监控zk的健康信息</li>
+<li><strong>wchs</strong>：展示watch的个数</li>
+<li><strong>wchc和wchp</strong>：展示watch的详细信息</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【总结】Apache Curator入门使用]]></title>
+        <id>https://xzzz2020.github.io/post/H2W9aCW-q/</id>
+        <link href="https://xzzz2020.github.io/post/H2W9aCW-q/">
+        </link>
+        <updated>2020-09-21T09:23:27.000Z</updated>
+        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-apache-curator%E7%AE%80%E4%BB%8B">一、Apache Curator简介</a></li>
+<li><a href="#%E4%BA%8C-curator%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">二、Curator基本操作</a>
+<ul>
+<li><a href="#1-%E9%87%8D%E8%AF%95%E7%AD%96%E7%95%A5">1. 重试策略</a></li>
+<li><a href="#2-%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%85%B3%E9%97%ADzookeeper">2. 连接与关闭Zookeeper</a></li>
+<li><a href="#3-%E5%88%9B%E5%BB%BA%E8%8A%82%E7%82%B9">3. 创建节点</a></li>
+<li><a href="#4-%E5%88%A0%E9%99%A4%E5%92%8C%E6%9B%B4%E6%96%B0%E8%8A%82%E7%82%B9">4. 删除和更新节点</a></li>
+<li><a href="#5-%E6%9F%A5%E8%AF%A2%E8%8A%82%E7%82%B9%E4%BB%A5%E5%8F%8A%E5%AD%90%E8%8A%82%E7%82%B9">5. 查询节点以及子节点</a></li>
+<li><a href="#6-%E5%88%9B%E5%BB%BAwatcher">6. 创建watcher</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89-watcher%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E4%BF%AE%E6%94%B9">三、watcher统一配置修改</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-apache-curator简介">一、Apache Curator简介</h2>
+<ul>
+<li>
+<p><strong>解决了watcher的一次性的问题</strong>，注册一个watcher可以触发多次</p>
+</li>
+<li>
+<p>Api简单易用</p>
+</li>
+<li>
+<p>可以<strong>递归创建节点</strong></p>
+</li>
+<li>
+<p><strong>提供ZooKeeper各种应用场景</strong>(recipe， 比如：分布式锁服务、集群领导选举、共享计数器、缓存机制、分布式队列等)的抽象封装</p>
+</li>
+<li>
+<p>提供了常用的Zookeeper工具类</p>
+</li>
+<li>
+<p>提供了一套Fluent风格的操作API</p>
+</li>
+</ul>
+<h2 id="二-curator基本操作">二、Curator基本操作</h2>
+<h3 id="1-重试策略">1. 重试策略</h3>
+<blockquote>
+<p>一共有五种重试策略</p>
+</blockquote>
+<ol>
+<li>
+<p><strong>重试策略ExponentialBackoffRetry，重试N次限制总的重试时间</strong></p>
+<ul>
+<li><code>baseSleepTimeMs</code>：两次重试之间的间隔时间</li>
+<li><code>maxRetries</code>：最大重试次数，如果超过次数就放弃</li>
+<li><code>maxSleepMs</code>：最大重试时间，如果超过该时间就放弃</li>
+<li><strong>推荐的使用方式为</strong>：<code>RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 5);</code></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryNTimes，重试N次</strong></p>
+<ul>
+<li><code>n</code>：重试的次数</li>
+<li><code>sleepMsBetweenRetries</code>：两次重试之间的间隔时间</li>
+<li><strong>推荐的使用方式为</strong>：<code>RetryPolicy retryPolicy = new RetryNTimes(3, 5000);</code></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryOneTime，重试一次</strong></p>
+<ul>
+<li><code>sleepMsBetweenRetry</code>：两次重试之间的间隔时间</li>
+<li><strong>不推荐使用</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryForever，一直在重试</strong></p>
+<ul>
+<li><code>retryIntervalMs</code>：两次重试之间的间隔时间</li>
+<li><strong>不推荐使用</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>重试策略RetryUntilElapsed</strong></p>
+<ul>
+<li><code>maxElapsedTimeMs</code>：最大重试时间，重试时间超过maxElapsedTimeMs后，就不再重试</li>
+<li><code>sleepMsBetweenRetries</code>：两次重试之间的间隔时间</li>
+<li><strong>推荐使用方式为</strong>：<code>RetryPolicy retryPolicy = new RetryUntilElapsed(2000, 3000);</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="2-连接与关闭zookeeper">2. 连接与关闭Zookeeper</h3>
+<pre><code class="language-java">//1 重试策略：初试时间为1s 重试10次
+RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 10);
+//2 通过工厂创建连接
+CuratorFramework client = CuratorFrameworkFactory.builder()
+        .connectString(&quot;192.168.1.110:2181&quot;)//连接地址
+        .connectionTimeoutMs(3_000)//连接超时时间
+        .sessionTimeoutMs(30_000)//会话超时时间
+        .retryPolicy(retryPolicy)//重试策略
+        .namespace(&quot;super&quot;)//命名空间，连接后所有的操作都是在这个/super节点之下
+        .build();
+//3 开启连接
+client.start();
+//4 关闭连接
+client.close();
+</code></pre>
+<h3 id="3-创建节点">3. 创建节点</h3>
+<p><strong>creatingParentsIfNeeded是递归创建节点，如果不存在父节点则同时会创建父节点</strong></p>
+<p><strong>创建模式有以下几种</strong>:</p>
+<ul>
+<li><code>CreateMode.PERSISTENT</code>：永久节点</li>
+<li><code>CreateMode.PERSISTENT_SEQUENTIAL</code>：永久顺序节点</li>
+<li><code>CreateMode.EPHEMERAL</code>：临时节点</li>
+<li><code>CreateMode.EPHEMERAL_SEQUENTIAL</code>：临时顺序节点</li>
+</ul>
+<p><strong>权限控制</strong>：</p>
+<ul>
+<li>通过withACL，添加一个权限列表List&lt;ACL&gt;</li>
+<li>ACL类有两个属性
+<ul>
+<li>第一个是perms，可以通过Perms的枚举选择，代表了权限字符串列表：crdwa</li>
+<li>第二个是Id，代表着五种权限机制，比如说world、digest等</li>
+</ul>
+</li>
+<li>Id类，有两个属性
+<ul>
+<li>第一个是scheme，代表权限模式</li>
+<li>第二个是id，代表权限模式后面的字符串，如digest模式，user:BASE64(SHA1(password))</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-java">List&lt;ACL&gt; acls = new ArrayList&lt;ACL&gt;();
+Id demo1 = new Id(&quot;digest&quot;, AclUtils.getDigestUserPwd(&quot;demo1:123456&quot;));
+Id demo2 = new Id(&quot;digest&quot;, AclUtils.getDigestUserPwd(&quot;demo2:123456&quot;));
+acls.add(new ACL(Perms.ALL, demo1));
+acls.add(new ACL(Perms.READ, demo2));
+acls.add(new ACL(Perms.DELETE | Perms.CREATE, demo2));
+</code></pre>
+<p><strong>创建节点举例</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+byte[] data = &quot;superme&quot;.getBytes();
+// 创建节点
+client.create().creatingParentsIfNeeded()
+		.withMode(CreateMode.PERSISTENT)//创建模式
+		.withACL(ZooDefs.Ids.OPEN_ACL_UNSAFE)//权限列表，如果想要将所有递归创建的节点都指定当前的权限，可以多一个参数true，如withACL(ZooDefs.Ids.OPEN_ACL_UNSAFE，true)
+		.forPath(nodePath, data);
+</code></pre>
+<h3 id="4-删除和更新节点">4. 删除和更新节点</h3>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// 更新节点数据
+byte[] newData = &quot;batman&quot;.getBytes();
+client.setData().withVersion(0).forPath(nodePath, newData);
+
+// 删除节点
+client.delete()
+     .guaranteed()                // 如果删除失败，那么在后端还是继续会删除，直到成功
+     .deletingChildrenIfNeeded()  // 如果有子节点，就删除
+     .withVersion(0)              // 版本号，如果不匹配会报错
+     .forPath(nodePath);		  // 删除的节点地址
+</code></pre>
+<h3 id="5-查询节点以及子节点">5. 查询节点以及子节点</h3>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// 判断节点是否存在,如果不存在则为空
+Stat statExist = cto.client.checkExists().forPath(nodePath + &quot;/abc&quot;);
+System.out.println(statExist);//statExist!=null，则代表节点存在
+
+// 读取节点数据
+Stat stat = new Stat();
+byte[] data = client.getData()
+        .storingStatIn(stat)//将节点的状态信息也读取进来
+        .forPath(nodePath);
+System.out.println(&quot;节点&quot; + nodePath + &quot;的数据为: &quot; + new String(data));
+System.out.println(&quot;该节点的版本号为: &quot; + stat.getVersion());
+
+ // 查询子节点
+ List&lt;String&gt; childNodes = client.getChildren()
+         .forPath(nodePath);
+ System.out.println(&quot;开始打印子节点：&quot;);
+ for (String s : childNodes) {
+     System.out.println(s);
+ }
+</code></pre>
+<h3 id="6-创建watcher">6. 创建watcher</h3>
+<p><strong>一次性的创建方式</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+// 添加watcher 事件  当使用usingWatcher的时候，监听只会触发一次，监听完毕后就销毁
+cto.client.getData().usingWatcher((Watcher) event -&gt; {
+    System.out.println(&quot;触发了watcher&quot;+event);
+}).forPath(nodePath);
+
+cto.client.getData().usingWatcher((CuratorWatcher) event -&gt; {
+    System.out.println(&quot;触发了watcher&quot;+event);
+}).forPath(nodePath);
+</code></pre>
+<p><strong>重复使用父节点的watcher</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// NodeCache: 监听数据节点的变更，会触发事件
+NodeCache nodeCache = new NodeCache(client, nodePath);
+
+nodeCache.start(true);//buildInitial : 初始化的时候获取node的值并且缓存，true代表进行初始化，缓存节点值，默认为false
+
+if (nodeCache.getCurrentData() != null) {
+   System.out.println(&quot;节点初始化数据为：&quot; + new String(nodeCache.getCurrentData().getData()));
+} else {
+   System.out.println(&quot;节点初始化数据为空...&quot;);
+}
+
+//创建监听器，当节点数据发生更改或者创建时，就会触发该方法
+nodeCache.getListenable().addListener(() -&gt; {
+    //如果是因为删除，导致获取不到节点
+    if (nodeCache.getCurrentData() == null) {
+        System.out.println(&quot;节点被删除了~&quot;);
+        return;
+    }
+    //获取数据
+    String data = new String(nodeCache.getCurrentData().getData());
+    //获取触发的节点路径
+    String path = nodeCache.getCurrentData().getPath()；
+    System.out.println(&quot;节点路径：&quot; + path + &quot;数据：&quot; + data);
+});
+</code></pre>
+<p><strong>重复使用子节点的watcher</strong>：</p>
+<pre><code class="language-java">String nodePath = &quot;/super/demo&quot;;
+
+// 为子节点添加watcher
+// PathChildrenCache: 监听数据节点的增删改，会触发事件
+String childNodePathCache = nodePath;
+
+//新建一个子节点缓存
+PathChildrenCache childrenCache = new PathChildrenCache(client, childNodePathCache, true);//cacheData: 设置缓存节点的数据状态，如果为true，也会将子节点的状态信息缓存下来
+
+
+/**
+ * StartMode: 初始化方式
+ * POST_INITIALIZED_EVENT：异步初始化，初始化之后会触发初始化事件（推荐）
+ * NORMAL：异步初始化
+ * BUILD_INITIAL_CACHE：同步初始化
+ */
+childrenCache.start(StartMode.POST_INITIALIZED_EVENT);
+
+//获取缓存的子节点数据
+List&lt;ChildData&gt; childDataList = childrenCache.getCurrentData();
+System.out.println(&quot;当前数据节点的子节点数据列表：&quot;);
+for (ChildData cd : childDataList) {
+    String childData = new String(cd.getData());
+    System.out.println(childData);
+}
+
+//为子节点缓存添加监听器，可以对子节点触发的event的类型进行判断
+childrenCache.getListenable().addListener((client, event) -&gt; {
+    if (event.getType().equals(PathChildrenCacheEvent.Type.INITIALIZED)) {//初始化事件触发
+        System.out.println(&quot;子节点初始化ok...&quot;);
+    } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_ADDED)) {//增加子节点
+        String path = event.getData().getPath();
+        if (path.equals(ADD_PATH)) {
+            System.out.println(&quot;添加子节点:&quot; + event.getData().getPath());
+            System.out.println(&quot;子节点数据:&quot; + new String(event.getData().getData()));
+        } else if (path.equals(&quot;/super/imooc/e&quot;)) {
+            System.out.println(&quot;添加不正确...&quot;);
+        }
+    } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_REMOVED)) {//删除子节点
+        System.out.println(&quot;删除子节点:&quot; + event.getData().getPath());
+    } else if (event.getType().equals(PathChildrenCacheEvent.Type.CHILD_UPDATED)) {//子节点数据修改事件
+        System.out.println(&quot;修改子节点路径:&quot; + event.getData().getPath());
+        System.out.println(&quot;修改子节点数据:&quot; + new String(event.getData().getData()));
+    }
+});
+</code></pre>
+<h2 id="三-watcher统一配置修改">三、watcher统一配置修改</h2>
+<figure data-type="image" tabindex="1"><img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200921165758514.png" alt="image-20200921165758514" loading="lazy"></figure>
+<pre><code class="language-java">public class Client1 {
+
+   public CuratorFramework client = null;
+   public static final String zkServerPath = &quot;192.168.1.110:2181&quot;;
+
+   public Client1() {
+      RetryPolicy retryPolicy = new RetryNTimes(3, 5000);
+      client = CuratorFrameworkFactory.builder()
+            .connectString(zkServerPath)
+            .sessionTimeoutMs(10000).retryPolicy(retryPolicy)
+            .namespace(&quot;workspace&quot;).build();
+      client.start();
+   }
+   
+   public void closeZKClient() {
+      if (client != null) {
+         this.client.close();
+      }
+   }
+   
+   public final static String CONFIG_NODE_PATH = &quot;/super/demo&quot;;
+   public final static String SUB_PATH = &quot;/redis-config&quot;;
+   public static CountDownLatch countDown = new CountDownLatch(1);
+   
+   public static void main(String[] args) throws Exception {
+      //连接Zookeeper
+      Client1 cto = new Client1();
+      System.out.println(&quot;client1 启动成功...&quot;);
+      
+       //需要在父节点添加对子节点的监听
+      final PathChildrenCache childrenCache = new PathChildrenCache(cto.client, CONFIG_NODE_PATH, true);
+      childrenCache.start(StartMode.BUILD_INITIAL_CACHE);
+      
+      // 添加监听器
+      childrenCache.getListenable().addListener(new PathChildrenCacheListener() {
+         public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+            // 监听节点变化
+            if(event.getType().equals(PathChildrenCacheEvent.Type.CHILD_UPDATED)){
+               String configNodePath = event.getData().getPath();
+               if (configNodePath.equals(CONFIG_NODE_PATH + SUB_PATH)) {
+                  System.out.println(&quot;监听到配置发生变化，节点路径为:&quot; + configNodePath);
+                  
+                  // 读取节点数据
+                  String jsonConfig = new String(event.getData().getData());
+                  System.out.println(&quot;节点&quot; + CONFIG_NODE_PATH + &quot;的数据为: &quot; + jsonConfig);
+                  
+                  // 从json转换配置
+                  RedisConfig redisConfig = null;
+                  if (StringUtils.isNotBlank(jsonConfig)) {
+                     redisConfig = JsonUtils.jsonToPojo(jsonConfig, RedisConfig.class);
+                  }
+                  
+                  // 配置不为空则进行相应操作
+                  if (redisConfig != null) {
+                     String type = redisConfig.getType();
+                     String url = redisConfig.getUrl();
+                     String remark = redisConfig.getRemark();
+                     // 判断事件
+                     if (type.equals(&quot;add&quot;)) {
+                        System.out.println(&quot;监听到新增的配置，准备下载...&quot;);
+                        // ... 连接ftp服务器，根据url找到相应的配置
+                        Thread.sleep(500);
+                        System.out.println(&quot;开始下载新的配置文件，下载路径为&lt;&quot; + url + &quot;&gt;&quot;);
+                        // ... 下载配置到你指定的目录
+                        Thread.sleep(1000);
+                        System.out.println(&quot;下载成功，已经添加到项目中&quot;);
+                        // ... 拷贝文件到项目目录
+                     } else if (type.equals(&quot;update&quot;)) {
+                        System.out.println(&quot;监听到更新的配置，准备下载...&quot;);
+                        // ... 连接ftp服务器，根据url找到相应的配置
+                        Thread.sleep(500);
+                        System.out.println(&quot;开始下载配置文件，下载路径为&lt;&quot; + url + &quot;&gt;&quot;);
+                        // ... 下载配置到你指定的目录
+                        Thread.sleep(1000);
+                        System.out.println(&quot;下载成功...&quot;);
+                        System.out.println(&quot;删除项目中原配置文件...&quot;);
+                        Thread.sleep(100);
+                        // ... 删除原文件
+                        System.out.println(&quot;拷贝配置文件到项目目录...&quot;);
+                        // ... 拷贝文件到项目目录
+                     } else if (type.equals(&quot;delete&quot;)) {
+                        System.out.println(&quot;监听到需要删除配置&quot;);
+                        System.out.println(&quot;删除项目中原配置文件...&quot;);
+                     }
+                     
+                     // TODO 视情况统一重启服务
+                  }
+               }
+            }
+         }
+      });
+      
+      countDown.await();
+      
+      cto.closeZKClient();
+   }
+   
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[快速幂之Java实现]]></title>
+        <id>https://xzzz2020.github.io/post/-PWIO63oG/</id>
+        <link href="https://xzzz2020.github.io/post/-PWIO63oG/">
+        </link>
+        <updated>2020-09-21T02:38:41.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>博主针对2021校招字节跳动的第五轮笔试第二，学习了快速幂算法</p>
+</blockquote>
+<p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a></li>
+<li><a href="#%E4%BA%8C-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">二、性能优化</a></li>
+<li><a href="#%E4%B8%89-%E5%AF%B9%E6%80%A7%E8%83%BD%E8%BF%9B%E8%A1%8C%E5%8E%8B%E6%A6%A8">三、对性能进行压榨</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<h2 id="一-简介">一、简介</h2>
+<blockquote>
+<p>求A^B的最后三位数表示的整数。</p>
+<p>说明：A^B的含义是“A的B次方”</p>
+</blockquote>
+<p><strong>当一个数的幂很大时，如果直接使用Math.pow()运算，会导致溢出，所以最简单的方法就是，累乘B次，每次对结果进行求模运算，我们以2的1000000000次方为例，Java代码如下</strong>：</p>
+<pre><code class="language-java">public class Test {
+    private static int mod = 1000;
+
+    public static void main(String[] args) {
+        int x = 2;
+        int n = 1000000000;
+        long startTime = System.currentTimeMillis();
+        int result = fastPower(x,n);
+        System.out.println(&quot;结果是：&quot;+result);
+        long endTime = System.currentTimeMillis();
+        System.out.println(&quot;运行时间为：&quot;+(endTime-startTime)+&quot; ms. &quot;);
+    }
+
+    private static int fastPower(int x, int n) {
+        int result = 1;
+        for (int i = 1; i &lt;= n; i++) {
+            result %= mod;
+            result *= x;
+        }
+        return result%mod;
+    }
+}
+</code></pre>
+<p>结果：</p>
+<pre><code>结果是：376
+运行时间为：11127 ms. 
+</code></pre>
+<p>可以看出，时间复杂度非常高，基本上所有的题目都没有办法AC，所以<strong>需要进一步优化时间复杂度。</strong></p>
+<h2 id="二-性能优化">二、性能优化</h2>
+<p>对于2的10次方来讲，可以<strong>对其进行拆分</strong>：</p>
+<pre><code>2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2
+</code></pre>
+<p>快速幂算法的核心思想就是**每一步都把指数分成两半，而相应的底数做平方运算。**这样不仅能把非常大的指数给不断变小，所需要执行的循环次数也变小，而最后表示的结果却一直不会变。</p>
+<p>针对上面例子，继续优化：</p>
+<pre><code>(2 * 2) * (2 * 2) * (2 * 2) * (2 * 2) * (2 * 2)
+==》4^5
+</code></pre>
+<p><strong>此时指数变成了一半，多计算了一次底数平方，少计算5次指数运算。</strong></p>
+<p>按照这个思路，可以对所有指数为偶数的不断优化。但是如果指数为奇数呢，比如上面的4^5。</p>
+<p>优化的思路就是，将指数减一，凑出偶数，即<strong>抽出了一个底数的一次方</strong>，如下所示：</p>
+<pre><code>4^5 = 4^4 * 4^1 
+</code></pre>
+<p>这样继续对4^4优化为：</p>
+<pre><code>4^4 * 4^1 
+==》 16^2 *  4^1 
+==》 256^1 * 4^1
+==》 1024
+</code></pre>
+<p><strong>相比于10次的累乘运算，优化到了5次，优化后的Java代码如下。</strong></p>
+<pre><code class="language-java">public class Test {
+    private static int mod = 1000;
+
+    public static void main(String[] args) {
+        int x = 2;
+        int n = 1000000000;
+        long startTime = System.currentTimeMillis();
+        int result = fastPower(x, n);
+        System.out.println(&quot;结果是：&quot; + result);
+        long endTime = System.currentTimeMillis();
+        System.out.println(&quot;运行时间为：&quot; + (endTime - startTime) + &quot; ms. &quot;);
+    }
+
+    private static int fastPower(int x, int n) {
+        int result = 1;
+        while (n &gt; 0) {
+            if (n % 2 == 1) {
+                n -= 1;
+                result *= x;
+                result %= mod;
+            } else {
+                n /= 2;
+                x *= x;
+                x %= mod;
+            }
+        }
+        return result % mod;
+    }
+}
+</code></pre>
+<p><strong>结果</strong>：</p>
+<pre><code>结果是：376
+运行时间为：0 ms.
+</code></pre>
+<h2 id="三-对性能进行压榨">三、对性能进行压榨</h2>
+<p><strong>上述代码结构依然有优化的空间</strong>：</p>
+<ol>
+<li>n % 2 == 1可以使用&amp;运算符优化，变成(n &amp; 1) == 1</li>
+<li>n /= 2可以使用位运算符优化，变成n = n &gt;&gt; 1</li>
+</ol>
+<p><strong>优化后的代码如下</strong>：</p>
+<pre><code class="language-java">public class Test {
+    private static int mod = 1000;
+
+    public static void main(String[] args) {
+        int x = 2;
+        int n = 1000000000;
+        long startTime = System.currentTimeMillis();
+        int result = fastPower(x, n);
+        System.out.println(&quot;结果是：&quot; + result);
+        long endTime = System.currentTimeMillis();
+        System.out.println(&quot;运行时间为：&quot; + (endTime - startTime) + &quot; ms. &quot;);
+    }
+
+    private static int fastPower(int x, int n) {
+        int result = 1;
+        while (n &gt; 0) {
+            if ((n &amp; 1) == 1) {
+                n -= 1;
+                result *= x;
+                result %= mod;
+            }
+            n = n &gt;&gt; 1;
+            x *= x;
+            x %= mod;
+        }
+        return result % mod;
+    }
+}
+</code></pre>
+<p><strong>结果</strong>：</p>
+<pre><code>结果是：376
+运行时间为：0 ms.
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[【总结】SpringMVC源码分析]]></title>
         <id>https://xzzz2020.github.io/post/hfCflPZX4/</id>
@@ -4135,654 +4982,6 @@ public Object intercept(Object proxy, Method method, Object[] args, MethodProxy 
 <h3 id="183-高安全">18.3 高安全</h3>
 <h2 id="十九-系统架构">十九、系统架构</h2>
 <h2 id="二十-netty">二十、Netty</h2>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[如何进行消息队列技术选型？]]></title>
-        <id>https://xzzz2020.github.io/post/ru-he-jin-xing-xiao-xi-dui-lie-ji-zhu-xuan-xing/</id>
-        <link href="https://xzzz2020.github.io/post/ru-he-jin-xing-xiao-xi-dui-lie-ji-zhu-xuan-xing/">
-        </link>
-        <updated>2020-09-05T08:10:05.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E9%97%AE%E9%A2%98%E5%AF%BC%E8%AF%BB">一、问题导读</a></li>
-<li><a href="#%E4%BA%8C-%E9%9D%A2%E8%AF%95%E5%AE%98%E5%BF%83%E7%90%86%E5%88%86%E6%9E%90">二、面试官心理分析</a></li>
-<li><a href="#%E4%B8%89-%E9%9D%A2%E8%AF%95%E9%A2%98%E5%89%96%E6%9E%90">三、面试题剖析</a>
-<ul>
-<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%95%8A">1. 为什么使用消息队列啊？</a></li>
-<li><a href="#2-mq%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9">2. MQ的优缺点</a></li>
-<li><a href="#3-kafka-activemq-rabbitmq-rocketmq%E9%83%BD%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%82%B9%E5%92%8C%E7%BC%BA%E7%82%B9">3. kafka、activemq、rabbitmq、rocketmq都有什么优点和缺点</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-问题导读">一、问题导读</h2>
-<blockquote>
-<p>为什么使用消息队列啊？消息队列有什么优点和缺点啊？kafka、activemq、rabbitmq、rocketmq都有什么区别以及适合哪些场景？</p>
-</blockquote>
-<h2 id="二-面试官心理分析">二、面试官心理分析</h2>
-<p><strong>第一，你知道不知道你们系统里为什么要用消息队列这个东西？</strong></p>
-<p><strong>第二，你既然用了消息队列这个东西，你知道不知道用了有什么好处？</strong></p>
-<p><strong>第三，既然你用了MQ，可能是某一种MQ，那么你当时做没做过调研啊？</strong></p>
-<h2 id="三-面试题剖析">三、面试题剖析</h2>
-<h3 id="1-为什么使用消息队列啊">1. 为什么使用消息队列啊？</h3>
-<ul>
-<li>其实就是问问你消息队列都有哪些使用场景，然后你项目里具体是什么场景，说说你在这个场景里用消息队列是什么</li>
-<li>期望的一个回答是说，你们公司有个什么业务场景，这个业务场景有个什么技术挑战，如果不用MQ可能会很麻烦，但是你现在用了MQ之后带给了你很多的好处</li>
-</ul>
-<p><strong>消息队列的常见使用场景</strong></p>
-<ul>
-<li>
-<p>比较核心的有3个：解耦、异步、削峰</p>
-</li>
-<li>
-<p><strong>解耦</strong></p>
-<ul>
-<li>
-<p>A系统发送个数据到BCD三个系统，接口调用发送，如果新加入或删除一个系统，就需要更改源码；如果某一个系统宕机或者访问超时，就还需要考虑是否需要重发，是否需要存储消息；如果发送另外一种类型的消息，也依然需要更改源码。这就是A系统跟其他系统严重耦合的地方。</p>
-</li>
-<li>
-<p>如果加入了消息队列，现在A系统只需要将数据发送到MQ中即可，其他系统可以自己决定是否需要相关数据，如果需要，从MQ中消费数据即可。系统A不需要考虑谁需要消费消息，也不需要考虑消息的重试机制</p>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwOTA1MTEwMTUxODM5LnBuZw?x-oss-process=image/format,png" alt="image-20200905110151839" loading="lazy"></figure>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>异步</strong></p>
-<ul>
-<li>
-<p>A系统接收一个请求，需要在自己本地写库，还需要在BCD三个系统写库，自己本地写库要3ms，BCD三个系统分别写库要上百毫秒，最终请求总延时接近1s。一般要求在200ms以内，十分影响用户体验。</p>
-</li>
-<li>
-<p>加入消息队列后，一个请求的总延时等于A系统写库的时间+向消息队列发送消息的时间，其他系统可以从消息队列中消费消息完成写库，可以极大的优化系统体验。</p>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwOTA1MTExMTI3OTg5LnBuZw?x-oss-process=image/format,png" alt="image-20200905111127989" loading="lazy"></figure>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>削峰</strong></p>
-<ul>
-<li>如果一个系统在一个时刻，比如说秒杀活动时，系统需要突然处理大量的请求，可能就会造成系统的宕机，如果增加很多服务器，又会在其他时候浪费系统资源。</li>
-<li>加入MQ时，将所有的请求发送到MQ中，如果系统A最多每秒处理2000个请求，就从MQ中每秒拉取2000个请求，这样可以保证系统在高峰时肯定不会宕机。</li>
-</ul>
-</li>
-</ul>
-<p><strong>面试技巧：</strong></p>
-<ul>
-<li>你需要去考虑一下你负责的系统中是否有类似的场景，就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复杂，维护起来很麻烦。但是其实这个调用是不需要直接同步调用接口的，如果用MQ给他异步化解耦，也是可以的，你就需要去考虑在你的项目里，是不是可以运用这个MQ去进行系统的解耦。在简历中体现出来这块东西，用MQ作解耦。</li>
-</ul>
-<h3 id="2-mq的优缺点">2. MQ的优缺点</h3>
-<blockquote>
-<p>优点就是上面的解耦、异步、削峰，主要讲缺点</p>
-</blockquote>
-<p><strong>系统可用性降低</strong>：系统引入的外部依赖越多，整个系统越容易挂掉，如果MQ出现问题，可能会导致整个系统崩溃。</p>
-<p><strong>系统复杂性提高</strong>：加入MQ候，需要考虑很多问题，比如怎么保证消息没有重复消费？怎么处理消息丢失的情况？怎么保证消息传递的顺序性？</p>
-<p><strong>一致性问题</strong>：在异步处理消息时，A系统处理完了直接返回成功了，但是如果BCD三个系统那里，BD两个系统写库成功了，结果C系统写库失败了，就会出现一致性问题。</p>
-<h3 id="3-kafka-activemq-rabbitmq-rocketmq都有什么优点和缺点">3. kafka、activemq、rabbitmq、rocketmq都有什么优点和缺点</h3>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>ActiveMQ</th>
-<th>RabbitMQ</th>
-<th>RocketMQ</th>
-<th>Kafka</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>单机吞吐量</td>
-<td>万级，吞吐量比RocketMQ和Kafka要低了一个数量级</td>
-<td>万级，吞吐量比RocketMQ和Kafka要低了一个数量级</td>
-<td>10万级，RocketMQ也是可以支撑高吞吐的一种MQ</td>
-<td>10万级别，这是kafka最大的优点，就是吞吐量高。     一般配合大数据类的系统来进行实时数据计算、日志采集等场景</td>
-</tr>
-<tr>
-<td>topic数量对吞吐量的影响</td>
-<td></td>
-<td></td>
-<td>topic可以达到几百，几千个的级别，吞吐量会有较小幅度的下降     这是RocketMQ的一大优势，在同等机器下，可以支撑大量的topic</td>
-<td>topic从几十个到几百个的时候，吞吐量会大幅度下降     所以在同等机器下，kafka尽量保证topic数量不要过多。如果要支撑大规模topic，需要增加更多的机器资源</td>
-</tr>
-<tr>
-<td>时效性</td>
-<td>ms级</td>
-<td>微秒级，这是rabbitmq的一大特点，延迟是最低的</td>
-<td>ms级</td>
-<td>延迟在ms级以内</td>
-</tr>
-<tr>
-<td>可用性</td>
-<td>高，基于主从架构实现高可用性</td>
-<td>高，基于主从架构实现高可用性</td>
-<td>非常高，分布式架构</td>
-<td>非常高，kafka是分布式的，一个数据多个副本，少数机器宕机，不会丢失数据，不会导致不可用</td>
-</tr>
-<tr>
-<td>消息可靠性</td>
-<td>有较低的概率丢失数据</td>
-<td></td>
-<td>经过参数优化配置，可以做到0丢失</td>
-<td>经过参数优化配置，消息可以做到0丢失</td>
-</tr>
-<tr>
-<td>功能支持</td>
-<td>MQ领域的功能极其完备</td>
-<td>基于erlang开发，所以并发能力很强，性能极其好，延时很低</td>
-<td>MQ功能较为完善，还是分布式的，扩展性好</td>
-<td>功能较为简单，主要支持简单的MQ功能，在大数据领域的实时计算以及日志采集被大规模使用，是事实上的标准</td>
-</tr>
-</tbody>
-</table>
-<p><strong>总结</strong>：</p>
-<ul>
-<li>
-<p><strong>ActiveMQ</strong></p>
-<ul>
-<li><strong>非常成熟</strong>，功能强大，在业内大量的公司以及项目中都有应用</li>
-<li><strong>偶尔会有较低概率丢失消息</strong></li>
-<li>而且现在社区以及国内应用都越来越少，<strong>官方社区现在对ActiveMQ 5.x维护越来越少</strong>，几个月才发布一个版本</li>
-<li>而且确实主要是基于解耦和异步来用的，<strong>较少在大规模吞吐的场景中使用</strong></li>
-</ul>
-</li>
-<li>
-<p><strong>RabbitMQ</strong></p>
-<ul>
-<li><strong>erlang语言开发，性能极其好，延时很低</strong></li>
-<li><strong>吞吐量到万级，MQ功能比较完备</strong></li>
-<li><strong>社区相对比较活跃，几乎每个月都发布几个版本分</strong></li>
-<li><strong>开源提供的后台管理页面功能十分齐全，适合中小型项目使用</strong></li>
-<li>但是问题也是显而易见的，RabbitMQ确实<strong>吞吐量会低一些</strong>，这是因为他做的实现机制比较重。</li>
-<li>而且erlang开发，国内有几个公司有实力做erlang源码级别的研究和定制？如果说你没这个实力的话，确实偶尔会有一些问题，你<strong>很难去看懂源码</strong>，你公司对这个东西的掌控很弱，基本职能依赖于开源社区的快速维护和修复bug。</li>
-<li><strong>rabbitmq集群动态扩展会很麻烦</strong>，不过这个我觉得还好。其实主要是erlang语言本身带来的问题。很难读源码，很难定制和掌控。</li>
-</ul>
-</li>
-<li>
-<p><strong>RocketMQ</strong></p>
-<ul>
-<li>
-<p><strong>接口简单易用</strong>，而且毕竟在阿里大规模应用过，有阿里品牌保障</p>
-</li>
-<li>
-<p>日处理消息上百亿之多，可以做到<strong>大规模吞吐</strong>，性能也非常好，<strong>分布式扩展也很方便</strong>，社区维护还可以，可靠性和可用性都是ok的，还<strong>可以支撑大规模的topic数量</strong>，支持复杂MQ业务场景</p>
-</li>
-<li>
-<p>而且一个很大的优势在于，阿里出品都是java系的，我们<strong>可以自己阅读源码，定制自己公司的MQ，可以掌控</strong></p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>Kafka</strong></p>
-<ul>
-<li>kafka的特点其实很明显，就是仅仅提供较少的核心功能，但是<strong>提供超高的吞吐量</strong>，ms级的延迟，极高的可用性以及可靠性，而且分布式可以任意扩展</li>
-<li>同时<strong>kafka最好是支撑较少的topic数量即可，保证其超高吞吐量</strong></li>
-<li>而且kafka唯一的一点劣势是<strong>有可能消息重复消费</strong>，那么对数据准确性会造成极其轻微的影响，在大数据领域中以及日志采集中，这点轻微影响可以忽略</li>
-<li>这个特性天然<strong>适合大数据实时计算以及日志收集</strong></li>
-</ul>
-</li>
-</ul>
-<p><strong>个人建议</strong></p>
-<ul>
-<li>一般的业务系统要引入MQ，最早大家都用ActiveMQ，但是现在确实大家用的不多了，没经过大规模吞吐量场景的验证，社区也不是很活跃</li>
-<li>如果是中小型公司，基础架构研发能力较弱，采用RabbitMQ是不错的选择，虽然erlang语言阻止了大量的java工程师去深入研究和掌控他，但是社区十分活跃</li>
-<li>如果系统有较大吞吐量需求，同时可能会有大量的topic，基础架构研发实力较强的大公司，完全可以采用RocketMQ，即使社区不再更新，也可以自己去维护</li>
-<li>如果是大数据领域的实时计算、日志采集等场景，用Kafka是业内标准的，绝对没问题，社区活跃度很高，绝对不会黄，何况几乎是全世界这个领域的事实性规范</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】RocketMq高级特性]]></title>
-        <id>https://xzzz2020.github.io/post/czb-YfH6n/</id>
-        <link href="https://xzzz2020.github.io/post/czb-YfH6n/">
-        </link>
-        <updated>2020-07-27T10:52:39.000Z</updated>
-        <content type="html"><![CDATA[<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E6%B6%88%E6%81%AF%E5%AD%98%E5%82%A8">一、消息存储</a>
-<ul>
-<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%98%E5%82%A8%E5%88%B0%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%80%A7%E8%83%BD">1. 为什么要存储到文件系统？如何保证性能？</a></li>
-<li><a href="#2-%E5%8A%A0%E5%85%A5%E6%8C%81%E4%B9%85%E5%8C%96%E5%90%8Erocketmq%E7%9A%84%E6%9E%B6%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">2. 加入持久化后RocketMq的架构是什么样的？</a></li>
-<li><a href="#3-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%E7%9A%84">3. 存储结构是什么样的？</a></li>
-<li><a href="#4-%E5%88%B7%E7%9B%98%E6%9C%BA%E5%88%B6%E6%9C%89%E5%93%AA%E4%BA%9B">4. 刷盘机制有哪些？</a></li>
-<li><a href="#5-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E4%B8%A2%E5%A4%B1">5. 如何保证消息不丢失？</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%8C-%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9C%BA%E5%88%B6">二、高可用机制</a>
-<ul>
-<li><a href="#1-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E4%B8%BB%E4%BB%8E">1. 消息消费的高可用（主从）</a></li>
-<li><a href="#2-%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E9%AB%98%E5%8F%AF%E7%94%A8%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E4%B8%BB%E8%8A%82%E7%82%B9">2. 消息发送高可用（配置多个主节点）</a></li>
-<li><a href="#3-%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">3. 主从复制</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%89-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">三、负载均衡</a>
-<ul>
-<li><a href="#1-producer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">1. Producer负载均衡</a></li>
-<li><a href="#2-consumer%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">2. Consumer负载均衡</a></li>
-</ul>
-</li>
-<li><a href="#%E5%9B%9B-%E6%B6%88%E6%81%AF%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6">四、消息重试机制</a>
-<ul>
-<li><a href="#1-%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">1. 顺序消息的重试</a></li>
-<li><a href="#2-%E6%97%A0%E5%BA%8F%E6%B6%88%E6%81%AF%E7%9A%84%E9%87%8D%E8%AF%95">2. 无序消息的重试</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%94-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97">五、死信队列</a></li>
-<li><a href="#%E5%85%AD-%E6%B6%88%E8%B4%B9%E5%B9%82%E7%AD%89">六、消费幂等</a>
-<ul>
-<li><a href="#1-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BA%A7%E7%94%9F%E9%87%8D%E5%A4%8D%E6%B6%88%E6%81%AF">1. 什么时候产生重复消息？</a></li>
-<li><a href="#2-%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F">2. 处理方式</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%83-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E6%B6%88%E6%81%AF%E7%A7%AF%E5%8E%8B%E7%9A%84%E9%97%AE%E9%A2%98">七、如何解决消息积压的问题？</a>
-<ul>
-<li><a href="#%E5%85%AB-%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AAmq">八、如何设计一个Mq？</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-消息存储">一、消息存储</h2>
-<blockquote>
-<p>分布式队列因为<strong>有高可靠性，保证消息不会丢失</strong>的要求，所以数据要进行持久化存储。.</p>
-</blockquote>
-<h3 id="1-为什么要存储到文件系统如何保证性能">1. 为什么要存储到文件系统？如何保证性能？</h3>
-<p>持久化方式可以分成两大类</p>
-<ul>
-<li><strong>关系型数据库</strong>：ActiveMQ默认采用的KahaDB做消息存储，由于，普通关系型数据库（如Mysql）在单表数据量达到千万级别的情况下，其IO读写性能往往会出现瓶颈。</li>
-<li><strong>文件系统</strong>：RocketMQ/Kafka/RabbitMQ）均采用的是消息刷盘至所部署虚拟机/物理机的文件系统来做持久化，刷盘一般可以分为异步刷盘和同步刷盘两种模式</li>
-</ul>
-<p><strong>一般来讲性能对比上：文件系统&gt;关系型数据库DB</strong></p>
-<p><strong>RocketMq的文件存储系统有两点优化以保证性能</strong>：</p>
-<ul>
-<li><strong>消息存储（顺序写）</strong>：RocketMQ的消息用<code>顺序写</code>,保证了消息存储的速度。目前的高性能磁盘，顺序写速度可以达到600MB/s， 超过了一般网卡的传输速度，但是磁盘随机写的速度只有大概100KB/s</li>
-<li><strong>消息发送（零拷贝）</strong>：将本机磁盘文件的内容发送到客户端需要进行多次复制，比如从磁盘复制数据到内核态内存；从内核态内存复制到用户态内存；从用户态内存复制到网络驱动，最后从网络驱动复制到网卡中。RocketMq采用Java中零拷贝的技术，让从内核态内存复制到用户态内存这一步省略，直接赋值到网络驱动中</li>
-</ul>
-<blockquote>
-<p>零拷贝技术有个限制是不能超过2G，所以RocketMQ默认设置单个CommitLog日志数据文件为1G</p>
-</blockquote>
-<h3 id="2-加入持久化后rocketmq的架构是什么样的">2. 加入持久化后RocketMq的架构是什么样的？</h3>
-<ol>
-<li>消息生成者发送消息</li>
-<li>MQ收到消息，将消息进行持久化，在存储中新增一条记录</li>
-<li>返回ACK给生产者</li>
-<li>MQ push 消息给对应的消费者，然后等待消费者返回ACK</li>
-<li>如果消息消费者在指定时间内成功返回ack，那么MQ认为消息消费成功，在存储中删除消息，即执行第6步；如果MQ在指定时间内没有收到ACK，则认为消息消费失败，会尝试重新push消息,重复执行4、5、6步骤</li>
-<li>MQ删除消息</li>
-</ol>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVCNiU4OCVFNiU4MSVBRiVFNSVBRCU5OCVFNSU4MiVBOCVFNiU5NiVCOSVFNSVCQyU4Ri5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<h3 id="3-存储结构是什么样的">3. 存储结构是什么样的？</h3>
-<p><strong>RocketMQ消息的存储是由ConsumeQueue和CommitLog配合完成的</strong></p>
-<ul>
-<li><code>CommitLog</code>：消息真正的<strong>物理存储文件</strong>是CommitLog，<strong>默认一个文件一个G</strong>，存储的是Topic，QueueId和Message，一个存储满了会自动创建一个新的。</li>
-<li><code>ConsumeQueue</code>：是消息的逻辑队列，<strong>类似数据库的索引文件</strong>，存储的是指向物理存储的地址，为了加快消息的读取速度。消费者消费某条消息时，先查询索引获取CommitLog的对应的物理地址。每个Topic下的每个Message Queue都有一个对应的ConsumeQueue文件，<strong>文件很小，通常会加载到内存中</strong>。如果该文件丢失或者损坏，可以通过CommitLog恢复</li>
-</ul>
-<ul>
-<li><code>IndexFile</code>：也是个索引文件，<strong>为了消息查询提供了一种通过key或时间区间来查询消息的方法</strong>，这种通过IndexFile来查找消息的方法不影响发送与消费消息的主流程</li>
-</ul>
-<h3 id="4-刷盘机制有哪些">4. 刷盘机制有哪些？</h3>
-<ul>
-<li><strong>同步刷盘</strong>（数据一定保存成功，但是速度慢）：在返回写成功状态时，消息已经被写入磁盘。具体流程是，消息写入内存的PAGECACHE后，立刻通知刷盘线程刷盘， 然后等待刷盘完成，刷盘线程执行完成后唤醒等待的线程，返回消息写 成功的状态。</li>
-<li><strong>异步刷盘</strong>（速度快，数据不一定保存成功）：在返回写成功状态时，消息可能只是被写入了内存的PAGECACHE，写操作的返回快，吞吐量大；当内存里的消息量积累到一定程度时，统一触发写磁盘动作，快速写入。</li>
-</ul>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNSU5MCU4QyVFNiVBRCVBNSVFNSU4OCVCNyVFNyU5QiU5OCVFNSU5MiU4QyVFNSVCQyU4MiVFNiVBRCVBNSVFNSU4OCVCNyVFNyU5QiU5OC5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<h3 id="5-如何保证消息不丢失">5. 如何保证消息不丢失？</h3>
-<ul>
-<li>RocketMq提供消息持久化机制，消息的刷盘策略分为同步刷盘和异步刷盘。同步刷盘即刷盘成功后再返回一个成功信息，能够保证数据一定保存成功，但是会降低系统吞吐量，异步刷盘与同步刷盘相反，我一般会采用同步刷盘的策略来保证消息不会丢失。</li>
-<li>RocketMq采用的文件系统存储而不是关系型数据库存储，因为在一般情况下文件系统的性能是比数据库性能高的</li>
-<li>而RocketMq为了提高文件系统的读写的高性能，做了两点优化。第一点是采用顺序写的方式，这样可以大大提高磁盘写的性能。第二点采用了零拷贝，原来的文件读取流程是：从磁盘复制数据到内核态内存；从内核态内存复制到用户态内存；从用户态内存复制到网络驱动，最后从网络驱动复制到网卡中发送，零拷贝则省去了从内核态内存复制到用户态内存的这一过程，提高了读取的性能，但是零拷贝对文件大小有要求，所以RocketMq的持久化文件commitlog默认为1G。</li>
-<li>commitlog是存储了RocketMq的消息等核心信息，除此之外，还提供可一个ConsumeQueue作为持久化文件的索引，提高查询的效率，一般文件比较小，都是加载在内存中。除了ConsumeQueue之外，还会存储一个IndexFile文件，用来提供针对某一个key或者时间区间的查询。</li>
-</ul>
-<h2 id="二-高可用机制">二、高可用机制</h2>
-<blockquote>
-<p>RocketMq是天生支持分布式的，可以配置主从以及水平扩展</p>
-<p>Master角色的Broker支持读和写，Slave角色的Broker仅支持读，也就是 Producer只能和Master角色的Broker连接写入消息；Consumer可以连接 Master角色的Broker，也可以连接Slave角色的Broker来读取消息。</p>
-</blockquote>
-<h3 id="1-消息消费的高可用主从">1. 消息消费的高可用（主从）</h3>
-<ul>
-<li>在Consumer的配置文件中，并不需要设置是从Master读还是从Slave 读，当Master不可用或者繁忙的时候，Consumer会被自动切换到从Slave 读。有了自动切换Consumer这种机制，当一个Master角色的机器出现故障后，Consumer仍然可以从Slave读取消息，不影响Consumer程序。这就达到了消费端的高可用性。</li>
-<li><strong>RocketMQ目前还不支持把Slave自动转成Master</strong>，如果机器资源不足，需要把Slave转成Master，则要手动停止Slave角色的Broker，更改配置文件，用新的配置文件启动Broker。</li>
-</ul>
-<h3 id="2-消息发送高可用配置多个主节点">2. 消息发送高可用（配置多个主节点）</h3>
-<ul>
-<li>在创建Topic的时候，把Topic的多个Message Queue创建在多个Broker组上（相同Broker名称，不同 brokerId的机器组成一个Broker组），这样当一个Broker组的Master不可用后，其他组的Master仍然可用，Producer仍然可以发送消息。</li>
-</ul>
-<h3 id="3-主从复制">3. 主从复制</h3>
-<blockquote>
-<p>如果一个Broker组有Master和Slave，消息需要从Master复制到Slave 上，有同步和异步两种复制方式。</p>
-</blockquote>
-<ul>
-<li><strong>同步复制</strong>：同步复制方式是等Master和Slave均写成功后才反馈给客户端写成功状态。如果Master出故障， Slave上有全部的备份数据，容易恢复同步复制会增大数据写入延迟，降低系统吞吐量。</li>
-<li><strong>异步复制</strong>：异步复制方式是只要Master写成功 即可反馈给客户端写成功状态。在异步复制方式下，系统拥有较低的延迟和较高的吞吐量，但是如果Master出了故障，有些数据因为没有被写 入Slave，有可能会丢失</li>
-<li>通常情况下，<strong>应该把Master和Save配置成同步刷盘方式，主从之间配置成异步的复制方式</strong>，这样即使有一台机器出故障，仍然能保证数据不丢，是个不错的选择。</li>
-</ul>
-<h2 id="三-负载均衡">三、负载均衡</h2>
-<h3 id="1-producer负载均衡">1. Producer负载均衡</h3>
-<p>Producer端，每个实例在发消息的时候，默认会<strong>轮询</strong>所有的message queue发送，以达到让消息平均落在不同的queue上。而由于queue可以散落在不同的broker，所以消息就发送到不同的broker下，如下图：</p>
-<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL3Byb2R1Y2VyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExLnBuZw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<h3 id="2-consumer负载均衡">2. Consumer负载均衡</h3>
-<blockquote>
-<p>如果consumer实例的数量比message queue的总数量还多的话，<strong>多出来的consumer实例将无法分到queue</strong>，也就无法消费到消息，也就无法起到分摊负载的作用了。所以需要控制让queue的总数量大于等于consumer的数量。</p>
-</blockquote>
-<ul>
-<li>
-<p>消费者的集群模式--启动多个消费者就可以保证消费者的负载均衡（均摊队列）</p>
-</li>
-<li>
-<p><strong>默认使用的是均摊队列</strong>：会按照queue的数量和实例的数量平均分配queue给每个实例，这样每个消费者可以均摊消费的队列，如下图所示6个队列和三个生产者。</p>
-</li>
-</ul>
-<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2NvbnN1bWVyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExLnBuZw?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<ul>
-<li>另外一种平均的算法<strong>环状轮流分queue</strong>的形式，每个消费者，均摊不同主节点的一个消息队列，如下图所示：</li>
-</ul>
-<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2NvbnN1bWVyJUU4JUI0JTlGJUU4JUJEJUJEJUU1JTlEJTg3JUU4JUExJUExMi5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<blockquote>
-<p>对于广播模式并不是负载均衡的，要求一条消息需要投递到一个消费组下面所有的消费者实例，所以也就没有消息被分摊消费的说法。</p>
-</blockquote>
-<h2 id="四-消息重试机制">四、消息重试机制</h2>
-<h3 id="1-顺序消息的重试">1. 顺序消息的重试</h3>
-<ul>
-<li>
-<p>对于顺序消息，当消费者消费消息失败后，消息队列 RocketMQ 会自动不断进行消息重试（每次间隔时间为 1 秒），这时，应用会出现消息消费被阻塞的情况。</p>
-</li>
-<li>
-<p>因此，在使用顺序消息时，务必保证应用能够及时监控并处理消费失败的情况，<strong>避免阻塞</strong>现象的发生。</p>
-</li>
-</ul>
-<h3 id="2-无序消息的重试">2. 无序消息的重试</h3>
-<ul>
-<li>
-<p>对于无序消息（普通、定时、延时、事务消息），当消费者消费消息失败时，您可以通过设置返回状态达到消息重试的结果。</p>
-</li>
-<li>
-<p>无序消息的重试只针对集群消费方式生效；广播方式不提供失败重试特性，即消费失败后，失败消息不再重试，继续消费新的消息。</p>
-</li>
-<li>
-<p>消息队列 RocketMQ 默认允许每条消息<code>最多重试 16 次</code>，<strong>将会在接下来的 4 小时 46 分钟之内进行 16 次重试</strong>，如果依然失败就会进入死信队列。</p>
-</li>
-<li>
-<p>一条消息无论重试多少次，这些重试消息的 Message ID 不会改变。</p>
-</li>
-<li>
-<p>也可以通过配置，让其不再重试，但是不建议这样</p>
-</li>
-</ul>
-<pre><code class="language-java">public class MessageListenerImpl implements MessageListener {
-    @Override
-    public Action consume(Message message, ConsumeContext context) {
-        try {
-            doConsumeMessage(message);
-        } catch (Throwable e) {
-            //捕获消费逻辑中的所有异常，并返回 Action.CommitMessage;
-            return Action.CommitMessage;
-        }
-        //消息处理正常，直接返回 Action.CommitMessage;
-        return Action.CommitMessage;
-    }
-}
-</code></pre>
-<h2 id="五-死信队列">五、死信队列</h2>
-<p><strong>死信消息具有以下特性:</strong></p>
-<ul>
-<li>不会再被消费者正常消费。</li>
-<li>有效期与正常消息相同，均为 3 天，3 天后会被自动删除。因此，请在死信消息产生后的 3 天内及时处理。</li>
-</ul>
-<p><strong>死信队列具有以下特性：</strong></p>
-<ul>
-<li>一个死信队列对应一个 Group ID， 而不是对应单个消费者实例。</li>
-<li>如果一个 Group ID 未产生死信消息，消息队列 RocketMQ 不会为其创建相应的死信队列。</li>
-<li>一个死信队列包含了对应 Group ID 产生的所有死信消息，不论该消息属于哪个 Topic。</li>
-</ul>
-<p><strong>查看死信队列</strong></p>
-<ol>
-<li>在控制台查询出现死信队列的主题信息</li>
-</ol>
-<figure data-type="image" tabindex="6"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVBRCVCQiVFNCVCRiVBMSVFOSU5OCU5RiVFNSU4OCU5NyVFNCVCOCVCQiVFOSVBMiU5OC5wbmc?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<ol start="2">
-<li>在消息界面根据主题查询死信消息</li>
-</ol>
-<figure data-type="image" tabindex="7"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLyVFNiVBRCVCQiVFNCVCRiVBMSVFOSU5OCU5RiVFNSU4OCU5NyVFNCVCOCVCQiVFOSVBMiU5ODIucG5n?x-oss-process=image/format,png" alt="" loading="lazy"></figure>
-<ol start="3">
-<li>选择重新发送消息</li>
-</ol>
-<p>一条消息进入死信队列，<strong>意味着某些因素导致消费者无法正常消费该消息</strong>，因此，通常需要您对其进行特殊处理。排查可疑因素并解决问题后，可以在消息队列 RocketMQ 控制台重新发送该消息，让消费者重新消费一次。</p>
-<h2 id="六-消费幂等">六、消费幂等</h2>
-<p>消息队列 RocketMQ 消费者在接收到消息以后，<strong>有必要根据业务上的唯一 Key 对消息做幂等处理的必要性。</strong></p>
-<h3 id="1-什么时候产生重复消息">1. 什么时候产生重复消息？</h3>
-<p>在互联网应用中，尤其在<strong>网络不稳定</strong>的情况下，消息队列 RocketMQ 的消息有可能会出现重复，这个重复简单可以概括为以下情况：</p>
-<ul>
-<li>
-<p><strong>发送时消息重复</strong></p>
-<p>当一条消息已被成功发送到服务端并完成持久化，此时出现了网络闪断或者客户端宕机，导致服务端对客户端应答失败。 如果此时生产者意识到消息发送失败并尝试再次发送消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
-</li>
-<li>
-<p><strong>消费时消息重复</strong></p>
-<p>消息消费的场景下，消息已投递到消费者并完成业务处理，当客户端给服务端反馈应答的时候网络闪断。 为了保证消息至少被消费一次，消息队列 RocketMQ 的服务端将在网络恢复后再次尝试投递之前已被处理过的消息，消费者后续会收到两条内容相同并且 Message ID 也相同的消息。</p>
-</li>
-<li>
-<p><strong>负载均衡时消息重复</strong>（包括但不限于网络抖动、Broker 重启以及订阅方应用重启）</p>
-<p>当消息队列 RocketMQ 的 Broker 或客户端重启、扩容或缩容时，会触发 Rebalance，此时消费者可能会收到重复消息。</p>
-</li>
-</ul>
-<h3 id="2-处理方式">2. 处理方式</h3>
-<p>因为 Message ID 有可能出现冲突（重复）的情况，所以真正安全的幂等处理，不建议以 Message ID 作为处理依据。 最好的方式是<strong>以业务唯一标识作为幂等处理的关键依据</strong>，而业务的唯一标识可以通过消息 Key 进行设置：</p>
-<pre><code class="language-java">Message message = new Message();
-message.setKey(&quot;ORDERID_100&quot;);
-SendResult sendResult = producer.send(message);
-</code></pre>
-<p>订阅方收到消息时可以根据消息的 Key 进行幂等处理：</p>
-<pre><code class="language-java">consumer.subscribe(&quot;ons_test&quot;, &quot;*&quot;, new MessageListener() {
-    public Action consume(Message message, ConsumeContext context) {
-        String key = message.getKey()
-        // 根据业务唯一标识的 key 做幂等处理
-    }
-});
-</code></pre>
-<p><strong>接下来，就需要根据业务进行处理：</strong></p>
-<ul>
-<li>拿个数据要写库，先根据主键查一下，如果这数据都有了，你就别插入了，只需要更新一下；或者可以设置一个唯一索引</li>
-<li>如果是写Redis，每次操作都是set，天然可以保证幂等性</li>
-<li>如果不是上面两种场景，需要让生产者发送每条数据的时候，里面<strong>加一个全局唯一的id</strong>，类似订单id之类的东西；**消费者需要先根据这个id去比如redis里查一下，之前消费过吗？**如果没有消费过，你就处理，然后这个id写redis。如果消费过了，那你就别处理了，保证别重复处理相同的消息即可。</li>
-</ul>
-<h2 id="七-如何解决消息积压的问题">七、如何解决消息积压的问题？</h2>
-<blockquote>
-<p>这个可能出现在消费端出了问题，不消费了，或者消费的极其极其慢，导致大量的消息无法消费，最后消息队列集群的磁盘都快写满了</p>
-</blockquote>
-<p><strong>首先最重要的就是修复消费者，接着最大的问题就是在消费者重启后，如何快速处理积压的消息？</strong></p>
-<ul>
-<li>新建一个topic，临时建立好原先10倍或者20倍的queue数量</li>
-<li>接着扩容临时的consumer，此时消费速度是原来的十几倍</li>
-<li>等快速消费完积压数据之后，得恢复原先部署架构，重新用原先的consumer机器来消费消息</li>
-</ul>
-<h3 id="八-如何设计一个mq">八、如何设计一个Mq？</h3>
-<blockquote>
-<p>是上面内容的一个总结，需要分点进行设计</p>
-</blockquote>
-<p><strong>扩展性</strong></p>
-<ul>
-<li>生产者的扩展性</li>
-<li>消息队列的扩展性</li>
-<li>消费者的扩展性</li>
-</ul>
-<p><strong>高可用性</strong></p>
-<ul>
-<li>如何设计刷盘策略？</li>
-<li>如何保证消息0丢失？</li>
-<li>如何保证在其中有机器宕机时，保障服务可用？</li>
-</ul>
-<p><strong>消息重试机制</strong></p>
-<ul>
-<li>当一个消息没有被消费时，如何进行重试，保证消息一定被消费？</li>
-<li>当消费端不可用时，如何保证消费端重启后，依然可以消费消息？</li>
-</ul>
-<p><strong>心跳检测机制</strong></p>
-<ul>
-<li>如何检测生产者、消息队列和消费者是否宕机？</li>
-</ul>
-<p><strong>负载均衡模式</strong></p>
-<ul>
-<li>如何做到消息生产以及消费的负载均衡？</li>
-</ul>
-<p><strong>顺序消息</strong></p>
-<ul>
-<li>如何实现顺序消息？</li>
-</ul>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【总结】JVM内存机制]]></title>
-        <id>https://xzzz2020.github.io/post/YkvbP7GKA/</id>
-        <link href="https://xzzz2020.github.io/post/YkvbP7GKA/">
-        </link>
-        <updated>2020-07-27T10:51:20.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该文章为知识总结的文章，如果是初学者，建议先从专栏学习：<a href="https://blog.csdn.net/qq_43040688/category_9819683.html">JVM专栏</a></p>
-</blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a></li>
-<li><a href="#%E4%BA%8C-%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8">二、程序计数器</a></li>
-<li><a href="#%E4%B8%89-%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88">三、虚拟机栈</a>
-<ul>
-<li><a href="#%E9%97%AE%E9%A2%98%E8%BE%A8%E6%9E%90">问题辨析</a></li>
-</ul>
-</li>
-<li><a href="#%E5%9B%9B-%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88">四、本地方法栈</a></li>
-<li><a href="#%E4%BA%94-%E5%A0%86">五、堆</a></li>
-<li><a href="#%E5%85%AD-%E6%96%B9%E6%B3%95%E5%8C%BA">六、方法区</a></li>
-<li><a href="#%E4%B8%83-%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0">七、运行时常量池</a></li>
-<li><a href="#%E5%85%AB-%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98">八、直接内存</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="一-简介">一、简介</h2>
-<p>Java 虚拟机在执⾏ Java 程序的过程中会把它管理的内存划分成若⼲个不同的数据区域。 JDK. 1.8 和<br>
-之前的版本略有不同</p>
-<p><strong>jdk1.8之前</strong>：</p>
-<figure data-type="image" tabindex="1"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTcwMjQxMTI1LnBuZw?x-oss-process=image/format,png" alt="image-20200715170241125" loading="lazy"></figure>
-<p><strong>jdk1.8之后</strong>：</p>
-<figure data-type="image" tabindex="2"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTcyNjIyNDUwLnBuZw?x-oss-process=image/format,png" alt="image-20200715172622450" loading="lazy"></figure>
-<p><strong>线程私有的：</strong></p>
-<ul>
-<li>程序计数器</li>
-<li>虚拟机栈</li>
-<li>本地方法栈</li>
-</ul>
-<p><strong>线程共享的：</strong></p>
-<ul>
-<li>堆</li>
-<li>方法区</li>
-<li>直接内存 (非运行时数据区的一部分)</li>
-</ul>
-<h2 id="二-程序计数器">二、程序计数器</h2>
-<blockquote>
-<p>用来记住下一条指令的执行的地址，可以依次读取指令或者在多线程的时候，记录线程执行的位置，线程切换后，继续执行</p>
-<p>是线程私有的，且不会出现内存溢出</p>
-</blockquote>
-<p>程序计数器是一块较小的内存空间，可以看作是当前线程所执行的字节码的行号指示器。<strong>字节码解释器工作时通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等功能都需要依赖这个计数器来完成。</strong></p>
-<p>另外，<strong>为了线程切换后能恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器，各线程之间计数器互不影响，独立存储，我们称这类内存区域为“线程私有”的内存。</strong></p>
-<p><strong>从上面的介绍中我们知道程序计数器主要有两个作用：</strong></p>
-<ol>
-<li>字节码解释器通过改变程序计数器来依次读取指令，从而实现代码的流程控制，如：顺序执行、选择、循环、异常处理。</li>
-<li>在多线程的情况下，程序计数器用于记录当前线程执行的位置，从而当线程被切换回来的时候能够知道该线程上次运行到哪儿了。</li>
-</ol>
-<p><strong>注意：程序计数器是唯一一个不会出现 <code>OutOfMemoryError</code> 的内存区域，它的生命周期随着线程的创建而创建，随着线程的结束而死亡。</strong></p>
-<h2 id="三-虚拟机栈">三、虚拟机栈</h2>
-<blockquote>
-<p>与程序计数器一样，Java 虚拟机栈也是线程私有的</p>
-<p>描述的是 Java 方法执行的内存模型，每次方法调用的数据都是通过栈传递的</p>
-<p>每个虚拟栈中存放的是栈帧，每个栈帧对应着一次方法的调用，即每个方法需要的内存</p>
-<p>方法执行时会入栈，所以栈顶的栈帧是正在执行的方法，方法执行结束或出现异常时，会出栈</p>
-<p>当方法出现递归的时候，可能会造成栈帧过多，导致栈溢出</p>
-</blockquote>
-<p><strong>与程序计数器一样，Java 虚拟机栈也是线程私有的，它的生命周期和线程相同，描述的是 Java 方法执行的内存模型，每次方法调用的数据都是通过栈传递的。</strong></p>
-<p><strong>Java 内存可以粗糙的区分为堆内存（Heap）和栈内存 (Stack),其中栈就是现在说的虚拟机栈，或者说是虚拟机栈中局部变量表部分。</strong> （实际上，Java 虚拟机栈是由一个个栈帧组成，而每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法出口信息。）</p>
-<p><strong>局部变量表主要存放了编译期可知的各种数据类型</strong>（boolean、byte、char、short、int、float、long、double）、<strong>对象引用</strong>（reference 类型，它不同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置）。</p>
-<p><strong>Java 虚拟机栈会出现两种错误：<code>StackOverFlowError</code> 和 <code>OutOfMemoryError</code>。</strong></p>
-<ul>
-<li><strong><code>StackOverFlowError</code>：</strong> 若 Java 虚拟机栈的内存大小不允许动态扩展，那么当线程请求栈的深度超过当前 Java 虚拟机栈的最大深度的时候，就抛出 StackOverFlowError 错误。</li>
-<li><strong><code>OutOfMemoryError</code>：</strong> 若 Java 虚拟机堆中没有空闲内存，并且垃圾回收器也无法提供更多内存的话。就会抛出 OutOfMemoryError 错误。</li>
-</ul>
-<p>Java 虚拟机栈也是线程私有的，每个线程都有各自的 Java 虚拟机栈，而且随着线程的创建而创建，随着线程的死亡而死亡。</p>
-<p><strong>扩展：那么方法/函数如何调用？</strong></p>
-<p>Java 栈可用类比数据结构中栈，Java 栈中保存的主要内容是栈帧，每一次函数调用都会有一个对应的栈帧被压入 Java 栈，每一个函数调用结束后，都会有一个栈帧被弹出。</p>
-<p>Java 方法有两种返回方式：</p>
-<ol>
-<li>return 语句。</li>
-<li>抛出异常。</li>
-</ol>
-<p>不管哪种返回方式都会导致栈帧被弹出。</p>
-<h3 id="问题辨析">问题辨析</h3>
-<ol>
-<li>垃圾回收是否涉及栈内存？</li>
-</ol>
-<blockquote>
-<p>不需要<br>
-每个方法执行后，都会被弹出栈，自动回收掉</p>
-</blockquote>
-<ol start="2">
-<li>栈内存分配越大越好吗？</li>
-</ol>
-<blockquote>
-<p>不是<br>
-分配的越大，因为物理内存一定，会导致线程变少<br>
-分配的更多，只是帮助更多次的递归调用</p>
-</blockquote>
-<ol start="3">
-<li>方法内的局部变量是否线程安全？（<strong>看这个线程对变量是私有还是共享的</strong>）</li>
-</ol>
-<blockquote>
-<p>如果方法内局部变量没有逃离方法的作用访问，它是线程安全的<br>
-如果是局部变量引用了对象，并逃离方法的作用范围，需要考虑线程安全<br>
-如果变量变成static类型，需要考虑线程安全</p>
-</blockquote>
-<h2 id="四-本地方法栈">四、本地方法栈</h2>
-<blockquote>
-<p>和虚拟机栈类似，只是用来存储native方法的栈帧</p>
-</blockquote>
-<p>和虚拟机栈所发挥的作用非常相似，区别是： <strong>虚拟机栈为虚拟机执行 Java 方法 （也就是字节码）服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。</strong> 在 HotSpot 虚拟机中和 Java 虚拟机栈合二为一。</p>
-<p>本地方法被执行的时候，在本地方法栈也会创建一个栈帧，用于存放该本地方法的局部变量表、操作数栈、动态链接、出口信息。</p>
-<p>方法执行完毕后相应的栈帧也会出栈并释放内存空间，也会出现 StackOverFlowError 和 OutOfMemoryError 两种错误。</p>
-<h2 id="五-堆">五、堆</h2>
-<blockquote>
-<p>是线程共享的，唯一目的就是存放对象实例，几乎所有的对象实例以及数组都在这里分配内存</p>
-<p>从jdk 1.7开始已经默认开启逃逸分析，如果某些方法中的对象引用没有被返回或者未被外面使用（也就是未逃逸出去），那么对象可以直接在栈上分配内存。</p>
-<p>由于现在收集器基本都采用分代垃圾收集算法，所以 Java 堆还可以细分为：新生代和老年代：再细致一点有：Eden 空间、From Survivor、To Survivor 空间等</p>
-<p>这个是垃圾回收器主要负责回收的区域，当对象过大或者堆存储的对象过多时，就会进行垃圾回收，如果回收失败，最终户出现堆溢出</p>
-<p>一个线程出现堆溢出，这个线程就会关闭，并且回收该线程创建的对象，此时JVM还没有关闭；如果其他线程在创建对象时，关闭线程并没有释放掉大量的堆空间，会导致其他线程也出现堆溢出，最终导致JVM关闭</p>
-</blockquote>
-<p>Java 虚拟机所管理的内存中最大的一块，Java 堆是所有线程共享的一块内存区域，在虚拟机启动时创建。<strong>此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例以及数组都在这里分配内存。</strong></p>
-<p><strong>Java世界中“几乎”所有的对象都在堆中分配，但是，随着JIT编译期的发展与逃逸分析技术逐渐成熟，栈上分配、标量替换优化技术将会导致一些微妙的变化，所有的对象都分配到堆上也渐渐变得不那么“绝对”了。从jdk 1.7开始已经默认开启逃逸分析，如果某些方法中的对象引用没有被返回或者未被外面使用（也就是未逃逸出去），那么对象可以直接在栈上分配内存。</strong></p>
-<p>Java 堆是垃圾收集器管理的主要区域，因此也被称作<strong>GC 堆（Garbage Collected Heap）</strong>.从垃圾回收的角度，由于现在收集器基本都采用分代垃圾收集算法，所以 Java 堆还可以细分为：新生代和老年代：再细致一点有：Eden 空间、From Survivor、To Survivor 空间等。<strong>进一步划分的目的是更好地回收内存，或者更快地分配内存。</strong></p>
-<figure data-type="image" tabindex="3"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nL2ltYWdlLTIwMjAwNzE1MTc0NzQ1NjcwLnBuZw?x-oss-process=image/format,png" alt="image-20200715174745670" loading="lazy"></figure>
-<h2 id="六-方法区">六、方法区</h2>
-<p>⽅法区与 Java 堆⼀样，是各个线程共享的内存区域，它⽤于存储已被虚拟机加载的类信息、常量、静<br>
-态变量、即时编译器编译后的代码等数据。</p>
-<h2 id="七-运行时常量池">七、运行时常量池</h2>
-<p>运⾏时常量池是⽅法区的⼀部分。 Class ⽂件中除了有类的版本、字段、⽅法、接口等描述信息外，还<br>
-有常量池信息（⽤于存放编译期⽣成的各种字⾯量和符号引⽤）</p>
-<p>既然运行时常量池时方法区的⼀部分，自然受到⽅法区内存的限制，当常量池无法再申请到内存时会抛<br>
-出 OutOfMemoryError 异常。</p>
-<blockquote>
-<ol>
-<li><strong>JDK1.7之前运行时常量池逻辑包含字符串常量池存放在方法区, 此时hotspot虚拟机对方法区的实现为永久代</strong></li>
-<li><strong>JDK1.7 字符串常量池被从方法区拿到了堆中, 这里没有提到运行时常量池,也就是说字符串常量池被单独拿到堆,运行时常量池剩下的东西还在方法区, 也就是hotspot中的永久代</strong> 。</li>
-<li><strong>JDK1.8 hotspot移除了永久代用元空间(Metaspace)取而代之, 这时候字符串常量池还在堆, 运行时常量池还在方法区, 只不过方法区的实现从永久代变成了元空间(Metaspace)</strong></li>
-</ol>
-</blockquote>
-<h2 id="八-直接内存">八、直接内存</h2>
-<p><strong>直接内存并不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域，但是这部分内存也被频繁地使用。而且也可能导致 OutOfMemoryError 错误出现。</strong></p>
-<p>JDK1.4 中新加入的 <strong>NIO(New Input/Output) 类</strong>，引入了一种基于<strong>通道（Channel）</strong> 与<strong>缓存区（Buffer）</strong> 的 I/O 方式，它可以直接使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样就能在一些场景中显著提高性能，因为<strong>避免了在 Java 堆和 Native 堆之间来回复制数据</strong>。</p>
-<figure data-type="image" tabindex="4"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwMzIwMTgyODI4NDg3LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
-<figure data-type="image" tabindex="5"><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWctMTMwMjQ3NDEwMy5jb3MuYXAtbmFuamluZy5teXFjbG91ZC5jb20vaW1nLzIwMjAwMzIwMTgzMTM2NDc5LnBuZw?x-oss-process=image/format,png" alt="在这里插入图片描述" loading="lazy"></figure>
-<p>本机直接内存的分配不会受到 Java 堆的限制，但是，既然是内存就会受到本机总内存大小以及处理器寻址空间的限制。</p>
 ]]></content>
     </entry>
 </feed>
