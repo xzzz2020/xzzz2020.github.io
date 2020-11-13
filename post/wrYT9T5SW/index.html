@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>【总结】操作系统基础 | xzzz2020</title>
+<link rel="shortcut icon" href="https://xzzz2020.github.io/favicon.ico" type="image/x-icon" /><meta name="viewport"content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/><meta name="apple-mobile-web-app-capable"content="yes"/><meta name="apple-mobile-web-app-status-bar-style"content="black"/><meta name="format-detection"content="telephone=no"/><meta name="renderer"content="webkit"><meta name="description"content="温故而知新"><meta charset="UTF-8"><title>thymeleaf手动渲染@{}的问题与解决 | xzzz2020</title>
 <link href="https://xzzz2020.github.io/styles/main.css" type="text/css" rel="stylesheet" /><link href="https://at.alicdn.com/t/font_1621793_zatzzgvf30g.css" type="text/css" rel="stylesheet" /><link rel="stylesheet" href="https://xzzz2020.github.io/media/css/katex.css"><script async src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.min.js"></script><script src="https://xzzz2020.github.io/media/js/magnify.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 <script type="text/javascript">function btn_toggle(){document.getElementById("hn").classList.contains("no-js")?document.getElementById("hn").classList.remove("no-js"):document.getElementById("hn").classList.add("no-js")}</script>
 
-<link rel="canonical" href="https://xzzz2020.github.io/post/aArRF4IZF/" />
+<link rel="canonical" href="https://xzzz2020.github.io/post/wrYT9T5SW/" />
 </head>
 <body>
 <div class="progress"></div><style>.progress{background:linear-gradient(to right,#87ceeb var(--scroll),transparent 0);background-repeat:no-repeat;position:fixed;width:100%;height:4px;z-index:1}</style><div class="darkmode-background"></div><div class="darkmode-layer"></div>
@@ -23,81 +23,129 @@
 
 <div class="main"><div class="main-inner"><div class="content">
 <article class="post">
-<h2 class="post_title sm_margin"><a>【总结】操作系统基础</a></h2>
+<h2 class="post_title sm_margin"><a>thymeleaf手动渲染@{}的问题与解决</a></h2>
 <script>function lan(){if(document.getElementById("lan").innerText=="繁"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_tw.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="简"}else{if(document.getElementById("lan").innerText=="簡"){var s=document.getElementById("tongwenlet_cn");if(s!=null){document.body.removeChild(s)}var s=document.createElement("script");s.language="javascript";s.type="text/javascript";s.src="https://cdn.jsdelivr.net/gh/qyxtim/Static@1.1/bookmarklet_cn.js";s.id="tongwenlet_cn";document.body.appendChild(s);document.getElementById("lan").innerHTML="繁"}}};</script>
-<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-07-04</span><i class="iconfont icon-browse"></i><span style="margin-right:15px" id="busuanzi_container_page_pv"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/Interview_summary/" class="tag">面试总结</a> | 	<a href="https://xzzz2020.github.io/tag/operating_system/" class="tag">操作系统</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">1004字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">4 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
+<section class="post_details"><i class="iconfont icon-calendar"></i><span style="margin-right:15px"> 2020-11-04</span><i class="iconfont icon-browse"></i><span style="margin-right:15px" id="busuanzi_container_page_pv"> <span id="busuanzi_value_page_pv"></span> Views</span><i class="iconfont icon-category"></i><span class="weaklink" style="margin-right:15px">	<a href="https://xzzz2020.github.io/tag/thymeleaf/" class="tag">thymeleaf</a></span><i class="iconfont icon-caret-down"></i><span style="margin-right:15px">887字</span><i class="iconfont icon-naozhong"></i><span style="margin-right:15px">5 min read</span><a id="lan" href="javascript:void(0);"onclick="lan();"title="调整简繁体" style="margin-right:15px;">繁</a>
 </section>
 
-<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1593642634315-48f5414c3ad9.webp" referrerpolicy="no-referrer">
+<img class="featureImg" alt="featureimg" src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/photo-1602526214925-4fedda6a53df.webp" referrerpolicy="no-referrer">
 
 <div style="display:flex">
 <div class="md_block" id="md_block">
 <div class="round-shape-one"></div>
+<h2 id="一-简介">一、简介</h2>
+<p>最近写了一个项目，然后<strong>想利用TemplateEngine实现thymeleaf的手动渲染，将生成的html页面加入Redis缓存，提高项目访问速度。</strong></p>
+<h2 id="二-springboot-1x实现">二、SpringBoot 1.x实现</h2>
+<p>以前使用的maven版本如下所示：</p>
+<pre><code class="language-xml">  &lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;1.5.9.RELEASE&lt;/version&gt;
+  &lt;/parent&gt;
+    &lt;!-- SpringMVC --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;!-- thymeleaf --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+</code></pre>
+<p>可以看出是springboot1.x版本。</p>
+<p>附上该版本thymeleaf手动渲染的实现。</p>
+<pre><code class="language-java">    @RequestMapping(value = &quot;/to_list&quot;, produces = &quot;text/html&quot;)
+    @ResponseBody
+    public String toGoods(Model model, MiaoshaUser user,
+                          final HttpServletRequest request,
+                          final HttpServletResponse response) {
+
+        //取缓存
+        String html;
+        html = redisService.get(GoodsKey.getGoodsList(), &quot;&quot;, String.class);
+        if (html != null) {//如果缓存有这个页面
+            return html;
+        } else {//如果没有这个页面
+            //访问数据库获取商品数据
+            List&lt;GoodsVo&gt; goodsList = goodsService.listGoodsVo();
+            if (user != null) {
+                //如果有用户信息，则保存在Model中
+                model.addAttribute(&quot;user&quot;, user);
+            }
+            //将商品数据保存在Model中
+            model.addAttribute(&quot;goodsList&quot;, goodsList);
+
+            //手动渲染
+            SpringWebContext springWebContext = new SpringWebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap(), context);
+            html = viewResolver.getTemplateEngine().process(&quot;goods_list&quot;, springWebContext);
+            if (!StringUtils.isEmpty(html)) {
+                //保存到缓存
+                redisService.set(GoodsKey.getGoodsList(), &quot;&quot;, html);
+            }
+            //返回到浏览器
+            return html;
+        }
+
+    }
+</code></pre>
+<p><strong>需要依赖两个类</strong>：ThymeleafViewResolver以及ApplicationContext</p>
+<p>这两个类都可以通过Spring容器注入进去，如下所示：</p>
+<pre><code class="language-java">@Autowired
+private ThymeleafViewResolver viewResolver;
+
+@Autowired
+private ApplicationContext context;
+</code></pre>
+<p>将上面手动渲染流程代码抽离出来，使用模版如下：</p>
+<pre><code class="language-java">//首先创建一个上下文容器，context是Spring的ApplicationContext
+SpringWebContext springWebContext = new SpringWebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap(), context);
+
+//获取模版引擎，进行使用process方法解析
+//第一个参数&quot;goods_list&quot;指需要解析的thymeleaf模版，一般在template目录下
+//第二个参数就是上下文容器
+html = viewResolver.getTemplateEngine().process(&quot;goods_list&quot;, springWebContext);
+if (!StringUtils.isEmpty(html)) {
+    //保存到缓存
+    redisService.set(GoodsKey.getGoodsList(), &quot;&quot;, html);
+}
+//返回到浏览器
+return html;
+</code></pre>
+<h2 id="三-springboot-2x实现">三、Springboot 2.x实现</h2>
+<p>pom.xml如下所示：</p>
+<pre><code class="language-xml">&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;2.1.17.RELEASE&lt;/version&gt;
+&lt;/parent&gt;
+
+&lt;dependency&gt;
+   &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+   &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+</code></pre>
+<p>首先如果直接使用上面的方式，会发现找不到SpringWebContext这个类，这个类是Spring4下的，在Spring5如移除掉了。</p>
+<p>那么我们可以使用其他的类进行代替。</p>
+<h3 id="1-第一个是context">1. 第一个是Context</h3>
+<p>这个是很多博主使用的方式，我最初也采用了这种，这种文章比较多，博主就不再演示了。</p>
+<p>当页面在渲染@{}标签时，就会报错，如下所示：</p>
 <blockquote>
-<p>本文档为面试精华版，如果是初学者，建议从专栏学习：<a href="https://xzzz2020.gitee.io/tag/operating_system/">操作系统专栏</a></p>
+<p>Caused by: org.attoparser.ParseException: Link base &quot;/css/global.css&quot; cannot be context relative (/...) unless the context used for executing the engine implements the org.thymeleaf.context.IWebContext interface (template: &quot;/mail/activation&quot; - line 6, col 25)</p>
+<p>Caused by: org.thymeleaf.exceptions.TemplateProcessingException: Link base &quot;/css/global.css&quot; cannot be context relative (/...) unless the context used for executing the engine implements the org.thymeleaf.context.IWebContext interface (template: &quot;/mail/activation&quot; - line 6, col 25)</p>
 </blockquote>
-<p><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">1. 什么是操作系统？</a></li>
-<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%91%A2">2. 什么是用户态和系统态？什么是系统调用呢？</a></li>
-<li><a href="#3-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81">3. 操作系统的基本特征</a></li>
-<li><a href="#4-%E4%B8%AD%E6%96%AD%E5%88%86%E7%B1%BB">4. 中断分类</a></li>
-</ul>
-</li>
-</ul>
-</p>
-<h2 id="1-什么是操作系统">1. 什么是操作系统？</h2>
-<p><strong>我通过以下四点向您介绍⼀下什么是操作系统吧</strong>：</p>
-<ol>
-<li>操作系统（Operating System，简称 OS）是管理计算机硬件与软件资源的程序，是计算机系统的内核与基⽯；</li>
-<li>操作系统本质上是运⾏在计算机上的软件程序 ；</li>
-<li>操作系统为⽤户提供⼀个与系统交互的操作界⾯ ；</li>
-<li>操作系统分内核与外壳（我们可以把外壳理解成围绕着内核的应⽤程序，⽽内核就是能操作硬件<br>
-的程序）。</li>
-</ol>
-<blockquote>
-<p>关于内核多插⼀嘴：内核负责管理系统的进程、内存、设备驱动程序、⽂件和⽹络系统等等，决定<br>
-着系统的性能和稳定性。是连接应⽤程序和硬件的桥梁。 内核就是操作系统背后⿊盒的核⼼。</p>
-</blockquote>
-<img src="https://img-1302474103.cos.ap-nanjing.myqcloud.com/img/image-20200704165627043.png" alt="image-20200704165627043" style="zoom:67%;" />
-<h2 id="2-什么是用户态和系统态什么是系统调用呢">2. 什么是用户态和系统态？什么是系统调用呢？</h2>
-<p><strong>根据进程访问资源的特点，我们可以把进程在系统上的运⾏分为两个级别</strong>：</p>
-<ol>
-<li><strong>⽤户态(user mode)</strong> : ⽤户态运⾏的进程或可以直接读取⽤户程序的数据，能执行部分指令。</li>
-<li><strong>系统态(kernel mode)</strong>:可以简单的理解系统态运⾏的进程或程序⼏乎可以访问计算机的任何资<br>
-源，能执行全部的指令，不受限制。</li>
-</ol>
-<p><strong>我们运行的程序基本都是运行在用户态，如果我们调用操作系统提供的系统态级别的子功能咋办呢?那就需要系统调用了!</strong></p>
-<p><strong>也就是说在我们运行的用户程序中，凡是与系统态级别的资源有关的操作(如文件管理、 进程控制、内存管理等)，都必须通过系统调用方式向操作系统提出服务请求，并由操作系统代为完成。</strong></p>
-<p><strong>这些系统调⽤按功能⼤致可分为如下⼏类</strong>：</p>
-<ul>
-<li><strong>设备管理</strong>。完成设备的请求或释放，以及设备启动等功能。</li>
-<li><strong>⽂件管理</strong>。完成⽂件的读、写、创建及删除等功能。</li>
-<li><strong>进程控制</strong>。完成进程的创建、撤销、阻塞及唤醒等功能。</li>
-<li><strong>进程通信</strong>。完成进程之间的消息传递或信号传递等功能。</li>
-<li><strong>内存管理</strong>。完成内存的分配、回收以及获取作业占⽤内存区⼤⼩及地址等功能。</li>
-</ul>
-<h2 id="3-操作系统的基本特征">3. 操作系统的基本特征</h2>
-<ul>
-<li><strong>并发</strong>：宏观上是一段时间内多个程序一起运行，而并行是同一时刻多个程序一起运行操作系统通过引入进程和线程，使得程序能够并发运行</li>
-<li><strong>共享</strong>：系统中的资源可以被多个并发进程共同使用。</li>
-<li><strong>虚拟</strong>：虚拟技术把一个物理实体转换为多个逻辑实体 ，主要有两种虚拟技术：时（时间）分复用技术和空（空间）分复用技术。多个进程能在同一个处理器上并发执行使用了时分复用技术，让每个进程轮流占用处理器，每次只执行一小个时间片<br>
-并快速切换</li>
-<li><strong>异步</strong>：异步指进程不是一次性执行完毕，而是走走停停，以不可知的速度向前推进。</li>
-</ul>
-<h2 id="4-中断分类">4. 中断分类</h2>
-<ul>
-<li>
-<p><strong>外中断</strong> ：由 CPU 执行指令以外的事件引起，如 I/O 完成中断，表示设备输入/输出处理已经完成，处理器能够发送下一个输入/输出请求。此外还有时钟中断、控制台中断等。</p>
-</li>
-<li>
-<p><strong>异常</strong> ：由 CPU 执行指令的内部事件引起，如非法操作码、地址越界、算术溢出等。</p>
-</li>
-<li>
-<p><strong>陷入</strong> ：在用户程序中使用系统调用</p>
-</li>
-</ul>
+<p><strong>这个是因为没有使用IWebContext 的接口容器所导致</strong></p>
+<h3 id="2-第二个是webcontext类">2. 第二个是WebContext类</h3>
+<p>使用方式如下：</p>
+<pre><code class="language-java">IWebContext webContext = new WebContext(request,response,request.getServletContext(),response.getLocale(),model.asMap());
+String cacheHtml = templateEngine.process(&quot;/index&quot;, webContext);
+</code></pre>
+<p>此时就不会报错，相比Spring4或者Springboot1.x而言，剔除了ApplicationContext 过多的依赖，现在thymeleaf渲染不再过多依赖spring容器</p>
 
 <span id="footnote"></span>
 <div id = "warn"></div>
@@ -105,10 +153,14 @@
 <div class="toc-container"><ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">1. 什么是操作系统？</a></li>
-<li><a href="#2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%94%A8%E6%88%B7%E6%80%81%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%91%A2">2. 什么是用户态和系统态？什么是系统调用呢？</a></li>
-<li><a href="#3-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81">3. 操作系统的基本特征</a></li>
-<li><a href="#4-%E4%B8%AD%E6%96%AD%E5%88%86%E7%B1%BB">4. 中断分类</a></li>
+<li><a href="#%E4%B8%80-%E7%AE%80%E4%BB%8B">一、简介</a></li>
+<li><a href="#%E4%BA%8C-springboot-1x%E5%AE%9E%E7%8E%B0">二、SpringBoot 1.x实现</a></li>
+<li><a href="#%E4%B8%89-springboot-2x%E5%AE%9E%E7%8E%B0">三、Springboot 2.x实现</a>
+<ul>
+<li><a href="#1-%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%98%AFcontext">1. 第一个是Context</a></li>
+<li><a href="#2-%E7%AC%AC%E4%BA%8C%E4%B8%AA%E6%98%AFwebcontext%E7%B1%BB">2. 第二个是WebContext类</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -203,8 +255,8 @@
             wxScale.start(this)
         }
     };
-    var content = "本文最后更新于2020-07-04";
-    var date1 = "2020-07-04 21:27:28";
+    var content = "本文最后更新于2020-11-04";
+    var date1 = "2020-11-04 16:29:05";
     date1 = date1.replace("-", "/");
     var date2 = new Date();
     var date3 = date2.getTime() - new Date(date1).getTime();
